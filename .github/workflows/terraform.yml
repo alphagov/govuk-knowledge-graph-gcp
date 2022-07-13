@@ -5,6 +5,7 @@ on:
       - 'main'
 jobs:
   terraform:
+    runs-on: ubuntu-latest
     # Add "id-token" with the intended permissions.
     permissions:
       contents: 'read'
