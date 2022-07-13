@@ -1,0 +1,34 @@
+name: terraform
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'terraform/**'
+jobs:
+  terraform:
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    # actions/checkout MUST come before auth
+    - uses: 'actions/checkout@v3'
+
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v0'
+      with:
+        workload_identity_provider: 'projects/govuk-knowledge-graph/locations/global/workloadIdentityPools/github-pool/providers/github-pool-provider'
+        service_account: 'terraform@govuk-knowledge-graph.iam.gserviceaccount.com'
+
+    # Further steps are automatically authenticated
+
+    # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+
+    # Now you can run gcloud commands authenticated as the impersonated service account.
+    - name: 'Use gcloud CLI'
+      run: 'gcloud projects get-iam-policy govuk-knowledge-graph'
