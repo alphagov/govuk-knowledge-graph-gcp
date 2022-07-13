@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - 'main'
-    paths:
-      - 'terraform/**'
 jobs:
   terraform:
     # Add "id-token" with the intended permissions.
