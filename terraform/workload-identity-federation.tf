@@ -31,7 +31,7 @@ resource "google_service_account" "terraform" {
 resource "google_service_account_iam_member" "wif-sa" {
     service_account_id = google_service_account.terraform.name
     role               = "roles/iam.workloadIdentityUser"
-    member             = "principalSet://iam.googleapis.com/projects/19513753240/locations/global/workloadIdentityPools/github-pool/attribute.repository/alphagov/govuk-knowledge-graph-gcp"
+    member             = "principalSet://iam.googleapis.com/projects/19513753240/locations/global/workloadIdentityPools/github-pool/*"
 }
 
 resource "google_project_iam_member" "terraform_iam_project" {
