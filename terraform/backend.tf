@@ -4,6 +4,5 @@
 terraform {
   backend "gcs" {
     bucket  = "govuk-knowledge-graph-tfstate" # Change this (keep the -tfstate suffix)
-    prefix  = "development"
   }
 }
