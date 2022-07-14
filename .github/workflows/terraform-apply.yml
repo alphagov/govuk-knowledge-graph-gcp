@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - 'main'
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/**'
 defaults:
   run:
     working-directory: terraform

@@ -1,6 +1,9 @@
 name: terraform-plan
 on:
-  pull_request
+  pull_request:
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/**'
 defaults:
   run:
     working-directory: terraform
