@@ -17,6 +17,7 @@ resource "google_iam_workload_identity_pool_provider" "main" {
     "attribute.repository" = "assertion.repository"
   }
   oidc {
+    allowed_audiences = []
     issuer_uri        = "https://token.actions.githubusercontent.com"
   }
 }
@@ -30,7 +31,7 @@ resource "google_service_account" "terraform" {
 resource "google_service_account_iam_member" "wif-sa" {
     service_account_id = google_service_account.terraform.name
     role               = "roles/iam.workloadIdentityUser"
-    member             = "principalSet://iam.googleapis.com/projects/19513753240/locations/global/workloadIdentityPools/github-pool/attribute.repository/alphagov/govuk-knowledge-graph"
+    member             = "principalSet://iam.googleapis.com/projects/19513753240/locations/global/workloadIdentityPools/github-pool/attribute.repository/alphagov/govuk-knowledge-graph-gcp"
 }
 
 resource "google_project_iam_member" "terraform_iam_project" {
