@@ -19,7 +19,7 @@ jobs:
       name: 'Authenticate to Google Cloud'
       uses: 'google-github-actions/auth@v0'
       with:
-        workload_identity_provider: 'https://iam.googleapis.com/projects/govuk-knowledge-graph/locations/global/workloadIdentityPools/github-pool/providers/github-pool-provider'
+        workload_identity_provider: 'https://iam.googleapis.com/projects/19513753240/locations/global/workloadIdentityPools/github-pool/providers/github-pool-provider'
         service_account: 'terraform@govuk-knowledge-graph.iam.gserviceaccount.com'
 
     # Further steps are automatically authenticated
