@@ -17,7 +17,7 @@ resource "google_iam_workload_identity_pool_provider" "main" {
     "attribute.repository" = "assertion.repository"
   }
   oidc {
-    allowed_audiences = []
+    allowed_audiences = ["alphagov"]
     issuer_uri        = "https://token.actions.githubusercontent.com"
   }
 }
