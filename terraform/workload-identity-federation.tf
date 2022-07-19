@@ -36,6 +36,6 @@ resource "google_service_account_iam_member" "wif-sa" {
 
 resource "google_project_iam_member" "terraform_iam_project" {
   project = var.project_id
-  role    = "roles/editor"
+  role    = "roles/owner"
   member  = "serviceAccount:${google_service_account.terraform.email}"
 }
