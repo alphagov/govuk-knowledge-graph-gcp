@@ -19,45 +19,45 @@
 
 # Set variables to reuse them across the resources
 # and enforce consistency.
-variable environment {
-  type        = string
-  default     = "development"
+variable "environment" {
+  type    = string
+  default = "development"
 }
 
-variable project_id {
-  type        = string
-  default     = "govuk-knowledge-graph" # Change this
+variable "project_id" {
+  type    = string
+  default = "govuk-knowledge-graph" # Change this
 }
 
-variable billing_account {
-  type        = string
-  default     = "015C7A-FAF970-B0D375" # Change this once you know it
+variable "billing_account" {
+  type    = string
+  default = "015C7A-FAF970-B0D375" # Change this once you know it
 }
 
-variable folder_id {
-  type        = string
-  default     = "278098142879" # Change this
+variable "folder_id" {
+  type    = string
+  default = "278098142879" # Change this
 }
 
-variable region {
-  type        = string
-  default     = "europe-west2" # Change this
+variable "region" {
+  type    = string
+  default = "europe-west2" # Change this
 }
 
-variable zone {
-  type        = string
-  default     = "europe-west2-a" # Change this
+variable "zone" {
+  type    = string
+  default = "europe-west2-a" # Change this
 }
 
 # Google Cloud Storage location https://cloud.google.com/storage/docs/locations
-variable location {
-  type        = string
-    default     = "EUROPE-WEST2"
+variable "location" {
+  type    = string
+  default = "EUROPE-WEST2"
 }
 
-variable services {
-  type        = list
-  default     = [
+variable "services" {
+  type = list(any)
+  default = [
     # List all the services you use here
     "storage.googleapis.com",
     "iam.googleapis.com"
@@ -66,9 +66,9 @@ variable services {
 
 # Set the Terraform provider
 provider "google" {
-  project               = var.project_id
-  region                = var.region
-  zone                  = var.zone
+  project = var.project_id
+  region  = var.region
+  zone    = var.zone
 
   # Ref: https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#user_project_override
   user_project_override = true
@@ -76,9 +76,9 @@ provider "google" {
 
 # Set the Terraform provider
 provider "google-beta" {
-  project               = var.project_id
-  region                = var.region
-  zone                  = var.zone
+  project = var.project_id
+  region  = var.region
+  zone    = var.zone
 
   # Ref: https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_versions
   user_project_override = true
@@ -86,10 +86,10 @@ provider "google-beta" {
 
 # Create the project
 resource "google_project" "project" {
-  billing_account     = var.billing_account # Uncomment once known
-  folder_id             = var.folder_id
-  name                  = var.project_id
-  project_id            = var.project_id
+  billing_account = var.billing_account # Uncomment once known
+  folder_id       = var.folder_id
+  name            = var.project_id
+  project_id      = var.project_id
 }
 
 # Use `gcloud` to enable:
