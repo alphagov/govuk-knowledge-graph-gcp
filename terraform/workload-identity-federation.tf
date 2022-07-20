@@ -24,8 +24,8 @@ resource "google_iam_workload_identity_pool_provider" "main" {
 
 resource "google_service_account_iam_member" "wif-sa" {
   for_each = toset([
-    google_service_account.terraform.name
-    # TODO: google_service_account.artifact_registry_docker.name
+    google_service_account.terraform.name,
+    google_service_account.artifact_registry_docker.name
   ])
   service_account_id = each.key
   role               = "roles/iam.workloadIdentityUser"
