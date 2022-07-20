@@ -55,7 +55,6 @@ jobs:
     # Build the Docker image
     - name: Docker build
       id: build
-      if: github.event_name == 'pull_request'
       run: |
         export TAG=`echo $GITHUB_REF | awk -F/ '{print $NF}'`
         echo $TAG
