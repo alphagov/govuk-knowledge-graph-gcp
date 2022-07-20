@@ -2,7 +2,30 @@
 
 ## Terraform
 
-Terraform has been configured to run on
+Terraform has been configured to "plan" on any push to a pull request, and
+"apply" on any merge to the "main" branch.
+
+To run locally, provide your own github token from `gh auth status
+--show-token`.
+
+```sh
+export GITHUB_TOKEN=$( \
+  gh auth status --show-token 2>&1 >/dev/null \
+  | grep "oken" -A 0 -B 0 \
+  | grep -oP '\w+$' \
+)
+terraform apply
+```
+
+If retrospectively terraforming a resource that already exists, you'll have to
+import it first.  That probably goes for the repository, branch, collaborator,
+etc.  One does not simply bootstrap a terraform configuration.
+
+## Authentication
+
+There must be a repository secret called `TERRAFORM_TOKEN_GITHUB` that is a
+PAT (personal access token) with full `repo` and `admin:org` permissions, and
+that belongs to an admin of this repository.
 
 ## Licence
 
