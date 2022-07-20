@@ -22,20 +22,12 @@ resource "google_iam_workload_identity_pool_provider" "main" {
   }
 }
 
-resource "google_service_account" "terraform" {
-  account_id   = "terraform"
-  display_name = "Terraform Service Account"
-  description  = "Service account for applying Terraform from a GitHub Action"
-}
-
 resource "google_service_account_iam_member" "wif-sa" {
-  service_account_id = google_service_account.terraform.name
+  for_each = toset([
+    google_service_account.terraform.name
+    # TODO: google_service_account.artifact_registry_docker.name
+  ])
+  service_account_id = each.key
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/projects/19513753240/locations/global/workloadIdentityPools/github-pool/attribute.repository/alphagov/govuk-knowledge-graph-gcp"
-}
-
-resource "google_project_iam_member" "terraform_iam_project" {
-  project = var.project_id
-  role    = "roles/owner"
-  member  = "serviceAccount:${google_service_account.terraform.email}"
 }
