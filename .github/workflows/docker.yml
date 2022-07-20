@@ -52,7 +52,7 @@ jobs:
     - run: |
         # Set up docker to authenticate
         # via gcloud command-line tool.
-        gcloud auth configure-docker eu-west2-docker.pkg.dev
+        gcloud auth configure-docker europe-west2-docker.pkg.dev
 
     # Build the Docker image
     - name: Docker build
