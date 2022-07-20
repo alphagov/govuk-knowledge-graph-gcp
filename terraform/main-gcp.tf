@@ -60,7 +60,8 @@ variable "services" {
   default = [
     # List all the services you use here
     "storage.googleapis.com",
-    "iam.googleapis.com"
+    "iam.googleapis.com",
+    "artifactregistry.googleapis.com"
   ]
 }
 
