@@ -3,7 +3,7 @@
 
 resource "google_artifact_registry_repository" "docker" {
   provider      = google-beta
-  location      = var.location
+  location      = lower(var.location)
   repository_id = "docker"
   description   = "Docker repository"
   format        = "DOCKER"
