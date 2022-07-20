@@ -6,9 +6,11 @@ on:
       - main
     paths:
       - 'docker/**'
+      - '.github/workflows/docker.yml'
   pull_request:
     paths:
       - 'docker/**'
+      - '.github/workflows/docker.yml'
 
 defaults:
   run:
