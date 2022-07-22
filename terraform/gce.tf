@@ -12,6 +12,12 @@ resource "google_compute_network" "default" {
   description = "Default network for the project"
 }
 
+resource "google_compute_address" "neo4j" {
+  name         = "neo4j"
+  purpose      = "GCE_ENDPOINT"
+  network_tier = "STANDARD"
+}
+
 resource "google_compute_firewall" "neo4j" {
   name    = "firewall-neo4j"
   network = google_compute_network.default.name
@@ -83,6 +89,9 @@ resource "google_compute_instance" "neo4j" {
 
   network_interface {
     network = "default"
+    access_config {
+      nat_ip = google_compute_address.neo4j.address
+    }
   }
 
   service_account {
