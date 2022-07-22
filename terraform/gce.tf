@@ -92,7 +92,7 @@ resource "google_compute_instance" "neo4j" {
     scopes = ["cloud-platform"]
   }
 
-  resource_policies = [google_compute_resource_policy.neo4j.self_link]
+  # resource_policies = [google_compute_resource_policy.neo4j.self_link]
 }
 
 resource "google_compute_instance_iam_member" "service_agent" {
