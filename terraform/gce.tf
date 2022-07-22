@@ -17,8 +17,8 @@ resource "google_compute_address" "neo4j" {
   network_tier = "STANDARD"
 }
 
-resource "google_compute_firewall" "neo4j" {
-  name    = "firewall-neo4j"
+resource "google_compute_firewall" "neo4j-ingress" {
+  name    = "firewall-neo4j-ingress"
   network = google_compute_network.default.name
 
   allow {
@@ -41,6 +41,32 @@ resource "google_compute_firewall" "neo4j" {
   ]
 
   target_service_accounts = [google_service_account.gce_neo4j.email]
+}
+
+resource "google_compute_firewall" "neo4j-egress" {
+  name    = "firewall-neo4j-ingress"
+  network = google_compute_network.default.name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["7473", "7687"]
+  }
+
+  # https://sites.google.com/a/digital.cabinet-office.gov.uk/gds/working-at-gds/gds-internal-it/gds-internal-it-network-public-ip-addresses
+  destination_ranges = [
+    "213.86.153.212",
+    "213.86.153.213",
+    "213.86.153.214",
+    "213.86.153.235",
+    "213.86.153.236",
+    "213.86.153.237",
+    "213.86.153.211",
+    "213.86.153.231",
+    "51.149.8.0/25",
+    "51.149.8.128/29"
+  ]
+
+  source_service_accounts = [google_service_account.gce_neo4j.email]
 }
 
 resource "google_compute_resource_policy" "neo4j" {
