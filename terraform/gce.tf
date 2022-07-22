@@ -35,7 +35,7 @@ resource "google_compute_firewall" "neo4j" {
     "51.149.8.128/29"
   ]
 
-  target_tags = ["neo4j"]
+  target_service_accounts = [google_service_account.gce_neo4j.email]
 }
 
 resource "google_compute_resource_policy" "neo4j" {
@@ -76,8 +76,6 @@ resource "google_compute_instance" "neo4j" {
       size  = 10
     }
   }
-
-  tags = ["neo4"]
 
   metadata = {
     gce-container-declaration = module.gce-advanced-container.metadata_value
