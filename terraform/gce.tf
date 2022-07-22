@@ -46,7 +46,7 @@ resource "google_compute_firewall" "neo4j-ingress" {
 resource "google_compute_firewall" "neo4j-egress" {
   name      = "firewall-neo4j-egress"
   network   = google_compute_network.default.name
-  direction = "egress"
+  direction = "EGRESS"
 
   allow {
     protocol = "tcp"
