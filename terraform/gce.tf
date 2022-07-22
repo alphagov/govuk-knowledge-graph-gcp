@@ -89,6 +89,7 @@ resource "google_compute_instance" "neo4j" {
   network_interface {
     network = "default"
     access_config {
+      network_tier = "STANDARD"
       nat_ip = google_compute_address.neo4j.address
     }
   }
