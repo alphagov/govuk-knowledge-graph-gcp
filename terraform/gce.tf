@@ -14,7 +14,6 @@ resource "google_compute_network" "default" {
 
 resource "google_compute_address" "neo4j" {
   name         = "neo4j"
-  purpose      = "GCE_ENDPOINT"
   network_tier = "STANDARD"
 }
 
