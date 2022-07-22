@@ -98,7 +98,7 @@ resource "google_compute_instance" "neo4j" {
 resource "google_compute_instance_iam_member" "service_agent" {
   instance_name = google_compute_instance.neo4j.name
   role          = "roles/compute.instanceAdmin"
-  member        = "serviceAccount:service-${var.project_id}@compute-system.iam.gserviceaccount.com"
+  member        = "serviceAccount:service-${google_project.project.number}@compute-system.iam.gserviceaccount.com"
   # 19513753240@cloudservices.gserviceaccount.com
   # email   = "service-${var.project_id}@compute-system.iam.gserviceaccount.com"
 }
