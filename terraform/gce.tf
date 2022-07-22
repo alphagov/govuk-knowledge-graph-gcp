@@ -42,10 +42,10 @@ resource "google_compute_resource_policy" "neo4j" {
   description = "Start and stop the Neo4j instance"
   instance_schedule_policy {
     vm_start_schedule {
-      schedule = "* 8 * * 1-5"
+      schedule = "0 8 * * 1-5"
     }
     vm_stop_schedule {
-      schedule = "* 18 * * *"
+      schedule = "0 18 * * *"
     }
     time_zone = "Europe/London"
   }
