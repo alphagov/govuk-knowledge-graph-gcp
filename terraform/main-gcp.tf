@@ -115,3 +115,8 @@ resource "google_project_service" "services" {
   disable_on_destroy         = false
 
 }
+
+# Use a cheaper network tier
+resource "google_compute_project_default_network_tier" "default" {
+  network_tier = "STANDARD"
+}
