@@ -8,7 +8,8 @@ resource "google_service_account" "gce_neo4j" {
 
 # terraform import google_compute_network.default default
 resource "google_compute_network" "default" {
-  name = "default"
+  name        = "default"
+  description = "Default network for the project"
 }
 
 resource "google_compute_firewall" "neo4j" {
@@ -92,4 +93,12 @@ resource "google_compute_instance" "neo4j" {
   }
 
   resource_policies = [google_compute_resource_policy.neo4j.self_link]
+}
+
+resource "google_compute_instance_iam_member" "service_agent" {
+  instance_name = google_compute_instance.neo4j.name
+  role          = "roles/compute.instanceAdmin"
+  member        = "serviceAccount:service-${var.project_id}@compute-system.iam.gserviceaccount.com"
+  # 19513753240@cloudservices.gserviceaccount.com
+  # email   = "service-${var.project_id}@compute-system.iam.gserviceaccount.com"
 }
