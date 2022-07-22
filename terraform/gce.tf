@@ -67,7 +67,7 @@ resource "google_compute_firewall" "neo4j-egress" {
     "51.149.8.128/29"
   ]
 
-  source_service_accounts = [google_service_account.gce_neo4j.email]
+  target_service_accounts = [google_service_account.gce_neo4j.email]
 }
 
 resource "google_compute_resource_policy" "neo4j" {
