@@ -8,7 +8,8 @@ resource "google_service_account" "gce_neo4j" {
 
 # terraform import google_compute_network.default default
 resource "google_compute_network" "default" {
-  name = "default"
+  name        = "default"
+  description = "Default network for the project"
 }
 
 resource "google_compute_firewall" "neo4j" {
