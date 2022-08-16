@@ -36,7 +36,7 @@ jobs:
       run: |
         # Set up git to authenticate
         # via gcloud command-line tool.
-        git config --global credential.'https://source.developers.google.com'.helper gcloud.sh \
+        git config --global credential.'https://source.developers.google.com'.helper gcloud.sh
 
     - name: Add remote
       run: |
