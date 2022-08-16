@@ -23,7 +23,7 @@ jobs:
       uses: 'google-github-actions/auth@v0'
       with:
         workload_identity_provider: 'projects/19513753240/locations/global/workloadIdentityPools/github-pool/providers/github-pool-provider'
-        service_account: 'source-repository-github@govuk-knowledge-graph.iam.gserviceaccount.com'
+        service_account: 'source-repositories-github@govuk-knowledge-graph.iam.gserviceaccount.com'
 
     # Further steps are automatically authenticated
 
