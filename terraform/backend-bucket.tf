@@ -3,10 +3,11 @@
 # once `terraform apply` has created this bucket.  Unfortunately there is no
 # other way to temporarily use a local backend.
 resource "google_storage_bucket" "backend" {
-  name          = "${var.project_id}-tfstate" # Must be globally unique
-  force_destroy = false                       # terraform won't delete the bucket unless it is empty
-  location      = var.location
-  storage_class = "STANDARD" # https://cloud.google.com/storage/docs/storage-classes
+  name                        = "${var.project_id}-tfstate" # Must be globally unique
+  force_destroy               = false                       # terraform won't delete the bucket unless it is empty
+  location                    = var.location
+  storage_class               = "STANDARD" # https://cloud.google.com/storage/docs/storage-classes
+  uniform_bucket_level_access = true
   versioning {
     enabled = true
   }
