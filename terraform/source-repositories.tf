@@ -10,7 +10,7 @@ resource "google_service_account" "source_repositories_github" {
   description  = "Service account for pushing git repositories from GitHub Actions"
 }
 
-resource "google_sourcerepo_repository_iam_member" "member" {
+resource "google_sourcerepo_repository_iam_member" "writer" {
   project    = google_sourcerepo_repository.alphagov_govuk_knowledge_graph_gcp.project
   repository = google_sourcerepo_repository.alphagov_govuk_knowledge_graph_gcp.name
   role       = "roles/writer"

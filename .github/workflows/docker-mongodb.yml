@@ -1,4 +1,4 @@
-name: Docker
+name: Docker-mongodb
 
 on:
   push:
@@ -6,20 +6,20 @@ on:
       - main
     paths:
       - 'docker/**'
-      - '.github/workflows/docker.yml'
+      - '.github/workflows/docker-mongodb.yml'
   pull_request:
     paths:
       - 'docker/**'
-      - '.github/workflows/docker.yml'
+      - '.github/workflows/docker-mongodb.yml'
 
 defaults:
   run:
-    working-directory: docker
+    working-directory: docker/mongodb
 
 env:
   GITHUB_SHA: ${{ github.sha }}
   GITHUB_REF: ${{ github.ref }}
-  IMAGE: 'neo4j-browser'
+  IMAGE: 'mongodb'
   REGISTRY_HOSTNAME: 'europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker'
 
 jobs:
