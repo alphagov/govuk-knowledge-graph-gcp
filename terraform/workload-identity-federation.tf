@@ -26,6 +26,7 @@ resource "google_service_account_iam_member" "wif-sa" {
   for_each = toset([
     google_service_account.terraform.name,
     google_service_account.source_repositories_github.name,
+    google_service_account.storage_github.name,
     google_service_account.artifact_registry_docker.name
   ])
   service_account_id = each.key
