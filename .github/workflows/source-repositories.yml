@@ -1,0 +1,47 @@
+name: Source Repositories
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  push_to_gcp:
+    name: 'Push to Google Cloud Source Repositories'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    # actions/checkout MUST come before auth
+    - uses: 'actions/checkout@v3'
+
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v0'
+      with:
+        workload_identity_provider: 'projects/19513753240/locations/global/workloadIdentityPools/github-pool/providers/github-pool-provider'
+        service_account: 'source-repository-github@govuk-knowledge-graph.iam.gserviceaccount.com'
+
+    # Further steps are automatically authenticated
+
+    # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+
+    # Configure git to use the gcloud command-line tool as a credential helper
+    - name: Authenticate
+      run: |
+        # Set up git to authenticate
+        # via gcloud command-line tool.
+        git config --global credential.'https://source.developers.google.com'.helper gcloud.sh \
+
+    - name: Add remote
+      run: |
+        git remote add google https://source.developers.google.com/p/govuk-knowledge-graph/r/alphagov/govuk-knowledge-graph-gcp
+
+    - name: Push
+      run: |
+        git push google main:main
