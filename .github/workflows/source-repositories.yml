@@ -44,4 +44,4 @@ jobs:
 
     - name: Push
       run: |
-        git push google main:main
+        git push google main
