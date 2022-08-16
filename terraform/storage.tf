@@ -8,3 +8,16 @@ resource "google_storage_bucket" "repository" {
     enabled = false
   }
 }
+
+# Service account for GitHub to use the Cloud Storage
+resource "google_service_account" "storage_github" {
+  account_id   = "storage-github"
+  display_name = "Storage Service Account for GitHub"
+  description  = "Service account for using Cloud Storage from GitHub Actions"
+}
+
+resource "google_storage_bucket_iam_member" "repository_objectAdmin" {
+  bucket = google_storage_bucket.repository.name
+  role = "roles/storage.objectAdmin"
+  member  = "serviceAccount:${google_service_account.storage_github.email}"
+}
