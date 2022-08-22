@@ -6,6 +6,12 @@ resource "google_service_account" "gce_neo4j" {
   description  = "Service account for the Neo4j instance on GCE"
 }
 
+resource "google_service_account" "gce_mongodb" {
+  account_id   = "gce-mongodb"
+  display_name = "Service Account for MongoDB Instance"
+  description  = "Service account for the MongoDB instance on GCE"
+}
+
 # terraform import google_compute_network.default default
 resource "google_compute_network" "default" {
   name        = "default"
@@ -14,6 +20,11 @@ resource "google_compute_network" "default" {
 
 resource "google_compute_address" "neo4j" {
   name         = "neo4j"
+  network_tier = "STANDARD"
+}
+
+resource "google_compute_address" "mongodb" {
+  name         = "mongodb"
   network_tier = "STANDARD"
 }
 
@@ -85,12 +96,24 @@ resource "google_compute_resource_policy" "neo4j" {
 }
 
 # https://github.com/terraform-google-modules/terraform-google-container-vm
-module "gce-advanced-container" {
+module "neo4j-container" {
   source  = "terraform-google-modules/container-vm/google"
   version = "~> 2.0"
 
   container = {
-    image = "europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/neo4j-browser:latest"
+    image = "europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/neo4j:latest"
+    tty : true
+    stdin : true
+  }
+}
+
+# https://github.com/terraform-google-modules/terraform-google-container-vm
+module "mongodb-container" {
+  source  = "terraform-google-modules/container-vm/google"
+  version = "~> 2.0"
+
+  container = {
+    image = "europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/mongodb:latest"
     tty : true
     stdin : true
   }
@@ -104,13 +127,13 @@ resource "google_compute_instance" "neo4j" {
 
   boot_disk {
     initialize_params {
-      image = module.gce-advanced-container.source_image
+      image = module.neo4j-container.source_image
       size  = 10
     }
   }
 
   metadata = {
-    gce-container-declaration = module.gce-advanced-container.metadata_value
+    gce-container-declaration = module.neo4j-container.metadata_value
   }
 
   network_interface {
@@ -130,10 +153,48 @@ resource "google_compute_instance" "neo4j" {
   # resource_policies = [google_compute_resource_policy.neo4j.self_link]
 }
 
-resource "google_compute_instance_iam_member" "service_agent" {
+resource "google_compute_instance" "mongodb" {
+  project                   = var.project_id
+  name                      = "mongodb"
+  machine_type              = "n1-standard-1"
+  allow_stopping_for_update = true
+
+  boot_disk {
+    initialize_params {
+      image = module.mongodb-container.source_image
+      size  = 10
+    }
+  }
+
+  metadata = {
+    gce-container-declaration = module.mongodb-container.metadata_value
+  }
+
+  network_interface {
+    network = "default"
+    access_config {
+      network_tier = "STANDARD"
+      nat_ip       = google_compute_address.mongodb.address
+    }
+  }
+
+  service_account {
+    email  = google_service_account.gce_mongodb.email
+    scopes = ["cloud-platform"]
+  }
+}
+
+resource "google_compute_instance_iam_member" "neo4j_instanceAdmin" {
   instance_name = google_compute_instance.neo4j.name
   role          = "roles/compute.instanceAdmin"
   member        = "serviceAccount:service-${google_project.project.number}@compute-system.iam.gserviceaccount.com"
   # 19513753240@cloudservices.gserviceaccount.com
   # email   = "service-${var.project_id}@compute-system.iam.gserviceaccount.com"
+}
+
+# Allow the mongodb instance to self-destruct
+resource "google_compute_instance_iam_member" "mongodb_instanceAdmin" {
+  instance_name = google_compute_instance.mongodb.name
+  role          = "roles/compute.instanceAdmin"
+  member        = "serviceAccount:${google_service_account.gce_mongodb.email}"
 }
