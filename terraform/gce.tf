@@ -113,7 +113,7 @@ module "mongodb-container" {
   version = "~> 2.0"
 
   container = {
-    image = "europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/mongodb:latest"
+    image = "mongo:4.2.21"
     tty : true
     stdin : true
   }
@@ -161,7 +161,7 @@ resource "google_compute_instance" "mongodb" {
 
   boot_disk {
     initialize_params {
-      image = "mongo:4.2.21"
+      image = module.mongodb-container.source_image
       size  = 10
     }
   }
