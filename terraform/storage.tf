@@ -23,7 +23,7 @@ resource "google_storage_bucket_iam_member" "repository_objectAdmin" {
   member = "serviceAccount:${google_service_account.storage_github.email}"
 }
 
-resource "google_storage_bucket_iam_member" "content_store_objectViewer" {
+resource "google_storage_bucket_iam_member" "repository_objectViewer" {
   bucket = google_storage_bucket.repository.name
   role   = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.gce_mongodb.email}"
