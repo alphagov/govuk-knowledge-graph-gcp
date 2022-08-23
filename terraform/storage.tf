@@ -23,6 +23,12 @@ resource "google_storage_bucket_iam_member" "repository_objectAdmin" {
   member = "serviceAccount:${google_service_account.storage_github.email}"
 }
 
+resource "google_storage_bucket_iam_member" "content_store_objectViewer" {
+  bucket = google_storage_bucket.repository.name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.gce_mongodb.email}"
+}
+
 # Bucket for the Content Store MongoDB backup file
 resource "google_storage_bucket" "content_store" {
   name                        = "${var.project_id}-content-store" # Must be globally unique
