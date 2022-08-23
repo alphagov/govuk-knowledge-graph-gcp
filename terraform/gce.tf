@@ -113,7 +113,7 @@ module "mongodb-container" {
   version = "~> 2.0"
 
   container = {
-    image = "mongo:4.2.21"
+    image = "europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/mongodb:latest"
     tty : true
     stdin : true
   }
