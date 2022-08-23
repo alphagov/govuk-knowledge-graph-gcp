@@ -27,4 +27,4 @@ CMD \
 
 # Self-destruct (shut down and delete this instance)
 # https://stackoverflow.com/a/41232669
-CMD gcloud compute instances delete mongodb --quiet --zone=europe-west2-a
+CMD gcloud compute instances stop mongodb --quiet --zone=europe-west2-a
