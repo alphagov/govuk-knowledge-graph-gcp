@@ -30,5 +30,5 @@ resource "google_artifact_registry_repository_iam_member" "docker_reader" {
   location   = google_artifact_registry_repository.docker.location
   repository = google_artifact_registry_repository.docker.name
   role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:service-${google_project.project.number}@compute-system.iam.gserviceaccount.com"
+  member     = google_service_account.gce_mongodb.email
 }
