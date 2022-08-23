@@ -149,8 +149,6 @@ resource "google_compute_instance" "neo4j" {
     scopes = ["cloud-platform"]
   }
 
-  desired_status = "TERMINATED"
-
   # Schedule start and stop
   # resource_policies = [google_compute_resource_policy.neo4j.self_link]
 }
@@ -184,8 +182,6 @@ resource "google_compute_instance" "mongodb" {
     email  = google_service_account.gce_mongodb.email
     scopes = ["cloud-platform"]
   }
-
-  desired_status = "TERMINATED"
 }
 
 resource "google_compute_instance_iam_member" "neo4j_instanceAdmin" {
