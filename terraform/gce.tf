@@ -162,7 +162,7 @@ resource "google_compute_instance" "mongodb" {
   boot_disk {
     initialize_params {
       image = module.mongodb-container.source_image
-      size  = 10
+      size  = 20
     }
   }
 
