@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Run both mongod and scripts that interact with the database
+# https://docs.docker.com/config/containers/multi-service_container/
+
 # turn on bash's job control
 set -m
 
@@ -24,5 +27,10 @@ gsutil cat gs://govuk-knowledge-graph-repository/src/mongodb/prepare-content-sto
 gsutil cat gs://govuk-knowledge-graph-repository/src/mongodb/extract-from-mongodb.sh \
   | bash
 
-# Bring the background process back into the foreground and leave it there
+# Stop this instance
+# https://stackoverflow.com/a/41232669
+gcloud compute instances stop mongodb --quiet --zone=europe-west2-a
+
+# In case the instance is still running, bring the background process back into
+# the foreground and leave it there
 fg %1
