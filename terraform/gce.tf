@@ -161,7 +161,7 @@ resource "google_compute_instance" "mongodb" {
 
   boot_disk {
     initialize_params {
-      image = module.mongodb-container.source_image
+      image = "mongo:4.2.21"
       size  = 10
     }
   }
