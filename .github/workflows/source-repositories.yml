@@ -44,4 +44,4 @@ jobs:
 
     - name: Push
       run: |
-        git push google main
+        git push --mirror google
