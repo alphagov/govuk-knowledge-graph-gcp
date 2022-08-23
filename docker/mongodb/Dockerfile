@@ -1,4 +1,4 @@
-FROM mongo:4.2.21
+FROM mongo:4.4.16
 
 # Install gsutil
 # https://cloud.google.com/sdk/docs/install#deb
@@ -24,7 +24,3 @@ ENV GITHUB_REF=${GITHUB_REF}
 CMD \
   gsutil cat gs://govuk-knowledge-graph-repository/docker/mongodb/run.sh \
   | bash
-
-# Self-destruct (shut down and delete this instance)
-# https://stackoverflow.com/a/41232669
-# CMD gcloud compute instances stop mongodb --quiet --zone=europe-west2-a
