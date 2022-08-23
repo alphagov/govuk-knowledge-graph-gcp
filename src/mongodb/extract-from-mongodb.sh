@@ -22,7 +22,7 @@
 count_distinct () {
   local escape_cols    # reset first
   local "${@}"
-  python3.7 src/utils/toggle_escapes.py \
+  python3 src/utils/toggle_escapes.py \
     --escape_cols=${escape_cols} \
   | ( \
     read -r; \
@@ -31,7 +31,7 @@ count_distinct () {
     | LC_ALL=C uniq -c \
     | sed -E 's/(\s*)([[:digit:]]+)(\s+)/\2,/' \
   ) \
-  | python3.7 src/utils/toggle_escapes.py \
+  | python3 src/utils/toggle_escapes.py \
     --unescape_cols=${escape_cols}
 }
 
@@ -96,21 +96,21 @@ query_mongo () {
 extract_text_from_html () {
   local input_col id_cols # reset in case they are defined globally
   local "${@}"
-  python3.7 src/utils/extract_text_from_html.py \
+  python3 src/utils/extract_text_from_html.py \
     --input_col=${input_col} \
     --id_cols=${id_cols}
 }
 extract_lines_from_html () {
   local input_col id_cols # reset in case they are defined globally
   local "${@}"
-  python3.7 src/utils/extract_lines_from_html.py \
+  python3 src/utils/extract_lines_from_html.py \
     --input_col=${input_col} \
     --id_cols=${id_cols}
 }
 extract_hyperlinks_from_html () {
   local input_col id_cols # reset in case they are defined globally
   local "${@}"
-  python3.7 src/utils/extract_hyperlinks_from_html.py \
+  python3 src/utils/extract_hyperlinks_from_html.py \
     --input_col=${input_col} \
     --id_cols=${id_cols}
 }
