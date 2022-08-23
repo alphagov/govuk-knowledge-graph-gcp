@@ -5,11 +5,11 @@ on:
     branches:
       - main
     paths:
-      - 'docker/**'
+      - 'docker/mongodb/**'
       - '.github/workflows/docker-mongodb.yml'
   pull_request:
     paths:
-      - 'docker/**'
+      - 'docker/mongodb/**'
       - '.github/workflows/docker-mongodb.yml'
 
 defaults:
