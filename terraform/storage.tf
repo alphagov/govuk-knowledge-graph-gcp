@@ -75,8 +75,8 @@ resource "google_storage_bucket" "data_processed" {
   }
 }
 
-resource "google_storage_bucket_iam_member" "data_processed_objectCreator" {
+resource "google_storage_bucket_iam_member" "data_processed_objectAdmin" {
   bucket = google_storage_bucket.data_processed.name
-  role   = "roles/storage.objectCreator"
+  role   = "roles/storage.objectAdmin"
   member = "serviceAccount:${google_service_account.gce_mongodb.email}"
 }
