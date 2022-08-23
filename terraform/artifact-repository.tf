@@ -15,7 +15,7 @@ resource "google_service_account" "artifact_registry_docker" {
   description  = "Service account for pushing docker images"
 }
 
-resource "google_artifact_registry_repository_iam_member" "artifact_registry_docker" {
+resource "google_artifact_registry_repository_iam_member" "docker_writer" {
   provider   = google-beta
   project    = google_artifact_registry_repository.docker.project
   location   = google_artifact_registry_repository.docker.location
@@ -24,11 +24,11 @@ resource "google_artifact_registry_repository_iam_member" "artifact_registry_doc
   member     = "serviceAccount:${google_service_account.artifact_registry_docker.email}"
 }
 
-resource "google_artifact_registry_repository_iam_member" "compute_engine_neo4j" {
+resource "google_artifact_registry_repository_iam_member" "docker_reader" {
   provider   = google-beta
   project    = google_artifact_registry_repository.docker.project
   location   = google_artifact_registry_repository.docker.location
   repository = google_artifact_registry_repository.docker.name
   role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:${google_service_account.gce_neo4j.email}"
+  member     = "serviceAccount:service-${google_project.project.number}@compute-system.iam.gserviceaccount.com"
 }
