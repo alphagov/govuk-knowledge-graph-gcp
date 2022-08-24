@@ -15,8 +15,6 @@ RUN \
   # Clean up
   && rm -rf /var/lib/apt/lists/*
 
-RUN python3 -m pip install beautifulsoup4
-
 ARG GITHUB_SHA=missing
 ENV GITHUB_SHA=${GITHUB_SHA}
 
