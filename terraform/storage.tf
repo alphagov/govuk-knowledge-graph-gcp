@@ -23,10 +23,16 @@ resource "google_storage_bucket_iam_member" "repository_objectAdmin" {
   member = "serviceAccount:${google_service_account.storage_github.email}"
 }
 
-resource "google_storage_bucket_iam_member" "repository_objectViewer" {
+resource "google_storage_bucket_iam_member" "repository_objectViewer_mongodb" {
   bucket = google_storage_bucket.repository.name
   role   = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.gce_mongodb.email}"
+}
+
+resource "google_storage_bucket_iam_member" "repository_objectViewer_neo4j" {
+  bucket = google_storage_bucket.repository.name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.gce_neo4j.email}"
 }
 
 # Bucket for the Content Store MongoDB backup file
@@ -49,7 +55,7 @@ resource "google_storage_bucket" "content_store" {
   }
 }
 
-resource "google_storage_bucket_iam_member" "content_store_objectViewer" {
+resource "google_storage_bucket_iam_member" "content_store_objectViewer_mongdb" {
   bucket = google_storage_bucket.content_store.name
   role   = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.gce_mongodb.email}"
@@ -75,8 +81,14 @@ resource "google_storage_bucket" "data_processed" {
   }
 }
 
-resource "google_storage_bucket_iam_member" "data_processed_objectAdmin" {
+resource "google_storage_bucket_iam_member" "data_processed_objectAdmin_mongodb" {
   bucket = google_storage_bucket.data_processed.name
   role   = "roles/storage.objectAdmin"
   member = "serviceAccount:${google_service_account.gce_mongodb.email}"
+}
+
+resource "google_storage_bucket_iam_member" "data_processed_objectViewer_neo4j" {
+  bucket = google_storage_bucket.data_processed.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.gce_neo4j.email}"
 }
