@@ -24,7 +24,16 @@ resource "google_artifact_registry_repository_iam_member" "docker_writer" {
   member     = "serviceAccount:${google_service_account.artifact_registry_docker.email}"
 }
 
-resource "google_artifact_registry_repository_iam_member" "docker_reader" {
+resource "google_artifact_registry_repository_iam_member" "docker_reader_mongodb" {
+  provider   = google-beta
+  project    = google_artifact_registry_repository.docker.project
+  location   = google_artifact_registry_repository.docker.location
+  repository = google_artifact_registry_repository.docker.name
+  role       = "roles/artifactregistry.reader"
+  member     = "serviceAccount:${google_service_account.gce_mongodb.email}"
+}
+
+resource "google_artifact_registry_repository_iam_member" "docker_reader_neo4j" {
   provider   = google-beta
   project    = google_artifact_registry_repository.docker.project
   location   = google_artifact_registry_repository.docker.location
