@@ -81,20 +81,6 @@ resource "google_compute_firewall" "neo4j-egress" {
   target_service_accounts = [google_service_account.gce_neo4j.email]
 }
 
-resource "google_compute_resource_policy" "neo4j" {
-  name        = "neo4j"
-  description = "Start and stop the Neo4j instance"
-  instance_schedule_policy {
-    vm_start_schedule {
-      schedule = "0 8 * * 1-5"
-    }
-    vm_stop_schedule {
-      schedule = "0 18 * * *"
-    }
-    time_zone = "Europe/London"
-  }
-}
-
 # https://github.com/terraform-google-modules/terraform-google-container-vm
 module "neo4j-container" {
   source  = "terraform-google-modules/container-vm/google"
@@ -145,9 +131,6 @@ resource "google_compute_instance_template" "neo4j" {
     email  = google_service_account.gce_neo4j.email
     scopes = ["cloud-platform"]
   }
-
-  # Schedule start and stop
-  # resource_policies = [google_compute_resource_policy.neo4j.self_link]
 }
 
 resource "google_compute_instance_template" "mongodb" {
