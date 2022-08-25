@@ -3,6 +3,19 @@ FROM neo4j:4.4.8-community
 # Generate certificates needed for HTTPS/BOLT connections"
 ADD neo4j.conf /var/lib/neo4j/conf
 
+# Install gcloud and gsutil
+RUN apt-get update -y
+RUN apt-get install -y apt-transport-https ca-certificates gnupg curl
+RUN \
+  echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" \
+  | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
+  && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+  | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - \
+  && apt-get update -y \
+  && apt-get install google-cloud-cli -y \
+  # Clean up
+  && rm -rf /var/lib/apt/lists/*
+
 RUN \
   # Install utilities
   apt-get update \
@@ -32,3 +45,8 @@ ENV GITHUB_SHA=${GITHUB_SHA}
 
 ARG GITHUB_REF=missing
 ENV GITHUB_REF=${GITHUB_REF}
+
+# Run a script from a copy of the HEAD of the repository
+CMD \
+  gsutil cat gs://govuk-knowledge-graph-repository/docker/neo4j/run.sh \
+  | bash
