@@ -30,7 +30,7 @@ bash src/mongodb/extract-from-mongodb.sh
 
 # Stop this instance
 # https://stackoverflow.com/a/41232669
-gcloud compute instances stop mongodb --quiet --zone=europe-west2-a
+gcloud compute instances delete mongodb --quiet --zone=europe-west2-a
 
 # In case the instance is still running, bring the background process back into
 # the foreground and leave it there
