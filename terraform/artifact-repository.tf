@@ -39,5 +39,5 @@ resource "google_artifact_registry_repository_iam_member" "docker_reader_neo4j" 
   location   = google_artifact_registry_repository.docker.location
   repository = google_artifact_registry_repository.docker.name
   role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:${google_service_account.gce_mongodb.email}"
+  member     = "serviceAccount:${google_service_account.gce_neo4j.email}"
 }
