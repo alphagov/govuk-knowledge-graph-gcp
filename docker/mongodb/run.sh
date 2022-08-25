@@ -23,7 +23,7 @@ gsutil cat gs://govuk-knowledge-graph-content-store/mongo.tar.gz \
 gsutil -m cp -r gs://govuk-knowledge-graph-repository/\* .
 
 # Query the content store into intermediate datasets
-mongosh src/mongodb/prepare-content-store.js
+mongo src/mongodb/prepare-content-store.js
 
 # Download from the content store and intermediate datasets, upload to storage
 bash src/mongodb/extract-from-mongodb.sh
