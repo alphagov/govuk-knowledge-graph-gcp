@@ -2,24 +2,21 @@ USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///url.csv' AS line
 FIELDTERMINATOR ','
-// TODO: use CREATE once this command can assume that the database is empty.
-MERGE (p:Page { url: line.url })
+CREATE (p:Page { url: line.url })
 ;
 
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///parts.csv' AS line
 FIELDTERMINATOR ','
-// TODO: use CREATE once this command can assume that the database is empty.
-MERGE (p:Page { url: line.url })
+CREATE (p:Page { url: line.url })
 SET
   p.part_index = line.part_index,
   p.slug = line.slug,
   p.part_title = line.part_title
 ;
 
-// TODO: set this constraint once import_edgelist.cypher no longer does.
-// CREATE CONSTRAINT ON (p:Page) ASSERT p.url IS UNIQUE;
+CREATE CONSTRAINT ON (p:Page) ASSERT p.url IS UNIQUE;
 
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
@@ -278,32 +275,16 @@ USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///transaction_start_link.csv' AS line
 FIELDTERMINATOR ','
-MERGE (p:Page { url: line.url })
+MATCH (p:Page { url: line.url })
+WITH p, line
 MERGE (q:Page { url: line.link_url_bare })
-MERGE (p)-[:TRANSACTION_STARTS_AT { link_url: line.link_url_bare }]->(q)
+CREATE (p)-[:TRANSACTION_STARTS_AT { link_url: line.link_url_bare }]->(q)
 ;
 
 // Transaction start button text
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///start_button_text.csv' AS line
-FIELDTERMINATOR ','
-MATCH (:Page { url: line.url })-[r:TRANSACTION_STARTS_AT]->()
-SET r.link_text = line.`details.start_button_text`
-;
-
-// Transaction start button link (must come before button text)
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS FROM 'file:///transaction_start_link.csv' AS line
-FIELDTERMINATOR ','
-MERGE (p:Page { url: line.url })
-MERGE (q:Page { url: line.link_url_bare })
-MERGE (p)-[:TRANSACTION_STARTS_AT { link_url: line.link_url_bare }]->(q)
-;
-
-// Transaction start button text
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS FROM 'file:///start_button_text.csv' AS line
 FIELDTERMINATOR ','
 MATCH (:Page { url: line.url })-[r:TRANSACTION_STARTS_AT]->()
 SET r.link_text = line.`details.start_button_text`
