@@ -7,7 +7,7 @@
 set -m
 
 # Start mongo and put it in the background
-mongod &
+mongod  --storageEngine inMemory &
 
 # Wait for mongo to start
 sleep 5
