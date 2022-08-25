@@ -161,14 +161,6 @@ resource "google_compute_instance_template" "mongodb" {
   }
 }
 
-resource "google_compute_instance_iam_member" "neo4j_instanceAdmin" {
-  instance_name = google_compute_instance_template.neo4j.name
-  role          = "roles/compute.instanceAdmin"
-  member        = "serviceAccount:service-${google_project.project.number}@compute-system.iam.gserviceaccount.com"
-  # 19513753240@cloudservices.gserviceaccount.com
-  # email   = "service-${var.project_id}@compute-system.iam.gserviceaccount.com"
-}
-
 # Allow the mongodb instance to self-destruct
 resource "google_project_iam_member" "compute_instanceAdmin_v1" {
   project = var.project_id
