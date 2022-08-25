@@ -146,8 +146,8 @@ FROM 'file:///body_embedded_links.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 WITH p, line
-MERGE (q:Page { url: line.link_url_bare })
-CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: line.link_text }]->(q)
+MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
+CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: coalesce(line.link_text, "") }]->(q)
 ;
 
 USING PERIODIC COMMIT
@@ -164,8 +164,8 @@ FROM 'file:///body_content_embedded_links.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 WITH p, line
-MERGE (q:Page { url: line.link_url_bare })
-CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: line.link_text }]->(q)
+MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
+CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: coalesce(line.link_text, "") }]->(q)
 ;
 
 USING PERIODIC COMMIT
@@ -182,8 +182,8 @@ FROM 'file:///parts_content_embedded_links.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 WITH p, line
-MERGE (q:Page { url: line.link_url_bare })
-CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: line.link_text }]->(q)
+MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
+CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: coalesce(line.link_text, "") }]->(q)
 ;
 
 // Load the content and hyperlinks of the root of each collecton of parts
@@ -203,8 +203,8 @@ FROM 'file:///parts_content_embedded_links.csv' AS line
 FIELDTERMINATOR ','
 FOREACH(ignore_me IN CASE WHEN line.part_index = 1 THEN [1] ELSE [] END |
   MATCH (p:Page { url: "https://www.gov.uk" + line.base_path })
-  MERGE (q:Page { url: line.link_url_bare })
-  CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: line.link_text }]->(q)
+  MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
+  CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: coalesce(line.link_text, "") }]->(q)
 )
 ;
 
@@ -222,8 +222,8 @@ FROM 'file:///place_content_embedded_links.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 WITH p, line
-MERGE (q:Page { url: line.link_url_bare })
-CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: line.link_text }]->(q)
+MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
+CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: coalesce(line.link_text, "") }]->(q)
 ;
 
 USING PERIODIC COMMIT
@@ -240,8 +240,8 @@ FROM 'file:///transaction_content_embedded_links.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 WITH p, line
-MERGE (q:Page { url: line.link_url_bare })
-CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: line.link_text }]->(q)
+MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
+CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: coalesce(line.link_text, "") }]->(q)
 ;
 
 USING PERIODIC COMMIT
@@ -258,8 +258,8 @@ FROM 'file:///step_by_step_embedded_links.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 WITH p, line
-MERGE (q:Page { url: line.link_url_bare })
-CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: line.link_text }]->(q)
+MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
+CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: coalesce(line.link_text, "") }]->(q)
 ;
 
 // Create LINKS_TO relationship (expanded links)
