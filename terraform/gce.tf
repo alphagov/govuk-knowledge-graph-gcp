@@ -119,17 +119,14 @@ module "mongodb-container" {
   }
 }
 
-resource "google_compute_instance" "neo4j" {
-  project                   = var.project_id
-  name                      = "neo4j"
-  machine_type              = "n1-standard-1"
-  allow_stopping_for_update = true
+resource "google_compute_instance_template" "neo4j" {
+  name         = "neo4j"
+  machine_type = "n1-standard-1"
 
-  boot_disk {
-    initialize_params {
-      image = module.neo4j-container.source_image
-      size  = 10
-    }
+  disk {
+    boot         = true
+    source_image = module.neo4j-container.source_image
+    disk_size_gb = 10
   }
 
   metadata = {
@@ -153,17 +150,14 @@ resource "google_compute_instance" "neo4j" {
   # resource_policies = [google_compute_resource_policy.neo4j.self_link]
 }
 
-resource "google_compute_instance" "mongodb" {
-  project                   = var.project_id
-  name                      = "mongodb"
-  machine_type              = "n1-standard-1"
-  allow_stopping_for_update = true
+resource "google_compute_instance_template" "mongodb" {
+  name         = "mongodb"
+  machine_type = "e2-highcpu-8"
 
-  boot_disk {
-    initialize_params {
-      image = module.mongodb-container.source_image
-      size  = 20
-    }
+  disk {
+    boot         = true
+    source_image = module.mongodb-container.source_image
+    disk_size_gb = 20
   }
 
   metadata = {
@@ -185,7 +179,7 @@ resource "google_compute_instance" "mongodb" {
 }
 
 resource "google_compute_instance_iam_member" "neo4j_instanceAdmin" {
-  instance_name = google_compute_instance.neo4j.name
+  instance_name = google_compute_instance_template.neo4j.name
   role          = "roles/compute.instanceAdmin"
   member        = "serviceAccount:service-${google_project.project.number}@compute-system.iam.gserviceaccount.com"
   # 19513753240@cloudservices.gserviceaccount.com
@@ -194,7 +188,7 @@ resource "google_compute_instance_iam_member" "neo4j_instanceAdmin" {
 
 # Allow the mongodb instance to self-destruct
 resource "google_compute_instance_iam_member" "mongodb_instanceAdmin" {
-  instance_name = google_compute_instance.mongodb.name
+  instance_name = google_compute_instance_template.mongodb.name
   role          = "roles/compute.instanceAdmin"
   member        = "serviceAccount:${google_service_account.gce_mongodb.email}"
 }
