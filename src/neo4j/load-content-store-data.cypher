@@ -95,7 +95,7 @@ LOAD CSV WITH HEADERS
 FROM 'file:///withdrawn_at.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
-SET p.withdrawn_at = line.withdrawn_at
+SET p.withdrawn_at = line.`withdrawn_notice.withdrawn_at`
 ;
 
 USING PERIODIC COMMIT
@@ -103,7 +103,7 @@ LOAD CSV WITH HEADERS
 FROM 'file:///withdrawn_explanation.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
-SET p.withdrawn_explanation = line.withdrawn_explanation
+SET p.withdrawn_explanation = line.`withdrawn_notice.withdrawn_explanation`
 ;
 
 USING PERIODIC COMMIT

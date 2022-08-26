@@ -50,9 +50,6 @@ double_backslashes () {
 #
 # Single backslashes are doubled, because Neo4j interprets a single backslash as
 # an escape character.
-#
-# The bucket path is taken from the environment variable
-# KNOWLEDGE_GRAPH_BUCKET_PATH, suffixed with a slash.
 upload () {
   local file_name # reset in case they are defined globally
   local "${@}"
@@ -249,7 +246,6 @@ mongoexport \
   --type=csv \
   --fields "url,details.department_analytics_profile" \
   -q '{ "document_type": "transaction", "details.department_analytics_profile": { "$exists": true, "$ne": null, "$ne": "" } }' \
-| gzip -c  \
 | upload file_name=department_analytics_profile
 
 # Transaction start button link
@@ -258,7 +254,6 @@ mongoexport \
   -c transaction_start_link \
   --type=csv \
   --fields "url,link_url,link_url_bare" \
-| gzip -c  \
 | upload file_name=transaction_start_link
 
 # Transaction start button text
@@ -268,7 +263,6 @@ mongoexport \
   --type=csv \
   --fields "url,details.start_button_text" \
   -q '{ "document_type": "transaction", "details.start_button_text": { "$exists": true } }' \
-| gzip -c  \
 | upload file_name=start_button_text
 
 # expanded links
