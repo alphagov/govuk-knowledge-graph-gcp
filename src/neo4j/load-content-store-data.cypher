@@ -300,3 +300,23 @@ MATCH
   (root:Page { url: line.base_path })
 CREATE (root)-[r:HAS_PART { part_index: toInteger(line.part_index), slug: line.slug, part_title: line.part_title }]->(part)
 ;
+
+// Taxon url override (like a redirect)
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///url_override.csv' AS line
+FIELDTERMINATOR ','
+MATCH (p:Page { url: line.url }),
+MERGE (q:Page { url: line.url_override })
+CREATE (p)-[r:REDIRECTS_TO]->(q)
+;
+
+// Redirects
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///redirects.csv' AS line
+FIELDTERMINATOR ','
+MATCH (p:Page { url: line.from }),
+MERGE (q:Page { url: line.to })
+CREATE (p)-[r:REDIRECTS_TO]->(q)
+;
