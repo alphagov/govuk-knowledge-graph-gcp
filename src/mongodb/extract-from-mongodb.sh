@@ -35,7 +35,7 @@ count_distinct () {
     --unescape_cols=${escape_cols}
 }
 
-# Compress and upload to AWS S3 bucket
+# Compress and upload to cloud bucket
 #
 # Usage:
 # command_that_emits_text | upload file_name=myfile
@@ -240,7 +240,7 @@ mongoexport \
   --fields "url,details.department_analytics_profile" \
   -q '{ "document_type": "transaction", "details.department_analytics_profile": { "$exists": true, "$ne": null, "$ne": "" } }' \
 | gzip -c  \
-| aws s3 cp - "${KNOWLEDGE_GRAPH_BUCKET_PATH}/department_analytics_profile.csv.gz"
+| upload file_name=department_analytics_profile
 
 # Transaction start button link
 mongoexport \
@@ -249,7 +249,7 @@ mongoexport \
   --type=csv \
   --fields "url,link_url,link_url_bare" \
 | gzip -c  \
-| aws s3 cp - "${KNOWLEDGE_GRAPH_BUCKET_PATH}/transaction_start_link.csv.gz"
+| upload file_name=transaction_start_link
 
 # Transaction start button text
 mongoexport \
@@ -259,7 +259,7 @@ mongoexport \
   --fields "url,details.start_button_text" \
   -q '{ "document_type": "transaction", "details.start_button_text": { "$exists": true } }' \
 | gzip -c  \
-| aws s3 cp - "${KNOWLEDGE_GRAPH_BUCKET_PATH}/start_button_text.csv.gz"
+| upload file_name=start_button_text
 
 # expanded links
 query_mongo \
