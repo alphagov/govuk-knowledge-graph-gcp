@@ -175,7 +175,7 @@ db.content_items.aggregate([
     link_url: { $switch: {
        branches: [
           {
-            case: { "$regexMatch": { input: "$link_url", regex: /^\\/ } },
+            case: { "$regexMatch": { input: "$link_url", regex: /^\// } },
             then: { "$concat": [ "https://www.gov.uk", "$link_url" ] }
           },
           {
