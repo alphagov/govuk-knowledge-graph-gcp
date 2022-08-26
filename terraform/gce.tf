@@ -102,12 +102,44 @@ module "mongodb-container" {
     image = "europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/mongodb:latest"
     tty : true
     stdin : true
+    volumeMounts = [
+      {
+        mountPath = "/data/db"
+        name      = "tempfs-0"
+        readOnly  = false
+      },
+      {
+        mountPath = "/data/config-db"
+        name      = "tempfs-1"
+        readOnly  = false
+      },
+    ]
   }
+
+  # Declare the Volumes which will be used for mounting.
+  volumes = [
+    {
+      name = "tempfs-0"
+
+      emptyDir = {
+        medium = "Memory"
+      }
+    },
+    {
+      name = "tempfs-1"
+
+      emptyDir = {
+        medium = "Memory"
+      }
+    },
+  ]
+
+  restart_policy = "Never"
 }
 
 resource "google_compute_instance_template" "neo4j" {
   name         = "neo4j"
-  machine_type = "n1-standard-1"
+  machine_type = "e2-standard-8"
 
   disk {
     boot         = true
@@ -135,7 +167,7 @@ resource "google_compute_instance_template" "neo4j" {
 
 resource "google_compute_instance_template" "mongodb" {
   name         = "mongodb"
-  machine_type = "e2-highcpu-8"
+  machine_type = "e2-standard-8"
 
   disk {
     boot         = true
