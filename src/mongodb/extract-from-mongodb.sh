@@ -410,3 +410,16 @@ query_mongo \
   id_cols=url \
 | count_distinct escape_cols=link_text \
 | upload file_name=body_content_embedded_links
+
+# === Redirects ===
+
+# Taxon url_override
+query_mongo \
+  collection=url_override \
+  fields=url,url_override \
+| upload file_name=url_override
+
+query_mongo \
+  collection=redirects \
+  fields=from,to \
+| upload file_name=redirects
