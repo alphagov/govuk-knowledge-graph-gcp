@@ -11,7 +11,7 @@ FROM 'file:///parts.csv' AS line
 FIELDTERMINATOR ','
 CREATE (p:Page { url: line.url })
 SET
-  p.part_index = line.part_index,
+  p.part_index = toInteger(line.part_index),
   p.slug = line.slug,
   p.part_title = line.part_title
 ;
@@ -23,7 +23,7 @@ LOAD CSV WITH HEADERS
 FROM 'file:///document_type.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
-SET p.documentType = line.document_type
+SET p.document_type = line.document_type
 ;
 
 USING PERIODIC COMMIT
@@ -175,7 +175,7 @@ SET p.text = line.text
 
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
-FROM 'file:///parts_content_embedded_links.csv' AS line
+FROM 'file:///parts_embedded_links.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 WITH p, line
@@ -188,18 +188,18 @@ USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///parts_content.csv' AS line
 FIELDTERMINATOR ','
-FOREACH(ignore_me IN CASE WHEN line.part_index = 1 THEN [1] ELSE [] END |
-  MATCH (p:Page { url: "https://www.gov.uk" + line.base_path })
+FOREACH(ignore_me IN CASE WHEN toInteger(line.part_index) = 1 THEN [1] ELSE [] END |
+  MERGE (p:Page { url: line.base_path })
   SET p.text = line.text
 )
 ;
 
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
-FROM 'file:///parts_content_embedded_links.csv' AS line
+FROM 'file:///parts_embedded_links.csv' AS line
 FIELDTERMINATOR ','
-FOREACH(ignore_me IN CASE WHEN line.part_index = 1 THEN [1] ELSE [] END |
-  MATCH (p:Page { url: "https://www.gov.uk" + line.base_path })
+FOREACH(ignore_me IN CASE WHEN toInteger(line.part_index) = 1 THEN [1] ELSE [] END |
+  MERGE (p:Page { url: line.base_path })
   MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
   CREATE (p)-[:HYPERLINKS_TO { link_url: line.link_url, link_text: coalesce(line.link_text, "") }]->(q)
 )
@@ -215,7 +215,7 @@ SET p.text = line.text
 
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
-FROM 'file:///place_content_embedded_links.csv' AS line
+FROM 'file:///place_embedded_links.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 WITH p, line
@@ -233,7 +233,7 @@ SET p.text = line.text
 
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
-FROM 'file:///transaction_content_embedded_links.csv' AS line
+FROM 'file:///transaction_embedded_links.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 WITH p, line
@@ -295,7 +295,8 @@ USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///parts.csv' AS line
 FIELDTERMINATOR ','
-MATCH (part:Page { url: line.url })
-MATCH (root:Page { url: "https://www.gov.uk" + line.base_path })
-CREATE (root)-[r:HAS_PART { part_index: line.part_index, slug: line.slug, part_title: line.part_title }]->(part)
+MATCH
+  (part:Page { url: line.url }),
+  (root:Page { url: line.base_path })
+CREATE (root)-[r:HAS_PART { part_index: toInteger(line.part_index), slug: line.slug, part_title: line.part_title }]->(part)
 ;
