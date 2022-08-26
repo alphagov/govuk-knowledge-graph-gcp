@@ -5,8 +5,8 @@
 # turn on bash's job control
 set -m
 
-# Start neo4j and put it in the background
-neo4j start &
+# Start neo4j as a daemon
+neo4j start
 
 # Wait for neo4j to start
 sleep 5
@@ -28,5 +28,5 @@ gsutil cat \
   gs://govuk-knowledge-graph-repository/src/neo4j/load-content-store-data.cypher \
   | cypher-shell
 
-# Bring the background process back into the foreground and leave it there
-fg %1
+# Stay alive
+sleep infinity
