@@ -35,6 +35,12 @@ count_distinct () {
     --unescape_cols=${escape_cols}
 }
 
+# Wrapper around sed to replace single backslash with double backslashes,
+# because Neo4j interprets a single backslash as an escpae character.
+double_backslashes () {
+  sed 's/\\/\\\\/g'
+}
+
 # Compress and upload to cloud bucket
 #
 # Usage:
@@ -42,12 +48,16 @@ count_distinct () {
 #
 # The suffix ".csv.gz" is automatically appended to the file name.
 #
+# Single backslashes are doubled, because Neo4j interprets a single backslash as
+# an escape character.
+#
 # The bucket path is taken from the environment variable
 # KNOWLEDGE_GRAPH_BUCKET_PATH, suffixed with a slash.
 upload () {
   local file_name # reset in case they are defined globally
   local "${@}"
-  gzip -c \
+  double_backslashes \
+  | gzip -c \
   | gsutil cp - "gs://govuk-knowledge-graph-data-processed/content-store/${file_name}.csv.gz"
 }
 
