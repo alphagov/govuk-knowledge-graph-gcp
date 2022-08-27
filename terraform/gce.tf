@@ -109,7 +109,7 @@ module "mongodb-container" {
         readOnly  = false
       },
       {
-        mountPath = "/data/config-db"
+        mountPath = "/data/configdb"
         name      = "tempfs-1"
         readOnly  = false
       },
