@@ -22,11 +22,11 @@ gsutil cat gs://govuk-knowledge-graph-content-store/mongo.tar.gz \
 # Obtain the latest state of the repository
 gsutil -m cp -r gs://govuk-knowledge-graph-repository/\* .
 
-# Query the content store into intermediate datasets
-mongo src/mongodb/prepare-content-store.js
-
-# Download from the content store and intermediate datasets, upload to storage
-bash src/mongodb/extract-from-mongodb.sh
+# 1. Query the content store into intermediate datasets
+# 2. Download from the content store and intermediate datasets
+# 3. Upload to storage
+cd src/mongodb
+make
 
 # Stop this instance
 # https://stackoverflow.com/a/41232669
