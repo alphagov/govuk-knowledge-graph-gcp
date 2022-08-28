@@ -4,7 +4,13 @@ FROM mongo:4.4.16
 # https://cloud.google.com/sdk/docs/install#deb
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y
-RUN apt-get install -y apt-transport-https ca-certificates gnupg curl python3-bs4
+RUN apt-get install -y \
+  apt-transport-https \
+  ca-certificates \
+  make \
+  gnupg \
+  curl \
+  python3-bs4
 RUN \
   echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" \
   | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
