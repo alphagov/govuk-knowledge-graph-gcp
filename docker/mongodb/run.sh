@@ -7,7 +7,7 @@
 set -m
 
 # Start mongo and put it in the background
-mongod &
+mongod --nojournal &
 
 # Wait for mongo to start
 sleep 5
