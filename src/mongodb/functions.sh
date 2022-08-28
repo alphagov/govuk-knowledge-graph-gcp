@@ -60,15 +60,6 @@ upload () {
   | gsutil cp - "gs://govuk-knowledge-graph-data-processed/content-store/${file_name}.csv.gz"
 }
 
-# For local development
-upload () {
-  local file_name # reset in case they are defined globally
-  local "${@}"
-  double_backslashes \
-  | gzip -c \
-  > data/${file_name}.csv.gz
-}
-
 # Wrapper around mongoexport to preset --db=content_store and --type=csv
 #
 # The `collection=` parameter is optional.  Its default is `content_items`.
