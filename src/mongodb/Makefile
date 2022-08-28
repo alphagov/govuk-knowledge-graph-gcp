@@ -25,13 +25,13 @@ clean.gz:
 	rm data/*
 
 temp/index.mongodb:
-	mongod content_store --file js/index.js
+	mongo content_store --file js/index.js
 	touch temp/index.mongodb
 
 # Prepend https://gov.uk to every _id to create a complete URL.
 # This doesn't affect any partial URLs elsewhere in the documents.
 temp/define_url.mongodb:
-	mongod content_store --file js/define_url.js
+	mongo content_store --file js/define_url.js
 	touch temp/define_url.mongodb
 
 data/url.csv.gz: temp/define_url.mongodb
@@ -74,21 +74,21 @@ data/withdrawn_explanation.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/withdrawn_explanation.sh
 
 temp/title.mongodb: temp/define_url.mongodb
-	mongod content_store --file js/title.js
+	mongo content_store --file js/title.js
 	touch temp/title.mongodb
 
 data/title.csv.gz: temp/title.mongodb
 	source functions.sh; source sh/title.sh
 
 temp/description.mongodb: temp/define_url.mongodb
-	mongod content_store --file js/description.js
+	mongo content_store --file js/description.js
 	touch temp/description.mongodb
 
 data/description.csv.gz: temp/description.mongodb
 	source functions.sh; source sh/description.sh
 
 temp/step_by_step_content.mongodb: temp/define_url.mongodb temp/index.mongodb
-	mongod content_store --file js/step_by_step_content.js
+	mongo content_store --file js/step_by_step_content.js
 	touch temp/step_by_step_content.mongodb
 
 data/step_by_step_content.csv.gz: temp/step_by_step_content.mongodb
@@ -104,7 +104,7 @@ data/department_analytics_profile.csv.gz: temp/define_url.mongodb temp/index.mon
 	source functions.sh; source sh/department_analytics_profile.sh
 
 temp/transaction_start_link.mongodb: temp/define_url.mongodb temp/index.mongodb
-	mongod content_store --file js/transaction_start_link.js
+	mongo content_store --file js/transaction_start_link.js
 	touch temp/transaction_start_link.mongodb
 
 data/transaction_start_link.csv.gz: temp/transaction_start_link.mongodb
@@ -114,14 +114,14 @@ data/start_button_text.csv.gz: temp/define_url.mongodb temp/index.mongodb
 	source functions.sh; source sh/start_button_text.sh
 
 temp/expanded_links.mongodb: temp/define_url.mongodb
-	mongod content_store --file js/expanded_links.js
+	mongo content_store --file js/expanded_links.js
 	touch temp/expanded_links.mongodb
 
 data/expanded_links.csv.gz: temp/expanded_links.mongodb
 	source functions.sh; source sh/expanded_links.sh
 
 temp/parts_content.mongodb: temp/define_url.mongodb
-	mongod content_store --file js/parts_content.js
+	mongo content_store --file js/parts_content.js
 	touch temp/parts_content.mongodb
 
 data/parts_content.csv.gz: temp/parts_content.mongodb
@@ -134,7 +134,7 @@ data/parts_embedded_links.csv.gz: temp/parts_content.mongodb
 	source functions.sh; source sh/parts_embedded_links.sh
 
 temp/transaction_content.mongodb: temp/define_url.mongodb temp/index.mongodb
-	mongod content_store --file js/transaction_content.js
+	mongo content_store --file js/transaction_content.js
 	touch temp/transaction_content.mongodb
 
 data/transaction_content.csv.gz: temp/transaction_content.mongodb
@@ -147,7 +147,7 @@ data/transaction_embedded_links.csv.gz: temp/transaction_content.mongodb
 	source functions.sh; source sh/transaction_embedded_links.sh
 
 temp/place_content.mongodb: temp/define_url.mongodb temp/index.mongodb
-	mongod content_store --file js/place_content.js
+	mongo content_store --file js/place_content.js
 	touch temp/place_content.mongodb
 
 data/place_content.csv.gz: temp/place_content.mongodb
@@ -161,7 +161,7 @@ data/place_embedded_links.csv.gz: temp/place_content.mongodb
 
 # Some document types have the body text in the 'body' field (not 'body.content')
 temp/body.mongodb: temp/define_url.mongodb temp/index.mongodb
-	mongod content_store --file js/body.js
+	mongo content_store --file js/body.js
 	touch temp/body.mongodb
 
 data/body.csv.gz: temp/body.mongodb
@@ -175,7 +175,7 @@ data/body_embedded_links.csv.gz: temp/body.mongodb
 
 # Some document types have the body text in the 'body.content' field (not 'body')
 temp/body_content.mongodb: temp/define_url.mongodb temp/index.mongodb
-	mongod content_store --file js/body_content.js
+	mongo content_store --file js/body_content.js
 	touch temp/body_content.mongodb
 
 data/body_content.csv.gz: temp/body_content.mongodb
@@ -189,14 +189,14 @@ data/body_content_embedded_links.csv.gz: temp/body_content.mongodb
 
 # Redirects of two kinds
 temp/url_override.mongodb: temp/define_url.mongodb
-	mongod content_store --file js/url_override.js
+	mongo content_store --file js/url_override.js
 	touch temp/url_override.mongodb
 
 data/url_override.csv.gz: temp/url_override.mongodb
 	source functions.sh; source sh/url_override.sh
 
 temp/redirects.mongodb: temp/define_url.mongodb
-	mongod content_store --file js/redirects.js
+	mongo content_store --file js/redirects.js
 	touch temp/redirects.mongodb
 
 data/redirects.csv.gz: temp/redirects.mongodb
