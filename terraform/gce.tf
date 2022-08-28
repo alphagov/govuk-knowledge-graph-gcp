@@ -167,7 +167,7 @@ resource "google_compute_instance_template" "neo4j" {
 
 resource "google_compute_instance_template" "mongodb" {
   name         = "mongodb"
-  machine_type = "e2-standard-8"
+  machine_type = "e2-highcpu-32"
 
   disk {
     boot         = true
