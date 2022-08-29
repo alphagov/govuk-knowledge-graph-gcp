@@ -68,12 +68,19 @@ variable "services" {
     "iam.googleapis.com",
     "artifactregistry.googleapis.com",
     "cloudscheduler.googleapis.com",
+    "bigquery.googleapis.com",
+    "bigquerydatatransfer.googleapis.com",
     "compute.googleapis.com",
     "eventarc.googleapis.com",
     "pubsub.googleapis.com",
     "sourcerepo.googleapis.com",
     "workflows.googleapis.com",
   ]
+}
+
+variable "page_to_page_transitions_sql_file" {
+  type    = string
+  default = "page-to-page-transitions.sql"
 }
 
 # Set the Terraform provider
@@ -182,6 +189,20 @@ data "google_iam_policy" "project" {
   }
 
   binding {
+    role    = "roles/bigquery.jobUser"
+    members = [
+      "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
+    ]
+  }
+
+  binding {
+    role    = "roles/bigquerydatatransfer.serviceAgent"
+    members = [
+      "serviceAccount:service-19513753240@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com",
+    ]
+  }
+
+  binding {
     role = "roles/cloudbuild.builds.builder"
     members = [
       "serviceAccount:19513753240@cloudbuild.gserviceaccount.com",
@@ -237,6 +258,13 @@ data "google_iam_policy" "project" {
     role = "roles/firestore.serviceAgent"
     members = [
       "serviceAccount:service-19513753240@gcp-sa-firestore.iam.gserviceaccount.com",
+    ]
+  }
+
+  binding {
+    role ="roles/iam.serviceAccountShortTermTokenMinter"
+    members = [
+      "serviceAccount:service-19513753240@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com",
     ]
   }
 

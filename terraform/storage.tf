@@ -114,6 +114,7 @@ data "google_iam_policy" "bucket_data_processed" {
     role = "roles/storage.objectAdmin"
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
+      "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
     ]
   }
 

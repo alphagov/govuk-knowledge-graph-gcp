@@ -15,8 +15,12 @@ sleep 5
 
 # Download the files to the local Neo4j import directory, because Neo4j can't
 # import from a pipe.
-gsutil -m cp -rv \
+gcloud storage cp --recursive  \
   gs://govuk-knowledge-graph-data-processed/content-store/\* \
+  /var/lib/neo4j/import
+
+gcloud storage cp --recursive  \
+  gs://govuk-knowledge-graph-data-processed/ga4/\* \
   /var/lib/neo4j/import
 
 # Decompress all those files (the semicolon is escaped for the shell, but might
