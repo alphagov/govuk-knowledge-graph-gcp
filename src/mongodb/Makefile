@@ -30,7 +30,7 @@ temp/index.mongodb:
 
 # Prepend https://gov.uk to every _id to create a complete URL.
 # This doesn't affect any partial URLs elsewhere in the documents.
-temp/define_url.mongodb:
+temp/define_url.mongodb: temp/index.mongodb
 	mongo content_store js/define_url.js
 	touch temp/define_url.mongodb
 
@@ -87,7 +87,7 @@ temp/description.mongodb: temp/define_url.mongodb
 data/description.csv.gz: temp/description.mongodb
 	source functions.sh; source sh/description.sh
 
-temp/step_by_step_content.mongodb: temp/define_url.mongodb temp/index.mongodb
+temp/step_by_step_content.mongodb: temp/define_url.mongodb
 	mongo content_store js/step_by_step_content.js
 	touch temp/step_by_step_content.mongodb
 
@@ -100,17 +100,17 @@ data/step_by_step_lines.csv.gz: temp/step_by_step_content.mongodb
 data/step_by_step_embedded_links.csv.gz: temp/step_by_step_content.mongodb
 	source functions.sh; source sh/step_by_step_embedded_links.sh
 
-data/department_analytics_profile.csv.gz: temp/define_url.mongodb temp/index.mongodb
+data/department_analytics_profile.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/department_analytics_profile.sh
 
-temp/transaction_start_link.mongodb: temp/define_url.mongodb temp/index.mongodb
+temp/transaction_start_link.mongodb: temp/define_url.mongodb
 	mongo content_store js/transaction_start_link.js
 	touch temp/transaction_start_link.mongodb
 
 data/transaction_start_link.csv.gz: temp/transaction_start_link.mongodb
 	source functions.sh; source sh/transaction_start_link.sh
 
-data/start_button_text.csv.gz: temp/define_url.mongodb temp/index.mongodb
+data/start_button_text.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/start_button_text.sh
 
 temp/expanded_links.mongodb: temp/define_url.mongodb
@@ -133,7 +133,7 @@ data/parts_lines.csv.gz: temp/parts_content.mongodb
 data/parts_embedded_links.csv.gz: temp/parts_content.mongodb
 	source functions.sh; source sh/parts_embedded_links.sh
 
-temp/transaction_content.mongodb: temp/define_url.mongodb temp/index.mongodb
+temp/transaction_content.mongodb: temp/define_url.mongodb
 	mongo content_store js/transaction_content.js
 	touch temp/transaction_content.mongodb
 
@@ -146,7 +146,7 @@ data/transaction_lines.csv.gz: temp/transaction_content.mongodb
 data/transaction_embedded_links.csv.gz: temp/transaction_content.mongodb
 	source functions.sh; source sh/transaction_embedded_links.sh
 
-temp/place_content.mongodb: temp/define_url.mongodb temp/index.mongodb
+temp/place_content.mongodb: temp/define_url.mongodb
 	mongo content_store js/place_content.js
 	touch temp/place_content.mongodb
 
@@ -160,7 +160,7 @@ data/place_embedded_links.csv.gz: temp/place_content.mongodb
 	source functions.sh; source sh/place_embedded_links.sh
 
 # Some document types have the body text in the 'body' field (not 'body.content')
-temp/body.mongodb: temp/define_url.mongodb temp/index.mongodb
+temp/body.mongodb: temp/define_url.mongodb
 	mongo content_store js/body.js
 	touch temp/body.mongodb
 
@@ -174,7 +174,7 @@ data/body_embedded_links.csv.gz: temp/body.mongodb
 	source functions.sh; source sh/body_embedded_links.sh
 
 # Some document types have the body text in the 'body.content' field (not 'body')
-temp/body_content.mongodb: temp/define_url.mongodb temp/index.mongodb
+temp/body_content.mongodb: temp/define_url.mongodb
 	mongo content_store js/body_content.js
 	touch temp/body_content.mongodb
 
@@ -201,3 +201,11 @@ temp/redirects.mongodb: temp/define_url.mongodb
 
 data/redirects.csv.gz: temp/redirects.mongodb
 	source functions.sh; source sh/redirects.sh
+
+# Taxon levels
+temp/taxon_levels.mongodb: temp/define_url.mongodb temp/index.mongodb
+	mongo content_store js/taxon_levels.js
+	touch temp/taxon_levels.mongodb
+
+data/taxon_levels.csv.gz: temp/taxon_levels.mongodb
+	source functions.sh; source sh/taxon_levels.sh

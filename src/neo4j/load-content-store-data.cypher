@@ -320,3 +320,12 @@ MATCH (p:Page { url: line.from }),
 MERGE (q:Page { url: line.to })
 CREATE (p)-[r:REDIRECTS_TO]->(q)
 ;
+
+// Taxon levels
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///taxon_levels.csv' AS line
+FIELDTERMINATOR ','
+MATCH (p:Page { url: line.url })
+SET p.taxon_level = line.level
+;
