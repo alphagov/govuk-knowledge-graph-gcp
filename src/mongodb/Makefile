@@ -120,6 +120,13 @@ temp/expanded_links.mongodb: temp/define_url.mongodb
 data/expanded_links.csv.gz: temp/expanded_links.mongodb
 	source functions.sh; source sh/expanded_links.sh
 
+temp/expanded_links_content_ids.mongodb: temp/define_url.mongodb
+	mongo content_store js/expanded_links_content_ids.js
+	touch temp/expanded_links_content_ids.mongodb
+
+data/expanded_links_content_ids.csv.gz: temp/expanded_links_content_ids.mongodb
+	source functions.sh; source sh/expanded_links_content_ids.sh
+
 temp/parts_content.mongodb: temp/define_url.mongodb
 	mongo content_store js/parts_content.js
 	touch temp/parts_content.mongodb
