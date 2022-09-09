@@ -93,6 +93,13 @@ resource "google_project" "project" {
   folder_id       = var.folder_id
   name            = var.project_id
   project_id      = var.project_id
+  labels = {
+    # The value can only contain lowercase letters, numeric characters,
+    # underscores and dashes. The value can be at most 63 characters long.
+    # International characters are allowed.
+    programme = "cpto",
+    team      = "data-products",
+  }
 }
 
 # Use `gcloud` to enable:
