@@ -45,7 +45,7 @@ resource "github_branch_protection" "main" {
   pattern                 = "main"
   allows_deletions        = false
   require_signed_commits  = true
-  required_linear_history = true
+  required_linear_history = false
   required_pull_request_reviews {
     dismiss_stale_reviews           = true
     require_code_owner_reviews      = true
