@@ -23,10 +23,10 @@ resource "github_repository" "repo" {
   vulnerability_alerts   = true
 }
 
-# Add an admin user to the repository
-resource "github_repository_collaborator" "duncan_garmonsway" {
+resource "github_repository_collaborator" "admin" {
+  for_each   = toset(["nacnudus", "maxf"])
   repository = github_repository.repo.name
-  username   = "nacnudus"
+  username   = each.key
   permission = "admin"
 }
 
