@@ -17,22 +17,56 @@ resource "google_service_account" "storage_github" {
   description  = "Service account for using Cloud Storage from GitHub Actions"
 }
 
-resource "google_storage_bucket_iam_member" "repository_objectAdmin" {
-  bucket = google_storage_bucket.repository.name
-  role   = "roles/storage.objectAdmin"
-  member = "serviceAccount:${google_service_account.storage_github.email}"
+resource "google_storage_bucket_iam_policy" "repository" {
+  bucket      = google_storage_bucket.repository.name
+  policy_data = data.google_iam_policy.bucket_repository.policy_data
 }
 
-resource "google_storage_bucket_iam_member" "repository_objectViewer_mongodb" {
-  bucket = google_storage_bucket.repository.name
-  role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${google_service_account.gce_mongodb.email}"
-}
+data "google_iam_policy" "bucket_repository" {
+  binding {
+    role = "roles/storage.objectAdmin"
+    members = [
+      "serviceAccount:${google_service_account.storage_github.email}",
+    ]
+  }
 
-resource "google_storage_bucket_iam_member" "repository_objectViewer_neo4j" {
-  bucket = google_storage_bucket.repository.name
-  role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${google_service_account.gce_neo4j.email}"
+  binding {
+    role = "roles/storage.objectViewer"
+    members = [
+      "serviceAccount:${google_service_account.gce_mongodb.email}",
+      "serviceAccount:${google_service_account.gce_neo4j.email}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketOwner"
+    members = [
+      "projectEditor:govuk-knowledge-graph",
+      "projectOwner:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketReader"
+    members = [
+      "projectViewer:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectOwner"
+    members = [
+      "projectEditor:govuk-knowledge-graph",
+      "projectOwner:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectReader"
+    members = [
+      "projectViewer:govuk-knowledge-graph",
+    ]
+  }
 }
 
 # Bucket for the Content Store MongoDB backup file
@@ -55,10 +89,48 @@ resource "google_storage_bucket" "content_store" {
   }
 }
 
-resource "google_storage_bucket_iam_member" "content_store_objectViewer_mongdb" {
-  bucket = google_storage_bucket.content_store.name
-  role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${google_service_account.gce_mongodb.email}"
+resource "google_storage_bucket_iam_policy" "content_store" {
+  bucket      = google_storage_bucket.content_store.name
+  policy_data = data.google_iam_policy.bucket_content_store.policy_data
+}
+
+data "google_iam_policy" "bucket_content_store" {
+  binding {
+    role = "roles/storage.objectViewer"
+    members = [
+      "serviceAccount:${google_service_account.gce_mongodb.email}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketOwner"
+    members = [
+      "projectEditor:govuk-knowledge-graph",
+      "projectOwner:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketReader"
+    members = [
+      "projectViewer:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectOwner"
+    members = [
+      "projectEditor:govuk-knowledge-graph",
+      "projectOwner:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectReader"
+    members = [
+      "projectViewer:govuk-knowledge-graph",
+    ]
+  }
 }
 
 # Bucket for dataset extracted from MongoDB for upload into Neo4j
@@ -81,14 +153,53 @@ resource "google_storage_bucket" "data_processed" {
   }
 }
 
-resource "google_storage_bucket_iam_member" "data_processed_objectAdmin_mongodb" {
-  bucket = google_storage_bucket.data_processed.name
-  role   = "roles/storage.objectAdmin"
-  member = "serviceAccount:${google_service_account.gce_mongodb.email}"
+resource "google_storage_bucket_iam_policy" "data_processed" {
+  bucket      = google_storage_bucket.data_processed.name
+  policy_data = data.google_iam_policy.bucket_data_processed.policy_data
 }
 
-resource "google_storage_bucket_iam_member" "data_processed_objectViewer_neo4j" {
-  bucket = google_storage_bucket.data_processed.name
-  role   = "roles/storage.objectAdmin"
-  member = "serviceAccount:${google_service_account.gce_neo4j.email}"
+data "google_iam_policy" "bucket_data_processed" {
+  binding {
+    role = "roles/storage.objectAdmin"
+    members = [
+      "serviceAccount:${google_service_account.gce_mongodb.email}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.objectViewer"
+    members = [
+      "serviceAccount:${google_service_account.gce_neo4j.email}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketOwner"
+    members = [
+      "projectEditor:govuk-knowledge-graph",
+      "projectOwner:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketReader"
+    members = [
+      "projectViewer:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectOwner"
+    members = [
+      "projectEditor:govuk-knowledge-graph",
+      "projectOwner:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectReader"
+    members = [
+      "projectViewer:govuk-knowledge-graph",
+    ]
+  }
 }
