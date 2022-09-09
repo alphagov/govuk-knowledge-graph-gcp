@@ -12,3 +12,40 @@ resource "google_storage_bucket" "backend" {
     enabled = true
   }
 }
+
+resource "google_storage_bucket_iam_policy" "backend" {
+  bucket      = google_storage_bucket.backend.name
+  policy_data = data.google_iam_policy.bucket_backend.policy_data
+}
+
+data "google_iam_policy" "bucket_backend" {
+  binding {
+    role = "roles/storage.legacyBucketOwner"
+    members = [
+      "projectEditor:govuk-knowledge-graph",
+      "projectOwner:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketReader"
+    members = [
+      "projectViewer:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectOwner"
+    members = [
+      "projectEditor:govuk-knowledge-graph",
+      "projectOwner:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectReader"
+    members = [
+      "projectViewer:govuk-knowledge-graph",
+    ]
+  }
+}
