@@ -188,7 +188,7 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/compute.instanceAdmin.v1"
     members = [
-      "serviceAccount:gce-mongodb@govuk-knowledge-graph.iam.gserviceaccount.com",
+      "serviceAccount:${google_service_account.gce_mongodb.email}",
     ]
   }
 

@@ -192,10 +192,3 @@ resource "google_compute_instance_template" "mongodb" {
     scopes = ["cloud-platform"]
   }
 }
-
-# Allow the mongodb instance to self-destruct
-resource "google_project_iam_member" "compute_instanceAdmin_v1" {
-  project = var.project_id
-  role    = "roles/compute.instanceAdmin.v1"
-  member  = "serviceAccount:${google_service_account.gce_mongodb.email}"
-}
