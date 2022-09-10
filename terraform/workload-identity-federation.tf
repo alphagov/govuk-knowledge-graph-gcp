@@ -21,14 +21,3 @@ resource "google_iam_workload_identity_pool_provider" "main" {
     issuer_uri        = "https://token.actions.githubusercontent.com"
   }
 }
-
-resource "google_service_account_iam_member" "wif-sa" {
-  for_each = toset([
-    google_service_account.source_repositories_github.name,
-    google_service_account.storage_github.name,
-    google_service_account.artifact_registry_docker.name
-  ])
-  service_account_id = each.key
-  role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/19513753240/locations/global/workloadIdentityPools/github-pool/attribute.repository/alphagov/govuk-knowledge-graph-gcp"
-}

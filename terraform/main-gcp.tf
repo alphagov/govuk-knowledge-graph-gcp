@@ -29,6 +29,11 @@ variable "project_id" {
   default = "govuk-knowledge-graph" # Change this
 }
 
+variable "project_number" {
+  type    = string
+  default = "19513753240" # Change this
+}
+
 variable "billing_account" {
   type    = string
   default = "015C7A-FAF970-B0D375" # Change this once you know it

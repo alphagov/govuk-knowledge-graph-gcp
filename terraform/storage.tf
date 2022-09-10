@@ -17,6 +17,20 @@ resource "google_service_account" "storage_github" {
   description  = "Service account for using Cloud Storage from GitHub Actions"
 }
 
+data "google_iam_policy" "service_account_storage_github" {
+  binding {
+    role = "roles/iam.workloadIdentityUser"
+    members = [
+      "principalSet://iam.googleapis.com/projects/${var.project_number}/locations/global/workloadIdentityPools/github-pool/attribute.repository/alphagov/govuk-knowledge-graph-gcp"
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "storage_github" {
+  service_account_id = google_service_account.storage_github.name
+  policy_data        = data.google_iam_policy.service_account_storage_github.policy_data
+}
+
 resource "google_storage_bucket_iam_policy" "repository" {
   bucket      = google_storage_bucket.repository.name
   policy_data = data.google_iam_policy.bucket_repository.policy_data
