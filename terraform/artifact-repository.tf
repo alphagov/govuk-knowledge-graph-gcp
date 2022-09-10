@@ -15,29 +15,26 @@ resource "google_service_account" "artifact_registry_docker" {
   description  = "Service account for pushing docker images"
 }
 
-resource "google_artifact_registry_repository_iam_member" "docker_writer" {
-  provider   = google-beta
-  project    = google_artifact_registry_repository.docker.project
-  location   = google_artifact_registry_repository.docker.location
-  repository = google_artifact_registry_repository.docker.name
-  role       = "roles/artifactregistry.writer"
-  member     = "serviceAccount:${google_service_account.artifact_registry_docker.email}"
+resource "google_artifact_registry_repository_iam_policy" "docker" {
+  project     = google_artifact_registry_repository.docker.project
+  location    = google_artifact_registry_repository.docker.location
+  repository  = google_artifact_registry_repository.docker.name
+  policy_data = data.google_iam_policy.artifact_registry_docker.policy_data
 }
 
-resource "google_artifact_registry_repository_iam_member" "docker_reader_mongodb" {
-  provider   = google-beta
-  project    = google_artifact_registry_repository.docker.project
-  location   = google_artifact_registry_repository.docker.location
-  repository = google_artifact_registry_repository.docker.name
-  role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:${google_service_account.gce_mongodb.email}"
-}
+data "google_iam_policy" "artifact_registry_docker" {
+  binding {
+    role = "roles/artifactregistry.reader"
+    members = [
+      "serviceAccount:${google_service_account.gce_mongodb.email}",
+      "serviceAccount:${google_service_account.gce_neo4j.email}",
+    ]
+  }
 
-resource "google_artifact_registry_repository_iam_member" "docker_reader_neo4j" {
-  provider   = google-beta
-  project    = google_artifact_registry_repository.docker.project
-  location   = google_artifact_registry_repository.docker.location
-  repository = google_artifact_registry_repository.docker.name
-  role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:${google_service_account.gce_neo4j.email}"
+  binding {
+    role = "roles/artifactregistry.writer"
+    members = [
+      "serviceAccount:${google_service_account.artifact_registry_docker.email}",
+    ]
+  }
 }
