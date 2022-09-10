@@ -10,9 +10,17 @@ resource "google_service_account" "source_repositories_github" {
   description  = "Service account for pushing git repositories from GitHub Actions"
 }
 
-resource "google_sourcerepo_repository_iam_member" "writer" {
-  project    = google_sourcerepo_repository.alphagov_govuk_knowledge_graph_gcp.project
-  repository = google_sourcerepo_repository.alphagov_govuk_knowledge_graph_gcp.name
-  role       = "roles/writer"
-  member     = "serviceAccount:${google_service_account.source_repositories_github.email}"
+data "google_iam_policy" "source_repositories_alphagov_govuk_knowledge_graph_gcp" {
+  binding {
+    role = "roles/writer"
+    members = [
+      "serviceAccount:${google_service_account.source_repositories_github.email}",
+    ]
+  }
+}
+
+resource "google_sourcerepo_repository_iam_policy" "alphagov_govuk_knowledge_graph_gcp" {
+  project     = google_sourcerepo_repository.alphagov_govuk_knowledge_graph_gcp.project
+  repository  = google_sourcerepo_repository.alphagov_govuk_knowledge_graph_gcp.name
+  policy_data = data.google_iam_policy.source_repositories_alphagov_govuk_knowledge_graph_gcp.policy_data
 }
