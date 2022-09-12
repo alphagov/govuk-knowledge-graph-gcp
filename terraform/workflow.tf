@@ -1,15 +1,20 @@
-# A workflow to create an instance from a template
+# A workflow to create an instance from a template, triggered by PubSub
 
-resource "google_service_account" "workflow" {
+resource "google_service_account" "workflow_mongodb" {
   account_id   = "workflow-mongodb"
-  display_name = "Service account for the workflow"
+  display_name = "Service account for the mongodb workflow"
 }
 
-resource "google_workflows_workflow" "workflow" {
-  name            = "workflow"
+resource "google_service_account" "eventarc" {
+  account_id   = "eventarc"
+  display_name = "Service account for EventArc to trigger workflows"
+}
+
+resource "google_workflows_workflow" "mongodb" {
+  name            = "mongodb"
   region          = var.region
-  description     = "Run MongoDB and Neo4j instances from their templates"
-  service_account = google_service_account.workflow.id
+  description     = "Run a MongoDB instance from its template"
+  service_account = google_service_account.workflow_mongodb.id
   source_contents = <<-EOF
   # This workflow does the following:
   # - Creates an instance from the MongoDB template
@@ -25,4 +30,21 @@ resource "google_workflows_workflow" "workflow" {
           body:
               name: mongodb
 EOF
+}
+
+resource "google_eventarc_trigger" "govuk_integration_database_backups" {
+  name            = "mongodb"
+  location        = var.region
+  service_account = google_service_account.gce_mongodb.email
+  matching_criteria {
+    attribute = "type"
+    value     = "google.cloud.pubsub.topic.v1.messagePublished"
+  }
+  # matching_criteria {
+  #   attribute = "source"
+  #   value     = "//pubsub.googleapis.com/${google_pubsub_topic.govuk_integration_database_backups.id}"
+  # }
+  destination {
+    workflow = google_workflows_workflow.mongodb.id
+  }
 }
