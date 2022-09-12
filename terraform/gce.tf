@@ -12,6 +12,21 @@ resource "google_service_account" "gce_mongodb" {
   description  = "Service account for the MongoDB instance on GCE"
 }
 
+# Allow a workflow to start an instance
+data "google_iam_policy" "service_account-gce_mongodb" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+    members = [
+      "serviceAccount:${google_service_account.workflow.email}",
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "gce_mongodb" {
+  service_account_id = google_service_account.gce_mongodb.name
+  policy_data        = data.google_iam_policy.service_account-gce_mongodb.policy_data
+}
+
 # terraform import google_compute_network.default default
 resource "google_compute_network" "default" {
   name        = "default"

@@ -69,7 +69,8 @@ variable "services" {
     "artifactregistry.googleapis.com",
     "compute.googleapis.com",
     "pubsub.googleapis.com",
-    "sourcerepo.googleapis.com"
+    "sourcerepo.googleapis.com",
+    "workflows.googleapis.com",
   ]
 }
 
@@ -195,6 +196,7 @@ data "google_iam_policy" "project" {
     role = "roles/compute.instanceAdmin.v1"
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
+      "serviceAccount:${google_service_account.workflow.email}",
     ]
   }
 
@@ -230,6 +232,13 @@ data "google_iam_policy" "project" {
     role = "roles/pubsub.serviceAgent"
     members = [
       "serviceAccount:service-19513753240@gcp-sa-pubsub.iam.gserviceaccount.com",
+    ]
+  }
+
+  binding {
+    role = "roles/workflows.serviceAgent"
+    members = [
+      "serviceAccount:service-19513753240@gcp-sa-workflows.iam.gserviceaccount.com",
     ]
   }
 }
