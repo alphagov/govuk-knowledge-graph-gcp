@@ -230,6 +230,13 @@ data "google_iam_policy" "project" {
   }
 
   binding {
+    role = "roles/iam.serviceAccountTokenCreator"
+    members = [
+      "serviceAccount:service-19513753240@gcp-sa-pubsub.iam.gserviceaccount.com",
+    ]
+  }
+
+  binding {
     role = "roles/networkmanagement.serviceAgent"
     members = [
       "serviceAccount:service-19513753240@gcp-sa-networkmanagement.iam.gserviceaccount.com",
