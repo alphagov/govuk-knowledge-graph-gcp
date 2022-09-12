@@ -68,6 +68,7 @@ variable "services" {
     "iam.googleapis.com",
     "artifactregistry.googleapis.com",
     "compute.googleapis.com",
+    "pubsub.googleapis.com",
     "sourcerepo.googleapis.com"
   ]
 }
