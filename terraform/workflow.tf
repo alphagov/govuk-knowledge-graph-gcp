@@ -45,7 +45,7 @@ resource "google_eventarc_trigger" "govuk_integration_database_backups" {
   }
   transport {
     pubsub {
-      topic        = google_pubsub_topic.govuk_integration_database_backups.id
+      topic = google_pubsub_topic.govuk_integration_database_backups.id
     }
   }
 }
