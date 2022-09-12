@@ -13,7 +13,7 @@ data "google_iam_policy" "pubsub_topic-govuk_integration_database_backups" {
   binding {
     role = "roles/pubsub.publisher"
     members = [
-      "serviceAccount:service-384988117066@gcp-sa-pubsub.iam.gserviceaccount.com"
+      "serviceAccount:service-384988117066@gs-project-accounts.iam.gserviceaccount.com"
     ]
   }
 }
