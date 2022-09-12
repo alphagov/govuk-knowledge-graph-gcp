@@ -68,6 +68,7 @@ variable "services" {
     "iam.googleapis.com",
     "artifactregistry.googleapis.com",
     "compute.googleapis.com",
+    "eventarc.googleapis.com",
     "pubsub.googleapis.com",
     "sourcerepo.googleapis.com",
     "workflows.googleapis.com",
@@ -196,7 +197,7 @@ data "google_iam_policy" "project" {
     role = "roles/compute.instanceAdmin.v1"
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
-      "serviceAccount:${google_service_account.workflow_mongodb.email}",
+      # "serviceAccount:${google_service_account.workflow_mongodb.email}",
     ]
   }
 
@@ -212,6 +213,13 @@ data "google_iam_policy" "project" {
     members = [
       "serviceAccount:service-19513753240@containerregistry.iam.gserviceaccount.com",
     ]
+  }
+
+  binding {
+    members = [
+      "serviceAccount:service-19513753240@gcp-sa-eventarc.iam.gserviceaccount.com",
+    ]
+    role = "roles/eventarc.serviceAgent"
   }
 
   binding {
@@ -232,6 +240,13 @@ data "google_iam_policy" "project" {
     role = "roles/pubsub.serviceAgent"
     members = [
       "serviceAccount:service-19513753240@gcp-sa-pubsub.iam.gserviceaccount.com",
+    ]
+  }
+
+  binding {
+    role = "roles/workflows.invoker"
+    members = [
+      "serviceAccount:${google_service_account.gce_mongodb.email}",
     ]
   }
 

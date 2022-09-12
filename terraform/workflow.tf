@@ -5,6 +5,11 @@ resource "google_service_account" "workflow_mongodb" {
   display_name = "Service account for the mongodb workflow"
 }
 
+resource "google_service_account" "eventarc" {
+  account_id   = "eventarc"
+  display_name = "Service account for EventArc to trigger workflows"
+}
+
 resource "google_workflows_workflow" "mongodb" {
   name            = "mongodb"
   region          = var.region
@@ -25,4 +30,21 @@ resource "google_workflows_workflow" "mongodb" {
           body:
               name: mongodb
 EOF
+}
+
+resource "google_eventarc_trigger" "govuk_integration_database_backups" {
+  name            = "mongodb"
+  location        = var.region
+  service_account = google_service_account.gce_mongodb.email
+  matching_criteria {
+    attribute = "type"
+    value     = "google.cloud.pubsub.topic.v1.messagePublished"
+  }
+  # matching_criteria {
+  #   attribute = "source"
+  #   value     = "//pubsub.googleapis.com/${google_pubsub_topic.govuk_integration_database_backups.id}"
+  # }
+  destination {
+    workflow = google_workflows_workflow.mongodb.id
+  }
 }
