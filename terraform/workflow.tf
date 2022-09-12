@@ -35,16 +35,17 @@ EOF
 resource "google_eventarc_trigger" "govuk_integration_database_backups" {
   name            = "mongodb"
   location        = var.region
-  service_account = google_service_account.gce_mongodb.email
+  service_account = google_service_account.eventarc.email
   matching_criteria {
     attribute = "type"
     value     = "google.cloud.pubsub.topic.v1.messagePublished"
   }
-  # matching_criteria {
-  #   attribute = "source"
-  #   value     = "//pubsub.googleapis.com/${google_pubsub_topic.govuk_integration_database_backups.id}"
-  # }
   destination {
     workflow = google_workflows_workflow.mongodb.id
+  }
+  transport {
+    pubsub {
+      topic        = google_pubsub_topic.govuk_integration_database_backups.id
+    }
   }
 }
