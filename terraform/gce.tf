@@ -17,7 +17,7 @@ data "google_iam_policy" "service_account-gce_mongodb" {
   binding {
     role = "roles/iam.serviceAccountUser"
     members = [
-      "serviceAccount:${google_service_account.workflow.email}",
+      "serviceAccount:${google_service_account.workflow_mongodb.email}",
     ]
   }
 }

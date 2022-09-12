@@ -1,15 +1,15 @@
-# A workflow to create an instance from a template
+# A workflow to create an instance from a template, triggered by PubSub
 
-resource "google_service_account" "workflow" {
+resource "google_service_account" "workflow_mongodb" {
   account_id   = "workflow-mongodb"
-  display_name = "Service account for the workflow"
+  display_name = "Service account for the mongodb workflow"
 }
 
-resource "google_workflows_workflow" "workflow" {
-  name            = "workflow"
+resource "google_workflows_workflow" "mongodb" {
+  name            = "mongodb"
   region          = var.region
-  description     = "Run MongoDB and Neo4j instances from their templates"
-  service_account = google_service_account.workflow.id
+  description     = "Run a MongoDB instance from its template"
+  service_account = google_service_account.workflow_mongodb.id
   source_contents = <<-EOF
   # This workflow does the following:
   # - Creates an instance from the MongoDB template
