@@ -120,6 +120,8 @@ data "google_iam_policy" "bucket_data_processed" {
     role = "roles/storage.objectViewer"
     members = [
       "serviceAccount:${google_service_account.gce_neo4j.email}",
+      "group:data-engineering@digital.cabinet-office.gov.uk",
+      "group:data-products@digital.cabinet-office.gov.uk",
     ]
   }
 
