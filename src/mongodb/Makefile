@@ -46,6 +46,9 @@ data/content_id.csv.gz: temp/define_url.mongodb
 data/analytics_identifier.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/analytics_identifier.sh
 
+data/acronym.csv.gz: temp/define_url.mongodb
+	source functions.sh; source sh/acronym.sh
+
 data/parts.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/parts.sh
 
