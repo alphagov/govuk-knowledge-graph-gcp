@@ -12,7 +12,7 @@ resource "google_service_account" "gce_mongodb" {
   description  = "Service account for the MongoDB instance on GCE"
 }
 
-# Allow a workflow to attache the mongodb service account to an instance.
+# Allow a workflow to attach the mongodb service account to an instance.
 data "google_iam_policy" "service_account-gce_mongodb" {
   binding {
     role = "roles/iam.serviceAccountUser"
