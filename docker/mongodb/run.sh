@@ -25,7 +25,7 @@ OBJECT_URL="gs://$OBJECT"
 
 # https://stackoverflow.com/questions/6575221
 gsutil cat "$OBJECT_URL" \
-  | tar xzvO var/lib/mongodb/backup/mongodump/content_store_production/content_items.bson \
+  | tar xzvO content_store_production/content_items.bson \
   | mongorestore -v --db=content_store --collection=content_items -
 
 # Obtain the latest state of the repository
