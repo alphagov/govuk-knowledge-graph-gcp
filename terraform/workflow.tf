@@ -46,17 +46,13 @@ main:
       args:
           json: $${message_json}
           severity: INFO
-  - extract_filepath:
+  - extract_metadata:
       assign:
-      - filepath: $${message_json.name}
-  - log_filepath:
-      call: sys.log
-      args:
-          text: $${filepath}
-          severity: INFO
+      - object_bucket: $${message_json.bucket}
+      - object_name: $${message_json.name}
   - maybe_start_mongodb:
       switch:
-        - condition: $${text.match_regex(filepath, "^mongo-api/\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}-content_store_production\\.gz$")}
+        - condition: $${text.match_regex(object_name, "^mongo-api/\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}-content_store_production\\.gz$")}
           steps:
           - log_starting_instance:
               call: sys.log
@@ -72,7 +68,12 @@ main:
                   body:
                       name: mongodb
                       metadata:
-                          database_filepath: $${filepath}
+                        items:
+                        - key: object_bucket
+                          value: $${object_bucket}
+                        - key: object_name
+                          value: $${object_name}
+              next: end
         - condition: true
           steps:
           - log_not_starting_instance:

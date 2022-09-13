@@ -14,8 +14,13 @@ sleep 5
 
 # Restore the content_store from its backup .bson file in GCP Storage
 
+# Construct the file's URL
+BUCKET=$(gcloud compute instances describe mongodb --zone europe-west2-a --format="value(metadata.items.object_bucket)")
+FILEPATH=$(gcloud compute instances describe mongodb --zone europe-west2-a --format="value(metadata.items.object_filepath)")
+BUCKET_URL="gs://$(BUCKET)/$(FILEPATH)"
+
 # https://stackoverflow.com/questions/6575221
-gsutil cat gs://govuk-knowledge-graph-content-store/mongo.tar.gz \
+gsutil cat "$(BUCKET_URL)" \
   | tar xzvO var/lib/mongodb/backup/mongodump/content_store_production/content_items.bson \
   | mongorestore -v --db=content_store --collection=content_items -
 
