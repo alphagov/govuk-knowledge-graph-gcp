@@ -16,71 +16,139 @@ resource "google_workflows_workflow" "mongodb" {
   description     = "Run a MongoDB instance from its template"
   service_account = google_service_account.workflow_mongodb.id
   source_contents = <<-EOF
-  # This workflow does the following:
-  # - Creates an instance from the MongoDB template
-  # - [TBC] Creates an instance from the Neo4j template
-  # In terraform you need to escape the $$ or it will cause errors.
-
-main:
-  params: [event]
-  steps:
-  - log_event:
-      call: sys.log
-      args:
-          text: $${event}
-          severity: INFO
-  - decode_pubsub_message:
-      assign:
-      - base64: $${base64.decode(event.data.data)}
-      - message_text: $${text.decode(base64)}
-  - log_message_text:
-      call: sys.log
-      args:
-          text: $${message_text}
-          severity: INFO
-  - parse_pubsub_message:
-      assign:
-      - message_json: $${json.decode(message_text)}
-  - log_message_json:
-      call: sys.log
-      args:
-          json: $${message_json}
-          severity: INFO
-  - extract_metadata:
-      assign:
-      - object_bucket: $${message_json.bucket}
-      - object_name: $${message_json.name}
-  - maybe_start_mongodb:
-      switch:
-        - condition: $${text.match_regex(object_name, "^mongo-api/\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}-content_store_production\\.gz$")}
-          steps:
-          - log_starting_instance:
-              call: sys.log
-              args:
-                  text: "Starting mongodb instance"
-                  severity: INFO
-          - start_mongodb:
-              call: googleapis.compute.v1.instances.insert
-              args:
-                  project: ${var.project_id}
-                  zone: ${var.zone}
-                  sourceInstanceTemplate: https://www.googleapis.com/compute/v1/projects/${var.project_id}/global/instanceTemplates/mongodb
-                  body:
-                      name: mongodb
-                      metadata:
-                        items:
-                        - key: object_bucket
-                          value: $${object_bucket}
-                        - key: object_name
-                          value: $${object_name}
-              next: end
-        - condition: true
-          steps:
-          - log_not_starting_instance:
-              call: sys.log
-              args:
-                  text: "Not starting mongodb instance"
-                  severity: INFO
+{
+  "main": {
+    "params": [
+      "event"
+    ],
+    "steps": [
+      {
+        "log_event": {
+          "call": "sys.log",
+          "args": {
+            "text": "$${event}",
+            "severity": "INFO"
+          }
+        }
+      },
+      {
+        "decode_pubsub_message": {
+          "assign": [
+            {
+              "base64": "$${base64.decode(event.data.data)}"
+            },
+            {
+              "message_text": "$${text.decode(base64)}"
+            }
+          ]
+        }
+      },
+      {
+        "log_message_text": {
+          "call": "sys.log",
+          "args": {
+            "text": "$${message_text}",
+            "severity": "INFO"
+          }
+        }
+      },
+      {
+        "parse_pubsub_message": {
+          "assign": [
+            {
+              "message_json": "$${json.decode(message_text)}"
+            }
+          ]
+        }
+      },
+      {
+        "log_message_json": {
+          "call": "sys.log",
+          "args": {
+            "json": "$${message_json}",
+            "severity": "INFO"
+          }
+        }
+      },
+      {
+        "extract_metadata": {
+          "assign": [
+            {
+              "object_bucket": "$${message_json.bucket}"
+            },
+            {
+              "object_name": "$${message_json.name}"
+            }
+          ]
+        }
+      },
+      {
+        "maybe_start_mongodb": {
+          "switch": [
+            {
+              "condition": "$${text.match_regex(object_name, \"^mongo-api/\\\\d{4}-\\\\d{2}-\\\\d{2}T\\\\d{2}:\\\\d{2}:\\\\d{2}-content_store_production\\\\.gz$\")}",
+              "steps": [
+                {
+                  "log_starting_instance": {
+                    "call": "sys.log",
+                    "args": {
+                      "text": "Starting mongodb instance",
+                      "severity": "INFO"
+                    }
+                  }
+                },
+                {
+                  "start_mongodb": {
+                    "call": "googleapis.compute.v1.instances.insert",
+                    "args": {
+                      "project": "${var.project_id}",
+                      "zone": "${var.zone}",
+                      "sourceInstanceTemplate": "https://www.googleapis.com/compute/v1/projects/${var.project_id}/global/instanceTemplates/mongodb",
+                      "body": {
+                        "name": "mongodb",
+                        "metadata": {
+                          "items": [
+                            {
+                              "key": "object_bucket",
+                              "value": "$${object_bucket}"
+                            },
+                            {
+                              "key": "object_name",
+                              "value": "$${object_name}"
+                            },
+                            {
+                              "key": "gce-container-declaration",
+                              "value": ${jsonencode(module.mongodb-container.metadata_value)}
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "next": "end"
+                  }
+                }
+              ]
+            },
+            {
+              "condition": true,
+              "steps": [
+                {
+                  "log_not_starting_instance": {
+                    "call": "sys.log",
+                    "args": {
+                      "text": "Not starting mongodb instance",
+                      "severity": "INFO"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
 EOF
 }
 
