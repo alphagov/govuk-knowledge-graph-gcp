@@ -237,6 +237,13 @@ data "google_iam_policy" "project" {
   }
 
   binding {
+    role = "roles/logging.logWriter"
+    members = [
+      "serviceAccount:${google_service_account.workflow_mongodb.email}",
+    ]
+  }
+
+  binding {
     role = "roles/networkmanagement.serviceAgent"
     members = [
       "serviceAccount:service-19513753240@gcp-sa-networkmanagement.iam.gserviceaccount.com",
