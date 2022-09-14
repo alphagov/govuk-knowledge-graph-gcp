@@ -1,5 +1,6 @@
 # body_content content; individual lines of text
 query_mongo \
+  type=json \
   collection=body_content \
   fields=url,html \
 | extract_lines_from_html \

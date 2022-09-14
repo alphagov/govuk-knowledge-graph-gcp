@@ -72,5 +72,6 @@ db.content_items.aggregate([
     "hmrc_manual_section"
   ] } } },
   { $project: { url: true, html: "$details.body" } },
+  { $match: { "html": { "$exists": true, $ne: null } } },
   { $out: "body"}
 ])

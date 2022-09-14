@@ -1,5 +1,6 @@
 # place embedded hyperlinks
 query_mongo \
+  type=json \
   collection=place_content \
   fields=url,html \
 | extract_hyperlinks_from_html \

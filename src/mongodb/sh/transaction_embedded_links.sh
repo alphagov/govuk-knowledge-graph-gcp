@@ -1,5 +1,6 @@
 # transaction embedded hyperlinks
 query_mongo \
+  type=json \
   collection=transaction_content \
   fields=url,html \
 | extract_hyperlinks_from_html \

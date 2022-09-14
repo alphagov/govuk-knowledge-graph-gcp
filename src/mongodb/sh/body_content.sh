@@ -1,5 +1,6 @@
 # body_content content
 query_mongo \
+  type=json \
   collection=body_content \
   fields=url,html \
 | extract_text_from_html \

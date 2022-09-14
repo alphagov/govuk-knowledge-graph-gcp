@@ -1,5 +1,6 @@
 # parts content; individual lines of text
 query_mongo \
+  type=json \
   collection=parts_content \
   fields=url,base_path,part_index,html \
 | extract_lines_from_html \

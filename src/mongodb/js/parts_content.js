@@ -27,5 +27,6 @@ db.content_items.aggregate([
     "part_title": true,
     "html": "$body.content",
   } },
+  { $match: { "html": { "$exists": true, $ne: null } } },
   {$out: "parts_content"}
 ])

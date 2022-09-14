@@ -1,5 +1,6 @@
 # body_content embedded hyperlinks
 query_mongo \
+  type=json \
   collection=body_content \
   fields=url,html \
 | extract_hyperlinks_from_html \

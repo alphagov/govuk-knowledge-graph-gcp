@@ -1,5 +1,6 @@
 # transaction content; individual lines of text
 query_mongo \
+  type=json \
   collection=transaction_content \
   fields=url,html \
 | extract_lines_from_html \

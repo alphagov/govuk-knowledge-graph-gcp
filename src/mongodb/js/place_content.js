@@ -56,5 +56,6 @@ db.content_items.aggregate([
       }
     }
   } },
+  { $match: { "html": { "$exists": true, $ne: null } } },
   { $out: "place_content" }
 ])
