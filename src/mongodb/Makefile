@@ -111,7 +111,7 @@ temp/title.mongodb: temp/define_url.mongodb
 	mongo content_store js/title.js
 	touch temp/title.mongodb
 
-# Download the title dataset that was previously created.
+# Download a CSV file of the title dataset that was previously created.
 data/title.csv.gz: temp/title.mongodb
 	source functions.sh; source sh/title.sh
 
@@ -122,7 +122,7 @@ temp/description.mongodb: temp/define_url.mongodb
 data/description.csv.gz: temp/description.mongodb
 	source functions.sh; source sh/description.sh
 
-temp/step_by_step_content.mongodb: temp/define_url.mongodb
+temp/step_by_step_content.mongodb: temp/define_url.mongodb  temp/index.mongodb
 	mongo content_store js/step_by_step_content.js
 	touch temp/step_by_step_content.mongodb
 
@@ -135,17 +135,17 @@ data/step_by_step_lines.csv.gz: temp/step_by_step_content.mongodb
 data/step_by_step_embedded_links.csv.gz: temp/step_by_step_content.mongodb
 	source functions.sh; source sh/step_by_step_embedded_links.sh
 
-data/department_analytics_profile.csv.gz: temp/define_url.mongodb
+data/department_analytics_profile.csv.gz: temp/define_url.mongodb temp/index.mongodb
 	source functions.sh; source sh/department_analytics_profile.sh
 
-temp/transaction_start_link.mongodb: temp/define_url.mongodb
+temp/transaction_start_link.mongodb: temp/define_url.mongodb temp/index.mongodb
 	mongo content_store js/transaction_start_link.js
 	touch temp/transaction_start_link.mongodb
 
 data/transaction_start_link.csv.gz: temp/transaction_start_link.mongodb
 	source functions.sh; source sh/transaction_start_link.sh
 
-data/start_button_text.csv.gz: temp/define_url.mongodb
+data/start_button_text.csv.gz: temp/define_url.mongodb temp/index.mongodb
 	source functions.sh; source sh/start_button_text.sh
 
 temp/expanded_links.mongodb: temp/define_url.mongodb
@@ -175,7 +175,7 @@ data/parts_lines.csv.gz: temp/parts_content.mongodb
 data/parts_embedded_links.csv.gz: temp/parts_content.mongodb
 	source functions.sh; source sh/parts_embedded_links.sh
 
-temp/transaction_content.mongodb: temp/define_url.mongodb
+temp/transaction_content.mongodb: temp/define_url.mongodb temp/index.mongodb
 	mongo content_store js/transaction_content.js
 	touch temp/transaction_content.mongodb
 
@@ -188,7 +188,7 @@ data/transaction_lines.csv.gz: temp/transaction_content.mongodb
 data/transaction_embedded_links.csv.gz: temp/transaction_content.mongodb
 	source functions.sh; source sh/transaction_embedded_links.sh
 
-temp/place_content.mongodb: temp/define_url.mongodb
+temp/place_content.mongodb: temp/define_url.mongodb temp/index.mongodb
 	mongo content_store js/place_content.js
 	touch temp/place_content.mongodb
 
@@ -202,7 +202,7 @@ data/place_embedded_links.csv.gz: temp/place_content.mongodb
 	source functions.sh; source sh/place_embedded_links.sh
 
 # Some document types have the body text in the 'body' field (not 'body.content')
-temp/body.mongodb: temp/define_url.mongodb
+temp/body.mongodb: temp/define_url.mongodb temp/index.mongodb
 	mongo content_store js/body.js
 	touch temp/body.mongodb
 
@@ -216,7 +216,7 @@ data/body_embedded_links.csv.gz: temp/body.mongodb
 	source functions.sh; source sh/body_embedded_links.sh
 
 # Some document types have the body text in the 'body.content' field (not 'body')
-temp/body_content.mongodb: temp/define_url.mongodb
+temp/body_content.mongodb: temp/define_url.mongodb temp/index.mongodb
 	mongo content_store js/body_content.js
 	touch temp/body_content.mongodb
 
