@@ -297,86 +297,6 @@ CREATE (p)-[r:HYPERLINKS_TO {
 }]->(q)
 ;
 
-// Create LINKS_TO relationship (expanded links)
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS
-FROM 'file:///expanded_links.csv' AS line
-FIELDTERMINATOR ','
-MATCH (p:Page { url: line.from_url })
-MATCH (q:Page { url: line.to_url })
-CREATE (p)-[:LINKS_TO { linkTargetType: line.link_type, linkIndex: line.link_index }]->(q)
-;
-
-// Remove self-links, which are pages that are translations of themselves
-MATCH (n)-[r:LINKS_TO {link_target_type: 'available_translations'}]-(n)
-DELETE r
-;
-
-// Reuse `transaction_starts_at` links as `HYPERLINKS_TO`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'transaction_starts_at'}]-(q)
-CREATE (p)-[:HYPERLINKS_TO]-(q)
-;
-
-// Reuse `organisations` links as `HAS_ORGANISATION`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'organisations'}]-(q)
-CREATE (p)-[:HAS_ORGANISATIONS]-(q)
-;
-
-// Reuse `primary_publishing_organisation` links as `HAS_PRIMARY_PUBLISHING_ORGANISATION`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'primary_publishing_organisation'}]-(q)
-CREATE (p)-[:HAS_PRIMARY_PUBLISHING_ORGANISATION]-(q)
-;
-
-// Reuse `original_primary_publishing_organisation` links as `HAS_ORIGINAL_PRIMARY_PUBLISHING_ORGANISATION`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'original_primary_publishing_organisation'}]-(q)
-CREATE (p)-[:HAS_ORIGINAL_PRIMARY_PUBLISHING_ORGANISATION]-(q)
-;
-
-// Reuse `supporting_organisations` links as `HAS_SUPPORTING_ORGANISATIONS`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'supporting_organisations'}]-(q)
-CREATE (q)-[:HAS_SUPPORTING_ORGANISATIONS]-(p)
-;
-
-// Reuse `ordered_successor_organisations` links as `HAS_SUPERSEDED`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'ordered_successor_organisations'}]-(q)
-CREATE (q)-[:HAS_SUPERSEDED]-(p)
-;
-
-// Reuse `suggested_ordered_related_items` links as `HYPERLINKS_TO`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'suggested_ordered_related_items'}]-(q)
-CREATE (p)-[:HYPERLINKS_TO]-(q)
-;
-
-// Reuse `ordered_related_items` links as `HYPERLINKS_TO`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'ordered_related_items'}]-(q)
-CREATE (p)-[:HYPERLINKS_TO]-(q)
-;
-
-// Reuse `ordered_related_items_overrides` links as `HYPERLINKS_TO`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'ordered_related_items_overrides'}]-(q)
-CREATE (p)-[:HYPERLINKS_TO]-(q)
-;
-
-// Reuse `suggested_ordered_related_items` links as `HAS_SUGGESTED_ORDERED_RELATED_ITEMS`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'suggested_ordered_related_items'}]-(q)
-CREATE (p)-[:HAS_SUGGESTED_ORDERED_RELATED_ITEMS]-(q)
-;
-
-// Reuse `taxons` links as `IS_TAGGED_TO`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'taxons'}]-(q)
-CREATE (q)-[:IS_TAGGED_TO]-(p)
-;
-
-// Reuse `child` links as `HAS_CHILD`.  These are organisations.
-MATCH (p)-[:LINKS_TO {link_target_type: 'children'}]-(q)
-CREATE (q)-[:HAS_CHILD]-(p)
-;
-
-// Reuse `parent_taxons` links as `HAS_PARENT`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'parent_taxons'}]-(q)
-CREATE (q)-[:HAS_PARENT]-(p)
-;
-
 // Transaction start button link (must come before button text)
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
@@ -410,6 +330,15 @@ CREATE (p)-[r:HAS_CHAPTER {
 }]->(c)
 ;
 
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///redirects.csv' AS line
+FIELDTERMINATOR ','
+MATCH (p:Page { url: line.from }),
+MATCH (q:Page { url: line.to })
+CREATE (p)-[r:REDIRECTS_TO]->(q)
+;
+
 // Organisations, persons, and taxons
 MATCH (p:Page { documentType: 'organisation' })
 CREATE (q:Organisation {
@@ -420,7 +349,7 @@ CREATE (q:Organisation {
   status: p.phase,
   abbreviation: p.acronym
 })
-CREATE (q)-[:HAS_HOMEPAGE]-(p)
+CREATE (q)-[:HAS_HOMEPAGE]->(p)
 ;
 
 MATCH (p:Page { documentType: 'person' })
@@ -429,16 +358,7 @@ CREATE (q:Person {
   name: p.title,
   contentID: p.contentID
 })
-CREATE (q)-[:HAS_HOMEPAGE]-(p)
-;
-
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS
-FROM 'file:///redirects.csv' AS line
-FIELDTERMINATOR ','
-MATCH (p:Page { url: line.from }),
-MATCH (q:Page { url: line.to })
-CREATE (p)-[r:REDIRECTS_TO]->(q)
+CREATE (q)-[:HAS_HOMEPAGE]->(p)
 ;
 
 USING PERIODIC COMMIT
@@ -452,7 +372,87 @@ CREATE (q:Taxon {
   contentID: p.contentID,
   level: line.level
 })
-CREATE (q)-[:HAS_HOMEPAGE]-(p)
+CREATE (q)-[:HAS_HOMEPAGE]->(p)
+;
+
+// Create LINKS_TO relationship (expanded links)
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///expanded_links.csv' AS line
+FIELDTERMINATOR ','
+MATCH (p:Page { url: line.from_url })
+MATCH (q:Page { url: line.to_url })
+CREATE (p)-[:LINKS_TO { linkTargetType: line.link_type, linkIndex: line.link_index }]->(q)
+;
+
+// Remove self-links, which are pages that are translations of themselves
+MATCH (n)-[r:LINKS_TO {link_target_type: 'available_translations'}]->(n)
+DELETE r
+;
+
+// Reuse `transaction_starts_at` links as `HYPERLINKS_TO`.
+MATCH (p)-[:LINKS_TO {link_target_type: 'transaction_starts_at'}]->(q)
+CREATE (p)-[:HYPERLINKS_TO]->(q)
+;
+
+// Reuse `suggested_ordered_related_items` links as `HYPERLINKS_TO`.
+MATCH (p)-[:LINKS_TO {link_target_type: 'suggested_ordered_related_items'}]->(q)
+CREATE (p)-[:HYPERLINKS_TO]->(q)
+;
+
+// Reuse `ordered_related_items` links as `HYPERLINKS_TO`.
+MATCH (p)-[:LINKS_TO {link_target_type: 'ordered_related_items'}]->(q)
+CREATE (p)-[:HYPERLINKS_TO]->(q)
+;
+
+// Reuse `ordered_related_items_overrides` links as `HYPERLINKS_TO`.
+MATCH (p)-[:LINKS_TO {link_target_type: 'ordered_related_items_overrides'}]->(q)
+CREATE (p)-[:HYPERLINKS_TO]->(q)
+;
+
+// Reuse `suggested_ordered_related_items` links as `HAS_SUGGESTED_ORDERED_RELATED_ITEMS`.
+MATCH (p)-[:LINKS_TO {link_target_type: 'suggested_ordered_related_items'}]->(q)
+CREATE (p)-[:HAS_SUGGESTED_ORDERED_RELATED_ITEMS]->(q)
+;
+
+// Reuse `organisations` links as `HAS_ORGANISATION`.
+MATCH (a)-[:LINKS_TO {link_target_type: 'organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+CREATE (a)-[:HAS_ORGANISATIONS]->(c)
+;
+
+// Reuse `primary_publishing_organisation` links as `HAS_PRIMARY_PUBLISHING_ORGANISATION`.
+MATCH (a)-[:LINKS_TO {link_target_type: 'primary_publishing_organisation'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+CREATE (a)-[:HAS_PRIMARY_PUBLISHING_ORGANISATION]->(c)
+;
+
+// Reuse `original_primary_publishing_organisation` links as `HAS_ORIGINAL_PRIMARY_PUBLISHING_ORGANISATION`.
+MATCH (a)-[:LINKS_TO {link_target_type: 'original_primary_publishing_organisation'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+CREATE (a)-[:HAS_ORIGINAL_PRIMARY_PUBLISHING_ORGANISATION]->(c)
+;
+
+// Reuse `supporting_organisations` links as `HAS_SUPPORTING_ORGANISATIONS`.
+MATCH (a)-[:LINKS_TO {link_target_type: 'supporting_organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+CREATE (a)-[:HAS_SUPPORTING_ORGANISATIONS]->(c)
+;
+
+// Reuse `ordered_successor_organisations` links as `HAS_SUPERSEDED`.
+MATCH (a)-[:LINKS_TO {link_target_type: 'ordered_successor_organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+CREATE (a)<-[:HAS_SUPERSEDED]-(c)
+;
+
+// Reuse `taxons` links as `IS_TAGGED_TO`.
+MATCH (a)-[:LINKS_TO {link_target_type: 'taxons'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+CREATE (a)-[:IS_TAGGED_TO]->(c)
+;
+
+// Reuse `child` links as `HAS_CHILD`.  These are organisations.
+MATCH (a)-[:LINKS_TO {link_target_type: 'children'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+CREATE (a)-[:HAS_CHILD]->(c)
+;
+
+// Reuse `parent_taxons` links as `HAS_PARENT`.
+MATCH (a)-[:LINKS_TO {link_target_type: 'parent_taxons'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+CREATE (a)-[:HAS_PARENT]->(c)
 ;
 
 MATCH (n:Page) WHERE left(n.url, 18) <> "https://www.gov.uk"
