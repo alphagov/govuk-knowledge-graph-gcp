@@ -1,5 +1,6 @@
 # step_by_step content
 query_mongo \
+  type=json \
   collection=step_by_step_content \
   fields=url,html \
 | extract_text_from_html \

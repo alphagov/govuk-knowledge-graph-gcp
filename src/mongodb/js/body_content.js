@@ -50,5 +50,6 @@ db.content_items.aggregate([
   { $project: { "url": true, "details.body.content": true } },
   { $unwind: "$details.body" },
   { $project: { url: true, html: "$details.body.content" } },
+  { $match: { "html": { "$exists": true, $ne: null } } },
   { $out: "body_content"}
 ])

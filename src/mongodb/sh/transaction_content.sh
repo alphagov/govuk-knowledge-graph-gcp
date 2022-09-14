@@ -1,5 +1,6 @@
 # transaction content
 query_mongo \
+  type=json \
   collection=transaction_content \
   fields=url,html \
 | extract_text_from_html \

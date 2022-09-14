@@ -72,5 +72,6 @@ db.content_items.aggregate([
       }
     }
   } },
+  { $match: { "html": { "$exists": true, $ne: null } } },
   { $out: "step_by_step_content" }
 ])

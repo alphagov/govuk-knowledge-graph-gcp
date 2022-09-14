@@ -77,17 +77,20 @@ upload () {
 #   fields=col1,col2 \
 #   query='{ "my_field": { "$exists": true } }'
 query_mongo () {
-  local collection fields query # reset in case they are defined globally
+  local type collection fields query # reset in case they are defined globally
   local "${@}"
   mongoexport \
     --db=content_store \
-    --type=csv \
+    --type=${type:-csv} \
     --collection=${collection:-content_items} \
     --fields=${fields} \
     --query="${query}"
 }
 
 # Wrappers around python scripts
+#
+# Use of these scripts requres type=json to be specified in the query_mongo
+# command.
 #
 # Usage:
 #
@@ -105,21 +108,39 @@ query_mongo () {
 extract_text_from_html () {
   local input_col id_cols # reset in case they are defined globally
   local "${@}"
-  python3 ../../src/utils/extract_text_from_html.py \
-    --input_col=${input_col} \
-    --id_cols=${id_cols}
+  { echo $id_cols,text,text_without_blank_lines & \
+    parallel \
+      --pipe \
+      --round-robin \
+      --line-buffer \
+      python3 ../../src/utils/extract_text_from_html.py \
+        --input_col=${input_col} \
+        --id_cols=${id_cols}
+  ;}
 }
 extract_lines_from_html () {
   local input_col id_cols # reset in case they are defined globally
   local "${@}"
-  python3 ../../src/utils/extract_lines_from_html.py \
-    --input_col=${input_col} \
-    --id_cols=${id_cols}
+  { echo $id_cols,line & \
+    parallel \
+      --pipe \
+      --round-robin \
+      --line-buffer \
+      python3 ../../src/utils/extract_lines_from_html.py \
+      --input_col=${input_col} \
+      --id_cols=${id_cols} \
+  ;}
 }
 extract_hyperlinks_from_html () {
   local input_col id_cols # reset in case they are defined globally
   local "${@}"
-  python3 ../../src/utils/extract_hyperlinks_from_html.py \
-    --input_col=${input_col} \
-    --id_cols=${id_cols}
+  { echo $id_cols,link_url,link_url_bare,link_text & \
+    parallel \
+      --pipe \
+      --round-robin \
+      --line-buffer \
+    python3 ../../src/utils/extract_hyperlinks_from_html.py \
+      --input_col=${input_col} \
+      --id_cols=${id_cols}
+  ;}
 }

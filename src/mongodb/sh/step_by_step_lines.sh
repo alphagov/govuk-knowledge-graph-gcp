@@ -1,5 +1,6 @@
 # step_by_step content; individual lines of text
 query_mongo \
+  type=json \
   collection=step_by_step_content \
   fields=url,html \
 | extract_lines_from_html \
