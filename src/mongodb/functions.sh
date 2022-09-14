@@ -38,7 +38,7 @@ count_distinct () {
 }
 
 # Wrapper around sed to replace single backslash with double backslashes,
-# because Neo4j interprets a single backslash as an escpae character.
+# because Neo4j interprets a single backslash as an escape character.
 double_backslashes () {
   sed 's/\\/\\\\/g'
 }
