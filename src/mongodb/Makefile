@@ -4,39 +4,65 @@ SHELL := /bin/bash
 NPROCS = $(shell grep -c 'processor' /proc/cpuinfo)
 MAKEFLAGS += -j$(NPROCS)
 
+# Get the names of all the shell scripts in the sh/ directory.  Each of these
+# scripts creates a CSV file to be uploaded to a bucket.
 SH = $(wildcard sh/*.sh)
+
+# Take the names of the shell scripts, and replace the .sh suffix with .csv.gz.
+# These new filenames are used as the 'targets' of some steps in this Makefile.
+# No .csv.gz files are ever actually created, because the output of each .sh
+# script is uploaded straight to into a bucket.
 CSV.GZ = $(patsubst sh/%.sh, data/%.csv.gz, $(SH))
 
+# A step to create all the targets described in the CSV.GZ variable, which means
+# that all the .sh scripts in the SH variable will be executed.
 .PHONY: all
 all: $(CSV.GZ)
 
+# A step to print the names of all the targets that were derived from the names
+# of .sh scripts.  This is for debugging only.
 check:
 	@echo "CSV.GZ = $(CSV.GZ)"
 
+# A step to delete any intermediate files that have been created.  This is for
+# development only.
 .PHONY: clean
 clean: clean.mongodb clean.gz
 
+# A step to delete any intermediate files that have been created in the temp/
+# directory.  This is for development only.
 .PHONY: clean.mongodb
 clean.mongodb:
 	rm temp/*
 
+# A step to delete any intermediate files that have been created in the data/
+# directory.  This is for development only.
 .PHONY: clean.gz
 clean.gz:
 	rm data/*
 
+# Create an index on the document_type field.  The query doesn't create a file,
+# so a dummy target file is created by the `touch` command, so that subsequent
+# steps know that this step has been executed.  A similar trick is used in many
+# places in this Makefile.
 temp/index.mongodb:
 	mongo content_store js/index.js
 	touch temp/index.mongodb
 
-# Prepend https://gov.uk to every _id to create a complete URL.
-# This doesn't affect any partial URLs elsewhere in the documents.
-temp/define_url.mongodb: temp/index.mongodb
+# Create a url field by prepending https://gov.uk to the value of _id field.
+temp/define_url.mongodb:
 	mongo content_store js/define_url.js
 	touch temp/define_url.mongodb
 
+# Once the url field has been defined, download the url field of every document.
+# The file functions.sh is sourced so that the functions that it defines are
+# available to the sh/url.sh script.  A similar thing is done in many places in
+# this Makefile.
 data/url.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/url.sh
 
+# Each of the following several steps depends on the same prerequisite, so they
+# can be executed in parallel.
 data/phase.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/phase.sh
 
@@ -76,10 +102,16 @@ data/withdrawn_at.csv.gz: temp/define_url.mongodb
 data/withdrawn_explanation.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/withdrawn_explanation.sh
 
+# Create a dataset in MongoDB that contains a clean-up version of the title
+# field of each document.  The query doesn't create a file, so a dummy target
+# file is created by the `touch` command, so that subsequent steps know that
+# this step has been executed.  A similar trick is used in many places in this
+# Makefile.
 temp/title.mongodb: temp/define_url.mongodb
 	mongo content_store js/title.js
 	touch temp/title.mongodb
 
+# Download the title dataset that was previously created.
 data/title.csv.gz: temp/title.mongodb
 	source functions.sh; source sh/title.sh
 
