@@ -349,7 +349,7 @@ CREATE (q:Organisation {
   status: p.phase,
   abbreviation: p.acronym
 })
-CREATE (q)-[:HAS_HOMEPAGE]-(p)
+CREATE (q)-[:HAS_HOMEPAGE]->(p)
 ;
 
 MATCH (p:Page { documentType: 'person' })
@@ -358,7 +358,7 @@ CREATE (q:Person {
   name: p.title,
   contentID: p.contentID
 })
-CREATE (q)-[:HAS_HOMEPAGE]-(p)
+CREATE (q)-[:HAS_HOMEPAGE]->(p)
 ;
 
 USING PERIODIC COMMIT
@@ -372,7 +372,7 @@ CREATE (q:Taxon {
   contentID: p.contentID,
   level: line.level
 })
-CREATE (q)-[:HAS_HOMEPAGE]-(p)
+CREATE (q)-[:HAS_HOMEPAGE]->(p)
 ;
 
 // Create LINKS_TO relationship (expanded links)
@@ -386,38 +386,38 @@ CREATE (p)-[:LINKS_TO { linkTargetType: line.link_type, linkIndex: line.link_ind
 ;
 
 // Remove self-links, which are pages that are translations of themselves
-MATCH (n)-[r:LINKS_TO {link_target_type: 'available_translations'}]-(n)
+MATCH (n)-[r:LINKS_TO {link_target_type: 'available_translations'}]->(n)
 DELETE r
 ;
 
 // Reuse `transaction_starts_at` links as `HYPERLINKS_TO`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'transaction_starts_at'}]-(q)
-CREATE (p)-[:HYPERLINKS_TO]-(q)
+MATCH (p)-[:LINKS_TO {link_target_type: 'transaction_starts_at'}]->(q)
+CREATE (p)-[:HYPERLINKS_TO]->(q)
 ;
 
 // Reuse `suggested_ordered_related_items` links as `HYPERLINKS_TO`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'suggested_ordered_related_items'}]-(q)
-CREATE (p)-[:HYPERLINKS_TO]-(q)
+MATCH (p)-[:LINKS_TO {link_target_type: 'suggested_ordered_related_items'}]->(q)
+CREATE (p)-[:HYPERLINKS_TO]->(q)
 ;
 
 // Reuse `ordered_related_items` links as `HYPERLINKS_TO`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'ordered_related_items'}]-(q)
-CREATE (p)-[:HYPERLINKS_TO]-(q)
+MATCH (p)-[:LINKS_TO {link_target_type: 'ordered_related_items'}]->(q)
+CREATE (p)-[:HYPERLINKS_TO]->(q)
 ;
 
 // Reuse `ordered_related_items_overrides` links as `HYPERLINKS_TO`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'ordered_related_items_overrides'}]-(q)
-CREATE (p)-[:HYPERLINKS_TO]-(q)
+MATCH (p)-[:LINKS_TO {link_target_type: 'ordered_related_items_overrides'}]->(q)
+CREATE (p)-[:HYPERLINKS_TO]->(q)
 ;
 
 // Reuse `suggested_ordered_related_items` links as `HAS_SUGGESTED_ORDERED_RELATED_ITEMS`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'suggested_ordered_related_items'}]-(q)
-CREATE (p)-[:HAS_SUGGESTED_ORDERED_RELATED_ITEMS]-(q)
+MATCH (p)-[:LINKS_TO {link_target_type: 'suggested_ordered_related_items'}]->(q)
+CREATE (p)-[:HAS_SUGGESTED_ORDERED_RELATED_ITEMS]->(q)
 ;
 
 // Reuse `organisations` links as `HAS_ORGANISATION`.
 MATCH (a)-[:LINKS_TO {link_target_type: 'organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c)
-CREATE (a)-[:HAS_ORGANISATIONS]-(c)
+CREATE (a)-[:HAS_ORGANISATIONS]->(c)
 ;
 
 // Reuse `primary_publishing_organisation` links as `HAS_PRIMARY_PUBLISHING_ORGANISATION`.
@@ -442,17 +442,17 @@ CREATE (a)<-[:HAS_SUPERSEDED]-(c)
 
 // Reuse `taxons` links as `IS_TAGGED_TO`.
 MATCH (a)-[:LINKS_TO {link_target_type: 'taxons'}]->(b)<-[:HAS_HOMEPAGE]-(c)
-CREATE (a)-[:IS_TAGGED_TO]-(c)
+CREATE (a)-[:IS_TAGGED_TO]->(c)
 ;
 
 // Reuse `child` links as `HAS_CHILD`.  These are organisations.
 MATCH (a)-[:LINKS_TO {link_target_type: 'children'}]->(b)<-[:HAS_HOMEPAGE]-(c)
-CREATE (a)-[:HAS_CHILD]-(c)
+CREATE (a)-[:HAS_CHILD]->(c)
 ;
 
 // Reuse `parent_taxons` links as `HAS_PARENT`.
 MATCH (a)-[:LINKS_TO {link_target_type: 'parent_taxons'}]->(b)<-[:HAS_HOMEPAGE]-(c)
-CREATE (a)-[:HAS_PARENT]-(c)
+CREATE (a)-[:HAS_PARENT]->(c)
 ;
 
 MATCH (n:Page) WHERE left(n.url, 18) <> "https://www.gov.uk"
