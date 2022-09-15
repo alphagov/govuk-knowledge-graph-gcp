@@ -8,6 +8,7 @@ RUN apt-get install -y \
   apt-transport-https \
   ca-certificates \
   make \
+  parallel \
   gnupg \
   curl \
   python3-bs4
