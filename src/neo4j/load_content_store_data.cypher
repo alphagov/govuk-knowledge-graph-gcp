@@ -156,7 +156,8 @@ MATCH (p:Page { url: line.url })
 MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
 CREATE (p)-[r:HYPERLINKS_TO {
   linkUrl: line.link_url,
-  linkText: coalesce(line.link_text, "")
+  linkText: coalesce(line.link_text, ""),
+  linkCount: line.count
 }]->(q)
 ;
 
@@ -178,7 +179,8 @@ MATCH (p:Page { url: line.url })
 MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
 CREATE (p)-[r:HYPERLINKS_TO {
   linkUrl: line.link_url,
-  linkText: coalesce(line.link_text, "")
+  linkText: coalesce(line.link_text, ""),
+  linkCount: line.count
 }]->(q)
 ;
 
@@ -200,7 +202,8 @@ MATCH (p:Page { url: line.url })
 MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
 CREATE (p)-[r:HYPERLINKS_TO {
   linkUrl: line.link_url,
-  linkText: coalesce(line.link_text, "")
+  linkText: coalesce(line.link_text, ""),
+  linkCount: line.count
 }]->(q)
 ;
 
@@ -210,7 +213,7 @@ LOAD CSV WITH HEADERS
 FROM 'file:///parts_content.csv' AS line
 FIELDTERMINATOR ','
 FOREACH(ignore_me IN CASE WHEN toInteger(line.part_index) = 0 THEN [1] ELSE [] END |
-  MATCH (p:Page { url: line.base_path })
+  MERGE (p:Page { url: line.base_path })
   SET p.text = line.text
 )
 ;
@@ -222,11 +225,12 @@ LOAD CSV WITH HEADERS
 FROM 'file:///parts_embedded_links.csv' AS line
 FIELDTERMINATOR ','
 FOREACH(ignore_me IN CASE WHEN toInteger(line.part_index) = 0 THEN [1] ELSE [] END |
-  MATCH (p:Page { url: line.base_path })
+  MERGE (p:Page { url: line.base_path })
   MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
   CREATE (p)-[r:HYPERLINKS_TO {
     linkUrl: line.link_url,
-    linkText: coalesce(line.link_text, "")
+    linkText: coalesce(line.link_text, ""),
+    linkCount: line.count
   }]->(q)
 )
 ;
@@ -249,7 +253,8 @@ MATCH (p:Page { url: line.url })
 MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
 CREATE (p)-[r:HYPERLINKS_TO {
   linkUrl: line.link_url,
-  linkText: coalesce(line.link_text, "")
+  linkText: coalesce(line.link_text, ""),
+  linkCount: line.count
 }]->(q)
 ;
 
@@ -271,7 +276,8 @@ MATCH (p:Page { url: line.url })
 MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
 CREATE (p)-[r:HYPERLINKS_TO {
   linkUrl: line.link_url,
-  linkText: coalesce(line.link_text, "")
+  linkText: coalesce(line.link_text, ""),
+  linkCount: line.count
 }]->(q)
 ;
 
@@ -293,7 +299,8 @@ MATCH (p:Page { url: line.url })
 MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
 CREATE (p)-[r:HYPERLINKS_TO {
   linkUrl: line.link_url,
-  linkText: coalesce(line.link_text, "")
+  linkText: coalesce(line.link_text, ""),
+  linkCount: line.count
 }]->(q)
 ;
 
@@ -334,7 +341,7 @@ USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///redirects.csv' AS line
 FIELDTERMINATOR ','
-MATCH (p:Page { url: line.from }),
+MATCH (p:Page { url: line.from })
 MATCH (q:Page { url: line.to })
 CREATE (p)-[r:REDIRECTS_TO]->(q)
 ;
@@ -342,7 +349,7 @@ CREATE (p)-[r:REDIRECTS_TO]->(q)
 // Organisations, persons, and taxons
 MATCH (p:Page { documentType: 'organisation' })
 CREATE (q:Organisation {
-  url: 'https://www.gov.uk/' + p.contentID
+  url: 'https://www.gov.uk/' + p.contentID,
   name: p.title,
   orgID: p.analyticsIdentifier,
   contentId: p.contentID,
@@ -354,7 +361,7 @@ CREATE (q)-[:HAS_HOMEPAGE]->(p)
 
 MATCH (p:Page { documentType: 'person' })
 CREATE (q:Person {
-  url: 'https://www.gov.uk/' + p.contentID
+  url: 'https://www.gov.uk/' + p.contentID,
   name: p.title,
   contentID: p.contentID
 })
@@ -367,7 +374,7 @@ FROM 'file:///taxon_levels.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 CREATE (q:Taxon {
-  url: 'https://www.gov.uk/' + p.contentID
+  url: 'https://www.gov.uk/' + p.contentID,
   name: p.title,
   contentID: p.contentID,
   level: line.level
@@ -386,72 +393,67 @@ CREATE (p)-[:LINKS_TO { linkTargetType: line.link_type, linkIndex: line.link_ind
 ;
 
 // Remove self-links, which are pages that are translations of themselves
-MATCH (n)-[r:LINKS_TO {link_target_type: 'available_translations'}]->(n)
+MATCH (n)-[r:LINKS_TO {linkTargetType: 'available_translations'}]->(n)
 DELETE r
 ;
 
-// Reuse `transaction_starts_at` links as `HYPERLINKS_TO`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'transaction_starts_at'}]->(q)
-CREATE (p)-[:HYPERLINKS_TO]->(q)
-;
-
 // Reuse `suggested_ordered_related_items` links as `HYPERLINKS_TO`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'suggested_ordered_related_items'}]->(q)
+MATCH (p)-[:LINKS_TO {linkTargetType: 'suggested_ordered_related_items'}]->(q)
 CREATE (p)-[:HYPERLINKS_TO]->(q)
 ;
 
 // Reuse `ordered_related_items` links as `HYPERLINKS_TO`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'ordered_related_items'}]->(q)
+MATCH (p)-[:LINKS_TO {linkTargetType: 'ordered_related_items'}]->(q)
 CREATE (p)-[:HYPERLINKS_TO]->(q)
 ;
 
 // Reuse `ordered_related_items_overrides` links as `HYPERLINKS_TO`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'ordered_related_items_overrides'}]->(q)
+MATCH (p)-[:LINKS_TO {linkTargetType: 'ordered_related_items_overrides'}]->(q)
 CREATE (p)-[:HYPERLINKS_TO]->(q)
 ;
 
 // Reuse `suggested_ordered_related_items` links as `HAS_SUGGESTED_ORDERED_RELATED_ITEMS`.
-MATCH (p)-[:LINKS_TO {link_target_type: 'suggested_ordered_related_items'}]->(q)
+MATCH (p)-[:LINKS_TO {linkTargetType: 'suggested_ordered_related_items'}]->(q)
 CREATE (p)-[:HAS_SUGGESTED_ORDERED_RELATED_ITEMS]->(q)
 ;
 
 // Reuse `organisations` links as `HAS_ORGANISATION`.
-MATCH (a)-[:LINKS_TO {link_target_type: 'organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+MATCH (a)-[:LINKS_TO {linkTargetType: 'organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c)
 CREATE (a)-[:HAS_ORGANISATIONS]->(c)
 ;
 
 // Reuse `primary_publishing_organisation` links as `HAS_PRIMARY_PUBLISHING_ORGANISATION`.
-MATCH (a)-[:LINKS_TO {link_target_type: 'primary_publishing_organisation'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+MATCH (a)-[:LINKS_TO {linkTargetType: 'primary_publishing_organisation'}]->(b)<-[:HAS_HOMEPAGE]-(c)
 CREATE (a)-[:HAS_PRIMARY_PUBLISHING_ORGANISATION]->(c)
 ;
 
 // Reuse `original_primary_publishing_organisation` links as `HAS_ORIGINAL_PRIMARY_PUBLISHING_ORGANISATION`.
-MATCH (a)-[:LINKS_TO {link_target_type: 'original_primary_publishing_organisation'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+MATCH (a)-[:LINKS_TO {linkTargetType: 'original_primary_publishing_organisation'}]->(b)<-[:HAS_HOMEPAGE]-(c)
 CREATE (a)-[:HAS_ORIGINAL_PRIMARY_PUBLISHING_ORGANISATION]->(c)
 ;
 
 // Reuse `supporting_organisations` links as `HAS_SUPPORTING_ORGANISATIONS`.
-MATCH (a)-[:LINKS_TO {link_target_type: 'supporting_organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+MATCH (a)-[:LINKS_TO {linkTargetType: 'supporting_organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c)
 CREATE (a)-[:HAS_SUPPORTING_ORGANISATIONS]->(c)
 ;
 
 // Reuse `ordered_successor_organisations` links as `HAS_SUPERSEDED`.
-MATCH (a)-[:LINKS_TO {link_target_type: 'ordered_successor_organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+MATCH (a)-[:LINKS_TO {linkTargetType: 'ordered_successor_organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c)
 CREATE (a)<-[:HAS_SUPERSEDED]-(c)
 ;
 
 // Reuse `taxons` links as `IS_TAGGED_TO`.
-MATCH (a)-[:LINKS_TO {link_target_type: 'taxons'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+MATCH (a)-[:LINKS_TO {linkTargetType: 'taxons'}]->(b)<-[:HAS_HOMEPAGE]-(c)
 CREATE (a)-[:IS_TAGGED_TO]->(c)
 ;
 
-// Reuse `child` links as `HAS_CHILD`.  These are organisations.
-MATCH (a)-[:LINKS_TO {link_target_type: 'children'}]->(b)<-[:HAS_HOMEPAGE]-(c)
-CREATE (a)-[:HAS_CHILD]->(c)
+// Reuse `child` links as `HAS_CHILD`.  These aren't taxons or organisations.
+MATCH (a)-[:LINKS_TO {linkTargetType: 'children'}]->(b)
+CREATE (a)-[:HAS_CHILD]->(b)
 ;
 
 // Reuse `parent_taxons` links as `HAS_PARENT`.
-MATCH (a)-[:LINKS_TO {link_target_type: 'parent_taxons'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+MATCH (a)-[:LINKS_TO {linkTargetType: 'parent_taxons'}]->(b)<-[:HAS_HOMEPAGE]-(c)
 CREATE (a)-[:HAS_PARENT]->(c)
 ;
 
