@@ -1,5 +1,6 @@
 # parts embedded hyperlinks
 query_mongo \
+  type=json \
   collection=parts_content \
   fields=url,base_path,part_index,html \
 | extract_hyperlinks_from_html \
