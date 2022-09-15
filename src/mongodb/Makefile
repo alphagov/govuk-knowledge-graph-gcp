@@ -75,9 +75,6 @@ data/analytics_identifier.csv.gz: temp/define_url.mongodb
 data/acronym.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/acronym.sh
 
-data/parts.csv.gz: temp/define_url.mongodb
-	source functions.sh; source sh/parts.sh
-
 data/document_type.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/document_type.sh
 
@@ -165,6 +162,9 @@ data/expanded_links_content_ids.csv.gz: temp/expanded_links_content_ids.mongodb
 temp/parts_content.mongodb: temp/define_url.mongodb
 	mongo content_store js/parts_content.js
 	touch temp/parts_content.mongodb
+
+data/parts.csv.gz: temp/parts_content.mongodb
+	source functions.sh; source sh/parts.sh
 
 data/parts_content.csv.gz: temp/parts_content.mongodb
 	source functions.sh; source sh/parts_content.sh
