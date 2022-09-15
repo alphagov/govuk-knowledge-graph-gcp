@@ -25,7 +25,7 @@ find /var/lib/neo4j/import -name "*.csv.gz" -exec gunzip {} \;
 
 # Query the content store into intermediate datasets
 gsutil cat \
-  gs://govuk-knowledge-graph-repository/src/neo4j/load-content-store-data.cypher \
+  gs://govuk-knowledge-graph-repository/src/neo4j/load_content_store_data.cypher \
   | cypher-shell
 
 # Stay alive

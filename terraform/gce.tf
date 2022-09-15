@@ -27,6 +27,22 @@ resource "google_service_account_iam_policy" "gce_mongodb" {
   policy_data        = data.google_iam_policy.service_account-gce_mongodb.policy_data
 }
 
+# Allow a workflow to attach the neo4j service account to an instance.
+data "google_iam_policy" "service_account-gce_neo4j" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+    members = [
+      "serviceAccount:${google_service_account.workflow_neo4j.email}",
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "gce_neo4j" {
+  service_account_id = google_service_account.gce_neo4j.name
+  policy_data        = data.google_iam_policy.service_account-gce_neo4j.policy_data
+}
+
+
 # terraform import google_compute_network.default default
 resource "google_compute_network" "default" {
   name        = "default"

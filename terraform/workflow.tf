@@ -86,9 +86,6 @@ main:
 EOF
 }
 
-# An example of the decoded message:
-#
-
 resource "google_eventarc_trigger" "govuk_integration_database_backups" {
   name            = "mongodb"
   location        = var.region
@@ -105,4 +102,36 @@ resource "google_eventarc_trigger" "govuk_integration_database_backups" {
       topic = google_pubsub_topic.govuk_integration_database_backups.id
     }
   }
+}
+
+resource "google_service_account" "workflow_neo4j" {
+  account_id   = "workflow-neo4j"
+  display_name = "Service account for the neo4j workflow"
+}
+
+resource "google_workflows_workflow" "neo4j" {
+  name            = "neo4j"
+  region          = var.region
+  description     = "Run a neo4j instance from its template"
+  service_account = google_service_account.workflow_neo4j.id
+  source_contents = <<-EOF
+  # This workflow creates an instance from the neo4j template
+  # In terraform you need to escape the $$ or it will cause errors.
+
+main:
+  steps:
+  - log_starting_instance:
+      call: sys.log
+      args:
+          text: "Starting neo4j instance"
+          severity: INFO
+  - start_neo4j:
+      call: googleapis.compute.v1.instances.insert
+      args:
+          project: ${var.project_id}
+          zone: ${var.zone}
+          sourceInstanceTemplate: https://www.googleapis.com/compute/v1/projects/${var.project_id}/global/instanceTemplates/neo4j
+          body:
+              name: neo4j
+EOF
 }
