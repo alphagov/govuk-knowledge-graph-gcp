@@ -198,6 +198,7 @@ data "google_iam_policy" "project" {
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
       "serviceAccount:${google_service_account.workflow_mongodb.email}",
+      "serviceAccount:${google_service_account.workflow_neo4j.email}",
     ]
   }
 
@@ -240,6 +241,7 @@ data "google_iam_policy" "project" {
     role = "roles/logging.logWriter"
     members = [
       "serviceAccount:${google_service_account.workflow_mongodb.email}",
+      "serviceAccount:${google_service_account.workflow_neo4j.email}",
     ]
   }
 
