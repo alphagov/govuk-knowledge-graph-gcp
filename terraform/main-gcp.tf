@@ -67,6 +67,7 @@ variable "services" {
     "storage.googleapis.com",
     "iam.googleapis.com",
     "artifactregistry.googleapis.com",
+    "cloudscheduler.googleapis.com",
     "compute.googleapis.com",
     "eventarc.googleapis.com",
     "pubsub.googleapis.com",
@@ -194,6 +195,13 @@ data "google_iam_policy" "project" {
   }
 
   binding {
+    role = "roles/cloudscheduler.serviceAgent"
+    members = [
+      "serviceAccount:service-19513753240@gcp-sa-cloudscheduler.iam.gserviceaccount.com",
+    ]
+  }
+
+  binding {
     role = "roles/compute.instanceAdmin.v1"
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
@@ -263,6 +271,7 @@ data "google_iam_policy" "project" {
     role = "roles/workflows.invoker"
     members = [
       "serviceAccount:${google_service_account.eventarc.email}",
+      "serviceAccount:${google_service_account.scheduler_neo4j.email}",
     ]
   }
 
