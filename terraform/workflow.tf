@@ -180,7 +180,7 @@ resource "google_cloud_scheduler_job" "neo4j_on" {
 
   http_target {
     http_method = "POST"
-    uri = "https://workflowexecutions.googleapis.com/v1/${google_workflows_workflow.neo4j_on.id}/executions"
+    uri         = "https://workflowexecutions.googleapis.com/v1/${google_workflows_workflow.neo4j_on.id}/executions"
     oauth_token {
       service_account_email = google_service_account.scheduler_neo4j.email
     }
@@ -196,7 +196,7 @@ resource "google_cloud_scheduler_job" "neo4j_off" {
 
   http_target {
     http_method = "POST"
-    uri = "https://workflowexecutions.googleapis.com/v1/${google_workflows_workflow.neo4j_off.id}/executions"
+    uri         = "https://workflowexecutions.googleapis.com/v1/${google_workflows_workflow.neo4j_off.id}/executions"
     oauth_token {
       service_account_email = google_service_account.scheduler_neo4j.email
     }
