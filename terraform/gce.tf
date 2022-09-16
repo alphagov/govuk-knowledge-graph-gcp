@@ -42,7 +42,6 @@ resource "google_service_account_iam_policy" "gce_neo4j" {
   policy_data        = data.google_iam_policy.service_account-gce_neo4j.policy_data
 }
 
-
 # terraform import google_compute_network.default default
 resource "google_compute_network" "default" {
   name        = "default"
