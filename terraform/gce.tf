@@ -48,11 +48,6 @@ resource "google_compute_network" "default" {
   description = "Default network for the project"
 }
 
-resource "google_compute_address" "neo4j" {
-  name         = "neo4j"
-  network_tier = "STANDARD"
-}
-
 resource "google_compute_address" "mongodb" {
   name         = "mongodb"
   network_tier = "STANDARD"
@@ -184,8 +179,9 @@ resource "google_compute_instance_template" "neo4j" {
   network_interface {
     network = "default"
     access_config {
-      network_tier = "STANDARD"
-      nat_ip       = google_compute_address.neo4j.address
+      # Premium required for a global static IP address
+      network_tier = "PREMIUM"
+      nat_ip       = google_compute_global_address.neo4j.address
     }
   }
 
@@ -221,4 +217,11 @@ resource "google_compute_instance_template" "mongodb" {
     email  = google_service_account.gce_mongodb.email
     scopes = ["cloud-platform"]
   }
+}
+
+# Static external IP address for Neo4j
+resource "google_compute_global_address" "neo4j" {
+  name         = "neo4j"
+  description  = "Static external IP address for Neo4j instances"
+  address_type = "EXTERNAL"
 }

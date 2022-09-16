@@ -135,7 +135,9 @@ resource "google_project_service" "services" {
 
 # Use a cheaper network tier
 resource "google_compute_project_default_network_tier" "default" {
-  network_tier = "STANDARD"
+  # Premium for static global IP addresses.  Can be overridden by specific
+  # instances that don't require those.
+  network_tier = "PREMIUM"
 }
 
 resource "google_project_iam_policy" "project" {
