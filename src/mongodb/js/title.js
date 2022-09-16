@@ -3,7 +3,7 @@ db.content_items.aggregate([
   { $match: { $and: [
     { "title": { $exists: true } },
     { "title": { $ne: null } },
-    { "description.value": { $ne: "" } },
+    { "title": { $ne: "" } },
   ] } },
   { $project: { url: 1, title: { "$trim": { input: "$title" } } } },
   { $out: "title" }
