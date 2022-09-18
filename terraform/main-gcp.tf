@@ -133,7 +133,6 @@ resource "google_project_service" "services" {
 
 }
 
-# Use a cheaper network tier
 resource "google_compute_project_default_network_tier" "default" {
   # Premium for static global IP addresses.  Can be overridden by specific
   # instances that don't require those.
@@ -207,7 +206,8 @@ data "google_iam_policy" "project" {
     role = "roles/compute.instanceAdmin.v1"
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
-      "serviceAccount:${google_service_account.workflow_mongodb.email}",
+      "serviceAccount:${google_service_account.workflow_govuk_integration_database_backups.email}",
+      "serviceAccount:${google_service_account.gce_postgres.email}",
       "serviceAccount:${google_service_account.workflow_neo4j.email}",
     ]
   }
@@ -250,7 +250,7 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/logging.logWriter"
     members = [
-      "serviceAccount:${google_service_account.workflow_mongodb.email}",
+      "serviceAccount:${google_service_account.workflow_govuk_integration_database_backups.email}",
       "serviceAccount:${google_service_account.workflow_neo4j.email}",
     ]
   }
