@@ -12,12 +12,18 @@ resource "google_service_account" "gce_mongodb" {
   description  = "Service account for the MongoDB instance on GCE"
 }
 
+resource "google_service_account" "gce_postgres" {
+  account_id   = "gce-postgres"
+  display_name = "Service Account for postgres Instance"
+  description  = "Service account for the postgres instance on GCE"
+}
+
 # Allow a workflow to attach the mongodb service account to an instance.
 data "google_iam_policy" "service_account-gce_mongodb" {
   binding {
     role = "roles/iam.serviceAccountUser"
     members = [
-      "serviceAccount:${google_service_account.workflow_mongodb.email}",
+      "serviceAccount:${google_service_account.workflow_govuk_integration_database_backups.email}",
     ]
   }
 }
@@ -25,6 +31,21 @@ data "google_iam_policy" "service_account-gce_mongodb" {
 resource "google_service_account_iam_policy" "gce_mongodb" {
   service_account_id = google_service_account.gce_mongodb.name
   policy_data        = data.google_iam_policy.service_account-gce_mongodb.policy_data
+}
+
+# Allow a workflow to attach the postgres service account to an instance.
+data "google_iam_policy" "service_account-gce_postgres" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+    members = [
+      "serviceAccount:${google_service_account.workflow_govuk_integration_database_backups.email}",
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "gce_postgres" {
+  service_account_id = google_service_account.gce_postgres.name
+  policy_data        = data.google_iam_policy.service_account-gce_postgres.policy_data
 }
 
 # Allow a workflow to attach the neo4j service account to an instance.
@@ -50,6 +71,11 @@ resource "google_compute_network" "default" {
 
 resource "google_compute_address" "mongodb" {
   name         = "mongodb"
+  network_tier = "STANDARD"
+}
+
+resource "google_compute_address" "postgres" {
+  name         = "postgres"
   network_tier = "STANDARD"
 }
 
@@ -162,6 +188,26 @@ module "mongodb-container" {
   restart_policy = "Never"
 }
 
+# https://github.com/terraform-google-modules/terraform-google-container-vm
+module "postgres-container" {
+  source  = "terraform-google-modules/container-vm/google"
+  version = "~> 2.0"
+
+  container = {
+    image = "europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/postgres:latest"
+    tty : true
+    stdin : true
+    env = [
+      {
+        name = "POSTGRES_PASSWORD"
+        value = "password"
+      }
+    ]
+  }
+
+  restart_policy = "Never"
+}
+
 resource "google_compute_instance_template" "neo4j" {
   name         = "neo4j"
   machine_type = "e2-standard-8"
@@ -215,6 +261,34 @@ resource "google_compute_instance_template" "mongodb" {
 
   service_account {
     email  = google_service_account.gce_mongodb.email
+    scopes = ["cloud-platform"]
+  }
+}
+
+resource "google_compute_instance_template" "postgres" {
+  name         = "postgres"
+  machine_type = "e2-standard-8"
+
+  disk {
+    boot         = true
+    source_image = module.postgres-container.source_image
+    disk_size_gb = 40
+  }
+
+  metadata = {
+    gce-container-declaration = module.postgres-container.metadata_value
+  }
+
+  network_interface {
+    network = "default"
+    access_config {
+      network_tier = "STANDARD"
+      nat_ip       = google_compute_address.postgres.address
+    }
+  }
+
+  service_account {
+    email  = google_service_account.gce_postgres.email
     scopes = ["cloud-platform"]
   }
 }

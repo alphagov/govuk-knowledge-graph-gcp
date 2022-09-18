@@ -1,8 +1,8 @@
 # A workflow to create an instance from a template, triggered by PubSub
 
-resource "google_service_account" "workflow_mongodb" {
-  account_id   = "workflow-mongodb"
-  display_name = "Service account for the mongodb workflow"
+resource "google_service_account" "workflow_govuk_integration_database_backups" {
+  account_id   = "workflow-database-backups"
+  display_name = "Service account for the govuk-integration-database-backups workflow"
 }
 
 resource "google_service_account" "eventarc" {
@@ -10,15 +10,14 @@ resource "google_service_account" "eventarc" {
   display_name = "Service account for EventArc to trigger workflows"
 }
 
-resource "google_workflows_workflow" "mongodb" {
-  name            = "mongodb"
+resource "google_workflows_workflow" "govuk_integration_database_backups" {
+  name            = "govuk-integration-database-backups"
   region          = var.region
-  description     = "Run a MongoDB instance from its template"
-  service_account = google_service_account.workflow_mongodb.id
+  description     = "Run a databases instances from their templates"
+  service_account = google_service_account.workflow_govuk_integration_database_backups.id
   source_contents = <<-EOF
   # This workflow does the following:
-  # - Creates an instance from the MongoDB template
-  # - [TBC] Creates an instance from the Neo4j template
+  # - Creates an instance from the template for a given database backup file
   # In terraform you need to escape the $$ or it will cause errors.
 
 main:
@@ -50,11 +49,11 @@ main:
       assign:
       - object_bucket: $${message_json.bucket}
       - object_name: $${message_json.name}
-  - maybe_start_mongodb:
+  - maybe_start_an_instance:
       switch:
         - condition: $${text.match_regex(object_name, "^mongo-api/\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}-content_store_production\\.gz$")}
           steps:
-          - log_starting_instance:
+          - log_starting_mongodb_instance:
               call: sys.log
               args:
                   text: "Starting mongodb instance"
@@ -76,18 +75,42 @@ main:
                         - key: gce-container-declaration
                           value: ${jsonencode(module.mongodb-container.metadata_value)}
               next: end
+        - condition: $${text.match_regex(object_name, "^publishing-api-postgres/\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}-publishing_api_production\\.gz$")}
+          steps:
+          - log_starting_postgres_instance:
+              call: sys.log
+              args:
+                  text: "Starting postgres instance"
+                  severity: INFO
+          - start_postgres:
+              call: googleapis.compute.v1.instances.insert
+              args:
+                  project: ${var.project_id}
+                  zone: ${var.zone}
+                  sourceInstanceTemplate: https://www.googleapis.com/compute/v1/projects/${var.project_id}/global/instanceTemplates/postgres
+                  body:
+                      name: postgres
+                      metadata:
+                        items:
+                        - key: object_bucket
+                          value: $${object_bucket}
+                        - key: object_name
+                          value: $${object_name}
+                        - key: gce-container-declaration
+                          value: ${jsonencode(module.postgres-container.metadata_value)}
+              next: end
         - condition: true
           steps:
           - log_not_starting_instance:
               call: sys.log
               args:
-                  text: "Not starting mongodb instance"
+                  text: "Not starting any instance"
                   severity: INFO
 EOF
 }
 
 resource "google_eventarc_trigger" "govuk_integration_database_backups" {
-  name            = "mongodb"
+  name            = "govuk-integration-database-backups"
   location        = var.region
   service_account = google_service_account.eventarc.email
   matching_criteria {
@@ -95,7 +118,7 @@ resource "google_eventarc_trigger" "govuk_integration_database_backups" {
     value     = "google.cloud.pubsub.topic.v1.messagePublished"
   }
   destination {
-    workflow = google_workflows_workflow.mongodb.id
+    workflow = google_workflows_workflow.govuk_integration_database_backups.id
   }
   transport {
     pubsub {
