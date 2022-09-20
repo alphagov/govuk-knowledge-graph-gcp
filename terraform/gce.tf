@@ -199,8 +199,8 @@ module "postgres-container" {
     stdin : true
     env = [
       {
-        name = "POSTGRES_PASSWORD"
-        value = "password"
+        name = "POSTGRES_HOST_AUTH_METHOD"
+        value = "trust"
       }
     ]
   }
