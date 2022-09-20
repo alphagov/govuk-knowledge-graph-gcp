@@ -26,8 +26,13 @@ OBJECT_URL="gs://$OBJECT"
 
 # https://stackoverflow.com/questions/6575221
 gsutil cat "$OBJECT_URL" \
-  | tar xzvO content_store_production/content_items.bson \
-  | pg_restore -v --db=content_store --collection=content_items -
+  | pg_restore \
+    -U postgres \
+    --verbose \
+    --clean \
+    --create \
+    --dbname=postgres \
+    --no-owner
 
 # Obtain the latest state of the repository
 gsutil -m cp -r gs://govuk-knowledge-graph-repository/\* .
