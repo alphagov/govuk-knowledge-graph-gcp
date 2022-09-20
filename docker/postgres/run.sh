@@ -5,8 +5,10 @@
 # turn on bash's job control
 set -m
 
-# Start postgres and put it in the background
-postgres &
+# Start postgres in the background.  The docker-entrypoint.sh script is on the
+# path, and handles users and permissions
+# https://stackoverflow.com/a/48880635/937932
+docker-entrypoint.sh postgres &
 
 # Wait for postgres to start
 sleep 5

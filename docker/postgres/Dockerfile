@@ -28,6 +28,10 @@ ENV GITHUB_SHA=${GITHUB_SHA}
 ARG GITHUB_REF=missing
 ENV GITHUB_REF=${GITHUB_REF}
 
+# Reset the postgres entrypoint to the docker default, so that we can run our
+# own CMD
+ENTRYPOINT []
+
 # Run a script from a copy of the HEAD of the repository
 CMD \
   gsutil cat gs://govuk-knowledge-graph-repository/docker/postgres/run.sh \
