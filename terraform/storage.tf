@@ -48,6 +48,7 @@ data "google_iam_policy" "bucket_repository" {
     role = "roles/storage.objectViewer"
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
+      "serviceAccount:${google_service_account.gce_postgres.email}",
       "serviceAccount:${google_service_account.gce_neo4j.email}",
     ]
   }
