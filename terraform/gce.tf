@@ -210,12 +210,12 @@ module "postgres-container" {
 
 resource "google_compute_instance_template" "neo4j" {
   name         = "neo4j"
-  machine_type = "e2-standard-8"
+  machine_type = "e2-standard-4"
 
   disk {
     boot         = true
     source_image = module.neo4j-container.source_image
-    disk_size_gb = 64
+    disk_size_gb = 40
   }
 
   metadata = {
