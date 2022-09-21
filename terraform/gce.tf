@@ -210,7 +210,7 @@ module "postgres-container" {
 
 resource "google_compute_instance_template" "neo4j" {
   name         = "neo4j"
-  machine_type = "e2-standard-8"
+  machine_type = "e2-standard-4"
 
   disk {
     boot         = true
