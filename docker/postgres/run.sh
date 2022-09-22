@@ -3,7 +3,7 @@
 # Run both postgres and scripts that interact with the database
 
 # Obtain the latest state of the repository
-gcloud cp -r gs://govuk-knowledge-graph-repository/\* .
+gcloud storage cp -r gs://govuk-knowledge-graph-repository/\* .
 
 # turn on bash's job control
 set -m
