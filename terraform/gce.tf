@@ -267,7 +267,11 @@ resource "google_compute_instance_template" "mongodb" {
 
 resource "google_compute_instance_template" "postgres" {
   name         = "postgres"
-  machine_type = "e2-standard-8"
+  # 4 CPUs should be enough that, while the largest table is being restored, all
+  # the other tables will also be restored, even if some of them are done in
+  # series rather than parallel.  Not much memory is required.  See
+  # postgresql.conf for the memory allowances.
+  machine_type = "e2-highcpu-8"
 
   disk {
     boot         = true

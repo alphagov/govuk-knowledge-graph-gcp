@@ -2,13 +2,19 @@
 
 # Run both postgres and scripts that interact with the database
 
+# Obtain the latest state of the repository
+gsutil -m cp -r gs://govuk-knowledge-graph-repository/\* .
+
+# Copy the postgres config file to where it will be read when postgres starts.
+cp src/postgres/postgresql.conf
+
 # turn on bash's job control
 set -m
 
 # Start postgres in the background.  The docker-entrypoint.sh script is on the
 # path, and handles users and permissions
 # https://stackoverflow.com/a/48880635/937932
-docker-entrypoint.sh postgres &
+docker-entrypoint.sh postgres -c config_file=src/postgres/postgresql.conf &
 
 # Wait for postgres to start
 sleep 5
@@ -25,17 +31,17 @@ gcloud compute instances describe postgres \
 OBJECT_URL="gs://$OBJECT"
 
 # https://stackoverflow.com/questions/6575221
+date
 gsutil cat "$OBJECT_URL" \
   | pg_restore \
     -U postgres \
     --verbose \
-    --clean \
     --create \
+    --clean \
     --dbname=postgres \
-    --no-owner
-
-# Obtain the latest state of the repository
-gsutil -m cp -r gs://govuk-knowledge-graph-repository/\* .
+    --jobs=8 \
+  2022-07-26T05:00:01-publishing_api_production.gz; \
+date
 
 # 1. Query the content store into intermediate datasets
 # 2. Download from the content store and intermediate datasets
