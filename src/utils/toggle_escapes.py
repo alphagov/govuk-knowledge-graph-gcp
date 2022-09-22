@@ -50,12 +50,3 @@ Example usage:
         for col in unescape_cols:
             row[col] = row[col].encode('UTF-8').decode('unicode-escape')
         writer.writerow(row)
-
-# s = r"""Ernő\nbar
-# baz"""
-# s
-# print(s)
-# s.encode('unicode-escape').decode('UTF-8')
-# print(s.encode('unicode-escape').decode('UTF-8'))
-# s.encode('unicode-escape').decode('UTF-8').encode('UTF-8').decode('unicode-escape')
-# print(s.encode('unicode-escape').decode('UTF-8').encode('UTF-8').decode('unicode-escape'))
