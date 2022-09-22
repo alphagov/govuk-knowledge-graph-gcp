@@ -3,7 +3,7 @@
 # Run both postgres and scripts that interact with the database
 
 # Obtain the latest state of the repository
-gsutil -m cp -r gs://govuk-knowledge-graph-repository/\* .
+gcloud cp -r gs://govuk-knowledge-graph-repository/\* .
 
 # turn on bash's job control
 set -m
@@ -19,25 +19,35 @@ sleep 5
 # Restore the Publishing API database from its backup .bson file in GCP Storage
 
 # Construct the file's URL
+BUCKET=$(
+  gcloud compute instances describe postgres \
+    --project govuk-knowledge-graph \
+    --zone europe-west2-a \
+    --format="value(metadata.items.object_bucket)"
+)
 OBJECT=$(
 gcloud compute instances describe postgres \
   --project govuk-knowledge-graph \
   --zone europe-west2-a \
-  --format="value[separator=\"/\"](metadata.items.object_bucket, metadata.items.object_name)"
+  --format="value(metadata.items.object_name)"
 )
-OBJECT_URL="gs://$OBJECT"
+OBJECT_URL="gs://$BUCKET/$OBJECT"
 
 # https://stackoverflow.com/questions/6575221
 date
-gsutil cat "$OBJECT_URL" \
-  | pg_restore \
-    -U postgres \
-    --verbose \
-    --create \
-    --clean \
-    --dbname=postgres \
-    --jobs=8
+gcloud storage cp "$OBJECT_URL" "$OBJECT"
 date
+pg_restore \
+  -U postgres \
+  --verbose \
+  --create \
+  --clean \
+  --dbname=postgres \
+  --no-owner \
+  --jobs=8 \
+  "$OBJECT"
+date
+rm "$OBJECT"
 
 # 1. Query the content store into intermediate datasets
 # 2. Download from the content store and intermediate datasets
