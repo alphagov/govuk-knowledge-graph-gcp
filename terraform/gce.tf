@@ -141,6 +141,12 @@ module "neo4j-container" {
     image = "europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/neo4j:latest"
     tty : true
     stdin : true
+    env = [
+      {
+        name = "NEO4JLABS_PLUGINS"
+        value = "[\"apoc\"]"
+      }
+    ]
   }
 }
 
