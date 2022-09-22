@@ -5,9 +5,6 @@
 # Obtain the latest state of the repository
 gsutil -m cp -r gs://govuk-knowledge-graph-repository/\* .
 
-# Copy the postgres config file to where it will be read when postgres starts.
-cp src/postgres/postgresql.conf
-
 # turn on bash's job control
 set -m
 
