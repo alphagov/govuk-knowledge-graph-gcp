@@ -27,8 +27,6 @@ RUN \
   && cd /var/lib/neo4j/certificates \
   && openssl req  -nodes -new -x509  -keyout private.key -out public.crt -subj \
     "/C=GB/ST=NRW/L=London/O=GDS/OU=DevOps/CN=www.gov.uk/emailAddress=gds-data-science@digital.cabinet-office.gov.uk" \
-  # Install the APOC core plugin
-  && mv /var/lib/neo4j/labs/apoc-4.4.0.5-core.jar /var/lib/neo4j/plugins \
   # Install the Graph Data Science plugin \
   # https://neo4j.com/docs/graph-data-science/current/installation/neo4j-server/ \
   && cd /tmp \
