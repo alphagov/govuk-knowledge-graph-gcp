@@ -282,7 +282,7 @@ resource "google_compute_instance_template" "postgres" {
   disk {
     boot         = true
     source_image = module.postgres-container.source_image
-    disk_size_gb = 60
+    disk_size_gb = 80
   }
 
   metadata = {
