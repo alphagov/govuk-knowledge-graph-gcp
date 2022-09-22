@@ -36,8 +36,7 @@ gsutil cat "$OBJECT_URL" \
     --create \
     --clean \
     --dbname=postgres \
-    --jobs=8 \
-  2022-07-26T05:00:01-publishing_api_production.gz; \
+    --jobs=8
 date
 
 # 1. Query the content store into intermediate datasets
