@@ -74,7 +74,8 @@ main:
                           value: $${object_name}
                         - key: gce-container-declaration
                           value: ${jsonencode(module.mongodb-container.metadata_value)}
-              next: end
+          - return_started_mongodb:
+              return: $${"Started mongodb instance"}
         - condition: $${text.match_regex(object_name, "^publishing-api-postgres/\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}-publishing_api_production\\.gz$")}
           steps:
           - log_starting_postgres_instance:
@@ -98,14 +99,15 @@ main:
                           value: $${object_name}
                         - key: gce-container-declaration
                           value: ${jsonencode(module.postgres-container.metadata_value)}
-              next: end
-        - condition: true
-          steps:
-          - log_not_starting_instance:
-              call: sys.log
-              args:
-                  text: "Not starting any instance"
-                  severity: INFO
+          - return_started_postgres:
+              return: $${"Started postgres instance"}
+  - log_not_starting_instance:
+      call: sys.log
+      args:
+          text: "Not starting any instance"
+          severity: INFO
+  - return_did_not_start:
+      return: $${"Did not start any instance"}
 EOF
 }
 
