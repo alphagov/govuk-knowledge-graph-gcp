@@ -277,7 +277,7 @@ resource "google_compute_instance_template" "postgres" {
   # the other tables will also be restored, even if some of them are done in
   # series rather than parallel.  Not much memory is required.  See
   # postgresql.conf for the memory allowances.
-  machine_type = "e2-highcpu-8"
+  machine_type = "e2-standard-4"
 
   disk {
     boot         = true
