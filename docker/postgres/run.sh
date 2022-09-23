@@ -44,7 +44,7 @@ pg_restore \
   --clean \
   --dbname=postgres \
   --no-owner \
-  --jobs=4 \
+  --jobs=8 \
   "$OBJECT"
 date
 rm "$OBJECT"
