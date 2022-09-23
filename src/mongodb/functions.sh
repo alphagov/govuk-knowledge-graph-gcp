@@ -60,6 +60,24 @@ upload () {
   | gsutil cp - "gs://govuk-knowledge-graph-data-processed/content-store/${file_name}.csv.gz"
 }
 
+# Upload from cloud bucket to BigQuery table
+#
+# Usage:
+# send_to_bigquery file_name=myfile
+#
+# The suffix ".csv.gz" is automatically appended to the file name.
+send_to_bigquery () {
+  local file_name # reset in case they are defined globally
+  local "${@}"
+  bq load \
+    --replace \
+    --source_format="CSV" \
+    --allow_quoted_newlines \
+    --skip_leading_rows=1 \
+    "content.${file_name}" \
+    "gs://govuk-knowledge-graph-data-processed/content-store/${file_name}.csv.gz"
+}
+
 # Wrapper around mongoexport to preset --db=content_store and --type=csv
 #
 # The `collection=` parameter is optional.  Its default is `content_items`.
