@@ -143,7 +143,7 @@ module "neo4j-container" {
     stdin : true
     env = [
       {
-        name = "NEO4JLABS_PLUGINS"
+        name  = "NEO4JLABS_PLUGINS"
         value = "[\"apoc\"]"
       }
     ]
@@ -205,7 +205,7 @@ module "postgres-container" {
     stdin : true
     env = [
       {
-        name = "POSTGRES_HOST_AUTH_METHOD"
+        name  = "POSTGRES_HOST_AUTH_METHOD"
         value = "trust"
       }
     ]
@@ -272,7 +272,7 @@ resource "google_compute_instance_template" "mongodb" {
 }
 
 resource "google_compute_instance_template" "postgres" {
-  name         = "postgres"
+  name = "postgres"
   # 4 CPUs should be enough that, while the largest table is being restored, all
   # the other tables will also be restored, even if some of them are done in
   # series rather than parallel.  Not much memory is required.  See
