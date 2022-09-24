@@ -32,10 +32,11 @@ gcloud compute instances describe postgres \
   --format="value(metadata.items.object_name)"
 )
 OBJECT_URL="gs://$BUCKET/$OBJECT"
+FILE_PATH="data/$OBJECT"
 
 # https://stackoverflow.com/questions/6575221
 date
-gcloud storage cp "$OBJECT_URL" "$OBJECT"
+gcloud storage cp "$OBJECT_URL" "$FILE_PATH"
 date
 pg_restore \
   -U postgres \
@@ -44,10 +45,10 @@ pg_restore \
   --clean \
   --dbname=postgres \
   --no-owner \
-  --jobs=4 \
-  "$OBJECT"
+  --jobs=2 \
+  "$FILE_PATH"
 date
-rm "$OBJECT"
+rm "$FILE_PATH"
 
 # 1. Query the content store into intermediate datasets
 # 2. Download from the content store and intermediate datasets

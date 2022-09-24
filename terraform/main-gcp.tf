@@ -83,6 +83,20 @@ variable "page_to_page_transitions_sql_file" {
   default = "page-to-page-transitions.sql"
 }
 
+variable "postgres-startup-script" {
+  type    = string
+  default = <<-EOF
+#cloud-config
+
+bootcmd:
+- mkfs.ext4 -F /dev/nvme0n1
+- mkdir -p /mnt/disks/local-ssd
+- mount -o discard,defaults,nobarrier /dev/nvme0n1 /mnt/disks/local-ssd
+- mkdir -p /mnt/disks/local-ssd/postgresql-data
+- mkdir -p /mnt/disks/local-ssd/data
+EOF
+}
+
 # Set the Terraform provider
 provider "google" {
   project = var.project_id

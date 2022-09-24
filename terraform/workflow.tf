@@ -97,6 +97,8 @@ main:
                           value: $${object_bucket}
                         - key: object_name
                           value: $${object_name}
+                        - key: user-data
+                          value: ${jsonencode(var.postgres-startup-script)}
                         - key: gce-container-declaration
                           value: ${jsonencode(module.postgres-container.metadata_value)}
           - return_started_postgres:
