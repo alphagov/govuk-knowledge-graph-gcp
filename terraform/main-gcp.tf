@@ -203,14 +203,14 @@ data "google_iam_policy" "project" {
   }
 
   binding {
-    role    = "roles/bigquery.jobUser"
+    role = "roles/bigquery.jobUser"
     members = [
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
     ]
   }
 
   binding {
-    role    = "roles/bigquerydatatransfer.serviceAgent"
+    role = "roles/bigquerydatatransfer.serviceAgent"
     members = [
       "serviceAccount:service-19513753240@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com",
     ]
@@ -276,7 +276,7 @@ data "google_iam_policy" "project" {
   }
 
   binding {
-    role ="roles/iam.serviceAccountShortTermTokenMinter"
+    role = "roles/iam.serviceAccountShortTermTokenMinter"
     members = [
       "serviceAccount:service-19513753240@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com",
     ]
