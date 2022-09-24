@@ -56,9 +56,6 @@ rm "$FILE_PATH"
 cd src/postgres
 make
 
-# Stay alive (for dev)
-sleep infinity
-
 # Stop this instance
 # https://stackoverflow.com/a/41232669
 gcloud compute instances delete postgres --quiet --zone=europe-west2-a
