@@ -209,7 +209,35 @@ module "postgres-container" {
         value = "trust"
       }
     ]
+    volumeMounts = [
+      {
+        mountPath = "/var/lib/postgresql/data"
+        name      = "local-ssd-postgresql-data"
+        readOnly  = false
+      },
+      {
+        mountPath = "/data"
+        name      = "local-ssd-data"
+        readOnly  = false
+      }
+    ]
   }
+
+  volumes = [
+    # https://github.com/terraform-google-modules/terraform-google-container-vm/issues/66
+    {
+      name = "local-ssd-postgresql-data"
+      hostPath = {
+        path = "/mnt/disks/local-ssd/postgresql-data"
+      }
+    },
+    {
+      name = "local-ssd-data"
+      hostPath = {
+        path = "/mnt/disks/local-ssd/data"
+      }
+    }
+  ]
 
   restart_policy = "Never"
 }
@@ -277,15 +305,25 @@ resource "google_compute_instance_template" "postgres" {
   # the other tables will also be restored, even if some of them are done in
   # series rather than parallel.  Not much memory is required.  See
   # postgresql.conf for the memory allowances.
-  machine_type = "e2-standard-4"
+  machine_type = "n2d-highmem-2"
 
   disk {
     boot         = true
     source_image = module.postgres-container.source_image
-    disk_size_gb = 80
+    disk_size_gb = 10
+  }
+
+  disk {
+    device_name  = "local-ssd"
+    interface    = "NVME"
+    disk_type    = "local-ssd"
+    disk_size_gb = "375" # Must be exactly 375GB for a local SSD disk
+    type         = "SCRATCH"
   }
 
   metadata = {
+    # https://cloud.google.com/container-optimized-os/docs/concepts/disks-and-filesystem#mounting_and_formatting_disks
+    user-data                 = var.postgres-startup-script
     gce-container-declaration = module.postgres-container.metadata_value
   }
 
