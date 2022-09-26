@@ -470,11 +470,10 @@ FIELDTERMINATOR ','
 MATCH (p:Page { url: line.from_url })
 MATCH (q:Page { url: line.to_url })
 CREATE (p)-[:USER_MOVEMENT{
-  numberOfMovements: toInteger(csvLine.number_of_movements),
-  numberOfUserPseudoIds: toInteger(csvLine.number_of_user_pseudo_ids),
-  numberOfSessions: toInteger(csvLine.number_of_sessions)
+  numberOfMovements: toInteger(line.number_of_movements),
+  numberOfUserPseudoIds: toInteger(line.number_of_user_pseudo_ids),
+  numberOfSessions: toInteger(line.number_of_sessions)
 }]->(q)
-
 ;
 
 // Bank holidays
