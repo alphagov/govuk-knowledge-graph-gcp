@@ -11,6 +11,7 @@ set -m
 # Start postgres in the background.  The docker-entrypoint.sh script is on the
 # path, and handles users and permissions
 # https://stackoverflow.com/a/48880635/937932
+cp src/postgres/postgresql.conf.write-optimised src/postgres/postgresql.conf
 docker-entrypoint.sh postgres -c config_file=src/postgres/postgresql.conf &
 
 # Wait for postgres to start
@@ -49,6 +50,10 @@ pg_restore \
   "$FILE_PATH"
 date
 rm "$FILE_PATH"
+
+# Restart postgres with a less-crashable configuration
+cp src/postgres/postgresql.conf.safe src/postgres/postgresql.conf
+psql -U postgres -c "SELECT pg_reload_conf();"
 
 # 1. Query the content store into intermediate datasets
 # 2. Download from the content store and intermediate datasets

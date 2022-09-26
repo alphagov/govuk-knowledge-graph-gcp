@@ -301,11 +301,11 @@ resource "google_compute_instance_template" "mongodb" {
 
 resource "google_compute_instance_template" "postgres" {
   name = "postgres"
-  # 4 CPUs should be enough that, while the largest table is being restored, all
-  # the other tables will also be restored, even if some of them are done in
-  # series rather than parallel.  Not much memory is required.  See
-  # postgresql.conf for the memory allowances.
-  machine_type = "n2d-highmem-2"
+  # 2 CPUs are enough that, while the largest table is being restored, all the
+  # other tables will also be restored, even if some of them are done in series
+  # rather than parallel.  Not much memory is required.  See postgresql.conf for
+  # the memory allowances.
+  machine_type = "c2d-highmem-2"
 
   disk {
     boot         = true
