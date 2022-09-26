@@ -183,7 +183,7 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/editor"
     members = [
-      "serviceAccount:19513753240@cloudservices.gserviceaccount.com",
+      "serviceAccount:${var.project_number}@cloudservices.gserviceaccount.com",
       "serviceAccount:govuk-knowledge-graph@appspot.gserviceaccount.com",
     ]
   }
@@ -191,14 +191,14 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/appengine.serviceAgent"
     members = [
-      "serviceAccount:service-19513753240@gcp-gae-service.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-gae-service.iam.gserviceaccount.com",
     ]
   }
 
   binding {
     role = "roles/artifactregistry.serviceAgent"
     members = [
-      "serviceAccount:service-19513753240@gcp-sa-artifactregistry.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-sa-artifactregistry.iam.gserviceaccount.com",
     ]
   }
 
@@ -212,28 +212,28 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/bigquerydatatransfer.serviceAgent"
     members = [
-      "serviceAccount:service-19513753240@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com",
     ]
   }
 
   binding {
     role = "roles/cloudbuild.builds.builder"
     members = [
-      "serviceAccount:19513753240@cloudbuild.gserviceaccount.com",
+      "serviceAccount:${var.project_number}@cloudbuild.gserviceaccount.com",
     ]
   }
 
   binding {
     role = "roles/cloudbuild.serviceAgent"
     members = [
-      "serviceAccount:service-19513753240@gcp-sa-cloudbuild.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-sa-cloudbuild.iam.gserviceaccount.com",
     ]
   }
 
   binding {
     role = "roles/cloudscheduler.serviceAgent"
     members = [
-      "serviceAccount:service-19513753240@gcp-sa-cloudscheduler.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-sa-cloudscheduler.iam.gserviceaccount.com",
     ]
   }
 
@@ -250,20 +250,20 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/compute.serviceAgent"
     members = [
-      "serviceAccount:service-19513753240@compute-system.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@compute-system.iam.gserviceaccount.com",
     ]
   }
 
   binding {
     role = "roles/containerregistry.ServiceAgent"
     members = [
-      "serviceAccount:service-19513753240@containerregistry.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@containerregistry.iam.gserviceaccount.com",
     ]
   }
 
   binding {
     members = [
-      "serviceAccount:service-19513753240@gcp-sa-eventarc.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-sa-eventarc.iam.gserviceaccount.com",
     ]
     role = "roles/eventarc.serviceAgent"
   }
@@ -271,21 +271,21 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/firestore.serviceAgent"
     members = [
-      "serviceAccount:service-19513753240@gcp-sa-firestore.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-sa-firestore.iam.gserviceaccount.com",
     ]
   }
 
   binding {
     role = "roles/iam.serviceAccountShortTermTokenMinter"
     members = [
-      "serviceAccount:service-19513753240@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com",
     ]
   }
 
   binding {
     role = "roles/iam.serviceAccountTokenCreator"
     members = [
-      "serviceAccount:service-19513753240@gcp-sa-pubsub.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-sa-pubsub.iam.gserviceaccount.com",
     ]
   }
 
@@ -300,14 +300,14 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/networkmanagement.serviceAgent"
     members = [
-      "serviceAccount:service-19513753240@gcp-sa-networkmanagement.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-sa-networkmanagement.iam.gserviceaccount.com",
     ]
   }
 
   binding {
     role = "roles/pubsub.serviceAgent"
     members = [
-      "serviceAccount:service-19513753240@gcp-sa-pubsub.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-sa-pubsub.iam.gserviceaccount.com",
     ]
   }
 
@@ -322,7 +322,7 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/workflows.serviceAgent"
     members = [
-      "serviceAccount:service-19513753240@gcp-sa-workflows.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-sa-workflows.iam.gserviceaccount.com",
     ]
   }
 }
