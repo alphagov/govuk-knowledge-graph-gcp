@@ -34,7 +34,7 @@ done
 neo4j status
 
 # Query the content store into intermediate datasets
-gsutil cat \
+gcloud storage cat \
   gs://govuk-knowledge-graph-repository/src/neo4j/load_content_store_data.cypher \
   | cypher-shell
 

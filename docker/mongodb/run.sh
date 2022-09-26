@@ -24,12 +24,12 @@ gcloud compute instances describe mongodb \
 OBJECT_URL="gs://$OBJECT"
 
 # https://stackoverflow.com/questions/6575221
-gsutil cat "$OBJECT_URL" \
+gcloud storage cat "$OBJECT_URL" \
   | tar xzvO content_store_production/content_items.bson \
   | mongorestore -v --db=content_store --collection=content_items -
 
 # Obtain the latest state of the repository
-gsutil -m cp -r gs://govuk-knowledge-graph-repository/\* .
+gcloud storage cp -r gs://govuk-knowledge-graph-repository/\* .
 
 # 1. Query the content store into intermediate datasets
 # 2. Download from the content store and intermediate datasets
