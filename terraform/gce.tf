@@ -69,16 +69,6 @@ resource "google_compute_network" "default" {
   description = "Default network for the project"
 }
 
-resource "google_compute_address" "mongodb" {
-  name         = "mongodb"
-  network_tier = "STANDARD"
-}
-
-resource "google_compute_address" "postgres" {
-  name         = "postgres"
-  network_tier = "STANDARD"
-}
-
 resource "google_compute_firewall" "neo4j-ingress" {
   name    = "firewall-neo4j-ingress"
   network = google_compute_network.default.name
@@ -261,7 +251,7 @@ resource "google_compute_instance_template" "neo4j" {
     access_config {
       # Premium required for a global static IP address
       network_tier = "PREMIUM"
-      nat_ip       = google_compute_global_address.neo4j.address
+      nat_ip       = google_compute_address.neo4j.address
     }
   }
 
@@ -289,7 +279,6 @@ resource "google_compute_instance_template" "mongodb" {
     network = "default"
     access_config {
       network_tier = "STANDARD"
-      nat_ip       = google_compute_address.mongodb.address
     }
   }
 
@@ -331,7 +320,6 @@ resource "google_compute_instance_template" "postgres" {
     network = "default"
     access_config {
       network_tier = "STANDARD"
-      nat_ip       = google_compute_address.postgres.address
     }
   }
 
@@ -341,8 +329,9 @@ resource "google_compute_instance_template" "postgres" {
   }
 }
 
-# Static external IP address for Neo4j
-resource "google_compute_global_address" "neo4j" {
+# Static external IP address for Neo4j.  Global addresses don't work, because
+# they are only for load balancers, so it must be regional.
+resource "google_compute_address" "neo4j" {
   name         = "neo4j"
   description  = "Static external IP address for Neo4j instances"
   address_type = "EXTERNAL"
