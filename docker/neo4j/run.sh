@@ -8,9 +8,6 @@ set -m
 # Start neo4j as a daemon
 neo4j start
 
-# Wait for neo4j to start
-sleep 5
-
 # Import data from a bucket
 
 # Download the files to the local Neo4j import directory, because Neo4j can't
@@ -26,6 +23,15 @@ gcloud storage cp --recursive  \
 # Decompress all those files (the semicolon is escaped for the shell, but might
 # not need to be escaped within a script).
 find /var/lib/neo4j/import -name "*.csv.gz" -exec gunzip {} \;
+
+# Wait for neo4j to start
+# Checking neo4j status doesn't work, because that says it's up before the
+# server is ready.
+until cypher-shell "RETURN true;" | grep -Fq "true"; do
+  echo "Connecting to Neo4j"
+  sleep 1;
+done
+neo4j status
 
 # Query the content store into intermediate datasets
 gsutil cat \
