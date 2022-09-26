@@ -3,7 +3,7 @@ FROM neo4j:4.4.8-community
 # Generate certificates needed for HTTPS/BOLT connections"
 ADD neo4j.conf /var/lib/neo4j/conf
 
-# Install gcloud and gsutil
+# Install gcloud
 RUN apt-get update -y
 RUN apt-get install -y apt-transport-https ca-certificates gnupg curl
 RUN \
@@ -48,5 +48,5 @@ ENV GITHUB_REF=${GITHUB_REF}
 
 # Run a script from a copy of the HEAD of the repository
 CMD \
-  gsutil cat gs://govuk-knowledge-graph-repository/docker/neo4j/run.sh \
+  gcloud storage cp gs://govuk-knowledge-graph-repository/docker/neo4j/run.sh \
   | bash

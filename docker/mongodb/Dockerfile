@@ -1,6 +1,6 @@
 FROM mongo:4.4.16
 
-# Install gsutil and python with BeautifulSoup
+# Install gcloud and python with BeautifulSoup
 # https://cloud.google.com/sdk/docs/install#deb
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y
@@ -30,5 +30,5 @@ ENV GITHUB_REF=${GITHUB_REF}
 
 # Run a script from a copy of the HEAD of the repository
 CMD \
-  gsutil cat gs://govuk-knowledge-graph-repository/docker/mongodb/run.sh \
+  gcloud storage cat gs://govuk-knowledge-graph-repository/docker/mongodb/run.sh \
   | bash

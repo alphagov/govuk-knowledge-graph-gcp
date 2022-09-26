@@ -57,7 +57,7 @@ upload () {
   local "${@}"
   double_backslashes \
   | gzip -c \
-  | gsutil cp - "gs://govuk-knowledge-graph-data-processed/content-store/${file_name}.csv.gz"
+  | gcloud storage cp - "gs://govuk-knowledge-graph-data-processed/content-store/${file_name}.csv.gz"
 }
 
 # Upload from cloud bucket to BigQuery table

@@ -1,6 +1,6 @@
 FROM postgres:13-bullseye
 
-# Install gsutil and python with BeautifulSoup
+# Install gcloud and python with BeautifulSoup
 # https://cloud.google.com/sdk/docs/install#deb
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y
@@ -34,5 +34,5 @@ ENTRYPOINT []
 
 # Run a script from a copy of the HEAD of the repository
 CMD \
-  gsutil cat gs://govuk-knowledge-graph-repository/docker/postgres/run.sh \
+  gcloud storage cat gs://govuk-knowledge-graph-repository/docker/postgres/run.sh \
   | bash
