@@ -48,5 +48,5 @@ ENV GITHUB_REF=${GITHUB_REF}
 
 # Run a script from a copy of the HEAD of the repository
 CMD \
-  gcloud storage cp gs://govuk-knowledge-graph-repository/docker/neo4j/run.sh \
+  gcloud storage cat gs://govuk-knowledge-graph-repository/docker/neo4j/run.sh \
   | bash
