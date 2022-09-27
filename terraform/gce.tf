@@ -336,3 +336,17 @@ resource "google_compute_address" "neo4j" {
   description  = "Static external IP address for Neo4j instances"
   address_type = "EXTERNAL"
 }
+
+resource "google_dns_managed_zone" "govuk_knowledge_graph_dev" {
+  name        = "govuk-knowledge-graph-dev"
+  description = "DNS zone for .dev domains"
+  dns_name    = "govgraph.dev."
+}
+
+resource "google_dns_record_set" "neo4j" {
+  name = google_dns_managed_zone.govuk_knowledge_graph_dev.dns_name
+  type = "A"
+  ttl  = 300 # time to live: seconds
+  managed_zone = google_dns_managed_zone.govuk_knowledge_graph_dev.name
+  rrdatas = [google_compute_address.neo4j.address]
+}
