@@ -20,6 +20,10 @@ gcloud storage cp --recursive \
   gs://govuk-knowledge-graph-data-processed/ga4/\* \
   /var/lib/neo4j/import
 
+gcloud storage cp --recursive \
+  gs://govuk-knowledge-graph-data-processed/publishing-api/\* \
+  /var/lib/neo4j/import
+
 # Decompress all those files (the semicolon is escaped for the shell, but might
 # not need to be escaped within a script).
 find /var/lib/neo4j/import -name "*.csv.gz" -exec gunzip {} \;
@@ -33,7 +37,12 @@ until cypher-shell "RETURN true;" | grep -Fq "true"; do
 done
 neo4j status
 
-# Query the content store into intermediate datasets
+# Ingest the Content Store data
+gcloud storage cat \
+  gs://govuk-knowledge-graph-repository/src/neo4j/load_content_store_data.cypher \
+  | cypher-shell
+
+# Ingest the Publishing API data
 gcloud storage cat \
   gs://govuk-knowledge-graph-repository/src/neo4j/load_content_store_data.cypher \
   | cypher-shell
