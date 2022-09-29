@@ -249,9 +249,7 @@ resource "google_compute_instance_template" "neo4j" {
   network_interface {
     network = "default"
     access_config {
-      # Premium required for a global static IP address
-      network_tier = "PREMIUM"
-      nat_ip       = google_compute_address.neo4j.address
+      network_tier = "STANDARD"
     }
   }
 
@@ -327,26 +325,4 @@ resource "google_compute_instance_template" "postgres" {
     email  = google_service_account.gce_postgres.email
     scopes = ["cloud-platform"]
   }
-}
-
-# Static external IP address for Neo4j.  Global addresses don't work, because
-# they are only for load balancers, so it must be regional.
-resource "google_compute_address" "neo4j" {
-  name         = "neo4j"
-  description  = "Static external IP address for Neo4j instances"
-  address_type = "EXTERNAL"
-}
-
-resource "google_dns_managed_zone" "govuk_knowledge_graph_dev" {
-  name        = "govuk-knowledge-graph-dev"
-  description = "DNS zone for .dev domains"
-  dns_name    = "govgraph.dev."
-}
-
-resource "google_dns_record_set" "neo4j" {
-  name = google_dns_managed_zone.govuk_knowledge_graph_dev.dns_name
-  type = "A"
-  ttl  = 300 # time to live: seconds
-  managed_zone = google_dns_managed_zone.govuk_knowledge_graph_dev.name
-  rrdatas = [google_compute_address.neo4j.address]
 }
