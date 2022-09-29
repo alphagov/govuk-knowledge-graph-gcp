@@ -216,6 +216,14 @@ data "google_iam_policy" "project" {
     ]
   }
 
+  # For exporting everything as terraform
+  binding {
+    role = "roles/cloudasset.serviceAgent"
+    members = [
+      "serviceAccount:service-19513753240@gcp-sa-cloudasset.iam.gserviceaccount.com",
+    ]
+  }
+
   binding {
     role = "roles/cloudbuild.builds.builder"
     members = [
