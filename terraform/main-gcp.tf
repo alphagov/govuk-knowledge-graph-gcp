@@ -51,7 +51,7 @@ variable "region" {
 
 variable "zone" {
   type    = string
-  default = "europe-west2-a" # Change this
+  default = "europe-west2-b" # Change this
 }
 
 # Google Cloud Storage location https://cloud.google.com/storage/docs/locations

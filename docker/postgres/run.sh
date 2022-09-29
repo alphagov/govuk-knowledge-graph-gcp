@@ -23,13 +23,13 @@ sleep 5
 BUCKET=$(
   gcloud compute instances describe postgres \
     --project govuk-knowledge-graph \
-    --zone europe-west2-a \
+    --zone europe-west2-b \
     --format="value(metadata.items.object_bucket)"
 )
 OBJECT=$(
 gcloud compute instances describe postgres \
   --project govuk-knowledge-graph \
-  --zone europe-west2-a \
+  --zone europe-west2-b \
   --format="value(metadata.items.object_name)"
 )
 OBJECT_URL="gs://$BUCKET/$OBJECT"
@@ -61,9 +61,12 @@ psql -U postgres -c "SELECT pg_reload_conf();"
 cd src/postgres
 make
 
+# Stay alive for debugging
+tail -f /dev/null
+
 # Stop this instance
 # https://stackoverflow.com/a/41232669
-gcloud compute instances delete postgres --quiet --zone=europe-west2-a
+gcloud compute instances delete postgres --quiet --zone=europe-west2-b
 
 # In case the instance is still running, bring the background process back into
 # the foreground and leave it there
