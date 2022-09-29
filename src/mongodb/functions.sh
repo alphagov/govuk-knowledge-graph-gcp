@@ -131,6 +131,7 @@ extract_text_from_html () {
       --pipe \
       --round-robin \
       --line-buffer \
+      --keep-order \
       python3 ../../src/utils/extract_text_from_html.py \
       --input_col=${input_col} \
       --id_cols=${id_cols} \
@@ -144,6 +145,7 @@ extract_lines_from_html () {
       --pipe \
       --round-robin \
       --line-buffer \
+      --keep-order \
       python3 ../../src/utils/extract_lines_from_html.py \
       --input_col=${input_col} \
       --id_cols=${id_cols} \
@@ -157,6 +159,7 @@ extract_hyperlinks_from_html () {
       --pipe \
       --round-robin \
       --line-buffer \
+      --keep-order \
       python3 ../../src/utils/extract_hyperlinks_from_html.py \
       --input_col=${input_col} \
       --id_cols=${id_cols} \
