@@ -18,7 +18,7 @@ sleep 5
 OBJECT=$(
 gcloud compute instances describe mongodb \
   --project govuk-knowledge-graph \
-  --zone europe-west2-a \
+  --zone europe-west2-b \
   --format="value[separator=\"/\"](metadata.items.object_bucket, metadata.items.object_name)"
 )
 OBJECT_URL="gs://$OBJECT"
@@ -39,7 +39,7 @@ make
 
 # Stop this instance
 # https://stackoverflow.com/a/41232669
-gcloud compute instances delete mongodb --quiet --zone=europe-west2-a
+gcloud compute instances delete mongodb --quiet --zone=europe-west2-b
 
 # In case the instance is still running, bring the background process back into
 # the foreground and leave it there
