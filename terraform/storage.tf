@@ -84,7 +84,7 @@ data "google_iam_policy" "bucket_repository" {
   }
 }
 
-# Bucket for dataset extracted from MongoDB for upload into Neo4j
+# Bucket for dataset extracted from MongoDB and Postgres for upload into Neo4j
 resource "google_storage_bucket" "data_processed" {
   name                        = "${var.project_id}-data-processed" # Must be globally unique
   force_destroy               = false                              # terraform won't delete the bucket unless it is empty
@@ -114,6 +114,7 @@ data "google_iam_policy" "bucket_data_processed" {
     role = "roles/storage.objectAdmin"
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
+      "serviceAccount:${google_service_account.gce_postgres.email}",
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
     ]
   }
