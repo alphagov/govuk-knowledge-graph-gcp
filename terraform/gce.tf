@@ -122,6 +122,12 @@ resource "google_compute_firewall" "neo4j-egress" {
   target_service_accounts = [google_service_account.gce_neo4j.email]
 }
 
+# Static, internal IP address
+resource "google_compute_address" "neo4j_internal" {
+  name = "neo4j-internal"
+  address_type = "INTERNAL"
+}
+
 # https://github.com/terraform-google-modules/terraform-google-container-vm
 module "neo4j-container" {
   source  = "terraform-google-modules/container-vm/google"
@@ -250,6 +256,7 @@ resource "google_compute_instance_template" "neo4j" {
     network = "default"
     access_config {
       network_tier = "STANDARD"
+      nat_ip = google_compute_address.neo4j_internal.address
     }
   }
 

@@ -161,6 +161,8 @@ main:
           sourceInstanceTemplate: https://www.googleapis.com/compute/v1/projects/${var.project_id}/global/instanceTemplates/neo4j
           body:
               name: neo4j
+              networkInterfaces:
+              - networkIP: 10.154.0.13
 EOF
 }
 
