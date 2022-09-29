@@ -61,9 +61,6 @@ psql -U postgres -c "SELECT pg_reload_conf();"
 cd src/postgres
 make
 
-# Stay alive for debugging
-tail -f /dev/null
-
 # Stop this instance
 # https://stackoverflow.com/a/41232669
 gcloud compute instances delete postgres --quiet --zone=europe-west2-b
