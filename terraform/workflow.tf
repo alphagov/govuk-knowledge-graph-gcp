@@ -163,6 +163,15 @@ main:
               name: neo4j
               networkInterfaces:
               - networkIP: 10.154.0.13
+  - add_neo4j_to_instance_group:
+      call: googleapis.compute.v1.instanceGroups.addInstances
+      args:
+          project: ${var.project_id}
+          zone: ${var.zone}
+          instanceGroup: govgraph
+          body:
+              instances:
+              - instance: projects/${var.project_id}/zones/${var.zone}/instances/neo4j
 EOF
 }
 
