@@ -256,7 +256,6 @@ resource "google_compute_instance_template" "neo4j" {
     network = "default"
     access_config {
       network_tier = "STANDARD"
-      nat_ip = google_compute_address.neo4j_internal.address
     }
   }
 
