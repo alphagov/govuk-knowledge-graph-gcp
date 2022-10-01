@@ -162,7 +162,9 @@ main:
           body:
               name: neo4j
               networkInterfaces:
-              - networkIP: 10.154.0.13
+              - accessConfigs:
+                - networkTier: STANDARD
+                networkIP: 10.154.0.13
   - add_neo4j_to_instance_group:
       call: googleapis.compute.v1.instanceGroups.addInstances
       args:
