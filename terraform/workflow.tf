@@ -158,11 +158,13 @@ main:
       args:
           project: ${var.project_id}
           zone: ${var.zone}
-          sourceInstanceTemplate: https://www.googleapis.com/compute/v1/projects/${var.project_id}/global/instanceTemplates/neo4j
+          sourceInstanceTemplate: ${google_compute_instance_template.neo4j.self_link}
           body:
               name: neo4j
               networkInterfaces:
-              - accessConfigs:
+              - network: ${google_compute_network.cloudrun.self_link}
+                subnetwork: ${google_compute_subnetwork.cloudrun.self_link}
+                accessConfigs:
                 - networkTier: STANDARD
                 networkIP: 10.8.0.4
   - add_neo4j_to_instance_group:

@@ -54,7 +54,7 @@ resource "google_compute_managed_ssl_certificate" "govgraph" {
 resource "google_compute_instance_group" "govgraph" {
   name    = "govgraph"
   zone    = var.zone
-  network = google_compute_network.default.id
+  network = google_compute_network.cloudrun.id
   named_port {
     name = "neo4j"
     port = 7474
