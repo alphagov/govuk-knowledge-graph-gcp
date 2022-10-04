@@ -128,14 +128,16 @@ resource "google_compute_instance_group" "govgraph" {
   }
 }
 
-resource "google_compute_firewall" "neo4j-health-check" {
+# Firewall to allow the load balancer and health check
+# https://cloud.google.com/load-balancing/docs/firewall-rules
+resource "google_compute_firewall" "neo4j_load_balancer" {
   name          = "neo4j-health-check"
   direction     = "INGRESS"
-  network       = "https://www.googleapis.com/compute/v1/projects/govuk-knowledge-graph/global/networks/default"
+  network       = google_compute_network.cloudrun.id
   priority      = 1000
   source_ranges = ["130.211.0.0/22", "35.191.0.0/16"]
   allow {
-    ports    = ["7474"]
+    ports    = ["7474", "7687"]
     protocol = "tcp"
   }
   target_service_accounts = [google_service_account.gce_neo4j.email]
@@ -147,30 +149,26 @@ resource "google_compute_target_https_proxy" "govgraph" {
   ssl_certificates = [google_compute_managed_ssl_certificate.govgraph.id]
 }
 
-# resource "google_compute_target_http_proxy" "govgraph" {
-#   name             = "govgraph"
-#   url_map          = google_compute_url_map.govgraph.id
-# }
-
 resource "google_compute_url_map" "govgraph" {
   name            = "govgraph"
   description     = "URL map for govgraph.dev"
-  default_service = google_compute_backend_bucket.website.id
+  /* default_service = google_compute_backend_bucket.website.id */
+  default_service = google_compute_backend_service.govgraph.id
 
-#   host_rule {
-#     hosts        = ["*"]
-#     path_matcher = "browser"
-#   }
+  /* host_rule { */
+  /*   hosts        = ["*"] */
+  /*   path_matcher = "browser" */
+  /* } */
 
-#   path_matcher {
-#     name            = "browser"
-#     default_service = google_compute_backend_bucket.website.id
+  /* path_matcher { */
+  /*   name            = "browser" */
+  /*   default_service = google_compute_backend_bucket.website.id */
 
-#     path_rule {
-#       paths   = ["/browser/*"]
-#       service = google_compute_backend_service.govgraph.id
-#     }
-#   }
+  /*   path_rule { */
+  /*     paths   = ["/browser*"] */
+  /*     service = google_compute_backend_service.govgraph.id */
+  /*   } */
+  /* } */
 }
 
 resource "google_compute_backend_service" "govgraph" {
@@ -195,6 +193,7 @@ resource "google_compute_health_check" "govgraph" {
   name = "govgraph"
   http_health_check {
     port_name = "neo4j"
+    port_specification = "USE_NAMED_PORT"
   }
 }
 
@@ -202,8 +201,6 @@ resource "google_compute_global_forwarding_rule" "govgraph" {
   name        = "govgraph"
   ip_address  = google_compute_global_address.govgraph.id
   target      = google_compute_target_https_proxy.govgraph.id
-  # target      = google_compute_target_http_proxy.govgraph.id
   ip_protocol = "TCP"
   port_range  = 443
-  # port_range  = 80
 }
