@@ -166,7 +166,7 @@ main:
                 subnetwork: ${google_compute_subnetwork.cloudrun.self_link}
                 accessConfigs:
                 - networkTier: STANDARD
-                networkIP: 10.8.0.4
+                networkIP: ${google_compute_address.neo4j_internal.address}
   - add_neo4j_to_instance_group:
       call: googleapis.compute.v1.instanceGroups.addInstances
       args:

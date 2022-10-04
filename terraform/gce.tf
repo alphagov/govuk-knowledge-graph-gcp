@@ -151,6 +151,7 @@ resource "google_compute_address" "neo4j_internal" {
   name = "neo4j-internal"
   address_type = "INTERNAL"
   subnetwork = google_compute_subnetwork.cloudrun.id
+  address = "10.8.0.4"
 }
 
 # https://github.com/terraform-google-modules/terraform-google-container-vm
