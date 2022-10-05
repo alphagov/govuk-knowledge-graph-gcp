@@ -225,6 +225,13 @@ data "google_iam_policy" "project" {
   }
 
   binding {
+    role    = "roles/cloudasset.serviceAgent"
+    members = [
+      "serviceAccount:service-19513753240@gcp-sa-cloudasset.iam.gserviceaccount.com",
+    ]
+  }
+
+  binding {
     role = "roles/cloudbuild.builds.builder"
     members = [
       "serviceAccount:${var.project_number}@cloudbuild.gserviceaccount.com",
@@ -324,6 +331,20 @@ data "google_iam_policy" "project" {
     members = [
       "serviceAccount:${google_service_account.eventarc.email}",
       "serviceAccount:${google_service_account.scheduler_neo4j.email}",
+    ]
+  }
+
+  binding {
+    role    = "roles/run.serviceAgent"
+    members = [
+      "serviceAccount:service-19513753240@serverless-robot-prod.iam.gserviceaccount.com",
+    ]
+  }
+
+  binding {
+    role    = "roles/vpcaccess.serviceAgent"
+    members = [
+      "serviceAccount:service-19513753240@gcp-sa-vpcaccess.iam.gserviceaccount.com",
     ]
   }
 

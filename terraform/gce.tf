@@ -69,9 +69,20 @@ resource "google_compute_network" "default" {
   description = "Default network for the project"
 }
 
+resource "google_compute_firewall" "neo4j-letsencrypt-ingress" {
+  name    = "firewall-neo4j-letsencrypt-ingress"
+  network = google_compute_network.cloudrun.name
+  allow {
+    protocol = "tcp"
+    ports    = ["80"]
+  }
+  source_ranges = ["0.0.0.0/0"]
+  target_service_accounts = [google_service_account.gce_neo4j.email]
+}
+
 resource "google_compute_firewall" "neo4j-ingress" {
   name    = "firewall-neo4j-ingress"
-  network = google_compute_network.default.name
+  network = google_compute_network.cloudrun.self_link
 
   allow {
     protocol = "tcp"
@@ -80,33 +91,6 @@ resource "google_compute_firewall" "neo4j-ingress" {
 
   # https://sites.google.com/a/digital.cabinet-office.gov.uk/gds/working-at-gds/gds-internal-it/gds-internal-it-network-public-ip-addresses
   source_ranges = [
-    "213.86.153.212",
-    "213.86.153.213",
-    "213.86.153.214",
-    "213.86.153.235",
-    "213.86.153.236",
-    "213.86.153.237",
-    "213.86.153.211",
-    "213.86.153.231",
-    "51.149.8.0/25",
-    "51.149.8.128/29"
-  ]
-
-  target_service_accounts = [google_service_account.gce_neo4j.email]
-}
-
-resource "google_compute_firewall" "neo4j-egress" {
-  name      = "firewall-neo4j-egress"
-  network   = google_compute_network.default.name
-  direction = "EGRESS"
-
-  allow {
-    protocol = "tcp"
-    ports    = ["7473", "7687"]
-  }
-
-  # https://sites.google.com/a/digital.cabinet-office.gov.uk/gds/working-at-gds/gds-internal-it/gds-internal-it-network-public-ip-addresses
-  destination_ranges = [
     "213.86.153.212",
     "213.86.153.213",
     "213.86.153.214",
@@ -278,9 +262,11 @@ resource "google_compute_instance_template" "neo4j" {
   }
 
   network_interface {
-    network = "default"
+    network = google_compute_network.cloudrun.self_link
+    subnetwork = google_compute_subnetwork.cloudrun.self_link
     access_config {
       network_tier = "STANDARD"
+      nat_ip = google_compute_address.govgraph.address
     }
   }
 
