@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Generate certificates needed for HTTPS/BOLT connections"
+# Refresh certificates needed for HTTPS/BOLT connections"
 # https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd
 cd /var/lib/neo4j/certificates
 mkdir -p letsencrypt/work-dir letsencrypt/logs-dir letsencrypt/config-dir
@@ -30,7 +30,7 @@ done
 set -m
 
 # Start neo4j as a daemon
-neo4j start
+exec gosu neo4j:neo4j neo4j start
 
 # Import data from a bucket
 
