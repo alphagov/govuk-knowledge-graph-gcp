@@ -15,5 +15,6 @@ db.content_items.aggregate([
     { "description.value": { $ne: "" } },
   ] } },
   { $project: { url: 1, description: { "$trim": { input: "$description.value" } } } },
+  { $match: { "description.value": { $ne: "" } } },
   { $out: "description" }
 ])

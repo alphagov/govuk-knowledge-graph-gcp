@@ -6,5 +6,6 @@ db.content_items.aggregate([
     { "title": { $ne: "" } },
   ] } },
   { $project: { url: 1, title: { "$trim": { input: "$title" } } } },
+  { $match: { title: { $ne: "" } } },
   { $out: "title" }
 ])
