@@ -43,6 +43,10 @@ ENV GITHUB_SHA=${GITHUB_SHA}
 ARG GITHUB_REF=missing
 ENV GITHUB_REF=${GITHUB_REF}
 
+# Use a modified entrypoint script that doesn't run CMD as the neo4j user, but
+# as root, so that certbot will work.
+COPY ./docker-entrypoint.sh /startup/
+
 # Run a script from a copy of the HEAD of the repository
 CMD \
   gcloud storage cat gs://govuk-knowledge-graph-repository/docker/neo4j/run.sh \
