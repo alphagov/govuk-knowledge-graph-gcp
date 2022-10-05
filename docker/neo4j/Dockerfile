@@ -24,22 +24,6 @@ RUN \
     unzip \
     certbot \
     python3-certbot-nginx \
-  # Generate certificates needed for HTTPS/BOLT connections"
-  # https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd
-  && certbot certonly -n --nginx -d govgraph.dev \
-  && chgrp -R neo4j /etc/letsencrypt/*\
-  && chmod -R g+rx /etc/letsencrypt/* \
-  && cd /var/lib/neo4j/certificates \
-  && mkdir bolt cluster https \
-  && export DOMAIN=govgraph.dev \
-  && for certsource in bolt cluster https ; do \
-     ln -s /etc/letsencrypt/live/$DOMAIN/fullchain.pem $certsource/neo4j.cert \
-     ln -s /etc/letsencrypt/live/$DOMAIN/privkey.pem $certsource/neo4j.key \
-     mkdir $certsource/trusted \
-     ln -s /etc/letsencrypt/live/$DOMAIN/fullchain.pem $certsource/trusted/neo4j.cert ; \
-  done \
-  && chgrp -R neo4j * \
-  && chmod -R g+rx * \
   # Install the Graph Data Science plugin \
   # https://neo4j.com/docs/graph-data-science/current/installation/neo4j-server/ \
   && cd /tmp \
