@@ -30,7 +30,7 @@ done
 set -m
 
 # Start neo4j as a daemon
-exec gosu neo4j:neo4j neo4j start
+gosu neo4j:neo4j neo4j start
 
 # Import data from a bucket
 
