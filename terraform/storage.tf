@@ -158,3 +158,59 @@ data "google_iam_policy" "bucket_data_processed" {
     ]
   }
 }
+
+# Bucket for SSL certificates
+resource "google_storage_bucket" "ssl_certificates" {
+  name                        = "${var.project_id}-ssl-certificates" # Must be globally unique
+  force_destroy               = false                              # terraform won't delete the bucket unless it is empty
+  location                    = var.location
+  storage_class               = "STANDARD" # https://cloud.google.com/storage/docs/storage-classes
+  uniform_bucket_level_access = true
+  versioning {
+    enabled = false
+  }
+}
+
+resource "google_storage_bucket_iam_policy" "ssl_certificates" {
+  bucket      = google_storage_bucket.ssl_certificates.name
+  policy_data = data.google_iam_policy.bucket_ssl_certificates.policy_data
+}
+
+data "google_iam_policy" "bucket_ssl_certificates" {
+  binding {
+    role = "roles/storage.objectAdmin"
+    members = [
+      "serviceAccount:${google_service_account.gce_neo4j.email}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketOwner"
+    members = [
+      "projectEditor:govuk-knowledge-graph",
+      "projectOwner:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketReader"
+    members = [
+      "projectViewer:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectOwner"
+    members = [
+      "projectEditor:govuk-knowledge-graph",
+      "projectOwner:govuk-knowledge-graph",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectReader"
+    members = [
+      "projectViewer:govuk-knowledge-graph",
+    ]
+  }
+}
