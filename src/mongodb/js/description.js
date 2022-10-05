@@ -12,9 +12,8 @@ db.content_items.aggregate([
     // Example: https://www.gov.uk/change-your-charity-structure.cy
     { "description.value.value": { $exists: false } },
     { "description.value": { $ne: null } },
-    { "description.value": { $ne: "" } },
   ] } },
   { $project: { url: 1, description: { "$trim": { input: "$description.value" } } } },
-  { $match: { "description.value": { $ne: "" } } },
+  { $match: { "description": { $ne: "" } } },
   { $out: "description" }
 ])
