@@ -1,27 +1,42 @@
 #!/bin/bash
 
-# Refresh certificates needed for HTTPS/BOLT connections"
-# https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd
+# # Refresh certificates needed for HTTPS/BOLT connections"
+# # https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd
+# cd /var/lib/neo4j/certificates
+# mkdir -p letsencrypt/work-dir letsencrypt/logs-dir letsencrypt/config-dir
+# certbot certonly \
+#   --test-cert \
+#   --agree-tos \
+#   --email data-products@digital.cabinet-office.gov.uk \
+#   -n \
+#   --nginx \
+#   -d govgraph.dev \
+#   --cert-path /var/lib/neo4j/certificates \
+#   --work-dir letsencrypt/work-dir \
+#   --logs-dir letsencrypt/logs-dir \
+#   --config-dir letsencrypt/config-dir
+# mkdir bolt cluster https
+# export DOMAIN=govgraph.dev
+# for certsource in bolt cluster https ; do
+#   ln -s $PWD/letsencrypt/config-dir/live/$DOMAIN/fullchain.pem $certsource/neo4j.cert
+#   ln -s $PWD/letsencrypt/config-dir/live/$DOMAIN/privkey.pem $certsource/neo4j.key
+#   mkdir $certsource/trusted
+#   ln -s $PWD/letsencrypt/config-dir/live/$DOMAIN/fullchain.pem $certsource/trusted/neo4j.cert ;
+# done
+
+# Until the LetsEncrypt rate limit is reset, use a certificate that was obtained
+# manually from ZeroSSL.
 cd /var/lib/neo4j/certificates
 mkdir -p letsencrypt/work-dir letsencrypt/logs-dir letsencrypt/config-dir
-certbot certonly \
-  --test-cert \
-  --agree-tos \
-  --email data-products@digital.cabinet-office.gov.uk \
-  -n \
-  --nginx \
-  -d govgraph.dev \
-  --cert-path /var/lib/neo4j/certificates/cert.pem \
-  --work-dir letsencrypt/work-dir \
-  --logs-dir letsencrypt/logs-dir \
-  --config-dir letsencrypt/config-dir
+gcloud storage cp gs://govuk-knowledge-graph-ssl-certificates/\* .
+cat certificate.crt ca_bundle.crt >> cert.crt
 mkdir bolt cluster https
 export DOMAIN=govgraph.dev
 for certsource in bolt cluster https ; do
-  ln -s $PWD/letsencrypt/config-dir/live/$DOMAIN/fullchain.pem $certsource/neo4j.cert
-  ln -s $PWD/letsencrypt/config-dir/live/$DOMAIN/privkey.pem $certsource/neo4j.key
+  ln -s $PWD/cert.crt $certsource/neo4j.cert
+  ln -s $PWD/private.key $certsource/neo4j.key
   mkdir $certsource/trusted
-  ln -s $PWDletsencrypt/config-dir/live/$DOMAIN/fullchain.pem $certsource/trusted/neo4j.cert ;
+  ln -s $PWD/cert.crt $certsource/trusted/neo4j.cert ;
 done
 
 # Run both neo4j and scripts that interact with the database
