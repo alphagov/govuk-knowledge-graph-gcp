@@ -30,7 +30,7 @@ main:
           severity: INFO
   - decode_pubsub_message:
       assign:
-      - base64: $${base64.decode(event.data.data)}
+      - base64: $${base64.decode(event.data.message.data)}
       - message_text: $${text.decode(base64)}
   - log_message_text:
       call: sys.log
