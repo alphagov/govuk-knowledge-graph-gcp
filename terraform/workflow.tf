@@ -165,7 +165,7 @@ main:
               - network: ${google_compute_network.cloudrun.self_link}
                 subnetwork: ${google_compute_subnetwork.cloudrun.self_link}
                 accessConfigs:
-                - networkTier: STANDARD
+                - networkTier: PREMIUM
                   natIP: ${google_compute_address.govgraph.address}
                 networkIP: ${google_compute_address.neo4j_internal.address}
 EOF
