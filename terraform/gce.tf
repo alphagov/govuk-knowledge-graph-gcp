@@ -100,7 +100,11 @@ resource "google_compute_firewall" "neo4j-ingress" {
     "213.86.153.211",
     "213.86.153.231",
     "51.149.8.0/25",
-    "51.149.8.128/29"
+    "51.149.8.128/29",
+    # It needs to accept connections from itself so that cypher-shell can access
+    # the database by its domain name, which the certificate requires, instead
+    # of localhost.
+    google_compute_address.govgraph.address
   ]
 
   target_service_accounts = [google_service_account.gce_neo4j.email]
