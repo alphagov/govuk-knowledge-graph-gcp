@@ -162,18 +162,12 @@ main:
           body:
               name: neo4j
               networkInterfaces:
-              - accessConfigs:
+              - network: ${google_compute_network.cloudrun.self_link}
+                subnetwork: ${google_compute_subnetwork.cloudrun.self_link}
+                accessConfigs:
                 - networkTier: STANDARD
-                networkIP: 10.8.0.4
-  - add_neo4j_to_instance_group:
-      call: googleapis.compute.v1.instanceGroups.addInstances
-      args:
-          project: ${var.project_id}
-          zone: ${var.zone}
-          instanceGroup: govgraph
-          body:
-              instances:
-              - instance: projects/${var.project_id}/zones/${var.zone}/instances/neo4j
+                  natIP: ${google_compute_address.govgraph.address}
+                networkIP: ${google_compute_address.neo4j_internal.address}
 EOF
 }
 
