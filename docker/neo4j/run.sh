@@ -2,7 +2,13 @@
 
 # Generate certificates needed for HTTPS/BOLT connections"
 # https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd
-certbot certonly -n --nginx -d govgraph.dev
+su - root
+certbot certonly \
+  --agree-tos \
+  --email data-products@digital.cabinet-office.gov.uk \
+  -n \
+  --nginx \
+  -d govgraph.dev
 chgrp -R neo4j /etc/letsencrypt/*
 chmod -R g+rx /etc/letsencrypt/*
 cd /var/lib/neo4j/certificates
@@ -16,6 +22,7 @@ for certsource in bolt cluster https ; do
 done
 chgrp -R neo4j *
 chmod -R g+rx *
+exit
 
 # Run both neo4j and scripts that interact with the database
 
@@ -57,12 +64,12 @@ neo4j status
 # Ingest the Content Store data
 gcloud storage cat \
   gs://govuk-knowledge-graph-repository/src/neo4j/load_content_store_data.cypher \
-  | cypher-shell
+  | cypher-shell --address neo4j+s://govgraph.dev:7687
 
 # Ingest the Publishing API data
 gcloud storage cat \
   gs://govuk-knowledge-graph-repository/src/neo4j/load_content_store_data.cypher \
-  | cypher-shell
+  | cypher-shell --address neo4j+s://govgraph.dev:7687
 
 # Stay alive
 sleep infinity
