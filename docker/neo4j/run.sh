@@ -2,27 +2,27 @@
 
 # Generate certificates needed for HTTPS/BOLT connections"
 # https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd
-su - root
+cd /var/lib/neo4j/certificates
+mkdir -p letsencrypt/work-dir letsencrypt/logs-dir letsencrypt/config-dir
 certbot certonly \
+  --test-cert \
   --agree-tos \
   --email data-products@digital.cabinet-office.gov.uk \
   -n \
   --nginx \
-  -d govgraph.dev
-chgrp -R neo4j /etc/letsencrypt/*
-chmod -R g+rx /etc/letsencrypt/*
-cd /var/lib/neo4j/certificates
+  -d govgraph.dev \
+  --cert-path /var/lib/neo4j/certificates/cert.pem \
+  --work-dir letsencrypt/work-dir \
+  --logs-dir letsencrypt/logs-dir \
+  --config-dir letsencrypt/config-dir
 mkdir bolt cluster https
 export DOMAIN=govgraph.dev
 for certsource in bolt cluster https ; do
-  ln -s /etc/letsencrypt/live/$DOMAIN/fullchain.pem $certsource/neo4j.cert
-  ln -s /etc/letsencrypt/live/$DOMAIN/privkey.pem $certsource/neo4j.key
+  ln -s $PWD/letsencrypt/config-dir/live/$DOMAIN/fullchain.pem $certsource/neo4j.cert
+  ln -s $PWD/letsencrypt/config-dir/live/$DOMAIN/privkey.pem $certsource/neo4j.key
   mkdir $certsource/trusted
-  ln -s /etc/letsencrypt/live/$DOMAIN/fullchain.pem $certsource/trusted/neo4j.cert ;
+  ln -s $PWDletsencrypt/config-dir/live/$DOMAIN/fullchain.pem $certsource/trusted/neo4j.cert ;
 done
-chgrp -R neo4j *
-chmod -R g+rx *
-exit
 
 # Run both neo4j and scripts that interact with the database
 
@@ -55,7 +55,7 @@ find /var/lib/neo4j/import -name "*.csv.gz" -exec gunzip {} \;
 # Wait for neo4j to start
 # Checking neo4j status doesn't work, because that says it's up before the
 # server is ready.
-until cypher-shell "RETURN true;" | grep -Fq "true"; do
+until cypher-shell --address neo4j+s://govgraph.dev:7687 "RETURN true;" | grep -Fq "true"; do
   echo "Connecting to Neo4j"
   sleep 1;
 done
