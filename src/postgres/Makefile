@@ -64,10 +64,13 @@ data/role_url.csv.gz: temp/roles.postgres
 	source functions.sh; source sh/url.sh
 
 data/role_document_type.csv.gz: temp/roles.postgres
+	source functions.sh; source sh/document_type.sh
 
 data/role_publishing_app.csv.gz: temp/roles.postgres
+	source functions.sh; source sh/publishing_app.sh
 
 data/role_phase.csv.gz: temp/roles.postgres
+	source functions.sh; source sh/phase.sh
 
 data/role_content_id.csv.gz: temp/roles.postgres
 	source functions.sh; source sh/content_id.sh
