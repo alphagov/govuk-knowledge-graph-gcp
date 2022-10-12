@@ -453,8 +453,8 @@ CREATE (a)-[:HAS_CHILD]->(b)
 ;
 
 // Reuse `parent_taxons` links as `HAS_PARENT`.
-MATCH (a)-[:LINKS_TO {linkTargetType: 'parent_taxons'}]->(b)<-[:HAS_HOMEPAGE]-(c)
-CREATE (a)-[:HAS_PARENT]->(c)
+MATCH (a:Taxon)-[:HAS_HOMEPAGE]->(b:Page)-[:LINKS_TO {linkTargetType: 'parent_taxons'}]->(c:Page)<-[:HAS_HOMEPAGE]-(d:Taxon)
+CREATE (a)-[:HAS_PARENT]->(d)
 ;
 
 MATCH (n:Page) WHERE left(n.url, 18) <> "https://www.gov.uk"
