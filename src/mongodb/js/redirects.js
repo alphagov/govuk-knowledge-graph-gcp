@@ -28,7 +28,7 @@ db.content_items.aggregate([
     to: { $cond: {
       if: { "$regexMatch": { input: "$to", regex: /^\// } },
       then: { "$concat": [ "https://www.gov.uk", "$to" ] },
-      else: "$redirects.destination"
+      else: "$to"
     } },
   } },
   { $out: "redirects" }
