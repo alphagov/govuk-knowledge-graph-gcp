@@ -422,6 +422,16 @@ MATCH (a)-[:LINKS_TO {linkTargetType: 'organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c
 CREATE (a)-[:HAS_ORGANISATIONS]->(c)
 ;
 
+// Reuse `ordered_child_organisations` links as `HAS_CHILD_ORGANISATION`.
+MATCH (a:Organisation)-[:HAS_HOMEPAGE]->(b:Page)-[:LINKS_TO {linkTargetType: 'ordered_child_organisations'}]->(c:Page)<-[:HAS_HOMEPAGE]-(d:Organisation)
+CREATE (a)-[:HAS_CHILD_ORGANISATION]->(d)
+;
+
+// Reuse `ordered_parent_organisations` links as `HAS_PARENT_ORGANISATION`.
+MATCH (a:Organisation)-[:HAS_HOMEPAGE]->(b:Page)-[:LINKS_TO {linkTargetType: 'ordered_parent_organisations'}]->(c:Page)<-[:HAS_HOMEPAGE]-(d:Organisation)
+CREATE (a)-[:HAS_PARENT_ORGANISATION]->(d)
+;
+
 // Reuse `primary_publishing_organisation` links as `HAS_PRIMARY_PUBLISHING_ORGANISATION`.
 MATCH (a)-[:LINKS_TO {linkTargetType: 'primary_publishing_organisation'}]->(b)<-[:HAS_HOMEPAGE]-(c)
 CREATE (a)-[:HAS_PRIMARY_PUBLISHING_ORGANISATION]->(c)
