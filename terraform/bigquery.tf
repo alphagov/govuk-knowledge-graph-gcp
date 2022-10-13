@@ -799,6 +799,12 @@ resource "google_bigquery_table" "step_by_step_lines" {
     "description": "URL of a piece of static content on the www.gov.uk domain"
   },
   {
+    "name": "line_number",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "The order of the line of content in the document"
+  },
+  {
     "name": "line",
     "type": "STRING",
     "mode": "REQUIRED",
@@ -834,6 +840,12 @@ resource "google_bigquery_table" "parts_lines" {
     "description": "The order of the part among other parts in the same document, counting from 0"
   },
   {
+    "name": "line_number",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "The order of the line of content in the document"
+  },
+  {
     "name": "line",
     "type": "STRING",
     "mode": "REQUIRED",
@@ -855,6 +867,12 @@ resource "google_bigquery_table" "transaction_lines" {
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "line_number",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "The order of the line of content in the document"
   },
   {
     "name": "line",
@@ -880,6 +898,12 @@ resource "google_bigquery_table" "place_lines" {
     "description": "URL of a piece of static content on the www.gov.uk domain"
   },
   {
+    "name": "line_number",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "The order of the line of content in the document"
+  },
+  {
     "name": "line",
     "type": "STRING",
     "mode": "REQUIRED",
@@ -903,6 +927,12 @@ resource "google_bigquery_table" "body_lines" {
     "description": "URL of a piece of static content on the www.gov.uk domain"
   },
   {
+    "name": "line_number",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "The order of the line of content in the document"
+  },
+  {
     "name": "line",
     "type": "STRING",
     "mode": "REQUIRED",
@@ -924,6 +954,12 @@ resource "google_bigquery_table" "body_content_lines" {
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "line_number",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "The order of the line of content in the document"
   },
   {
     "name": "line",

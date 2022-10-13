@@ -57,7 +57,7 @@ It will emit a CSV file without headers, but columns for:
     input_col = args.input_col
     id_cols = [] if args.id_cols is None else args.id_cols.split(",")
 
-    fieldnames = [*id_cols, "line"]
+    fieldnames = [*id_cols, "line_number", "line"]
 
     # Allow the largest field size possible.
     # https://stackoverflow.com/a/15063941
@@ -75,6 +75,7 @@ It will emit a CSV file without headers, but columns for:
     writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames)
 
     for line in sys.stdin:
+        line_number = 0
         row = json.loads(line.rstrip('\n'))
         row_dict = {col_name: row[col_name] for col_name in id_cols}
         soup = BeautifulSoup(row[input_col], "lxml")
@@ -87,5 +88,7 @@ It will emit a CSV file without headers, but columns for:
         # character.
         lines = [line for line in lines if line != '\ufeff']
         for line in lines:
+            line_number += 1
+            row_dict["line_number"] = line_number
             row_dict["line"] = line
             writer.writerow(row_dict)
