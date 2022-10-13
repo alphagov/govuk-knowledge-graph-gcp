@@ -349,10 +349,10 @@ CREATE (p)-[r:REDIRECTS_TO]->(q)
 // Organisations, persons, and taxons
 MATCH (p:Page { documentType: 'organisation' })
 CREATE (q:Organisation {
-  url: 'https://www.gov.uk/' + p.contentID,
+  url: 'https://www.gov.uk/' + p.contentId,
   name: p.title,
-  orgID: p.analyticsIdentifier,
-  contentId: p.contentID,
+  orgId: p.analyticsIdentifier,
+  contentId: p.contentId,
   status: p.phase,
   abbreviation: p.acronym
 })
@@ -361,9 +361,9 @@ CREATE (q)-[:HAS_HOMEPAGE]->(p)
 
 MATCH (p:Page { documentType: 'person' })
 CREATE (q:Person {
-  url: 'https://www.gov.uk/' + p.contentID,
+  url: 'https://www.gov.uk/' + p.contentId,
   name: p.title,
-  contentID: p.contentID
+  contentId: p.contentId
 })
 CREATE (q)-[:HAS_HOMEPAGE]->(p)
 ;
@@ -374,9 +374,9 @@ FROM 'file:///taxon_levels.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 CREATE (q:Taxon {
-  url: 'https://www.gov.uk/' + p.contentID,
+  url: 'https://www.gov.uk/' + p.contentId,
   name: p.title,
-  contentID: p.contentID,
+  contentId: p.contentId,
   level: line.level
 })
 CREATE (q)-[:HAS_HOMEPAGE]->(p)
@@ -420,6 +420,16 @@ CREATE (p)-[:HAS_SUGGESTED_ORDERED_RELATED_ITEMS]->(q)
 // Reuse `organisations` links as `HAS_ORGANISATION`.
 MATCH (a)-[:LINKS_TO {linkTargetType: 'organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c)
 CREATE (a)-[:HAS_ORGANISATIONS]->(c)
+;
+
+// Reuse `ordered_child_organisations` links as `HAS_CHILD_ORGANISATION`.
+MATCH (a:Organisation)-[:HAS_HOMEPAGE]->(b:Page)-[:LINKS_TO {linkTargetType: 'ordered_child_organisations'}]->(c:Page)<-[:HAS_HOMEPAGE]-(d:Organisation)
+CREATE (a)-[:HAS_CHILD_ORGANISATION]->(d)
+;
+
+// Reuse `ordered_parent_organisations` links as `HAS_PARENT_ORGANISATION`.
+MATCH (a:Organisation)-[:HAS_HOMEPAGE]->(b:Page)-[:LINKS_TO {linkTargetType: 'ordered_parent_organisations'}]->(c:Page)<-[:HAS_HOMEPAGE]-(d:Organisation)
+CREATE (a)-[:HAS_PARENT_ORGANISATION]->(d)
 ;
 
 // Reuse `primary_publishing_organisation` links as `HAS_PRIMARY_PUBLISHING_ORGANISATION`.
