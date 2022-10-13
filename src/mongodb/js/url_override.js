@@ -1,7 +1,7 @@
 // Taxon url override (like a redirect)
 db.content_items.aggregate([
   { $match: {
-    "redirects": { $exists: true, $ne:null, $ne: "" }
+    "details.url_override": { $exists: true, $ne:null, $ne: "" },
   } },
   { $project: {
     url: true,
