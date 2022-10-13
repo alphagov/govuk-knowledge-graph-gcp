@@ -579,19 +579,19 @@ resource "google_bigquery_table" "step_by_step_content" {
   {
     "name": "html",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as HTML"
   },
   {
     "name": "text",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as plain text extracted from the HTML"
   },
   {
     "name": "text_without_blank_lines",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as plain text, omitting blank lines"
   }
 ]
@@ -626,19 +626,19 @@ resource "google_bigquery_table" "parts_content" {
   {
     "name": "html",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as HTML"
   },
   {
     "name": "text",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as plain text extracted from the HTML"
   },
   {
     "name": "text_without_blank_lines",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as plain text, omitting blank lines"
   }
 ]
@@ -696,19 +696,19 @@ resource "google_bigquery_table" "place_content" {
   {
     "name": "html",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as HTML"
   },
   {
     "name": "text",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as plain text extracted from the HTML"
   },
   {
     "name": "text_without_blank_lines",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as plain text, omitting blank lines"
   }
 ]
@@ -731,19 +731,19 @@ resource "google_bigquery_table" "body" {
   {
     "name": "html",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as HTML"
   },
   {
     "name": "text",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as plain text extracted from the HTML"
   },
   {
     "name": "text_without_blank_lines",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as plain text, omitting blank lines"
   }
 ]
@@ -766,19 +766,19 @@ resource "google_bigquery_table" "body_content" {
   {
     "name": "html",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as HTML"
   },
   {
     "name": "text",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as plain text extracted from the HTML"
   },
   {
     "name": "text_without_blank_lines",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "The content of the page as plain text, omitting blank lines"
   }
 ]
