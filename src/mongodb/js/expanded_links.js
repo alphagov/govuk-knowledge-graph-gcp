@@ -21,6 +21,7 @@ db.content_items.aggregate([
   } },
   { $unwind: "$links" },
   { $unwind: "$links.base_paths" },
+  { $match: { "links.base_paths": { $exists: true, $ne: null } } },
   { $project: {
     "_id": false,
     "link_type": "$links.link_type",
