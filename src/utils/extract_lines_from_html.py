@@ -82,6 +82,10 @@ It will emit a CSV file without headers, but columns for:
         for br in soup("br"):
             br.replace_with("\n")
         lines = [l.strip() for l in soup.get_text().splitlines() if l.split()]
+        # Omit lines that only contain a zero-width no-break unicode character,
+        # because BigQuery imports them as null, even though it can support that
+        # character.
+        lines = [line for line in lines if line != '\ufeff']
         for line in lines:
             row_dict["line"] = line
             writer.writerow(row_dict)
