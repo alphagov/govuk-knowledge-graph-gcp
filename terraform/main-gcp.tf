@@ -205,6 +205,7 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/bigquery.jobUser"
     members = [
+      "serviceAccount:${google_service_account.gce_mongodb.email}",
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
     ]
   }
@@ -225,7 +226,7 @@ data "google_iam_policy" "project" {
   }
 
   binding {
-    role    = "roles/cloudasset.serviceAgent"
+    role = "roles/cloudasset.serviceAgent"
     members = [
       "serviceAccount:service-19513753240@gcp-sa-cloudasset.iam.gserviceaccount.com",
     ]
@@ -335,14 +336,14 @@ data "google_iam_policy" "project" {
   }
 
   binding {
-    role    = "roles/run.serviceAgent"
+    role = "roles/run.serviceAgent"
     members = [
       "serviceAccount:service-19513753240@serverless-robot-prod.iam.gserviceaccount.com",
     ]
   }
 
   binding {
-    role    = "roles/vpcaccess.serviceAgent"
+    role = "roles/vpcaccess.serviceAgent"
     members = [
       "serviceAccount:service-19513753240@gcp-sa-vpcaccess.iam.gserviceaccount.com",
     ]

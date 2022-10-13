@@ -1,4 +1,5 @@
-# place content; individual lines of text
+FILE_NAME=place_lines
+
 query_mongo \
   type=json \
   collection=place_content \
@@ -6,4 +7,6 @@ query_mongo \
 | extract_lines_from_html \
   input_col=html \
   id_cols=url \
-| upload file_name=place_lines
+| upload file_name=$FILE_NAME
+
+send_to_bigquery file_name=$FILE_NAME

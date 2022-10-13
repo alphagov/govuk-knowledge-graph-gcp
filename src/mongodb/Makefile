@@ -62,9 +62,6 @@ data/url.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/url.sh
 	touch data/url.csv.gz
 
-bigquery/url: data/url.csv.gz
-	source functions.sh; send_to_bigquery file_name=url
-
 # Each of the following several steps depends on the same prerequisite, so they
 # can be executed in parallel.
 data/phase.csv.gz: temp/define_url.mongodb
@@ -169,10 +166,6 @@ temp/parts_content.mongodb: temp/define_url.mongodb
 
 data/parts.csv.gz: temp/parts_content.mongodb
 	source functions.sh; source sh/parts.sh
-	touch data/parts.csv.gz
-
-bigquery/parts: data/parts.csv.gz
-	source functions.sh; send_to_bigquery file_name=parts
 
 data/parts_content.csv.gz: temp/parts_content.mongodb
 	source functions.sh; source sh/parts_content.sh
