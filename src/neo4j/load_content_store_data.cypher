@@ -349,10 +349,10 @@ CREATE (p)-[r:REDIRECTS_TO]->(q)
 // Organisations, persons, and taxons
 MATCH (p:Page { documentType: 'organisation' })
 CREATE (q:Organisation {
-  url: 'https://www.gov.uk/' + p.contentID,
+  url: 'https://www.gov.uk/' + p.contentId,
   name: p.title,
-  orgID: p.analyticsIdentifier,
-  contentId: p.contentID,
+  orgId: p.analyticsIdentifier,
+  contentId: p.contentId,
   status: p.phase,
   abbreviation: p.acronym
 })
@@ -361,9 +361,9 @@ CREATE (q)-[:HAS_HOMEPAGE]->(p)
 
 MATCH (p:Page { documentType: 'person' })
 CREATE (q:Person {
-  url: 'https://www.gov.uk/' + p.contentID,
+  url: 'https://www.gov.uk/' + p.contentId,
   name: p.title,
-  contentID: p.contentID
+  contentId: p.contentId
 })
 CREATE (q)-[:HAS_HOMEPAGE]->(p)
 ;
@@ -374,9 +374,9 @@ FROM 'file:///taxon_levels.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 CREATE (q:Taxon {
-  url: 'https://www.gov.uk/' + p.contentID,
+  url: 'https://www.gov.uk/' + p.contentId,
   name: p.title,
-  contentID: p.contentID,
+  contentId: p.contentId,
   level: line.level
 })
 CREATE (q)-[:HAS_HOMEPAGE]->(p)
