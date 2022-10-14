@@ -258,7 +258,7 @@ resource "google_compute_instance_template" "neo4j" {
   disk {
     boot         = true
     source_image = module.neo4j-container.source_image
-    disk_size_gb = 40
+    disk_size_gb = 100
   }
 
   metadata = {
