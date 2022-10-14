@@ -1002,13 +1002,13 @@ resource "google_bigquery_table" "step_by_step_embedded_links" {
   {
     "name": "link_url_bare",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "URL target of a hyperlink, omitting parameters and anchors"
   },
   {
     "name": "link_text",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "Plain text that is displayed in place of the URL"
   }
 ]
@@ -1055,13 +1055,13 @@ resource "google_bigquery_table" "parts_embedded_links" {
   {
     "name": "link_url_bare",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "URL target of a hyperlink, omitting parameters and anchors"
   },
   {
     "name": "link_text",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "Plain text that is displayed in place of the URL"
   }
 ]
@@ -1096,13 +1096,13 @@ resource "google_bigquery_table" "transaction_embedded_links" {
   {
     "name": "link_url_bare",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "URL target of a hyperlink, omitting parameters and anchors"
   },
   {
     "name": "link_text",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "Plain text that is displayed in place of the URL"
   }
 ]
@@ -1137,13 +1137,13 @@ resource "google_bigquery_table" "place_embedded_links" {
   {
     "name": "link_url_bare",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "URL target of a hyperlink, omitting parameters and anchors"
   },
   {
     "name": "link_text",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "Plain text that is displayed in place of the URL"
   }
 ]
@@ -1178,13 +1178,13 @@ resource "google_bigquery_table" "body_embedded_links" {
   {
     "name": "link_url_bare",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "URL target of a hyperlink, omitting parameters and anchors"
   },
   {
     "name": "link_text",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "Plain text that is displayed in body of the URL"
   }
 ]
