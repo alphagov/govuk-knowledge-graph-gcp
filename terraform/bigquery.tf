@@ -37,11 +37,14 @@ data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
     ]
   }
   binding {
+    role = "roles/bigquery.dataViewer"
     members = [
       "projectReaders",
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
+      "group:data-engineering@digital.cabinet-office.gov.uk",
+      "group:data-analysts@digital.cabinet-office.gov.uk",
+      "group:data-products@digital.cabinet-office.gov.uk"
     ]
-    role = "roles/bigquery.dataViewer"
   }
 }
 
