@@ -114,20 +114,17 @@ USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///role_redirects.csv' AS line
 FIELDTERMINATOR ','
-MATCH (p:Role { url: line.from })
-MATCH (q { url: line.to })
+MATCH (p:Page { url: line.from })
+MATCH (q:Page { url: line.to })
 CREATE (p)-[r:REDIRECTS_TO]->(q)
 ;
 
 // Link to home pages of roles that have base_paths
-MATCH (a)-[:LINKS_TO {linkTargetType: 'parent_taxons'}]->(b)<-[:HAS_HOMEPAGE]-(c)
-;
-
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///role_base_path.csv' AS line
 FIELDTERMINATOR ','
 MATCH (r:Role { url: line.url })
-MATCH (p:Page { url: "https://www.gov.uk" + line.base_path })
+MATCH (p:Page { url: "https://www.gov.uk" + line.base_path, locale: 'en' })
 CREATE (r)-[:HAS_HOMEPAGE]->(p)
 ;

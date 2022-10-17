@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS roles;
 CREATE TABLE roles AS
   SELECT
-    CONCAT('https://www.gov.uk/roles/', documents.content_id) AS url,
+    CONCAT('https://www.gov.uk/', documents.content_id) AS url,
     editions.schema_name,
     editions.document_type,
     editions.publishing_app,
