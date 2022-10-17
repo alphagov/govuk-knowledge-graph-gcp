@@ -1,4 +1,5 @@
-# body embedded hyperlinks
+FILE_NAME=body_embedded_links
+
 query_mongo \
   type=json \
   collection=body \
@@ -7,4 +8,6 @@ query_mongo \
   input_col=html \
   id_cols=url \
 | count_distinct escape_cols=link_text \
-| upload file_name=body_embedded_links
+| upload file_name=$FILE_NAME
+
+send_to_bigquery file_name=$FILE_NAME
