@@ -207,6 +207,9 @@ data "google_iam_policy" "project" {
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
+      "group:data-engineering@digital.cabinet-office.gov.uk",
+      "group:data-analysts@digital.cabinet-office.gov.uk",
+      "group:data-products@digital.cabinet-office.gov.uk"
     ]
   }
 
