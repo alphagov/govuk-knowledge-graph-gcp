@@ -21,4 +21,5 @@ CREATE TABLE roles AS
     schema_name IN ('role', 'role_appointment')
     AND content_store = 'live'
     AND editions.state = 'published'
+    AND documents.locale = 'en'
 ;
