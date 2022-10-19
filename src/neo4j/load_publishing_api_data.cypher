@@ -95,21 +95,6 @@ MATCH (p:Role { url: line.url })
 SET p.text = line.text
 ;
 
-// coalesce() handles a handful of links that have malformed URLs, or empty link
-// text.
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS
-FROM 'file:///content_embedded_links.csv' AS line
-FIELDTERMINATOR ','
-MATCH (p:Role { url: line.url })
-MERGE (q:Role { url: coalesce(line.link_url_bare, line.link_url, "") })
-CREATE (p)-[r:HYPERLINKS_TO {
-  linkUrl: line.link_url,
-  linkText: coalesce(line.link_text, ""),
-  linkCount: line.count
-}]->(q)
-;
-
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///role_redirects.csv' AS line
