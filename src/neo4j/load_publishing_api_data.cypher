@@ -113,3 +113,63 @@ MATCH (r:Role { url: line.url })
 MATCH (p:Page { url: "https://www.gov.uk" + line.base_path, locale: 'en' })
 CREATE (r)-[:HAS_HOMEPAGE]->(p)
 ;
+
+// Create RoleAppointment nodes
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///appointment_url.csv' AS line
+FIELDTERMINATOR ','
+CREATE (p:RoleAppointment { url: line.url })
+;
+
+CREATE CONSTRAINT ON (p:RoleAppointment) ASSERT p.url IS UNIQUE;
+
+// Create properties of role_appointments
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///appointment_current.csv' AS line
+FIELDTERMINATOR ','
+MATCH (p:RoleAppointment { url: line.url })
+SET p.current = (case line.current when "t" then true else false end)
+;
+
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///appointment_started_on.csv' AS line
+FIELDTERMINATOR ','
+MATCH (p:RoleAppointment { url: line.url })
+SET p.startedOn = line.started_on
+;
+
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///appointment_ended_on.csv' AS line
+FIELDTERMINATOR ','
+MATCH (p:RoleAppointment { url: line.url })
+SET p.endedOn = line.ended_on
+;
+
+// Create links between role_appointments and roles
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///appointment_role.csv' AS line
+FIELDTERMINATOR ','
+MATCH (p:RoleAppointment { url: "https://www.gov.uk/" + line.role_appointment_content_id })
+MATCH (q:Role { url: "https://www.gov.uk/" +  line.role_content_id })
+CREATE (p)-[:LINKS_TO { linkTargetType: 'role' }]->(q)
+;
+
+// Create links between role_appointments and persons
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///appointment_person.csv' AS line
+FIELDTERMINATOR ','
+MATCH (p:RoleAppointment { url: "https://www.gov.uk/" + line.role_appointment_content_id })
+MATCH (q:Person { url: "https://www.gov.uk/" +  line.person_content_id })
+CREATE (p)-[:LINKS_TO { linkTargetType: 'person' }]->(q)
+;
+
+// Reuse `role` and `person` links as `HAS_ROLE`.
+MATCH (p:Person)<-[:LINKS_TO {linkTargetType: 'person'}]-(a:RoleAppointment)-[:LINKS_TO {linkTargetType: 'role'}]->(r:Role)
+CREATE (p)-[:HAS_ROLE { startDate: a.startedOn, endDate: a.endedOn }]->(r)
+;

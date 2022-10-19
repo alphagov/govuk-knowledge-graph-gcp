@@ -41,8 +41,8 @@ clean.postgres:
 clean.gz:
 	rm data/.* data/*
 
-# Create a table of all roles and role_appointments that are live in the content
-# store, even if they are redirects or withdrawn.
+# Create a table of all roles (with relevant columns) that are live in the
+# content store, even if they are redirects or withdrawn.
 temp/roles.postgres:
 	psql \
 		--username=postgres \
@@ -50,18 +50,9 @@ temp/roles.postgres:
     --file=sql/roles.sql
 	touch temp/roles.postgres
 
-# Create a table in postgres of role, not role_appointment, and the details
-# column
-temp/roles_details.postgres: temp/roles.postgres
-	psql \
-		--username=postgres \
-		--dbname=publishing_api_production \
-    --file=sql/roles_details.sql
-	touch temp/roles_details.postgres
-
-# Download the url field of every role and role appointment.
-data/role_url.csv.gz: temp/roles.postgres
-	source functions.sh; source sh/url.sh
+# Download the url field of every role
+data/role_role_url.csv.gz: temp/roles.postgres
+	source functions.sh; source sh/role_url.sh
 
 data/role_document_type.csv.gz: temp/roles.postgres
 	source functions.sh; source sh/document_type.sh
@@ -96,16 +87,16 @@ data/role_title.csv.gz: temp/roles.postgres
 data/role_description.csv.gz: temp/roles.postgres
 	source functions.sh; source sh/description.sh
 
-data/role_attends_cabinet_type.csv.gz: temp/roles_details.postgres
+data/role_attends_cabinet_type.csv.gz: temp/roles.postgres
 	source functions.sh; source sh/attends_cabinet_type.sh
 
-data/role_role_payment_type.csv.gz: temp/roles_details.postgres
+data/role_role_payment_type.csv.gz: temp/roles.postgres
 	source functions.sh; source sh/role_payment_type.sh
 
-data/role_seniority.csv.gz: temp/roles_details.postgres
+data/role_seniority.csv.gz: temp/roles.postgres
 	source functions.sh; source sh/seniority.sh
 
-data/role_whip_organisation.csv.gz: temp/roles_details.postgres
+data/role_whip_organisation.csv.gz: temp/roles.postgres
 	source functions.sh; source sh/whip_organisation.sh
 
 data/role_content.csv.gz: temp/roles.postgres
@@ -122,3 +113,33 @@ data/role_content_hyperlinks.csv.gz: data/role_content.csv.gz
 
 data/role_redirects.csv.gz:
 	source functions.sh; source sh/redirects.sh
+
+# Create a table of all current and historic role appointments.
+temp/appointments.postgres:
+	psql \
+		--username=postgres \
+		--dbname=publishing_api_production \
+    --file=sql/appointments.sql
+	touch temp/appointments.postgres
+
+# Download the url field of every role_appointment
+data/role_appointment_url.csv.gz: temp/appointments.postgres
+	source functions.sh; source sh/appointment_url.sh
+
+# Download metadata about each role_appointment
+data/role_appointment_current.csv.gz: temp/appointments.postgres
+	source functions.sh; source sh/appointment_current.sh
+
+data/role_appointment_started_on.csv.gz: temp/appointments.postgres
+	source functions.sh; source sh/appointment_started_on.sh
+
+data/role_appointment_ended_on.csv.gz: temp/appointments.postgres
+	source functions.sh; source sh/appointment_ended_on.sh
+
+# Download links between appointments and roles
+data/role_appointment_role.csv.gz: temp/appointments.postgres
+	source functions.sh; source sh/appointment_role.sh
+
+# Download links between appointments and people
+data/role_appointment_person.csv.gz: temp/appointments.postgres
+	source functions.sh; source sh/appointment_person.sh

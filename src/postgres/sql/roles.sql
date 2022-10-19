@@ -18,8 +18,9 @@ CREATE TABLE roles AS
   FROM editions
   INNER JOIN documents ON documents.id = editions.document_id
   WHERE
-    schema_name IN ('role', 'role_appointment')
-    AND content_store = 'live'
+    editions.document_type LIKE '%role%'
+    AND editions.document_type <> 'role_appointment'
+    AND editions.content_store = 'live'
     AND editions.state = 'published'
     AND documents.locale = 'en'
 ;
