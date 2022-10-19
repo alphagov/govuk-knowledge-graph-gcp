@@ -83,7 +83,7 @@ gcloud storage cat \
 
 # Ingest the Publishing API data
 gcloud storage cat \
-  gs://govuk-knowledge-graph-repository/src/neo4j/load_content_store_data.cypher \
+  gs://govuk-knowledge-graph-repository/src/neo4j/load_publishing_api_data.cypher \
   | cypher-shell --address neo4j+s://govgraph.dev:7687
 
 # Stay alive
