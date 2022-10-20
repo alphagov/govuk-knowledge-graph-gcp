@@ -173,3 +173,14 @@ CREATE (p)-[:LINKS_TO { linkTargetType: 'person' }]->(q)
 MATCH (p:Person)<-[:LINKS_TO {linkTargetType: 'person'}]-(a:RoleAppointment)-[:LINKS_TO {linkTargetType: 'role'}]->(r:Role)
 CREATE (p)-[:HAS_ROLE { startDate: a.startedOn, endDate: a.endedOn }]->(r)
 ;
+
+// Create links between roles and organisations
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///role_organisation.csv' AS line
+FIELDTERMINATOR ','
+MATCH (r:Role { url: "https://www.gov.uk/" + line.role_content_id })
+MATCH (o:Organisation { url: "https://www.gov.uk/" + line.organisation_content_id })
+CREATE (o)-[:LINKS_TO { linkTargetType: 'ordered_roles' }]->(r)
+CREATE (r)-[:BELONGS_TO]->(o)
+;
