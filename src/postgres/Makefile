@@ -143,3 +143,7 @@ data/role_appointment_role.csv.gz: temp/appointments.postgres
 # Download links between appointments and people
 data/role_appointment_person.csv.gz: temp/appointments.postgres
 	source functions.sh; source sh/appointment_person.sh
+
+# Download links between roles and organisations
+data/role_role_organisation.csv.gz: temp/roles.postgres
+	source functions.sh; source sh/role_organisation.sh
