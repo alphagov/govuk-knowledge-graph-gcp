@@ -86,7 +86,7 @@ resource "google_compute_firewall" "neo4j-ingress" {
 
   allow {
     protocol = "tcp"
-    ports    = ["7473", "7687"]
+    ports    = ["7473", "7474", "7687"]
   }
 
   # https://sites.google.com/a/digital.cabinet-office.gov.uk/gds/working-at-gds/gds-internal-it/gds-internal-it-network-public-ip-addresses
