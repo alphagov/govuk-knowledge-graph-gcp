@@ -542,3 +542,5 @@ RETURN count(nodePropertiesWritten);
 // We don't need this projection any more so drop it
 CALL gds.graph.drop('page-user-movement') YIELD graphName;
 
+// Create a full-text search index
+CREATE FULLTEXT INDEX FOR (p:Page) ON EACH [p.title, p.description, p.text];
