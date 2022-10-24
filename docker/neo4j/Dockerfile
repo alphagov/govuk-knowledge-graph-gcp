@@ -5,7 +5,7 @@ ADD neo4j.conf /var/lib/neo4j/conf
 
 # Install gcloud
 RUN apt-get update -y
-RUN apt-get install -y apt-transport-https ca-certificates gnupg curl
+RUN apt-get install -y apt-transport-https ca-certificates gnupg curl make
 RUN \
   echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" \
   | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \

@@ -76,15 +76,9 @@ until cypher-shell --address neo4j+s://govgraph.dev:7687 "RETURN true;" | grep -
 done
 neo4j status
 
-# Ingest the Content Store data
-gcloud storage cat \
-  gs://govuk-knowledge-graph-repository/src/neo4j/load_content_store_data.cypher \
-  | cypher-shell --address neo4j+s://govgraph.dev:7687
-
-# Ingest the Publishing API data
-gcloud storage cat \
-  gs://govuk-knowledge-graph-repository/src/neo4j/load_publishing_api_data.cypher \
-  | cypher-shell --address neo4j+s://govgraph.dev:7687
+gcloud storage cp --recursive gs://govuk-knowledge-graph-repository/src/neo4j .
+cd neo4j
+make
 
 # Stay alive
 sleep infinity
