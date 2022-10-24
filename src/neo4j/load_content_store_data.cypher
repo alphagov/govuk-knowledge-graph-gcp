@@ -18,6 +18,12 @@ SET
 ;
 
 CREATE CONSTRAINT ON (p:Page) ASSERT p.url IS UNIQUE;
+CREATE CONSTRAINT ON (p:Organisation) ASSERT p.url IS UNIQUE;
+CREATE CONSTRAINT ON (p:Taxon) ASSERT p.url IS UNIQUE;
+CREATE CONSTRAINT ON (p:BankHoliday) ASSERT p.url IS UNIQUE;
+CREATE CONSTRAINT ON (p:Date) ASSERT p.url IS UNIQUE;
+CREATE CONSTRAINT ON (p:Division) ASSERT p.url IS UNIQUE;
+CREATE CONSTRAINT ON (p:Person) ASSERT p.url IS UNIQUE;
 
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
@@ -347,7 +353,7 @@ CREATE (p)-[r:REDIRECTS_TO]->(q)
 ;
 
 // Organisations, persons, and taxons
-MATCH (p:Page { documentType: 'organisation' })
+MATCH (p:Page { documentType: 'organisation', locale: 'en' })
 CREATE (q:Organisation {
   url: 'https://www.gov.uk/' + p.contentId,
   name: p.title,
@@ -359,7 +365,7 @@ CREATE (q:Organisation {
 CREATE (q)-[:HAS_HOMEPAGE]->(p)
 ;
 
-MATCH (p:Page { documentType: 'person' })
+MATCH (p:Page { documentType: 'person', locale: 'en' })
 CREATE (q:Person {
   url: 'https://www.gov.uk/' + p.contentId,
   name: p.title,
@@ -417,11 +423,6 @@ MATCH (p)-[:LINKS_TO {linkTargetType: 'suggested_ordered_related_items'}]->(q)
 CREATE (p)-[:HAS_SUGGESTED_ORDERED_RELATED_ITEMS]->(q)
 ;
 
-// Reuse `organisations` links as `HAS_ORGANISATION`.
-MATCH (a)-[:LINKS_TO {linkTargetType: 'organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c)
-CREATE (a)-[:HAS_ORGANISATIONS]->(c)
-;
-
 // Reuse `ordered_child_organisations` links as `HAS_CHILD_ORGANISATION`.
 MATCH (a:Organisation)-[:HAS_HOMEPAGE]->(b:Page)-[:LINKS_TO {linkTargetType: 'ordered_child_organisations'}]->(c:Page)<-[:HAS_HOMEPAGE]-(d:Organisation)
 CREATE (a)-[:HAS_CHILD_ORGANISATION]->(d)
@@ -432,24 +433,29 @@ MATCH (a:Organisation)-[:HAS_HOMEPAGE]->(b:Page)-[:LINKS_TO {linkTargetType: 'or
 CREATE (a)-[:HAS_PARENT_ORGANISATION]->(d)
 ;
 
+// Reuse `ordered_successor_organisations` links as `HAS_SUPERSEDED`.
+MATCH (a:Organisation)-[:HAS_HOMEPAGE]->(b:Page)-[:LINKS_TO {linkTargetType: 'ordered_successor_organisations'}]->(c)<-[:HAS_HOMEPAGE]-(d)
+CREATE (a)<-[:HAS_SUPERSEDED]-(d)
+;
+
+// Reuse `organisations` links as `HAS_ORGANISATION`.
+MATCH (a)-[:LINKS_TO {linkTargetType: 'organisations'}]->(b:Page)<-[:HAS_HOMEPAGE]-(c:Organisation)
+CREATE (a)-[:HAS_ORGANISATIONS]->(c)
+;
+
+// Reuse `supporting_organisations` links as `HAS_SUPPORTING_ORGANISATIONS`.
+MATCH (a:Page)-[:LINKS_TO {linkTargetType: 'supporting_organisations'}]->(b:Page)<-[:HAS_HOMEPAGE]-(c:Organisation)
+CREATE (a)-[:HAS_SUPPORTING_ORGANISATIONS]->(c)
+;
+
 // Reuse `primary_publishing_organisation` links as `HAS_PRIMARY_PUBLISHING_ORGANISATION`.
-MATCH (a)-[:LINKS_TO {linkTargetType: 'primary_publishing_organisation'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+MATCH (a:Page)-[:LINKS_TO {linkTargetType: 'primary_publishing_organisation'}]->(b:Page)<-[:HAS_HOMEPAGE]-(c:Organisation)
 CREATE (a)-[:HAS_PRIMARY_PUBLISHING_ORGANISATION]->(c)
 ;
 
 // Reuse `original_primary_publishing_organisation` links as `HAS_ORIGINAL_PRIMARY_PUBLISHING_ORGANISATION`.
-MATCH (a)-[:LINKS_TO {linkTargetType: 'original_primary_publishing_organisation'}]->(b)<-[:HAS_HOMEPAGE]-(c)
+MATCH (a:Page)-[:LINKS_TO {linkTargetType: 'original_primary_publishing_organisation'}]->(b:Page)<-[:HAS_HOMEPAGE]-(c:Organisation)
 CREATE (a)-[:HAS_ORIGINAL_PRIMARY_PUBLISHING_ORGANISATION]->(c)
-;
-
-// Reuse `supporting_organisations` links as `HAS_SUPPORTING_ORGANISATIONS`.
-MATCH (a)-[:LINKS_TO {linkTargetType: 'supporting_organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c)
-CREATE (a)-[:HAS_SUPPORTING_ORGANISATIONS]->(c)
-;
-
-// Reuse `ordered_successor_organisations` links as `HAS_SUPERSEDED`.
-MATCH (a)-[:LINKS_TO {linkTargetType: 'ordered_successor_organisations'}]->(b)<-[:HAS_HOMEPAGE]-(c)
-CREATE (a)<-[:HAS_SUPERSEDED]-(c)
 ;
 
 // Reuse `taxons` links as `IS_TAGGED_TO`.
