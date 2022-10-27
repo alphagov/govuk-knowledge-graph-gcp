@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Increase the amount of shared memory available.
+# This requires the containe to run in privileged mode.
+# It prevents a postgres error
+# "could not resize shared memory segment: No space left on device"
+mount -o remount,size=8G /dev/shm
+
 # Run both postgres and scripts that interact with the database
 
 # Obtain the latest state of the repository
