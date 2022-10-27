@@ -212,6 +212,9 @@ module "postgres-container" {
     image = "europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/postgres:latest"
     tty : true
     stdin : true
+    securityContext = {
+      privileged : true
+    }
     env = [
       {
         name  = "POSTGRES_HOST_AUTH_METHOD"
