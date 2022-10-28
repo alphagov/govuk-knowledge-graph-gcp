@@ -78,8 +78,8 @@ data/role_public_updated_at.csv.gz: temp/roles.postgres
 data/role_first_published_at.csv.gz: temp/roles.postgres
 	source functions.sh; source sh/first_published_at.sh
 
-data/role_base_path.csv.gz: temp/roles.postgres
-	source functions.sh; source sh/base_path.sh
+data/role_homepage_url.csv.gz: temp/roles.postgres
+	source functions.sh; source sh/homepage_url.sh
 
 data/role_title.csv.gz: temp/roles.postgres
 	source functions.sh; source sh/title.sh
@@ -108,8 +108,8 @@ data/role_content_text.csv.gz: data/role_content.csv.gz
 data/role_content_lines.csv.gz: data/role_content.csv.gz
 	source functions.sh; source sh/content_lines.sh
 
-data/role_content_hyperlinks.csv.gz: data/role_content.csv.gz
-	source functions.sh; source sh/content_hyperlinks.sh
+data/role_embedded_links.csv.gz: data/role_content.csv.gz
+	source functions.sh; source sh/embedded_links.sh
 
 data/role_redirects.csv.gz:
 	source functions.sh; source sh/redirects.sh

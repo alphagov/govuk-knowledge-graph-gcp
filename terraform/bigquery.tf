@@ -1263,13 +1263,13 @@ resource "google_bigquery_table" "redirect" {
   schema        = <<EOF
 [
   {
-    "name": "url",
+    "name": "from_url",
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "URL of a piece of static content on the www.gov.uk domain"
   },
   {
-    "name": "url_override",
+    "name": "to_url",
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "URL that overrides the other"
@@ -1296,6 +1296,657 @@ resource "google_bigquery_table" "taxon_levels" {
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "URL of a piece of static content on the www.gov.uk domain"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "appointment_current" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "appointment_current"
+  friendly_name = "Appointment current"
+  description   = "Whether a role appointment is current"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role appointment on GOV.UK"
+  },
+  {
+    "name": "current",
+    "type": "BOOLEAN",
+    "mode": "REQUIRED",
+    "description": "Whether a role appointment is current"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "appointment_ended_on" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "appointment_ended_on"
+  friendly_name = "Appointment ended on"
+  description   = "When an appointment to a role ended"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role appointment on GOV.UK"
+  },
+  {
+    "name": "ended_on",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "When an appointment to a role ended"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "appointment_person" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "appointment_person"
+  friendly_name = "Appointment person"
+  description   = "The person appointed to a role"
+  schema        = <<EOF
+[
+  {
+    "name": "role_appointment_content_id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Content ID of a role appointment on GOV.UK"
+  },
+  {
+    "name": "person_content_id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Content ID of a person on GOV.UK"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "appointment_role" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "appointment_role"
+  friendly_name = "Appointment role"
+  description   = "The role that a person is appointed to"
+  schema        = <<EOF
+[
+  {
+    "name": "role_appointment_content_id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role appointment on GOV.UK"
+  },
+  {
+    "name": "role_content_id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "appointment_started_on" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "appointment_started_on"
+  friendly_name = "Appointment started on"
+  description   = "When an appointment to a role started"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role appointment on GOV.UK"
+  },
+  {
+    "name": "started_on",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "When an appointment to a role started"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "appointment_url" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "appointment_url"
+  friendly_name = "Appointment url"
+  description   = "Unique URLs of role appointments on GOV.UK"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role appointment on GOV.UK"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_url" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_url"
+  friendly_name = "Unique URLs of roles on GOV.UK"
+  description   = "Unique URLs of roles on the www.gov.uk domain"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a 'role' on the www.gov.uk domain"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_content_id" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_content_id"
+  friendly_name = "Role content ID"
+  description   = "Content IDs of roles on GOV.UK"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  },
+  {
+    "name": "content_id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "The ID of a content item"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_description" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_description"
+  friendly_name = "Role description"
+  description   = "Description of a role on GOV.UK"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  },
+  {
+    "name": "description",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Description of a role"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_document_type" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_document_type"
+  friendly_name = "Role document type"
+  description   = "Document type of a role on GOV.UK"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  },
+  {
+    "name": "document_type",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Document type of a role on GOV.UK"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_attends_cabinet_type" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_attends_cabinet_type"
+  friendly_name = "Role attends cabinet type"
+  description   = "Whether the incumbent of a role attends cabinet"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  },
+  {
+    "name": "attends_cabinet_type",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Whether the incumbent of a role attends cabinet"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_homepage_url" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_homepage_url"
+  friendly_name = "Role hompage URL"
+  description   = "URL of the homepage of a role"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  },
+  {
+    "name": "homepage_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of the homepage of a role"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_content" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_content"
+  friendly_name = "Role content"
+  description   = "Content of 'role' pages"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "govspeak",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The content of the page as govspeak"
+  },
+  {
+    "name": "html",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The content of the page as HTML"
+  },
+  {
+    "name": "text",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The content of the page as plain text extracted from the HTML"
+  },
+  {
+    "name": "text_without_blank_lines",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The content of the page as plain text, omitting blank lines"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_content_lines" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_content_lines"
+  friendly_name = "Role content lines"
+  description   = "Individual lines of content of 'role' pages"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "line_number",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "The order of the line of content in the document"
+  },
+  {
+    "name": "line",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "A single line of plain-text content"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_embedded_links" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_embedded_links"
+  friendly_name = "Role embedded links"
+  description   = "Text and URLs of hyperlinks from the text of 'role' pages"
+  schema        = <<EOF
+[
+  {
+    "name": "count",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Number of occurrences of a link with the same URL and link-text in the same document"
+  },
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "link_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL target of a hyperlink"
+  },
+  {
+    "name": "link_url_bare",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "URL target of a hyperlink, omitting parameters and anchors"
+  },
+  {
+    "name": "link_text",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Plain text that is displayed in place of the URL"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_locale" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_locale"
+  friendly_name = "Role locale"
+  description   = "Locale of a role"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  },
+  {
+    "name": "locale",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Locale of a role on GOV.UK"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_first_published_at" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_first_published_at"
+  friendly_name = "Role first published at"
+  description   = "When a role was first published"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role role on GOV.UK"
+  },
+  {
+    "name": "first_published_at",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "When a role was first published"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_phase" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_phase"
+  friendly_name = "Role phase"
+  description   = "Phase of a role"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  },
+  {
+    "name": "phase",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Phase of a role on GOV.UK"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_public_updated_at" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_public_updated_at"
+  friendly_name = "Role publicly updated at"
+  description   = "When a role was publicly updated"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role role on GOV.UK"
+  },
+  {
+    "name": "public_updated_at",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "When a role was publicly updated"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_publishing_app" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_publishing_app"
+  friendly_name = "Role publishing app"
+  description   = "Publishing app of a role"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  },
+  {
+    "name": "publishing_app",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Publishing app of a role on GOV.UK"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_redirect" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_redirect"
+  friendly_name = "Role redirect"
+  description   = "Redirects of homepates of roles"
+  schema        = <<EOF
+[
+  {
+    "name": "from_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a homepage of a role on GOV.UK being redirected from"
+  },
+  {
+    "name": "to_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a homepage of a role on GOV.UK being redirected to"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_organisation" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_organisation"
+  friendly_name = "Role organisation"
+  description   = "Organisation to which a role belongs"
+  schema        = <<EOF
+[
+  {
+    "name": "organisation_content_id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Content ID of an organisation on GOV.UK"
+  },
+  {
+    "name": "role_content_id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Content ID of a role on GOV.UK"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_payment_type" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_payment_type"
+  friendly_name = "Role payment type"
+  description   = "Payment type of roles"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  },
+  {
+    "name": "payment_type",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Payment type of a role on GOV.UK"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_seniority" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_seniority"
+  friendly_name = "Role seniority"
+  description   = "Seniority of roles"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  },
+  {
+    "name": "seniority",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Seniority of a role on GOV.UK"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_title" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_title"
+  friendly_name = "Role title"
+  description   = "Title of roles"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  },
+  {
+    "name": "title",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Title of a role on GOV.UK"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_updated_at" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_updated_at"
+  friendly_name = "Role updated at"
+  description   = "When a role was updated"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role role on GOV.UK"
+  },
+  {
+    "name": "updated_at",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "When a role was updated"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_whip_organisation" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_whip_organisation"
+  friendly_name = "Role whip organisation"
+  description   = "Whip organisation of roles"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  },
+  {
+    "name": "whip_organisation",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Whip organisation of a role on GOV.UK"
   }
 ]
 EOF

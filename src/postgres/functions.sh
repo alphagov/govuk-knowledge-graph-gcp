@@ -1,4 +1,38 @@
 #! /bin/bash
+#
+# Count the number of times that each distinct row of a CSV appears.
+#
+# This handles newlines in quoted columns.  You have to pass a comma-separated
+# list of column names that could contain newlines.
+#
+# Input is via stdin.
+#
+# Usage:
+# command_that_emits_csv | count_distinct escape_cols=col1,col2
+#
+# Where col1 and col2 are columns that might contain newlines.
+#
+# This depends on Python's CSV library to escape and unescape newline
+# characters.
+#
+# Performance (speed and memory) should be okay.  The Python steps are
+# parallelised, and only load a few lines at a time.  The unix steps are also
+# efficient.
+count_distinct () {
+  local escape_cols    # reset first
+  local "${@}"
+  python3 ../../src/utils/toggle_escapes.py \
+    --escape_cols=${escape_cols} \
+  | ( \
+    read -r; \
+    printf "count,%s\n" "$REPLY"; \
+    LC_ALL=C sort -S 100% \
+    | LC_ALL=C uniq -c \
+    | sed -E 's/(\s*)([[:digit:]]+)(\s+)/\2,/' \
+  ) \
+  | python3 ../../src/utils/toggle_escapes.py \
+    --unescape_cols=${escape_cols}
+}
 
 # Extract datasets of nodes, attributes and edges from the PostgreSQL Publishing
 # API database.
@@ -56,6 +90,24 @@ upload () {
   double_backslashes \
   | gzip -c \
   | gcloud storage cp - "gs://govuk-knowledge-graph-data-processed/publishing-api/${file_name}.csv.gz"
+}
+#
+# Upload from cloud bucket to BigQuery table
+#
+# Usage:
+# send_to_bigquery file_name=myfile
+#
+# The suffix ".csv.gz" is automatically appended to the file name.
+send_to_bigquery () {
+  local file_name # reset in case they are defined globally
+  local "${@}"
+  bq load \
+    --replace \
+    --source_format="CSV" \
+    --allow_quoted_newlines \
+    --skip_leading_rows=1 \
+    "content.${file_name}" \
+    "gs://govuk-knowledge-graph-data-processed/publishing-api/${file_name}.csv.gz"
 }
 
 # Wrapper around a ruby script to convert govspeak to HTML
