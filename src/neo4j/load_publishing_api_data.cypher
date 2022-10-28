@@ -89,7 +89,7 @@ SET p.description = line.description
 
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
-FROM 'file:///role_content_text.csv' AS line
+FROM 'file:///role_content.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Role { url: line.url })
 SET p.text = line.text
@@ -97,7 +97,7 @@ SET p.text = line.text
 
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
-FROM 'file:///role_redirects.csv' AS line
+FROM 'file:///role_redirect.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.from })
 MATCH (q:Page { url: line.to })
@@ -107,7 +107,7 @@ CREATE (p)-[r:REDIRECTS_TO]->(q)
 // Link to home pages of roles that have base_paths
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
-FROM 'file:///role_base_path.csv' AS line
+FROM 'file:///role_homepage_url.csv' AS line
 FIELDTERMINATOR ','
 MATCH (r:Role { url: line.url })
 MATCH (p:Page { url: "https://www.gov.uk" + line.base_path, locale: 'en' })
