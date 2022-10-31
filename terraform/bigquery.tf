@@ -350,7 +350,7 @@ resource "google_bigquery_table" "title" {
   dataset_id    = google_bigquery_dataset.content.dataset_id
   table_id      = "title"
   friendly_name = "Title"
-  description   = "Titles of static content on the www.gov.uk domain, not including parts of 'guide' and 'travel_advice' pages, which are in the 'parts' table."
+  description   = "Titles of static content on the www.gov.uk domain, not including parts of 'guide' and 'travel_advice' pages, which are in the 'parts_title' table."
   schema        = <<EOF
 [
   {
@@ -555,9 +555,26 @@ resource "google_bigquery_table" "parts" {
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "The order of the part among other parts in the same document, counting from 0"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "parts_title" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "parts_title"
+  friendly_name = "Parts titles"
+  description   = "Titles of parts of 'guide' and 'travel_advice' documents"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Complete URL of the part"
   },
   {
-    "name": "part_title",
+    "name": "title",
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "The title of the part"
@@ -613,18 +630,6 @@ resource "google_bigquery_table" "parts_content" {
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "URL of a piece of static content on the www.gov.uk domain"
-  },
-  {
-    "name": "base_path",
-    "type": "STRING",
-    "mode": "REQUIRED",
-    "description": "URL of the parent document of the part"
-  },
-  {
-    "name": "part_index",
-    "type": "STRING",
-    "mode": "REQUIRED",
-    "description": "The order of the part among other parts in the same document, counting from 0"
   },
   {
     "name": "html",
@@ -831,18 +836,6 @@ resource "google_bigquery_table" "parts_lines" {
     "description": "URL of a piece of static content on the www.gov.uk domain"
   },
   {
-    "name": "base_path",
-    "type": "STRING",
-    "mode": "REQUIRED",
-    "description": "URL of the parent document of the part"
-  },
-  {
-    "name": "part_index",
-    "type": "STRING",
-    "mode": "REQUIRED",
-    "description": "The order of the part among other parts in the same document, counting from 0"
-  },
-  {
     "name": "line_number",
     "type": "INTEGER",
     "mode": "REQUIRED",
@@ -1033,18 +1026,6 @@ resource "google_bigquery_table" "parts_embedded_links" {
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "URL of a piece of static content on the www.gov.uk domain"
-  },
-  {
-    "name": "base_path",
-    "type": "STRING",
-    "mode": "REQUIRED",
-    "description": "URL of the parent document of the part"
-  },
-  {
-    "name": "part_index",
-    "type": "STRING",
-    "mode": "REQUIRED",
-    "description": "The order of the part among other parts in the same document, counting from 0"
   },
   {
     "name": "link_url",

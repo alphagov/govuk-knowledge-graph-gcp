@@ -24,7 +24,7 @@ db.content_items.aggregate([
     "base_path": true,
     "slug": true,
     "part_index": true,
-    "part_title": true,
+    "title": true,
     "html": "$body.content",
   } },
   { $match: { "html": { "$exists": true, $ne: null } } },
