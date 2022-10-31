@@ -76,7 +76,7 @@ LOAD CSV WITH HEADERS
 FROM 'file:///role_title.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Role { url: line.url })
-SET p.title = line.title
+SET p.name = line.title
 ;
 
 USING PERIODIC COMMIT
