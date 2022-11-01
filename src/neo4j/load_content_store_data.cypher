@@ -352,6 +352,15 @@ MATCH (q:Page { url: line.to })
 CREATE (p)-[r:REDIRECTS_TO]->(q)
 ;
 
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///url_override.csv' AS line
+FIELDTERMINATOR ','
+MATCH (p:Page { url: line.url })
+MATCH (q:Page { url: line.url_override })
+CREATE (p)-[r:REDIRECTS_TO]->(q)
+;
+
 // Organisations, persons, and taxons
 MATCH (p:Page { documentType: 'organisation', locale: 'en' })
 CREATE (q:Organisation {
@@ -547,4 +556,3 @@ RETURN count(nodePropertiesWritten);
 
 // We don't need this projection any more so drop it
 CALL gds.graph.drop('page-user-movement') YIELD graphName;
-
