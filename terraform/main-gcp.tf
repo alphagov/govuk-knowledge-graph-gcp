@@ -261,8 +261,8 @@ data "google_iam_policy" "project" {
     role = "roles/compute.instanceAdmin.v1"
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
-      "serviceAccount:${google_service_account.workflow_govuk_integration_database_backups.email}",
       "serviceAccount:${google_service_account.gce_postgres.email}",
+      "serviceAccount:${google_service_account.workflow_govuk_integration_database_backups.email}",
       "serviceAccount:${google_service_account.workflow_neo4j.email}",
     ]
   }
