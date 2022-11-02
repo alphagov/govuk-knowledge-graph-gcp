@@ -1,12 +1,23 @@
-# Experimental version of the GOV.UK Knowledge Graph on Google Cloud Platform
+# GOV.UK Knowledge Graph
+
+Experiment with setting up a graph database containing (most of) the GOV.UK
+content as a network of pages and hyperlinks, as well as other more "semantic"
+objects such as Person or Organisation and relationships between them.
+
+[This
+version](https://console.cloud.google.com/welcome?project=govuk-knowledge-graph)
+of the Knowledge Graph is hosted on GCP (Google Cloud Platform). It replaces a
+[previous version](https://github.com/alphagov/govuk-knowledge-graph) that was
+hosted on AWS (Amazon Web Services).
+
+## Documentation
+
+[GOV.UK Data Community Technical Documentation](https://docs.data-community.publishing.service.gov.uk/analysis/govgraph/pipeline-v2/)
 
 ## Terraform
 
-Terraform has been configured to "plan" on any push to a pull request, and
-"apply" on any merge to the "main" branch.
-
-To run locally, provide your own github token from `gh auth status
---show-token`.
+Because the GitHub repo is also terraformed, you need to provide a Github token
+to terraform as follows.
 
 ```sh
 export GITHUB_TOKEN=$( \
@@ -16,16 +27,6 @@ export GITHUB_TOKEN=$( \
 )
 terraform apply
 ```
-
-If retrospectively terraforming a resource that already exists, you'll have to
-import it first.  That probably goes for the repository, branch, collaborator,
-etc.  One does not simply bootstrap a terraform configuration.
-
-## Authentication
-
-There must be a repository secret called `TERRAFORM_TOKEN_GITHUB` that is a
-PAT (personal access token) with full `repo` and `admin:org` permissions, and
-that belongs to an admin of this repository.
 
 ## Licence
 
