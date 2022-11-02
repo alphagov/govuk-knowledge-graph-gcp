@@ -28,6 +28,7 @@ data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
     members = [
       "projectWriters",
       "serviceAccount:${google_service_account.gce_mongodb.email}",
+      "serviceAccount:${google_service_account.gce_postgres.email}",
     ]
   }
   binding {
