@@ -318,6 +318,11 @@ FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 MERGE (q:Page { url: line.link_url_bare })
 CREATE (p)-[:TRANSACTION_STARTS_AT { linkUrl: line.link_url_bare }]->(q)
+CREATE (s:Transaction {
+  url: line.link_url_bare,
+  name: p.title,
+  description: p.description
+})-[:HAS_START_PAGE]->(p)
 ;
 
 // Transaction start button text
