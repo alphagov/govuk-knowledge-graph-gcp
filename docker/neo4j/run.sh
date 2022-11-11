@@ -86,5 +86,10 @@ gcloud storage cat \
   gs://govuk-knowledge-graph-repository/src/neo4j/load_publishing_api_data.cypher \
   | cypher-shell --address neo4j+s://govgraph.dev:7687
 
+# Create the full-text indexes
+gcloud storage cat \
+  gs://govuk-knowledge-graph-repository/src/neo4j/index.cypher \
+  | cypher-shell --address neo4j+s://govgraph.dev:7687
+
 # Stay alive
 sleep infinity
