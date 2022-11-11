@@ -41,3 +41,14 @@ OPTIONS {
   }
 }
 ;
+
+CREATE FULLTEXT INDEX description_text IF NOT EXISTS
+FOR (n:Page)
+ON EACH [n.description, n.text]
+OPTIONS {
+  indexConfig: {
+    `fulltext.analyzer`: 'standard',
+    `fulltext.eventually_consistent`: false
+  }
+}
+;
