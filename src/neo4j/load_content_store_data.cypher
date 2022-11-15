@@ -11,8 +11,9 @@ FROM 'file:///parts.csv' AS line
 FIELDTERMINATOR ','
 CREATE (p:Page { url: line.url })
 SET
-  p:Chapter,
-  p.chapterNumber = toInteger(line.part_index),
+  p:Part,
+  p.partNumber = toInteger(line.part_index),
+  p.documentType = "part",
   p.slug = line.slug,
   p.title = line.part_title
 ;
@@ -339,10 +340,10 @@ USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///parts.csv' AS line
 FIELDTERMINATOR ','
-MATCH (c:Chapter { url: line.url })
+MATCH (c:Part { url: line.url })
 MATCH (p:Page { url: line.base_path })
-CREATE (p)-[r:HAS_CHAPTER {
-  chapterNumber: toInteger(line.part_index),
+CREATE (p)-[r:HAS_PART {
+  partNumber: toInteger(line.part_index),
   slug: line.slug,
   title: line.part_title
 }]->(c)
