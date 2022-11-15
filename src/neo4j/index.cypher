@@ -3,7 +3,7 @@ FOR (n:Page)
 ON EACH [n.title]
 OPTIONS {
   indexConfig: {
-    `fulltext.analyzer`: 'standard',
+    `fulltext.analyzer`: 'english',
     `fulltext.eventually_consistent`: false
   }
 }
@@ -14,7 +14,7 @@ FOR (n:Page)
 ON EACH [n.description]
 OPTIONS {
   indexConfig: {
-    `fulltext.analyzer`: 'standard',
+    `fulltext.analyzer`: 'english',
     `fulltext.eventually_consistent`: false
   }
 }
@@ -25,7 +25,7 @@ FOR (n:Page)
 ON EACH [n.text]
 OPTIONS {
   indexConfig: {
-    `fulltext.analyzer`: 'standard',
+    `fulltext.analyzer`: 'english',
     `fulltext.eventually_consistent`: false
   }
 }
@@ -36,7 +36,7 @@ FOR (n:Page)
 ON EACH [n.title, n.description, n.text]
 OPTIONS {
   indexConfig: {
-    `fulltext.analyzer`: 'standard',
+    `fulltext.analyzer`: 'english',
     `fulltext.eventually_consistent`: false
   }
 }
@@ -47,7 +47,7 @@ FOR (n:Page)
 ON EACH [n.description, n.text]
 OPTIONS {
   indexConfig: {
-    `fulltext.analyzer`: 'standard',
+    `fulltext.analyzer`: 'english',
     `fulltext.eventually_consistent`: false
   }
 }
