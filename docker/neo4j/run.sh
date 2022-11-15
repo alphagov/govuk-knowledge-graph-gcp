@@ -63,6 +63,10 @@ gcloud storage cp --recursive \
   gs://govuk-knowledge-graph-data-processed/publishing-api/\* \
   /var/lib/neo4j/import
 
+gcloud storage cp --recursive \
+  gs://govuk-knowledge-graph-data-processed/entities/\* \
+  /var/lib/neo4j/import
+
 # Decompress all those files (the semicolon is escaped for the shell, but might
 # not need to be escaped within a script).
 find /var/lib/neo4j/import -name "*.csv.gz" -exec gunzip {} \;
@@ -89,6 +93,11 @@ gcloud storage cat \
 # Create the full-text indexes
 gcloud storage cat \
   gs://govuk-knowledge-graph-repository/src/neo4j/index.cypher \
+  | cypher-shell --address neo4j+s://govgraph.dev:7687
+
+# Ingest entites from the NER (named-entity recognition) pipeline
+gcloud storage cat \
+  gs://govuk-knowledge-graph-repository/src/neo4j/load_entities.cypher \
   | cypher-shell --address neo4j+s://govgraph.dev:7687
 
 # Stay alive
