@@ -347,6 +347,7 @@ CREATE (p)-[r:HAS_PART {
   slug: line.slug,
   title: line.part_title
 }]->(c)
+SET c.publishing_app = p.publishing_app
 ;
 
 USING PERIODIC COMMIT
