@@ -626,7 +626,7 @@ resource "google_bigquery_table" "parts" {
   },
   {
     "name": "part_index",
-    "type": "STRING",
+    "type": "INTEGER",
     "mode": "REQUIRED",
     "description": "The order of the part among other parts in the same document, counting from 0"
   },
@@ -696,7 +696,7 @@ resource "google_bigquery_table" "parts_content" {
   },
   {
     "name": "part_index",
-    "type": "STRING",
+    "type": "INTEGER",
     "mode": "REQUIRED",
     "description": "The order of the part among other parts in the same document, counting from 0"
   },
