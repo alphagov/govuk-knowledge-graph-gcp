@@ -1,2 +1,4 @@
 terraform/.terraform*
 terraform/terraform.tfstate*
+terraform/ggs-tf/.terraform*
+terraform/ggs-tf/terraform.tfstate*
