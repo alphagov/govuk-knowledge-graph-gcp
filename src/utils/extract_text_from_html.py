@@ -8,8 +8,27 @@ import json
 import re
 
 from os import linesep
-from bs4 import BeautifulSoup
+from subprocess import Popen, PIPE, STDOUT
 
+
+def render_with_w3m(html):
+    p = Popen(
+        # Wrap lines after 16834 characters (2^14), which seems plenty to be
+        # sure that no paragraphs of reasonable length will be wrapped.  We
+        # don't want wrapping, because that could split named entities across
+        # lines (e.g. "HM Revenue\nand Customs", preventing them from being
+        # labelled by our model, which processes the text by one line at a time.
+        ["w3m", "-dump", "-cols", "16384", "-T", "text/html"],
+        stdout=PIPE,
+        stdin=PIPE,
+        stderr=PIPE
+    )
+    stdout_data = p.communicate(input=html.encode())[0].decode()
+
+    if stdout_data is None:
+        return ""
+
+    return stdout_data
 
 if __name__ == "__main__":
 
@@ -78,10 +97,11 @@ It will emit a CSV file without headers, but columns for:
     for line in sys.stdin:
         row = json.loads(line.rstrip('\n'))
         row_dict = {col_name: row[col_name] for col_name in id_cols}
-        soup = BeautifulSoup(row[input_col], "lxml")
-        text = BeautifulSoup(row[input_col], "lxml").get_text()
+        html = row[input_col]
+        html_no_newlines = html.replace("\r", " ").replace("\n", " ")
+        text = render_with_w3m(html_no_newlines)
         text_without_blank_lines = linesep.join(
-            [s.strip() for s in text.splitlines() if s.strip()]
+            [s for s in text.splitlines() if s.strip()]
         )
         row_dict["text"] = text
         row_dict["text_without_blank_lines"] = text_without_blank_lines
