@@ -55,6 +55,11 @@ gcloud storage cp --recursive \
   gs://govuk-knowledge-graph-data-processed/content-store/\* \
   /var/lib/neo4j/import
 
+gcloud storage cp \
+  gs://govuk-knowledge-graph-data-processed/bigquery/content.csv.gz \
+  gs://govuk-knowledge-graph-data-processed/bigquery/embedded_links.csv.gz \
+  /var/lib/neo4j/import
+
 gcloud storage cp --recursive \
   gs://govuk-knowledge-graph-data-processed/ga4/\* \
   /var/lib/neo4j/import
