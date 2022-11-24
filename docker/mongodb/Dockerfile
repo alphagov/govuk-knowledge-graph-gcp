@@ -11,6 +11,7 @@ RUN apt-get install -y \
   parallel \
   gnupg \
   curl \
+  w3m \
   python3-bs4
 RUN \
   echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" \
