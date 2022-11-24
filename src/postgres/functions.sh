@@ -140,10 +140,6 @@ convert_govspeak_to_html () {
 #   input_col=html \
 #   id_cols=url,html \
 #
-# extract_lines_from_html
-#   input_col=html \
-#   id_cols=url \
-#
 # extract_hyperlinks_from_html \
 #   input_col=html \
 #   id_cols=url \
@@ -157,20 +153,6 @@ extract_text_from_html () {
       --line-buffer \
       --keep-order \
       python3 ../../src/utils/extract_text_from_html.py \
-      --input_col=${input_col} \
-      --id_cols=${id_cols} \
-  ;}
-}
-extract_lines_from_html () {
-  local input_col id_cols # reset in case they are defined globally
-  local "${@}"
-  { echo $id_cols,line & \
-    parallel \
-      --pipe \
-      --round-robin \
-      --line-buffer \
-      --keep-order \
-      python3 ../../src/utils/extract_lines_from_html.py \
       --input_col=${input_col} \
       --id_cols=${id_cols} \
   ;}

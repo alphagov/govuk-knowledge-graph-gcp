@@ -214,3 +214,24 @@ data "google_iam_policy" "bucket_ssl_certificates" {
     ]
   }
 }
+
+// Header files of CSV files, for concatenation.
+// BigQuery exports a single, large table as many separate files, which then
+// must be concatenated.  They are exported without headers, so that they can be
+// concatenated without headers, and then they are concatenated onto these
+// header files, which contain only the header row.
+resource "google_storage_bucket_object" "content" {
+  name   = "bigquery/content_header.csv.gz"
+  source = "govuk-knowledge-graph-data-processed/bigquery/content_header.csv.gz"
+  bucket = "govuk-knowledge-graph-data-processed"
+}
+resource "google_storage_bucket_object" "lines" {
+  name   = "bigquery/lines_header.csv.gz"
+  source = "govuk-knowledge-graph-data-processed/bigquery/lines_header.csv.gz"
+  bucket = "govuk-knowledge-graph-data-processed"
+}
+resource "google_storage_bucket_object" "embedded_links" {
+  name   = "bigquery/embedded_links_header.csv.gz"
+  source = "govuk-knowledge-graph-data-processed/bigquery/embedded_links_header.csv.gz"
+  bucket = "govuk-knowledge-graph-data-processed"
+}

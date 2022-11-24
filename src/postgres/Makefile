@@ -105,9 +105,6 @@ data/role_content.csv.gz: temp/roles.postgres
 data/role_content_text.csv.gz: data/role_content.csv.gz
 	source functions.sh; source sh/content_text.sh
 
-data/role_content_lines.csv.gz: data/role_content.csv.gz
-	source functions.sh; source sh/content_lines.sh
-
 data/role_embedded_links.csv.gz: data/role_content.csv.gz
 	source functions.sh; source sh/embedded_links.sh
 

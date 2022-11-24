@@ -147,7 +147,7 @@ SET p.departmentAnalyticsProfile = line.`details.department_analytics_profile`
 
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
-FROM 'file:///body.csv' AS line
+FROM 'file:///content.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 SET p.text = line.text
@@ -157,122 +157,7 @@ SET p.text = line.text
 // text.
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
-FROM 'file:///body_embedded_links.csv' AS line
-FIELDTERMINATOR ','
-MATCH (p:Page { url: line.url })
-MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
-CREATE (p)-[r:HYPERLINKS_TO {
-  linkUrl: line.link_url,
-  linkText: coalesce(line.link_text, ""),
-  linkCount: line.count
-}]->(q)
-;
-
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS
-FROM 'file:///body_content.csv' AS line
-FIELDTERMINATOR ','
-MATCH (p:Page { url: line.url })
-SET p.text = line.text
-;
-
-// coalesce() handles a handful of links that have malformed URLs, or empty link
-// text.
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS
-FROM 'file:///body_content_embedded_links.csv' AS line
-FIELDTERMINATOR ','
-MATCH (p:Page { url: line.url })
-MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
-CREATE (p)-[r:HYPERLINKS_TO {
-  linkUrl: line.link_url,
-  linkText: coalesce(line.link_text, ""),
-  linkCount: line.count
-}]->(q)
-;
-
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS
-FROM 'file:///parts_content.csv' AS line
-FIELDTERMINATOR ','
-MATCH (p:Page { url: line.url })
-SET p.text = line.text
-;
-
-// coalesce() handles a handful of links that have malformed URLs, or empty link
-// text.
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS
-FROM 'file:///parts_embedded_links.csv' AS line
-FIELDTERMINATOR ','
-MATCH (p:Page { url: line.url })
-MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
-CREATE (p)-[r:HYPERLINKS_TO {
-  linkUrl: line.link_url,
-  linkText: coalesce(line.link_text, ""),
-  linkCount: line.count
-}]->(q)
-;
-
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS
-FROM 'file:///place_content.csv' AS line
-FIELDTERMINATOR ','
-MATCH (p:Page { url: line.url })
-SET p.text = line.text
-;
-
-// coalesce() handles a handful of links that have malformed URLs, or empty link
-// text.
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS
-FROM 'file:///place_embedded_links.csv' AS line
-FIELDTERMINATOR ','
-MATCH (p:Page { url: line.url })
-MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
-CREATE (p)-[r:HYPERLINKS_TO {
-  linkUrl: line.link_url,
-  linkText: coalesce(line.link_text, ""),
-  linkCount: line.count
-}]->(q)
-;
-
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS
-FROM 'file:///transaction_content.csv' AS line
-FIELDTERMINATOR ','
-MATCH (p:Page { url: line.url })
-SET p.text = line.text
-;
-
-// coalesce() handles a handful of links that have malformed URLs, or empty link
-// text.
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS
-FROM 'file:///transaction_embedded_links.csv' AS line
-FIELDTERMINATOR ','
-MATCH (p:Page { url: line.url })
-MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
-CREATE (p)-[r:HYPERLINKS_TO {
-  linkUrl: line.link_url,
-  linkText: coalesce(line.link_text, ""),
-  linkCount: line.count
-}]->(q)
-;
-
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS
-FROM 'file:///step_by_step_content.csv' AS line
-FIELDTERMINATOR ','
-MATCH (p:Page { url: line.url })
-SET p.text = line.text
-;
-
-// coalesce() handles a handful of links that have malformed URLs, or empty link
-// text.
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS
-FROM 'file:///step_by_step_embedded_links.csv' AS line
+FROM 'file:///embedded_links.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
 MERGE (q:Page { url: coalesce(line.link_url_bare, line.link_url, "") })
