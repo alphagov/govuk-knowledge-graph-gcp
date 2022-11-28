@@ -14,20 +14,6 @@ hosted on AWS (Amazon Web Services).
 
 [GOV.UK Data Community Technical Documentation](https://docs.data-community.publishing.service.gov.uk/analysis/govgraph/pipeline-v2/)
 
-## Terraform
-
-Because the GitHub repo is also terraformed, you need to provide a Github token
-to terraform as follows.
-
-```sh
-export GITHUB_TOKEN=$( \
-  gh auth status --show-token 2>&1 >/dev/null \
-  | grep "oken" -A 0 -B 0 \
-  | grep -oP '\w+$' \
-)
-terraform apply
-```
-
 ## Licence
 
 Unless stated otherwise, the codebase is released under [the MIT License][mit].
