@@ -60,7 +60,6 @@ variable "location" {
   default = "EUROPE-WEST2"
 }
 
-# Google Cloud Storage location https://cloud.google.com/storage/docs/locations
 variable "govgraph_domain" {
   type    = string
   default = "govgraph.dev"
