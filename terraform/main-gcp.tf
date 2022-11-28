@@ -60,10 +60,15 @@ variable "location" {
   default = "EUROPE-WEST2"
 }
 
-# Google Cloud Storage location https://cloud.google.com/storage/docs/locations
 variable "govgraph_domain" {
   type    = string
   default = "govgraph.dev"
+}
+
+# Static IP address for govgraph
+variable "govgraph_static_ip_address" {
+  type    = string
+  default = "35.246.18.75"
 }
 
 variable "services" {
@@ -72,11 +77,13 @@ variable "services" {
     # List all the services you use here
     "storage.googleapis.com",
     "iam.googleapis.com",
+    "appengine.googleapis.com",
     "artifactregistry.googleapis.com",
     "cloudscheduler.googleapis.com",
     "bigquery.googleapis.com",
     "bigquerydatatransfer.googleapis.com",
     "compute.googleapis.com",
+    "dns.googleapis.com",
     "eventarc.googleapis.com",
     "pubsub.googleapis.com",
     "sourcerepo.googleapis.com",
