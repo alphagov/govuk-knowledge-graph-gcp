@@ -1,2 +1,4 @@
 terraform/.terraform*
 terraform/terraform.tfstate*
+terraform-dev/.terraform*
+terraform-dev/terraform.tfstate*
