@@ -77,11 +77,13 @@ variable "services" {
     # List all the services you use here
     "storage.googleapis.com",
     "iam.googleapis.com",
+    "appengine.googleapis.com",
     "artifactregistry.googleapis.com",
     "cloudscheduler.googleapis.com",
     "bigquery.googleapis.com",
     "bigquerydatatransfer.googleapis.com",
     "compute.googleapis.com",
+    "dns.googleapis.com",
     "eventarc.googleapis.com",
     "pubsub.googleapis.com",
     "sourcerepo.googleapis.com",
