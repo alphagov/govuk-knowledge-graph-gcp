@@ -60,6 +60,12 @@ variable "location" {
   default = "EUROPE-WEST2"
 }
 
+# Google Cloud Storage location https://cloud.google.com/storage/docs/locations
+variable "govgraph_domain" {
+  type    = string
+  default = "govgraph.dev"
+}
+
 variable "services" {
   type = list(any)
   default = [
@@ -76,11 +82,6 @@ variable "services" {
     "sourcerepo.googleapis.com",
     "workflows.googleapis.com",
   ]
-}
-
-variable "page_to_page_transitions_sql_file" {
-  type    = string
-  default = "page-to-page-transitions.sql"
 }
 
 variable "postgres-startup-script" {
@@ -184,7 +185,7 @@ data "google_iam_policy" "project" {
     role = "roles/editor"
     members = [
       "serviceAccount:${var.project_number}@cloudservices.gserviceaccount.com",
-      "serviceAccount:govuk-knowledge-graph@appspot.gserviceaccount.com",
+      "serviceAccount:${var.project_id}@appspot.gserviceaccount.com",
     ]
   }
 
@@ -225,14 +226,14 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/cloudasset.serviceAgent"
     members = [
-      "serviceAccount:service-19513753240@gcp-sa-cloudasset.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-sa-cloudasset.iam.gserviceaccount.com",
     ]
   }
 
   binding {
     role = "roles/cloudasset.serviceAgent"
     members = [
-      "serviceAccount:service-19513753240@gcp-sa-cloudasset.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-sa-cloudasset.iam.gserviceaccount.com",
     ]
   }
 
@@ -342,14 +343,14 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/run.serviceAgent"
     members = [
-      "serviceAccount:service-19513753240@serverless-robot-prod.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@serverless-robot-prod.iam.gserviceaccount.com",
     ]
   }
 
   binding {
     role = "roles/vpcaccess.serviceAgent"
     members = [
-      "serviceAccount:service-19513753240@gcp-sa-vpcaccess.iam.gserviceaccount.com",
+      "serviceAccount:service-${var.project_number}@gcp-sa-vpcaccess.iam.gserviceaccount.com",
     ]
   }
 

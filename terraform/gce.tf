@@ -117,7 +117,7 @@ resource "google_compute_network" "cloudrun" {
     delete_default_routes_on_create = false
     enable_ula_internal_ipv6        = false
     mtu                             = 1460
-    project                         = "govuk-knowledge-graph"
+    project                         = "${var.project_id}"
     routing_mode                    = "REGIONAL"
 }
 
@@ -128,7 +128,7 @@ resource "google_compute_subnetwork" "cloudrun" {
     network = google_compute_network.cloudrun.id
     private_ip_google_access   = false
     private_ipv6_google_access = "DISABLE_GOOGLE_ACCESS"
-    project                    = "govuk-knowledge-graph"
+    project                    = "${var.project_id}"
     purpose                    = "PRIVATE"
     region                     = "europe-west2"
     stack_type                 = "IPV4_ONLY"
@@ -147,7 +147,7 @@ module "neo4j-container" {
   version = "~> 2.0"
 
   container = {
-    image = "europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/neo4j:latest"
+    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/neo4j:latest"
     tty : true
     stdin : true
     env = [
@@ -165,7 +165,7 @@ module "mongodb-container" {
   version = "~> 2.0"
 
   container = {
-    image = "europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/mongodb:latest"
+    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/mongodb:latest"
     tty : true
     stdin : true
     volumeMounts = [
@@ -209,7 +209,7 @@ module "postgres-container" {
   version = "~> 2.0"
 
   container = {
-    image = "europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/postgres:latest"
+    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/postgres:latest"
     tty : true
     stdin : true
     securityContext = {
