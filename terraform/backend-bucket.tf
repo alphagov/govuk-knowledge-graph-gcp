@@ -22,30 +22,30 @@ data "google_iam_policy" "bucket_backend" {
   binding {
     role = "roles/storage.legacyBucketOwner"
     members = [
-      "projectEditor:govuk-knowledge-graph",
-      "projectOwner:govuk-knowledge-graph",
+      "projectEditor:${var.project_id}",
+      "projectOwner:${var.project_id}",
     ]
   }
 
   binding {
     role = "roles/storage.legacyBucketReader"
     members = [
-      "projectViewer:govuk-knowledge-graph",
+      "projectViewer:${var.project_id}",
     ]
   }
 
   binding {
     role = "roles/storage.legacyObjectOwner"
     members = [
-      "projectEditor:govuk-knowledge-graph",
-      "projectOwner:govuk-knowledge-graph",
+      "projectEditor:${var.project_id}",
+      "projectOwner:${var.project_id}",
     ]
   }
 
   binding {
     role = "roles/storage.legacyObjectReader"
     members = [
-      "projectViewer:govuk-knowledge-graph",
+      "projectViewer:${var.project_id}",
     ]
   }
 }
