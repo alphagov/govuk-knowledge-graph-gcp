@@ -1,4 +1,5 @@
 #! /bin/bash
+PROJECT_ID="govuk-knowledge-graph-dev"
 
 # Extract datasets of nodes, attributes and edges from the MongoDB content store
 # database.
@@ -57,7 +58,7 @@ upload () {
   local "${@}"
   double_backslashes \
   | gzip -c \
-  | gcloud storage cp - "gs://govuk-knowledge-graph-data-processed/content-store/${file_name}.csv.gz" --quiet
+  | gcloud storage cp - "gs://${PROJECT_ID}-data-processed/content-store/${file_name}.csv.gz" --quiet
 }
 
 # Upload from cloud bucket to BigQuery table
@@ -76,7 +77,7 @@ send_to_bigquery () {
     --allow_quoted_newlines \
     --skip_leading_rows=1 \
     "content.${file_name}" \
-    "gs://govuk-knowledge-graph-data-processed/content-store/${file_name}.csv.gz"
+    "gs://${PROJECT_ID}-data-processed/content-store/${file_name}.csv.gz"
 }
 
 # Wrapper around mongoexport to preset --db=content_store and --type=csv

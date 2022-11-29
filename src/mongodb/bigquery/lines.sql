@@ -1,5 +1,9 @@
 -- Derive a table of one row per line of text, per page
-CREATE OR REPLACE TABLE `govuk-knowledge-graph.content.lines`AS
+DECLARE PROJECT_ID STRING DEFAULT 'govuk-knowledge-graph-dev';
+DECLARE URI STRING;
+SET URI=FORMAT('gs://%s-data-processed/bigquery/lines_*.csv.gz', PROJECT_ID);
+
+CREATE OR REPLACE TABLE `content.lines`AS
 SELECT
   url,
   line_number + 1 AS line_number,
@@ -10,7 +14,7 @@ FROM
 ;
 
 EXPORT DATA OPTIONS(
-  uri='gs://govuk-knowledge-graph-data-processed/bigquery/lines_*.csv.gz',
+  uri=(URI),
   format='CSV',
   compression='GZIP',
   overwrite=true

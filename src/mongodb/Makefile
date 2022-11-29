@@ -1,3 +1,5 @@
+PROJECT_ID=govuk-knowledge-graph-dev
+
 SHELL := /bin/bash
 
 # Parallelise with all cores, if possible
@@ -231,9 +233,9 @@ temp/content.bigquery: data/step_by_step_content.csv.gz data/parts_content.csv.g
 		--use_legacy_sql=false \
 		< ./bigquery/content.sql
 	gcloud storage objects compose \
-		gs://govuk-knowledge-graph-data-processed/bigquery/content_header.csv.gz \
-		"gs://govuk-knowledge-graph-data-processed/bigquery/content_[0-9]*.csv.gz" \
-		gs://govuk-knowledge-graph-data-processed/bigquery/content.csv.gz
+		"gs://${PROJECT_ID}-data-processed/bigquery/content_header.csv.gz" \
+		"gs://${PROJECT_ID}-data-processed/bigquery/content_[0-9]*.csv.gz" \
+		"gs://${PROJECT_ID}-data-processed/bigquery/content.csv.gz"
 	touch temp/content.bigquery
 
 # Derive a table of one row per line of content per page, export back into a
@@ -243,9 +245,9 @@ temp/lines.bigquery: temp/content.bigquery
 		--use_legacy_sql=false \
 		< ./bigquery/lines.sql
 	gcloud storage objects compose \
-		gs://govuk-knowledge-graph-data-processed/bigquery/lines_header.csv.gz \
-		"gs://govuk-knowledge-graph-data-processed/bigquery/lines_[0-9]*.csv.gz" \
-		gs://govuk-knowledge-graph-data-processed/bigquery/lines.csv.gz
+		"gs://${PROJECT_ID}-data-processed/bigquery/lines_header.csv.gz" \
+		"gs://${PROJECT_ID}-data-processed/bigquery/lines_[0-9]*.csv.gz" \
+		"gs://${PROJECT_ID}-data-processed/bigquery/lines.csv.gz"
 
 # Combine the tables of embedded_links of each document type, export back into a
 # storage bucket as many files, and concatenate those files into a single file.
@@ -254,9 +256,9 @@ temp/embedded_links.bigquery: data/step_by_step_embedded_links.csv.gz data/parts
 		--use_legacy_sql=false \
 		< ./bigquery/embedded_links.sql
 	gcloud storage objects compose \
-		gs://govuk-knowledge-graph-data-processed/bigquery/embedded_links_header.csv.gz \
-		"gs://govuk-knowledge-graph-data-processed/bigquery/embedded_links_[0-9]*.csv.gz" \
-		gs://govuk-knowledge-graph-data-processed/bigquery/embedded_links.csv.gz
+		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_header.csv.gz" \
+		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_[0-9]*.csv.gz" \
+		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links.csv.gz"
 
 # Redirects of two kinds
 temp/url_override.mongodb: temp/define_url.mongodb

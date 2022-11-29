@@ -28,7 +28,9 @@ ENV GITHUB_SHA=${GITHUB_SHA}
 ARG GITHUB_REF=missing
 ENV GITHUB_REF=${GITHUB_REF}
 
+ENV PROJECT_ID govuk-knowledge-graph-dev
+
 # Run a script from a copy of the HEAD of the repository
 CMD \
-  gcloud storage cat gs://govuk-knowledge-graph-repository/docker/mongodb/run.sh \
+  gcloud storage cat "gs://${PROJECT_ID}-repository/docker/mongodb/run.sh" \
   | bash
