@@ -40,7 +40,9 @@ ENV GITHUB_REF=${GITHUB_REF}
 # own CMD
 ENTRYPOINT []
 
+ENV PROJECT_ID=govuk-knowledge-graph-dev
+
 # Run a script from a copy of the HEAD of the repository
 CMD \
-  gcloud storage cat gs://govuk-knowledge-graph-repository/docker/postgres/run.sh \
+  gcloud storage cat "gs://${PROJECT_ID}-repository/docker/postgres/run.sh" \
   | bash

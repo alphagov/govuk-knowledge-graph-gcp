@@ -1,4 +1,5 @@
 #!/bin/bash
+PROJECT_ID="govuk-knowledge-graph-dev"
 
 # Increase the amount of shared memory available.
 # This requires the containe to run in privileged mode.
@@ -9,7 +10,7 @@ mount -o remount,size=8G /dev/shm
 # Run both postgres and scripts that interact with the database
 
 # Obtain the latest state of the repository
-gcloud storage cp -r gs://govuk-knowledge-graph-repository/\* .
+gcloud storage cp -r "gs://${PROJECT_ID}-repository/*" .
 
 # turn on bash's job control
 set -m
@@ -28,13 +29,13 @@ sleep 5
 # Construct the file's URL
 BUCKET=$(
   gcloud compute instances describe postgres \
-    --project govuk-knowledge-graph \
+    --project $PROJECT_ID \
     --zone europe-west2-b \
     --format="value(metadata.items.object_bucket)"
 )
 OBJECT=$(
 gcloud compute instances describe postgres \
-  --project govuk-knowledge-graph \
+  --project $PROJECT_ID \
   --zone europe-west2-b \
   --format="value(metadata.items.object_name)"
 )

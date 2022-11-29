@@ -1,4 +1,5 @@
 #!/bin/bash
+PROJECT_ID="govuk-knowledge-graph-dev"
 
 # # Refresh certificates needed for HTTPS/BOLT connections"
 # # https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd
@@ -28,7 +29,7 @@
 # manually from ZeroSSL.
 cd /var/lib/neo4j/certificates
 mkdir -p letsencrypt/work-dir letsencrypt/logs-dir letsencrypt/config-dir
-gcloud storage cp gs://govuk-knowledge-graph-ssl-certificates/\* .
+gcloud storage cp gs://$PROJECT_ID-ssl-certificates/\* .
 cat certificate.crt ca_bundle.crt >> cert.crt
 mkdir bolt cluster https
 export DOMAIN=govgraph.dev
@@ -52,25 +53,25 @@ gosu neo4j:neo4j neo4j start
 # Download the files to the local Neo4j import directory, because Neo4j can't
 # import from a pipe.
 gcloud storage cp --recursive \
-  gs://govuk-knowledge-graph-data-processed/content-store/\* \
-  /var/lib/neo4j/import
+  "gs://$PROJECT_ID-data-processed/content-store/*" \
+  "/var/lib/neo4j/import"
 
 gcloud storage cp \
-  gs://govuk-knowledge-graph-data-processed/bigquery/content.csv.gz \
-  gs://govuk-knowledge-graph-data-processed/bigquery/embedded_links.csv.gz \
-  /var/lib/neo4j/import
+  "gs://${PROJECT_ID}-data-processed/bigquery/content.csv.gz" \
+  "gs://${PROJECT_ID}-data-processed/bigquery/embedded_links.csv.gz" \
+  "/var/lib/neo4j/import"
 
 gcloud storage cp --recursive \
-  gs://govuk-knowledge-graph-data-processed/ga4/\* \
-  /var/lib/neo4j/import
+  "gs://${PROJECT_ID}-data-processed/ga4/*" \
+  "/var/lib/neo4j/import"
 
 gcloud storage cp --recursive \
-  gs://govuk-knowledge-graph-data-processed/publishing-api/\* \
-  /var/lib/neo4j/import
+  "gs://${PROJECT_ID}-data-processed/publishing-api/\*" \
+  "/var/lib/neo4j/import"
 
 gcloud storage cp --recursive \
-  gs://govuk-knowledge-graph-data-processed/entities/\* \
-  /var/lib/neo4j/import
+  "gs://${PROJECT_ID}-data-processed/entities/*" \
+  "/var/lib/neo4j/import"
 
 # Decompress all those files (the semicolon is escaped for the shell, but might
 # not need to be escaped within a script).
@@ -87,23 +88,23 @@ neo4j status
 
 # Ingest the Content Store data
 gcloud storage cat \
-  gs://govuk-knowledge-graph-repository/src/neo4j/load_content_store_data.cypher \
-  | cypher-shell --address neo4j+s://govgraph.dev:7687
+  "gs://${PROJECT_ID}-repository/src/neo4j/load_content_store_data.cypher" \
+  | cypher-shell --address "neo4j+s://${DOMAIN}:7687"
 
 # Ingest the Publishing API data
 gcloud storage cat \
-  gs://govuk-knowledge-graph-repository/src/neo4j/load_publishing_api_data.cypher \
-  | cypher-shell --address neo4j+s://govgraph.dev:7687
+  "gs://${PROJECT_ID}-repository/src/neo4j/load_publishing_api_data.cypher" \
+  | cypher-shell --address "neo4j+s://${DOMAIN}:7687"
 
 # Create the full-text indexes
 gcloud storage cat \
-  gs://govuk-knowledge-graph-repository/src/neo4j/index.cypher \
-  | cypher-shell --address neo4j+s://govgraph.dev:7687
+  "gs://${PROJECT_ID}-repository/src/neo4j/index.cypher" \
+  | cypher-shell --address "neo4j+s://${DOMAIN}:7687"
 
 # Ingest entites from the NER (named-entity recognition) pipeline
 gcloud storage cat \
-  gs://govuk-knowledge-graph-repository/src/neo4j/load_entities.cypher \
-  | cypher-shell --address neo4j+s://govgraph.dev:7687
+  "gs://${PROJECT_ID}-repository/src/neo4j/load_entities.cypher" \
+g | cypher-shell --address "neo4j+s://${DOMAIN}:7687"
 
 # Stay alive
 sleep infinity
