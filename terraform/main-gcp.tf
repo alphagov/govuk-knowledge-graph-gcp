@@ -82,11 +82,14 @@ variable "services" {
     "cloudscheduler.googleapis.com",
     "bigquery.googleapis.com",
     "bigquerydatatransfer.googleapis.com",
+    "run.googleapis.com",
     "compute.googleapis.com",
     "dns.googleapis.com",
     "eventarc.googleapis.com",
+    "networkmanagement.googleapis.com",
     "pubsub.googleapis.com",
     "sourcerepo.googleapis.com",
+    "vpcaccess.googleapis.com",
     "workflows.googleapis.com",
   ]
 }
