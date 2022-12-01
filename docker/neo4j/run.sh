@@ -1,44 +1,40 @@
 #!/bin/bash
 PROJECT_ID="govuk-knowledge-graph-dev"
+DOMAIN="govgraphdev.dev"
 
-# # Refresh certificates needed for HTTPS/BOLT connections"
-# # https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd
-# cd /var/lib/neo4j/certificates
-# mkdir -p letsencrypt/work-dir letsencrypt/logs-dir letsencrypt/config-dir
-# certbot certonly \
-#   --test-cert \
-#   --agree-tos \
-#   --email data-products@digital.cabinet-office.gov.uk \
-#   -n \
-#   --nginx \
-#   -d govgraph.dev \
-#   --cert-path /var/lib/neo4j/certificates \
-#   --work-dir letsencrypt/work-dir \
-#   --logs-dir letsencrypt/logs-dir \
-#   --config-dir letsencrypt/config-dir
-# mkdir bolt cluster https
-# export DOMAIN=govgraph.dev
-# for certsource in bolt cluster https ; do
-#   ln -s $PWD/letsencrypt/config-dir/live/$DOMAIN/fullchain.pem $certsource/neo4j.cert
-#   ln -s $PWD/letsencrypt/config-dir/live/$DOMAIN/privkey.pem $certsource/neo4j.key
-#   mkdir $certsource/trusted
-#   ln -s $PWD/letsencrypt/config-dir/live/$DOMAIN/fullchain.pem $certsource/trusted/neo4j.cert ;
-# done
-
-# Until the LetsEncrypt rate limit is reset, use a certificate that was obtained
-# manually from ZeroSSL.
+# Refresh certificates needed for HTTPS/BOLT connections"
+# https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd
 cd /var/lib/neo4j/certificates
+# Copy the most recent certificates from the bucket
+gsutil -m rsync -J -r -d -C "gs://${PROJECT_ID}-ssl-certificates/letsencrypt" letsencrypt
+# rsync doesn't copy empty directories, so make sure any empty ones do exist
 mkdir -p letsencrypt/work-dir letsencrypt/logs-dir letsencrypt/config-dir
-gcloud storage cp gs://$PROJECT_ID-ssl-certificates/\* .
-cat certificate.crt ca_bundle.crt >> cert.crt
+# Check that the certificates are still valid, otherwise renew them
+certbot certonly \
+  --agree-tos \
+  --email data-products@digital.cabinet-office.gov.uk \
+  -n \
+  --nginx \
+  -d $DOMAIN \
+  --cert-path /var/lib/neo4j/certificates \
+  --work-dir letsencrypt/work-dir \
+  --logs-dir letsencrypt/logs-dir \
+  --config-dir letsencrypt/config-dir
+# In case the certificates were renewed, copy them back to the bucket
+gsutil -m rsync -J -r -d -C letsencrypt "gs://${PROJECT_ID}-ssl-certificates/letsencrypt"
+# Configure Neo4j to use the certificates
+chgrp -R neo4j letsencrypt/*
+chmod -R g+rx letsencrypt/*
 mkdir bolt cluster https
-export DOMAIN=govgraph.dev
 for certsource in bolt cluster https ; do
-  ln -s $PWD/cert.crt $certsource/neo4j.cert
-  ln -s $PWD/private.key $certsource/neo4j.key
+  ln -s $PWD/letsencrypt/config-dir/live/$DOMAIN/fullchain.pem $certsource/neo4j.cert
+  ln -s $PWD/letsencrypt/config-dir/live/$DOMAIN/privkey.pem $certsource/neo4j.key
   mkdir $certsource/trusted
-  ln -s $PWD/cert.crt $certsource/trusted/neo4j.cert ;
+  ln -s $PWD/letsencrypt/config-dir/live/$DOMAIN/fullchain.pem $certsource/trusted/neo4j.cert ;
 done
+# Finally make sure everything is readable to the database
+chgrp -R neo4j *
+chmod -R g+rx *
 
 # Run both neo4j and scripts that interact with the database
 
@@ -80,7 +76,7 @@ find /var/lib/neo4j/import -name "*.csv.gz" -exec gunzip {} \;
 # Wait for neo4j to start
 # Checking neo4j status doesn't work, because that says it's up before the
 # server is ready.
-until cypher-shell --address neo4j+s://govgraph.dev:7687 "RETURN true;" | grep -Fq "true"; do
+until cypher-shell --address "neo4j+s://${DOMAIN}:7687" "RETURN true;" | grep -Fq "true"; do
   echo "Connecting to Neo4j"
   sleep 1;
 done
