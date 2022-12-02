@@ -47,7 +47,9 @@ ENV GITHUB_REF=${GITHUB_REF}
 # as root, so that certbot will work.
 COPY ./docker-entrypoint.sh /startup/
 
+ENV PROJECT_ID govuk-knowledge-graph
+
 # Run a script from a copy of the HEAD of the repository
 CMD \
-  gcloud storage cat gs://govuk-knowledge-graph-repository/docker/neo4j/run.sh \
+  gcloud storage cat "gs://${PROJECT_ID}-repository/docker/neo4j/run.sh" \
   | bash

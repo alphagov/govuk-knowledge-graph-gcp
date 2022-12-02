@@ -62,13 +62,13 @@ variable "location" {
 
 variable "govgraph_domain" {
   type    = string
-  default = "govgraphdev.dev."
+  default = "govgraph.dev."
 }
 
 # Static IP address for govgraph
 variable "govgraph_static_ip_address" {
   type    = string
-  default = "35.246.18.76"
+  default = "35.246.25.128"
 }
 
 variable "services" {

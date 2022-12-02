@@ -1,5 +1,6 @@
 #! /bin/bash
-#
+PROJECT_ID="govuk-knowledge-graph"
+
 # Count the number of times that each distinct row of a CSV appears.
 #
 # This handles newlines in quoted columns.  You have to pass a comma-separated
@@ -89,7 +90,7 @@ upload () {
   local "${@}"
   double_backslashes \
   | gzip -c \
-  | gcloud storage cp - "gs://govuk-knowledge-graph-data-processed/publishing-api/${file_name}.csv.gz"
+  | gcloud storage cp - "gs://${PROJECT_ID}-data-processed/publishing-api/${file_name}.csv.gz"
 }
 #
 # Upload from cloud bucket to BigQuery table
@@ -107,7 +108,7 @@ send_to_bigquery () {
     --allow_quoted_newlines \
     --skip_leading_rows=1 \
     "content.${file_name}" \
-    "gs://govuk-knowledge-graph-data-processed/publishing-api/${file_name}.csv.gz"
+    "gs://${PROJECT_ID}-data-processed/publishing-api/${file_name}.csv.gz"
 }
 
 # Wrapper around a ruby script to convert govspeak to HTML
@@ -140,10 +141,6 @@ convert_govspeak_to_html () {
 #   input_col=html \
 #   id_cols=url,html \
 #
-# extract_lines_from_html
-#   input_col=html \
-#   id_cols=url \
-#
 # extract_hyperlinks_from_html \
 #   input_col=html \
 #   id_cols=url \
@@ -157,20 +154,6 @@ extract_text_from_html () {
       --line-buffer \
       --keep-order \
       python3 ../../src/utils/extract_text_from_html.py \
-      --input_col=${input_col} \
-      --id_cols=${id_cols} \
-  ;}
-}
-extract_lines_from_html () {
-  local input_col id_cols # reset in case they are defined globally
-  local "${@}"
-  { echo $id_cols,line & \
-    parallel \
-      --pipe \
-      --round-robin \
-      --line-buffer \
-      --keep-order \
-      python3 ../../src/utils/extract_lines_from_html.py \
       --input_col=${input_col} \
       --id_cols=${id_cols} \
   ;}
