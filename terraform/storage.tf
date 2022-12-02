@@ -223,15 +223,15 @@ data "google_iam_policy" "bucket_ssl_certificates" {
 resource "google_storage_bucket_object" "content" {
   name   = "bigquery/content_header.csv.gz"
   source = "govuk-knowledge-graph-data-processed/bigquery/content_header.csv.gz"
-  bucket = "govuk-knowledge-graph-data-processed"
+  bucket = "${var.project_id}-data-processed"
 }
 resource "google_storage_bucket_object" "lines" {
   name   = "bigquery/lines_header.csv.gz"
   source = "govuk-knowledge-graph-data-processed/bigquery/lines_header.csv.gz"
-  bucket = "govuk-knowledge-graph-data-processed"
+  bucket = "${var.project_id}-data-processed"
 }
 resource "google_storage_bucket_object" "embedded_links" {
   name   = "bigquery/embedded_links_header.csv.gz"
   source = "govuk-knowledge-graph-data-processed/bigquery/embedded_links_header.csv.gz"
-  bucket = "govuk-knowledge-graph-data-processed"
+  bucket = "${var.project_id}-data-processed"
 }
