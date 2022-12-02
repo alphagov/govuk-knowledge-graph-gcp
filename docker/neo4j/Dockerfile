@@ -47,7 +47,7 @@ ENV GITHUB_REF=${GITHUB_REF}
 # as root, so that certbot will work.
 COPY ./docker-entrypoint.sh /startup/
 
-ENV PROJECT_ID govuk-knowledge-graph-dev
+ENV PROJECT_ID govuk-knowledge-graph
 
 # Run a script from a copy of the HEAD of the repository
 CMD \

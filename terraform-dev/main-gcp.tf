@@ -62,7 +62,7 @@ variable "location" {
 
 variable "govgraph_domain" {
   type    = string
-  default = "govgraphdev.dev."
+  default = "govgraph.dev."
 }
 
 # Static IP address for govgraph

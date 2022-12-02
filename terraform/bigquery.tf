@@ -42,7 +42,7 @@ CREATE TEMP TABLE page_views AS (
       WHERE
         key = 'page_location'
     ) AS to_url,
-  FROM `ga4-analytics-352613.analytics_330577055.events_intraday_*`
+  FROM `ga4-analytics-352613.analytics_330577055.events_*`
   WHERE
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', DATE_ADD(DATE(@run_date), INTERVAL - 1 DAY))
     AND event_name = 'page_view'
@@ -866,7 +866,7 @@ resource "google_bigquery_table" "lines" {
   dataset_id    = google_bigquery_dataset.content.dataset_id
   table_id      = "lines"
   friendly_name = "Lines"
-  description   = "Individual lines of content of documents"
+  description   = "Individual lines of content of pages"
   schema        = <<EOF
 [
   {
