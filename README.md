@@ -14,19 +14,6 @@ hosted on AWS (Amazon Web Services).
 
 [GOV.UK Data Community Technical Documentation](https://docs.data-community.publishing.service.gov.uk/analysis/govgraph/pipeline-v2/)
 
-## Dev environment
-
-* Redefine variables in `terraform-dev/main-gcp.tf`
-  * `project_id`
-  * `project_number`
-  * `govgraph_domain`
-  * `govgraph_static_ip_address`
-* Redefine backend bucket name in `terraform-dev/backend.tf`
-* Redefine `PROJECT_ID=govuk-knowledge-graph-dev` everywhere
-* Redefine `DOMAIN=govgraphdev.dev` everywhere
-* Redefine `dbms.default_advertised_address=govgraphdev.dev` in
-  `docker/neo4j/neo4j.conf`.
-
 ## Licence
 
 Unless stated otherwise, the codebase is released under [the MIT License][mit].

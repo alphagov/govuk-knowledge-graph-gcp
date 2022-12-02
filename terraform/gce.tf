@@ -80,17 +80,6 @@ resource "google_compute_firewall" "neo4j-letsencrypt-ingress" {
   target_service_accounts = [google_service_account.gce_neo4j.email]
 }
 
-resource "google_compute_firewall" "neo4j-allow-ssh" {
-  name    = "firewall-neo4j-allow-ssh"
-  network = google_compute_network.cloudrun.name
-  allow {
-    protocol = "tcp"
-    ports    = ["22"]
-  }
-  source_ranges = ["0.0.0.0/0"]
-  target_service_accounts = [google_service_account.gce_neo4j.email]
-}
-
 resource "google_compute_firewall" "neo4j-ingress" {
   name    = "firewall-neo4j-ingress"
   network = google_compute_network.cloudrun.self_link

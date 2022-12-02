@@ -1,5 +1,3 @@
-PROJECT_ID=govuk-knowledge-graph-dev
-
 SHELL := /bin/bash
 
 # Parallelise with all cores, if possible
@@ -19,7 +17,7 @@ CSV.GZ = $(patsubst sh/%.sh, data/%.csv.gz, $(SH))
 # A step to create all the targets described in the CSV.GZ variable, which means
 # that all the .sh scripts in the SH variable will be executed.
 .PHONY: all
-all: $(CSV.GZ) temp/content.bigquery temp/lines.bigquery temp/embedded_links.bigquery
+all: $(CSV.GZ)
 
 # A step to print the names of all the targets that were derived from the names
 # of .sh scripts.  This is for debugging only.
@@ -128,11 +126,12 @@ temp/step_by_step_content.mongodb: temp/define_url.mongodb  temp/index.mongodb
 
 data/step_by_step_content.csv.gz: temp/step_by_step_content.mongodb
 	source functions.sh; source sh/step_by_step_content.sh
-	touch data/step_by_step_content.csv.gz
+
+data/step_by_step_lines.csv.gz: temp/step_by_step_content.mongodb
+	source functions.sh; source sh/step_by_step_lines.sh
 
 data/step_by_step_embedded_links.csv.gz: temp/step_by_step_content.mongodb
 	source functions.sh; source sh/step_by_step_embedded_links.sh
-	touch data/step_by_step_embedded_links.csv.gz
 
 data/department_analytics_profile.csv.gz: temp/define_url.mongodb temp/index.mongodb
 	source functions.sh; source sh/department_analytics_profile.sh
@@ -170,11 +169,12 @@ data/parts.csv.gz: temp/parts_content.mongodb
 
 data/parts_content.csv.gz: temp/parts_content.mongodb
 	source functions.sh; source sh/parts_content.sh
-	touch data/parts_content.csv.gz
+
+data/parts_lines.csv.gz: temp/parts_content.mongodb
+	source functions.sh; source sh/parts_lines.sh
 
 data/parts_embedded_links.csv.gz: temp/parts_content.mongodb
 	source functions.sh; source sh/parts_embedded_links.sh
-	touch data/parts_embedded_links.csv.gz
 
 temp/transaction_content.mongodb: temp/define_url.mongodb temp/index.mongodb
 	mongo content_store js/transaction_content.js
@@ -182,11 +182,12 @@ temp/transaction_content.mongodb: temp/define_url.mongodb temp/index.mongodb
 
 data/transaction_content.csv.gz: temp/transaction_content.mongodb
 	source functions.sh; source sh/transaction_content.sh
-	touch data/transaction_content.csv.gz
+
+data/transaction_lines.csv.gz: temp/transaction_content.mongodb
+	source functions.sh; source sh/transaction_lines.sh
 
 data/transaction_embedded_links.csv.gz: temp/transaction_content.mongodb
 	source functions.sh; source sh/transaction_embedded_links.sh
-	touch data/transaction_embedded_links.csv.gz
 
 temp/place_content.mongodb: temp/define_url.mongodb temp/index.mongodb
 	mongo content_store js/place_content.js
@@ -194,11 +195,12 @@ temp/place_content.mongodb: temp/define_url.mongodb temp/index.mongodb
 
 data/place_content.csv.gz: temp/place_content.mongodb
 	source functions.sh; source sh/place_content.sh
-	touch data/place_content.csv.gz
+
+data/place_lines.csv.gz: temp/place_content.mongodb
+	source functions.sh; source sh/place_lines.sh
 
 data/place_embedded_links.csv.gz: temp/place_content.mongodb
 	source functions.sh; source sh/place_embedded_links.sh
-	touch data/place_embedded_links.csv.gz
 
 # Some document types have the body text in the 'body' field (not 'body.content')
 temp/body.mongodb: temp/define_url.mongodb temp/index.mongodb
@@ -207,11 +209,12 @@ temp/body.mongodb: temp/define_url.mongodb temp/index.mongodb
 
 data/body.csv.gz: temp/body.mongodb
 	source functions.sh; source sh/body.sh
-	touch data/body.csv.gz
+
+data/body_lines.csv.gz: temp/body.mongodb
+	source functions.sh; source sh/body_lines.sh
 
 data/body_embedded_links.csv.gz: temp/body.mongodb
 	source functions.sh; source sh/body_embedded_links.sh
-	touch data/body_embedded_links.csv.gz
 
 # Some document types have the body text in the 'body.content' field (not 'body')
 temp/body_content.mongodb: temp/define_url.mongodb temp/index.mongodb
@@ -220,45 +223,12 @@ temp/body_content.mongodb: temp/define_url.mongodb temp/index.mongodb
 
 data/body_content.csv.gz: temp/body_content.mongodb
 	source functions.sh; source sh/body_content.sh
-	touch data/body_content.csv.gz
+
+data/body_content_lines.csv.gz: temp/body_content.mongodb
+	source functions.sh; source sh/body_content_lines.sh
 
 data/body_content_embedded_links.csv.gz: temp/body_content.mongodb
 	source functions.sh; source sh/body_content_embedded_links.sh
-	touch data/body_content_embedded_links.csv.gz
-
-# Combine the tables of content of each document type, export back into a
-# storage bucket as many files, and concatenate those files into a single file.
-temp/content.bigquery: data/step_by_step_content.csv.gz data/parts_content.csv.gz data/transaction_content.csv.gz data/place_content.csv.gz data/body.csv.gz data/body_content.csv.gz
-	bq query \
-		--use_legacy_sql=false \
-		< ./bigquery/content.sql
-	gcloud storage objects compose \
-		"gs://${PROJECT_ID}-data-processed/bigquery/content_header.csv.gz" \
-		"gs://${PROJECT_ID}-data-processed/bigquery/content_[0-9]*.csv.gz" \
-		"gs://${PROJECT_ID}-data-processed/bigquery/content.csv.gz"
-	touch temp/content.bigquery
-
-# Derive a table of one row per line of content per page, export back into a
-# storage bucket as many files, and concatenate those files into a single file.
-temp/lines.bigquery: temp/content.bigquery
-	bq query \
-		--use_legacy_sql=false \
-		< ./bigquery/lines.sql
-	gcloud storage objects compose \
-		"gs://${PROJECT_ID}-data-processed/bigquery/lines_header.csv.gz" \
-		"gs://${PROJECT_ID}-data-processed/bigquery/lines_[0-9]*.csv.gz" \
-		"gs://${PROJECT_ID}-data-processed/bigquery/lines.csv.gz"
-
-# Combine the tables of embedded_links of each document type, export back into a
-# storage bucket as many files, and concatenate those files into a single file.
-temp/embedded_links.bigquery: data/step_by_step_embedded_links.csv.gz data/parts_embedded_links.csv.gz data/transaction_embedded_links.csv.gz data/place_embedded_links.csv.gz data/body_embedded_links.csv.gz data/body_content_embedded_links.csv.gz
-	bq query \
-		--use_legacy_sql=false \
-		< ./bigquery/embedded_links.sql
-	gcloud storage objects compose \
-		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_header.csv.gz" \
-		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_[0-9]*.csv.gz" \
-		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links.csv.gz"
 
 # Redirects of two kinds
 temp/url_override.mongodb: temp/define_url.mongodb

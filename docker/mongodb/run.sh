@@ -1,5 +1,4 @@
 #!/bin/bash
-PROJECT_ID="govuk-knowledge-graph-dev"
 
 # Run both mongod and scripts that interact with the database
 # https://docs.docker.com/config/containers/multi-service_container/
@@ -18,7 +17,7 @@ sleep 5
 # Construct the file's URL
 OBJECT=$(
 gcloud compute instances describe mongodb \
-  --project $PROJECT_ID \
+  --project govuk-knowledge-graph \
   --zone europe-west2-b \
   --format="value[separator=\"/\"](metadata.items.object_bucket, metadata.items.object_name)"
 )
@@ -30,7 +29,7 @@ gcloud storage cat "$OBJECT_URL" \
   | mongorestore -v --db=content_store --collection=content_items -
 
 # Obtain the latest state of the repository
-gcloud storage cp -r gs://$PROJECT_ID-repository/\* .
+gcloud storage cp -r gs://govuk-knowledge-graph-repository/\* .
 
 # 1. Query the content store into intermediate datasets
 # 2. Download from the content store and intermediate datasets
