@@ -1,4 +1,5 @@
 #! /bin/bash
+PROJECT_ID="govuk-knowledge-graph-dev"
 
 # Extract datasets of nodes, attributes and edges from the MongoDB content store
 # database.
@@ -57,7 +58,7 @@ upload () {
   local "${@}"
   double_backslashes \
   | gzip -c \
-  | gcloud storage cp - "gs://govuk-knowledge-graph-data-processed/content-store/${file_name}.csv.gz"
+  | gcloud storage cp - "gs://${PROJECT_ID}-data-processed/content-store/${file_name}.csv.gz" --quiet
 }
 
 # Upload from cloud bucket to BigQuery table
@@ -70,12 +71,13 @@ send_to_bigquery () {
   local file_name # reset in case they are defined globally
   local "${@}"
   bq load \
+    --quiet=true \
     --replace \
     --source_format="CSV" \
     --allow_quoted_newlines \
     --skip_leading_rows=1 \
     "content.${file_name}" \
-    "gs://govuk-knowledge-graph-data-processed/content-store/${file_name}.csv.gz"
+    "gs://${PROJECT_ID}-data-processed/content-store/${file_name}.csv.gz"
 }
 
 # Wrapper around mongoexport to preset --db=content_store and --type=csv
@@ -98,6 +100,7 @@ query_mongo () {
   local type collection fields query # reset in case they are defined globally
   local "${@}"
   mongoexport \
+    --quiet \
     --db=content_store \
     --type=${type:-csv} \
     --collection=${collection:-content_items} \
@@ -116,10 +119,6 @@ query_mongo () {
 #   input_col=html \
 #   id_cols=url,html \
 #
-# extract_lines_from_html
-#   input_col=html \
-#   id_cols=url \
-#
 # extract_hyperlinks_from_html \
 #   input_col=html \
 #   id_cols=url \
@@ -133,20 +132,6 @@ extract_text_from_html () {
       --line-buffer \
       --keep-order \
       python3 ../../src/utils/extract_text_from_html.py \
-      --input_col=${input_col} \
-      --id_cols=${id_cols} \
-  ;}
-}
-extract_lines_from_html () {
-  local input_col id_cols # reset in case they are defined globally
-  local "${@}"
-  { echo $id_cols,line & \
-    parallel \
-      --pipe \
-      --round-robin \
-      --line-buffer \
-      --keep-order \
-      python3 ../../src/utils/extract_lines_from_html.py \
       --input_col=${input_col} \
       --id_cols=${id_cols} \
   ;}

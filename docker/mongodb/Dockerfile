@@ -11,6 +11,7 @@ RUN apt-get install -y \
   parallel \
   gnupg \
   curl \
+  w3m \
   python3-bs4
 RUN \
   echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" \
@@ -28,7 +29,9 @@ ENV GITHUB_SHA=${GITHUB_SHA}
 ARG GITHUB_REF=missing
 ENV GITHUB_REF=${GITHUB_REF}
 
+ENV PROJECT_ID govuk-knowledge-graph-dev
+
 # Run a script from a copy of the HEAD of the repository
 CMD \
-  gcloud storage cat gs://govuk-knowledge-graph-repository/docker/mongodb/run.sh \
+  gcloud storage cat "gs://${PROJECT_ID}-repository/docker/mongodb/run.sh" \
   | bash
