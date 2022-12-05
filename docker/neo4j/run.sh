@@ -62,7 +62,7 @@ gcloud storage cp --recursive \
   "/var/lib/neo4j/import"
 
 gcloud storage cp --recursive \
-  "gs://${PROJECT_ID}-data-processed/publishing-api/\*" \
+  "gs://${PROJECT_ID}-data-processed/publishing-api/*" \
   "/var/lib/neo4j/import"
 
 gcloud storage cp --recursive \
@@ -100,7 +100,7 @@ gcloud storage cat \
 # Ingest entites from the NER (named-entity recognition) pipeline
 gcloud storage cat \
   "gs://${PROJECT_ID}-repository/src/neo4j/load_entities.cypher" \
-g | cypher-shell --address "neo4j+s://${DOMAIN}:7687"
+  | cypher-shell --address "neo4j+s://${DOMAIN}:7687"
 
 # Stay alive
 sleep infinity
