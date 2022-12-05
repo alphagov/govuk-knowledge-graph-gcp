@@ -1,6 +1,6 @@
 #!/bin/bash
 PROJECT_ID="govuk-knowledge-graph"
-DOMAIN="govgraph.dev"
+DOMAIN="35.246.18.75"
 
 # Refresh certificates needed for HTTPS/BOLT connections"
 # https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd
@@ -62,7 +62,7 @@ gcloud storage cp --recursive \
   "/var/lib/neo4j/import"
 
 gcloud storage cp --recursive \
-  "gs://${PROJECT_ID}-data-processed/publishing-api/\*" \
+  "gs://${PROJECT_ID}-data-processed/publishing-api/*" \
   "/var/lib/neo4j/import"
 
 gcloud storage cp --recursive \
