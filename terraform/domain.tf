@@ -11,7 +11,7 @@ resource "google_compute_address" "govgraph" {
 resource "google_dns_managed_zone" "govgraph" {
   name        = "govgraph"
   description = "DNS zone for .dev domains"
-  dns_name    = "${var.govgraph_domain}"
+  dns_name    = "${var.govgraph_domain}."
   dnssec_config {
     kind          = "dns#managedZoneDnsSecConfig"
     non_existence = "nsec3"
