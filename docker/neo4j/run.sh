@@ -1,6 +1,6 @@
 #!/bin/bash
 PROJECT_ID="govuk-knowledge-graph"
-DOMAIN="35.246.18.75"
+DOMAIN="govgraph.dev"
 
 # Refresh certificates needed for HTTPS/BOLT connections"
 # https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd
@@ -100,7 +100,7 @@ gcloud storage cat \
 # Ingest entites from the NER (named-entity recognition) pipeline
 gcloud storage cat \
   "gs://${PROJECT_ID}-repository/src/neo4j/load_entities.cypher" \
-g | cypher-shell --address "neo4j+s://${DOMAIN}:7687"
+  | cypher-shell --address "neo4j+s://${DOMAIN}:7687"
 
 # Stay alive
 sleep infinity
