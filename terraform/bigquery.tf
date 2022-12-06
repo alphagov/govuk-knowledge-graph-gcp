@@ -44,8 +44,9 @@ CREATE TEMP TABLE page_views AS (
     ) AS to_url,
   FROM `ga4-analytics-352613.analytics_330577055.events_*`
   WHERE
-    _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', DATE_ADD(DATE(@run_date), INTERVAL - 1 DAY))
-    AND event_name = 'page_view'
+    event_name = 'page_view'
+    AND _TABLE_SUFFIX >= FORMAT_DATE('%Y%m%d', DATE_ADD(DATE(@run_date), INTERVAL - 8 DAY))
+    AND _TABLE_SUFFIX <= FORMAT_DATE('%Y%m%d', DATE_ADD(DATE(@run_date), INTERVAL - 2 DAY))
 );
 
 EXPORT DATA OPTIONS(
