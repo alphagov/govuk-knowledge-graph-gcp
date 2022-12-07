@@ -5,6 +5,7 @@ DOMAIN="govgraph.dev"
 # Refresh certificates needed for HTTPS/BOLT connections"
 # https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd
 cd /var/lib/neo4j/certificates
+mkdir letsencrypt
 # Copy the most recent certificates from the bucket
 gsutil -m rsync -J -r -d -C "gs://${PROJECT_ID}-ssl-certificates/letsencrypt" letsencrypt
 # rsync doesn't copy empty directories, so make sure any empty ones do exist
