@@ -5,11 +5,11 @@ DOMAIN="govgraph.dev"
 # Refresh certificates needed for HTTPS/BOLT connections"
 # https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd
 cd /var/lib/neo4j/certificates
-mkdir letsencrypt
-# Copy the most recent certificates from the bucket
-gsutil -m rsync -J -r -d -C "gs://${PROJECT_ID}-ssl-certificates/letsencrypt" letsencrypt
-# rsync doesn't copy empty directories, so make sure any empty ones do exist
-mkdir -p letsencrypt/work-dir letsencrypt/logs-dir letsencrypt/config-dir
+# Copy the most recent certificates from the bucket.
+# Unfortunately, this has to be a tar, because certbot is fussy about symlinks,
+# which aren't supported by Google Cloud Storage.
+gsutil cp "gs://${PROJECT_ID}-ssl-certificates/letsencrypt.tar.gz" .
+tar xzf letsencrypt.tar.gz
 # Check that the certificates are still valid, otherwise renew them
 certbot certonly \
   --agree-tos \
@@ -22,7 +22,8 @@ certbot certonly \
   --logs-dir letsencrypt/logs-dir \
   --config-dir letsencrypt/config-dir
 # In case the certificates were renewed, copy them back to the bucket
-gsutil -m rsync -J -r -d -C letsencrypt "gs://${PROJECT_ID}-ssl-certificates/letsencrypt"
+tar czf letsencrypt.tar.gz letsencrypt
+gsutil cp letsencrypt.tar.gz "gs://${PROJECT_ID}-ssl-certificates"
 # Configure Neo4j to use the certificates
 chgrp -R neo4j letsencrypt/*
 chmod -R g+rx letsencrypt/*
