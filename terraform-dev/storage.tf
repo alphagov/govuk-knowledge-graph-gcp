@@ -115,6 +115,7 @@ data "google_iam_policy" "bucket_data_processed" {
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
       "serviceAccount:${google_service_account.gce_postgres.email}",
+      "serviceAccount:${google_service_account.gce_neo4j.email}",
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
     ]
   }
@@ -122,7 +123,6 @@ data "google_iam_policy" "bucket_data_processed" {
   binding {
     role = "roles/storage.objectViewer"
     members = [
-      "serviceAccount:${google_service_account.gce_neo4j.email}",
       "group:data-engineering@digital.cabinet-office.gov.uk",
       "group:data-products@digital.cabinet-office.gov.uk",
     ]

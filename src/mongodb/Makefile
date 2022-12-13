@@ -1,4 +1,4 @@
-PROJECT_ID=govuk-knowledge-graph
+PROJECT_ID=govuk-knowledge-graph-dev
 
 SHELL := /bin/bash
 
