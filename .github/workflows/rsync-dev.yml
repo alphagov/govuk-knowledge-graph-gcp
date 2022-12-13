@@ -1,0 +1,37 @@
+name: Sync to Google Cloud Storage
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+
+  sync_to_gcs:
+    name: 'Synchronise HEAD with a Google Cloud Storage bucket'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    # actions/checkout MUST come before auth
+    - uses: 'actions/checkout@v3'
+
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v0'
+      with:
+        workload_identity_provider: 'projects/628722085506/locations/global/workloadIdentityPools/github-pool/providers/github-pool-provider'
+        service_account: 'storage-github@govuk-knowledge-graph-dev.iam.gserviceaccount.com'
+
+    # Further steps are automatically authenticated
+
+    # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+
+    # Sync everything except for the .git folder, which could get large.
+    - name: Sync
+      run: |
+        gsutil -m rsync -J -r -d -C -x "\.git[$/].*" . gs://govuk-knowledge-graph-dev-repository
