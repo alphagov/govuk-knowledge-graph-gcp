@@ -1,5 +1,5 @@
 -- Cocatenate tables of embedded links from various document types into one
-DECLARE PROJECT_ID STRING DEFAULT 'govuk-knowledge-graph';
+DECLARE PROJECT_ID STRING DEFAULT 'govuk-knowledge-graph-staging';
 DECLARE URI STRING;
 SET URI=FORMAT('gs://%s-data-processed/bigquery/embedded_links_*.csv.gz', PROJECT_ID);
 

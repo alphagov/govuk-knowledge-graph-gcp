@@ -1,5 +1,5 @@
 #! /bin/bash
-PROJECT_ID="govuk-knowledge-graph"
+PROJECT_ID="govuk-knowledge-graph-staging"
 
 # Count the number of times that each distinct row of a CSV appears.
 #

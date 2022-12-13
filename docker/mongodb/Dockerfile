@@ -29,7 +29,7 @@ ENV GITHUB_SHA=${GITHUB_SHA}
 ARG GITHUB_REF=missing
 ENV GITHUB_REF=${GITHUB_REF}
 
-ENV PROJECT_ID govuk-knowledge-graph
+ENV PROJECT_ID govuk-knowledge-graph-staging
 
 # Run a script from a copy of the HEAD of the repository
 CMD \
