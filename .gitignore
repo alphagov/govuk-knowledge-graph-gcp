@@ -2,3 +2,5 @@ terraform/.terraform*
 terraform/terraform.tfstate*
 terraform-dev/.terraform*
 terraform-dev/terraform.tfstate*
+terraform-staging/.terraform*
+terraform-staging/terraform.tfstate*
