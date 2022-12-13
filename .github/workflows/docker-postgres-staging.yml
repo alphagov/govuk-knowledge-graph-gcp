@@ -1,0 +1,72 @@
+name: Docker-postgres-staging
+
+on:
+  push:
+    branches:
+      - staging
+    paths:
+      - 'docker/postgres/**'
+      - '.github/workflows/docker-postgres-staging.yml'
+
+defaults:
+  run:
+    working-directory: docker/postgres
+
+env:
+  GITHUB_SHA: ${{ github.sha }}
+  GITHUB_REF: ${{ github.ref }}
+  IMAGE: 'postgres'
+  REGISTRY_HOSTNAME: 'europe-west2-docker.pkg.dev/govuk-knowledge-graph-staging/docker'
+
+jobs:
+
+  terraform:
+    name: 'Docker Build'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    # actions/checkout MUST come before auth
+    - uses: 'actions/checkout@v3'
+
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v0'
+      with:
+        workload_identity_provider: 'projects/957740527277/locations/global/workloadIdentityPools/github-pool/providers/github-pool-provider'
+        service_account: 'artifact-registry-docker@govuk-knowledge-graph-staging.iam.gserviceaccount.com'
+
+    # Further steps are automatically authenticated
+
+    # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+
+    # Configure docker to use the gcloud command-line tool as a credential helper
+    - run: |
+        # Set up docker to authenticate
+        # via gcloud command-line tool.
+        gcloud auth configure-docker europe-west2-docker.pkg.dev
+
+    # Build the Docker image
+    - name: Docker build
+      id: build
+      run: |
+        export TAG=`echo $GITHUB_REF | awk -F/ '{print $NF}'`
+        echo $TAG
+        docker build -t "$REGISTRY_HOSTNAME"/"$IMAGE":"$TAG" \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" .
+
+    # Push the Docker image to Google Container Registry
+    - name: Docker push
+      id: push
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: |
+        export TAG=`echo $GITHUB_REF | awk -F/ '{print $NF}'`
+        echo $TAG
+        docker push "$REGISTRY_HOSTNAME"/"$IMAGE":"$TAG"
+        docker tag "$REGISTRY_HOSTNAME"/"$IMAGE":"$TAG" "$REGISTRY_HOSTNAME"/"$IMAGE":latest
+        docker push "$REGISTRY_HOSTNAME"/"$IMAGE":latest
