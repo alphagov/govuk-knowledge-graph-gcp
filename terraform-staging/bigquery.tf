@@ -102,6 +102,7 @@ data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
       "projectWriters",
       "serviceAccount:${google_service_account.gce_mongodb.email}",
       "serviceAccount:${google_service_account.gce_postgres.email}",
+      "serviceAccount:${google_service_account.gce_neo4j.email}",
     ]
   }
   binding {
@@ -1836,6 +1837,29 @@ resource "google_bigquery_table" "role_whip_organisation" {
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "Whip organisation of a role on GOV.UK"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "pagerank" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "pagerank"
+  friendly_name = "Page rank"
+  description   = "Page rank of pages on GOV.UK"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  },
+  {
+    "name": "pagerank",
+    "type": "BIGNUMERIC",
+    "mode": "REQUIRED",
+    "description": "Page rank of a page on GOV.UK"
   }
 ]
 EOF

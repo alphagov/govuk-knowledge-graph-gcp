@@ -26,7 +26,7 @@ variable "environment" {
 
 variable "project_id" {
   type    = string
-  default = "govuk-knowledge-graph" # Change this
+  default = "govuk-knowledge-graph-staging" # Change this
 }
 
 variable "project_number" {
@@ -62,7 +62,7 @@ variable "location" {
 
 variable "govgraph_domain" {
   type    = string
-  default = "govgraph.dev"
+  default = "govgraphstaging.dev"
 }
 
 # Static IP address for govgraph
@@ -218,6 +218,7 @@ data "google_iam_policy" "project" {
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
       "serviceAccount:${google_service_account.gce_postgres.email}",
+      "serviceAccount:${google_service_account.gce_neo4j.email}",
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
       "group:data-engineering@digital.cabinet-office.gov.uk",
       "group:data-analysts@digital.cabinet-office.gov.uk",
