@@ -38,11 +38,3 @@ resource "google_dns_record_set" "govgraph" {
   managed_zone = google_dns_managed_zone.govgraph.name
   rrdatas = [google_compute_address.govgraph.address]
 }
-
-# SSL Certificate
-resource "google_compute_managed_ssl_certificate" "govgraph" {
-  name = "govgraph"
-  managed {
-    domains = ["${var.govgraph_domain}"]
-  }
-}
