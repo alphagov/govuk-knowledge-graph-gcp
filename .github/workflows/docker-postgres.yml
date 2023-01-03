@@ -7,10 +7,6 @@ on:
     paths:
       - 'docker/postgres/**'
       - '.github/workflows/docker-postgres.yml'
-  pull_request:
-    paths:
-      - 'docker/postgres/**'
-      - '.github/workflows/docker-postgres.yml'
 
 defaults:
   run:
