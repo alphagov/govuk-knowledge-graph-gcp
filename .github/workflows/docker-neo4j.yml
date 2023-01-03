@@ -7,10 +7,6 @@ on:
     paths:
       - 'docker/neo4j/**'
       - '.github/workflows/docker-neo4j.yml'
-  pull_request:
-    paths:
-      - 'docker/neo4j/**'
-      - '.github/workflows/docker-neo4j.yml'
 
 defaults:
   run:

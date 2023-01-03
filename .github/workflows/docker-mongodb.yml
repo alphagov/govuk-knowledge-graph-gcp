@@ -7,10 +7,6 @@ on:
     paths:
       - 'docker/mongodb/**'
       - '.github/workflows/docker-mongodb.yml'
-  pull_request:
-    paths:
-      - 'docker/mongodb/**'
-      - '.github/workflows/docker-mongodb.yml'
 
 defaults:
   run:
