@@ -1274,16 +1274,16 @@ resource "google_bigquery_table" "appointment_person" {
   schema        = <<EOF
 [
   {
-    "name": "role_appointment_content_id",
+    "name": "appointment_url",
     "type": "STRING",
     "mode": "REQUIRED",
-    "description": "Content ID of a role appointment on GOV.UK"
+    "description": "URL of a role appointment on GOV.UK"
   },
   {
-    "name": "person_content_id",
+    "name": "person_url",
     "type": "STRING",
     "mode": "REQUIRED",
-    "description": "Content ID of a person on GOV.UK"
+    "description": "URL of a person on GOV.UK"
   }
 ]
 EOF
@@ -1297,13 +1297,13 @@ resource "google_bigquery_table" "appointment_role" {
   schema        = <<EOF
 [
   {
-    "name": "role_appointment_content_id",
+    "name": "appointment_url",
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "URL of a role appointment on GOV.UK"
   },
   {
-    "name": "role_content_id",
+    "name": "role_url",
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "URL of a role on GOV.UK"
@@ -1712,16 +1712,16 @@ resource "google_bigquery_table" "role_organisation" {
   schema        = <<EOF
 [
   {
-    "name": "organisation_content_id",
+    "name": "organisation_url",
     "type": "STRING",
     "mode": "REQUIRED",
-    "description": "Content ID of an organisation on GOV.UK"
+    "description": "URL of an organisation on GOV.UK"
   },
   {
-    "name": "role_content_id",
+    "name": "role_url",
     "type": "STRING",
     "mode": "REQUIRED",
-    "description": "Content ID of a role on GOV.UK"
+    "description": "URL of a role on GOV.UK"
   }
 ]
 EOF
