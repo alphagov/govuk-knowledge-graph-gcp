@@ -3,7 +3,8 @@ DECLARE PROJECT_ID STRING DEFAULT 'govuk-knowledge-graph';
 DECLARE URI STRING;
 SET URI=FORMAT('gs://%s-data-processed/bigquery/lines_*.csv.gz', PROJECT_ID);
 
-CREATE OR REPLACE TABLE `content.lines`AS
+DELETE content.lines WHERE TRUE;
+INSERT INTO content.lines
 SELECT
   url,
   line_number + 1 AS line_number,
