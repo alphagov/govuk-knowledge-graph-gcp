@@ -14,6 +14,12 @@ hosted on AWS (Amazon Web Services).
 
 [GOV.UK Data Community Technical Documentation](https://docs.data-community.publishing.service.gov.uk/analysis/govgraph/pipeline-v2/)
 
+## Links to GCP projects
+
+* [Production](https://console.cloud.google.com/welcome?project=govuk-knowledge-graph)
+* [Staging](https://console.cloud.google.com/welcome?project=govuk-knowledge-graph-staging)
+* [Development](https://console.cloud.google.com/welcome?project=govuk-knowledge-graph-dev)
+
 ## Dev environment
 
 * Redefine `PROJECT_ID=govuk-knowledge-graph-dev` everywhere
