@@ -13,18 +13,33 @@ SH = $(wildcard sh/*.sh)
 # Take the names of the shell scripts, and replace the .sh suffix with .csv.gz.
 # These new filenames are used as the 'targets' of some steps in this Makefile.
 # No .csv.gz files are ever actually created, because the output of each .sh
-# script is uploaded straight to into a bucket.
+# script is uploaded straight to into a bucket, but some blank files are created
+# to trigger subsequent targets.
 CSV.GZ = $(patsubst sh/%.sh, data/%.csv.gz, $(SH))
 
-# A step to create all the targets described in the CSV.GZ variable, which means
-# that all the .sh scripts in the SH variable will be executed.
+# Get the names of all the sql scripts in the bigquery/ directory.  Each of these
+# scripts runs a query in BigQuery.
+BIGQUERY.SQL = $(wildcard bigquery/*.sql)
+
+# Take the names of the sql scripts, and replace the .sql suffix with .bigquery.
+# These new filenames are used as the 'targets' of some steps in this Makefile.
+# No .bigquery files are ever actually created, but some blank files are created
+# to trigger subsequent targets.
+BIGQUERY = $(patsubst bigquery/%.sql, temp/%.bigquery, $(BIGQUERY.SQL))
+
+# A step to create all the targets described in the CSV.GZ and BIGQUERY
+# variables, which means that all the .sh and .sql scripts in the SH and
+# BIGQUERY variables will be executed.
 .PHONY: all
-all: $(CSV.GZ) temp/content.bigquery temp/lines.bigquery temp/embedded_links.bigquery
+all: $(CSV.GZ) $(BIGQUERY)
 
 # A step to print the names of all the targets that were derived from the names
-# of .sh scripts.  This is for debugging only.
+# of .sh and .sql scripts.  This is for debugging only.
 check:
-	@echo "CSV.GZ = $(CSV.GZ)"
+	@echo "CSV.GZ:"
+	@echo "${CSV.GZ}" | tr -s ' ' '\n'
+	@echo -e "\nBIGQUERY:"
+	@echo "${BIGQUERY}" | tr -s ' ' '\n'
 
 # A step to delete any intermediate files that have been created.  This is for
 # development only.
@@ -259,6 +274,7 @@ temp/embedded_links.bigquery: data/step_by_step_embedded_links.csv.gz data/parts
 		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_header.csv.gz" \
 		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_[0-9]*.csv.gz" \
 		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links.csv.gz"
+	touch $@
 
 # Redirects of two kinds
 temp/url_override.mongodb: temp/define_url.mongodb
@@ -282,3 +298,77 @@ temp/taxon_levels.mongodb: temp/define_url.mongodb temp/index.mongodb
 
 data/taxon_levels.csv.gz: temp/taxon_levels.mongodb
 	source functions.sh; source sh/taxon_levels.sh
+
+# Assume that the content.pagerank table has been refreshed by another process
+temp/page.bigquery: \
+	data/url.csv.gz \
+	data/document_type.csv.gz \
+	data/phase.csv.gz \
+	data/content_id.csv.gz \
+	data/analytics_identifier.csv.gz \
+	data/acronym.csv.gz \
+	data/locale.csv.gz \
+	data/publishing_app.csv.gz \
+	data/updated_at.csv.gz \
+	data/public_updated_at.csv.gz \
+	data/first_published_at.csv.gz \
+	data/withdrawn_at.csv.gz \
+	data/withdrawn_explanation.csv.gz \
+	data/title.csv.gz \
+	data/description.csv.gz \
+	data/department_analytics_profile.csv.gz \
+	data/parts.csv.gz \
+	temp/content.bigquery
+	source functions.sh; query_bigquery file_name=bigquery/page.sql
+	touch $@
+
+temp/external_page.bigquery: temp/page.bigquery
+	source functions.sh; query_bigquery file_name=bigquery/external_page.sql
+
+temp/has_homepage.bigquery: data/taxon_levels.csv.gz temp/page.bigquery
+	source functions.sh; query_bigquery file_name=bigquery/has_homepage.sql
+	touch $@
+
+temp/has_child_organisation.bigquery: data/expanded_links.csv.gz temp/has_homepage.bigquery
+	source functions.sh; query_bigquery file_name=bigquery/has_child_organisation.sql
+
+temp/has_organisation.bigquery: data/expanded_links.csv.gz temp/has_homepage.bigquery
+	source functions.sh; query_bigquery file_name=bigquery/has_organisation.sql
+
+temp/has_parent.bigquery: data/expanded_links.csv.gz temp/has_homepage.bigquery
+	source functions.sh; query_bigquery file_name=bigquery/has_parent.sql
+	touch $@
+
+temp/has_primary_publishing_organisation.bigquery: \
+	data/expanded_links.csv.gz \
+	temp/has_homepage.bigquery
+	source functions.sh; query_bigquery file_name=bigquery/has_primary_publishing_organisation.sql
+
+temp/hyperlinks_to.bigquery: \
+	temp/embedded_links.bigquery \
+	data/expanded_links.csv.gz \
+	temp/page.bigquery
+	source functions.sh; query_bigquery file_name=bigquery/hyperlinks_to.sql
+
+temp/is_tagged_to.bigquery: \
+	data/expanded_links.csv.gz \
+	temp/has_homepage.bigquery
+	source functions.sh; query_bigquery file_name=bigquery/is_tagged_to.sql
+
+temp/organisation.bigquery: temp/page.bigquery
+	source functions.sh; query_bigquery file_name=bigquery/organisation.sql
+
+temp/person.bigquery: temp/page.bigquery
+	source functions.sh; query_bigquery file_name=bigquery/person.sql
+
+temp/taxon.bigquery: \
+	data/taxon_levels.csv.gz \
+	temp/page.bigquery
+	source functions.sh; query_bigquery file_name=bigquery/taxon.sql
+	touch $@
+
+temp/taxon_ancestors.bigquery: \
+	data/taxon_levels.csv.gz \
+	temp/has_parent.bigquery \
+	temp/taxon.bigquery
+	source functions.sh; query_bigquery file_name=bigquery/taxon_ancestors.sql
