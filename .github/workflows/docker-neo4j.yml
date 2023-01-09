@@ -63,7 +63,6 @@ jobs:
     # Push the Docker image to Google Container Registry
     - name: Docker push
       id: push
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: |
         export TAG=`echo $GITHUB_REF | awk -F/ '{print $NF}'`
         echo $TAG
