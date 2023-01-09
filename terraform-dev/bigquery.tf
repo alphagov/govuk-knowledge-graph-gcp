@@ -1204,16 +1204,22 @@ resource "google_bigquery_table" "taxon_levels" {
   schema        = <<EOF
 [
   {
-    "name": "level",
-    "type": "INTEGER",
-    "mode": "REQUIRED",
-    "description": "Level of the taxon in the hierarchy, wiht level 1 as the top"
-  },
-  {
     "name": "url",
     "type": "STRING",
     "mode": "REQUIRED",
-    "description": "URL of a piece of static content on the www.gov.uk domain"
+    "description": "URL of a taxon"
+  },
+  {
+    "name": "homepage_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a taxon's home page on GOV.UK"
+  },
+  {
+    "name": "level",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Level of the taxon in the hierarchy, with level 1 as the top"
   }
 ]
 EOF
