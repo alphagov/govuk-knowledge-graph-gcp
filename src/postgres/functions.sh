@@ -172,3 +172,15 @@ extract_hyperlinks_from_html () {
       --id_cols=${id_cols} \
   ;}
 }
+
+# Execute an SQL file in BigQuery
+#
+# Usage:
+# query_bigquery file_name=myfile.sql
+query_bigquery () {
+  local file_name # reset in case they are defined globally
+  local "${@}"
+  bq query \
+    --use_legacy_sql=false \
+    < "${file_name}"
+}

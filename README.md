@@ -22,8 +22,10 @@ hosted on AWS (Amazon Web Services).
 
 ## Dev environment
 
-* Redefine `PROJECT_ID=govuk-knowledge-graph-dev` everywhere
-* Redefine `DOMAIN=govgraphdev.dev` everywhere
+Don't change any terraform files.  Everywhere else:
+
+* Redefine `PROJECT_ID=govuk-knowledge-graph-dev`
+* Redefine `DOMAIN=govgraphdev.dev`
 * Redefine `dbms.default_advertised_address=govgraphdev.dev` in
   `docker/neo4j/neo4j.conf`.
 
