@@ -1,5 +1,5 @@
 #!/bin/bash
-PROJECT_ID="govuk-knowledge-graph-dev"
+PROJECT_ID="govuk-knowledge-graph"
 
 # Increase the amount of shared memory available.
 # This requires the containe to run in privileged mode.

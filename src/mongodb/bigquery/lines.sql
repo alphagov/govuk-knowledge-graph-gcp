@@ -1,5 +1,5 @@
 -- Derive a table of one row per line of text, per page
-DECLARE PROJECT_ID STRING DEFAULT 'govuk-knowledge-graph-dev';
+DECLARE PROJECT_ID STRING DEFAULT 'govuk-knowledge-graph';
 DECLARE URI STRING;
 SET URI=FORMAT('gs://%s-data-processed/bigquery/lines_*.csv.gz', PROJECT_ID);
 
