@@ -244,9 +244,11 @@ data/body_content_embedded_links.csv.gz: temp/body_content.mongodb
 # Combine the tables of content of each document type, export back into a
 # storage bucket as many files, and concatenate those files into a single file.
 temp/content.bigquery: data/step_by_step_content.csv.gz data/parts_content.csv.gz data/transaction_content.csv.gz data/place_content.csv.gz data/body.csv.gz data/body_content.csv.gz
+	gcloud storage rm \
+		"gs://${PROJECT_ID}-data-processed/bigquery/content_[0-9]*.csv.gz"
+		< ./bigquery/content.sql
 	bq query \
 		--use_legacy_sql=false \
-		< ./bigquery/content.sql
 	gcloud storage objects compose \
 		"gs://${PROJECT_ID}-data-processed/bigquery/content_header.csv.gz" \
 		"gs://${PROJECT_ID}-data-processed/bigquery/content_[0-9]*.csv.gz" \
@@ -256,8 +258,10 @@ temp/content.bigquery: data/step_by_step_content.csv.gz data/parts_content.csv.g
 # Derive a table of one row per line of content per page, export back into a
 # storage bucket as many files, and concatenate those files into a single file.
 temp/lines.bigquery: temp/content.bigquery
-	bq query \
+	gcloud storage rm \
+		"gs://${PROJECT_ID}-data-processed/bigquery/lines_[0-9]*.csv.gz"
 		--use_legacy_sql=false \
+	bq query \
 		< ./bigquery/lines.sql
 	gcloud storage objects compose \
 		"gs://${PROJECT_ID}-data-processed/bigquery/lines_header.csv.gz" \
@@ -267,6 +271,8 @@ temp/lines.bigquery: temp/content.bigquery
 # Combine the tables of embedded_links of each document type, export back into a
 # storage bucket as many files, and concatenate those files into a single file.
 temp/embedded_links.bigquery: data/step_by_step_embedded_links.csv.gz data/parts_embedded_links.csv.gz data/transaction_embedded_links.csv.gz data/place_embedded_links.csv.gz data/body_embedded_links.csv.gz data/body_content_embedded_links.csv.gz
+	gcloud storage rm \
+		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_header_[0-9]*.csv.gz"
 	bq query \
 		--use_legacy_sql=false \
 		< ./bigquery/embedded_links.sql
