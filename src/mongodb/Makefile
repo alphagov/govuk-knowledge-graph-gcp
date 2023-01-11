@@ -345,6 +345,10 @@ temp/has_parent.bigquery: data/expanded_links.csv.gz temp/has_homepage.bigquery
 	source functions.sh; query_bigquery file_name=bigquery/has_parent.sql
 	touch $@
 
+temp/has_successor.bigquery: data/expanded_links.csv.gz
+	source functions.sh; query_bigquery file_name=bigquery/has_successor.sql
+	touch $@
+
 temp/has_primary_publishing_organisation.bigquery: \
 	data/expanded_links.csv.gz \
 	temp/has_homepage.bigquery
