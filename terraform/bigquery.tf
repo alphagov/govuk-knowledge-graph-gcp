@@ -2662,7 +2662,7 @@ resource "google_bigquery_table" "has_successor" {
     "description": "URL of an organisation"
   },
   {
-    "name": "ancestor_url",
+    "name": "successor_url",
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "URL of its successor organisation"
