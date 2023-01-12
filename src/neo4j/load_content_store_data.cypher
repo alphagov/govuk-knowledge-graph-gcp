@@ -267,7 +267,7 @@ USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///taxon_levels.csv' AS line
 FIELDTERMINATOR ','
-MATCH (p:Page { url: line.url })
+MATCH (p:Page { url: line.homepage_url })
 CREATE (q:Taxon {
   url: 'https://www.gov.uk/' + p.contentId,
   name: p.title,
