@@ -272,7 +272,7 @@ temp/lines.bigquery: temp/content.bigquery
 # storage bucket as many files, and concatenate those files into a single file.
 temp/embedded_links.bigquery: data/step_by_step_embedded_links.csv.gz data/parts_embedded_links.csv.gz data/transaction_embedded_links.csv.gz data/place_embedded_links.csv.gz data/body_embedded_links.csv.gz data/body_content_embedded_links.csv.gz
 	gcloud storage rm \
-		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_header_[0-9]*.csv.gz"
+		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_[0-9]*.csv.gz"
 	bq query \
 		--use_legacy_sql=false \
 		< ./bigquery/embedded_links.sql
