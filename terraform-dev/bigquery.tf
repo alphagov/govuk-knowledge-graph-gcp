@@ -2647,3 +2647,26 @@ resource "google_bigquery_table" "taxon_ancestors" {
 ]
 EOF
 }
+
+resource "google_bigquery_table" "has_successor" {
+  dataset_id    = google_bigquery_dataset.graph.dataset_id
+  table_id      = "has_successor"
+  friendly_name = "Has Successor relationship"
+  description   = "Relationships between an organisation and its successor"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of an organisation"
+  },
+  {
+    "name": "successor_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of its successor organisation"
+  }
+]
+EOF
+}

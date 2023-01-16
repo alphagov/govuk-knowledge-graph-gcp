@@ -94,14 +94,6 @@ resource "google_storage_bucket" "data_processed" {
   versioning {
     enabled = false
   }
-  lifecycle_rule {
-    condition {
-      age = 7
-    }
-    action {
-      type = "Delete"
-    }
-  }
 }
 
 resource "google_storage_bucket_iam_policy" "data_processed" {
