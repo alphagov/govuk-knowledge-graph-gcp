@@ -156,6 +156,9 @@ resource "google_project" "project" {
     programme = "cpto",
     team      = "data-products",
   }
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Use `gcloud` to enable:
