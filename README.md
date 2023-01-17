@@ -22,12 +22,18 @@ hosted on AWS (Amazon Web Services).
 
 ## Dev environment
 
-Don't change any terraform files.  Everywhere else:
+Copy `terraform/*.tf` into `terraform-dev`, and discard changes to the project
+name and number that are mentioned in `main-gcp.tf` and `backend.tf` (and
+anywhere else that they have been used since this part of the README was last
+updated).
 
-* Redefine `PROJECT_ID=govuk-knowledge-graph-dev`
-* Redefine `DOMAIN=govgraphdev.dev`
-* Redefine `dbms.default_advertised_address=govgraphdev.dev` in
-  `docker/neo4j/neo4j.conf`.
+In the rest of the code:
+
+* Search for `PROJECT_ID=` and change its value to `govuk-knowledge-graph-dev`
+* Search for `PROJECT_ID ` and change its value to `govuk-knowledge-graph-dev`
+* Search for `DOMAIN=` and change its value to `govgraphdev.dev`
+* Search for `dbms.default_advertised_address=` in `docker/neo4j/neo4j.conf` and
+  change its value to `govgraphdev.dev`.
 
 ## Licence
 
