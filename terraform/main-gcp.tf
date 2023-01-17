@@ -114,7 +114,17 @@ bootcmd:
 EOF
 }
 
-# Set the Terraform provider
+terraform {
+  required_providers {
+    google = {
+      version = "4.46.0"
+    }
+    google-beta = {
+      version = "4.46.0"
+    }
+  }
+}
+
 provider "google" {
   project = var.project_id
   region  = var.region
@@ -124,7 +134,6 @@ provider "google" {
   user_project_override = true
 }
 
-# Set the Terraform provider
 provider "google-beta" {
   project = var.project_id
   region  = var.region
