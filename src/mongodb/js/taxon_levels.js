@@ -31,7 +31,7 @@ db.content_items.aggregate([
   } },
   { $unwind: "$descendants" },
   { $set: {
-    "url": { "$concat": [ "https://www.gov.uk/taxon/", "$descendants._id" ] },
+    "url": { "$concat": [ "https://www.gov.uk/", "$descendants._id" ] },
     "homepage_url": "$descendants.homepage_url",
     "level": { $add: [ "$descendants.level", 1 ] }
   } },
