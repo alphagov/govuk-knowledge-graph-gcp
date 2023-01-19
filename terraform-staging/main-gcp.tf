@@ -26,7 +26,7 @@ variable "environment" {
 
 variable "project_id" {
   type    = string
-  default = "govuk-knowledge-graph-staging" # Change this
+  default = "govuk-knowledge-graph" # Change this
 }
 
 variable "project_number" {
@@ -62,7 +62,7 @@ variable "location" {
 
 variable "govgraph_domain" {
   type    = string
-  default = "govgraphstaging.dev"
+  default = "govgraph.dev"
 }
 
 # Static IP address for govgraph
