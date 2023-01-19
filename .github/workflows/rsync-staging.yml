@@ -1,4 +1,4 @@
-name: Sync to Google Cloud Storage
+name: Sync to Google Cloud Storage - staging
 
 on:
   push:
