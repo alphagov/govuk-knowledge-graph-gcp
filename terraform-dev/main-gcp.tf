@@ -68,7 +68,7 @@ variable "govgraph_domain" {
 # Static IP address for govgraph
 variable "govgraph_static_ip_address" {
   type    = string
-  default = "35.246.25.128"
+  default = "34.89.100.153"
 }
 
 # Static IP address for govgraphsearch
