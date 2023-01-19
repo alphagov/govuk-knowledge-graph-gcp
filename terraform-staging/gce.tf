@@ -76,7 +76,7 @@ resource "google_compute_firewall" "neo4j-letsencrypt-ingress" {
     protocol = "tcp"
     ports    = ["80"]
   }
-  source_ranges = ["0.0.0.0/0"]
+  source_ranges           = ["0.0.0.0/0"]
   target_service_accounts = [google_service_account.gce_neo4j.email]
 }
 
@@ -87,7 +87,7 @@ resource "google_compute_firewall" "neo4j-allow-ssh" {
     protocol = "tcp"
     ports    = ["22"]
   }
-  source_ranges = ["0.0.0.0/0"]
+  source_ranges           = ["0.0.0.0/0"]
   target_service_accounts = [google_service_account.gce_neo4j.email]
 }
 
@@ -123,33 +123,33 @@ resource "google_compute_firewall" "neo4j-ingress" {
 
 # Network for Neo4j and GovGraph Search
 resource "google_compute_network" "cloudrun" {
-    name                            = "custom-vpc-for-cloud-run"
-    auto_create_subnetworks         = false
-    delete_default_routes_on_create = false
-    enable_ula_internal_ipv6        = false
-    mtu                             = 1460
-    project                         = "${var.project_id}"
-    routing_mode                    = "REGIONAL"
+  name                            = "custom-vpc-for-cloud-run"
+  auto_create_subnetworks         = false
+  delete_default_routes_on_create = false
+  enable_ula_internal_ipv6        = false
+  mtu                             = 1460
+  project                         = var.project_id
+  routing_mode                    = "REGIONAL"
 }
 
 # Subnet for Neo4j and GovGraph Search
 resource "google_compute_subnetwork" "cloudrun" {
-    name                       = "cloudrun-subnet"
-    ip_cidr_range              = "10.8.0.0/28"
-    network = google_compute_network.cloudrun.id
-    private_ip_google_access   = false
-    private_ipv6_google_access = "DISABLE_GOOGLE_ACCESS"
-    project                    = "${var.project_id}"
-    purpose                    = "PRIVATE"
-    region                     = "europe-west2"
-    stack_type                 = "IPV4_ONLY"
+  name                       = "cloudrun-subnet"
+  ip_cidr_range              = "10.8.0.0/28"
+  network                    = google_compute_network.cloudrun.id
+  private_ip_google_access   = false
+  private_ipv6_google_access = "DISABLE_GOOGLE_ACCESS"
+  project                    = var.project_id
+  purpose                    = "PRIVATE"
+  region                     = "europe-west2"
+  stack_type                 = "IPV4_ONLY"
 }
 
 # Static, internal IP address
 resource "google_compute_address" "neo4j_internal" {
-  name = "neo4j-internal"
+  name         = "neo4j-internal"
   address_type = "INTERNAL"
-  subnetwork = google_compute_subnetwork.cloudrun.id
+  subnetwork   = google_compute_subnetwork.cloudrun.id
 }
 
 # https://github.com/terraform-google-modules/terraform-google-container-vm
@@ -280,11 +280,11 @@ resource "google_compute_instance_template" "neo4j" {
   }
 
   network_interface {
-    network = google_compute_network.cloudrun.self_link
+    network    = google_compute_network.cloudrun.self_link
     subnetwork = google_compute_subnetwork.cloudrun.self_link
     access_config {
       network_tier = "STANDARD"
-      nat_ip = google_compute_address.govgraph.address
+      nat_ip       = google_compute_address.govgraph.address
     }
   }
 

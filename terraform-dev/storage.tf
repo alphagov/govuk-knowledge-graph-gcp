@@ -154,7 +154,7 @@ data "google_iam_policy" "bucket_data_processed" {
 # Bucket for SSL certificates
 resource "google_storage_bucket" "ssl_certificates" {
   name                        = "${var.project_id}-ssl-certificates" # Must be globally unique
-  force_destroy               = false                              # terraform won't delete the bucket unless it is empty
+  force_destroy               = false                                # terraform won't delete the bucket unless it is empty
   location                    = var.location
   storage_class               = "STANDARD" # https://cloud.google.com/storage/docs/storage-classes
   uniform_bucket_level_access = true
