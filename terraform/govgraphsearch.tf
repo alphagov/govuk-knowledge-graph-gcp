@@ -29,7 +29,7 @@ resource "google_dns_managed_zone" "govgraphsearcg" {
 }
 
 resource "google_compute_global_address" "govgraphsearch_ip" {
-  address      = "${var.govgraphsearch_static_ip_address}"
+  address      = var.govgraphsearch_static_ip_address
   address_type = "EXTERNAL"
   description  = "External IP address for GovGraph Search"
   ip_version   = "IPV4"
