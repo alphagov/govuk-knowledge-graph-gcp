@@ -74,7 +74,7 @@ variable "govgraph_static_ip_address" {
 # Static IP address for govgraphsearch
 variable "govgraphsearch_static_ip_address" {
   type    = string
-  default = "34.160.154.17"
+  default = "34.160.3.9"
 }
 
 variable "services" {
