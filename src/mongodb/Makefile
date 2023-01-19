@@ -331,7 +331,7 @@ temp/page.bigquery: \
 	source functions.sh; query_bigquery file_name=bigquery/page.sql
 	touch $@
 
-temp/external_page.bigquery: temp/page.bigquery
+temp/external_page.bigquery: temp/page.bigquery temp/hyperlinks_to.bigquery
 	source functions.sh; query_bigquery file_name=bigquery/external_page.sql
 
 temp/has_homepage.bigquery: data/taxon_levels.csv.gz temp/page.bigquery
@@ -362,6 +362,7 @@ temp/hyperlinks_to.bigquery: \
 	data/expanded_links.csv.gz \
 	temp/page.bigquery
 	source functions.sh; query_bigquery file_name=bigquery/hyperlinks_to.sql
+	touch temp/hyperlinks_to.bigquery
 
 temp/is_tagged_to.bigquery: \
 	data/expanded_links.csv.gz \
