@@ -71,6 +71,12 @@ variable "govgraph_static_ip_address" {
   default = "35.246.25.128"
 }
 
+# Static IP address for govgraphsearch
+variable "govgraphsearch_static_ip_address" {
+  type    = string
+  default = "34.160.154.17"
+}
+
 variable "services" {
   type = list(any)
   default = [
@@ -108,7 +114,17 @@ bootcmd:
 EOF
 }
 
-# Set the Terraform provider
+terraform {
+  required_providers {
+    google = {
+      version = "4.46.0"
+    }
+    google-beta = {
+      version = "4.46.0"
+    }
+  }
+}
+
 provider "google" {
   project = var.project_id
   region  = var.region
@@ -118,7 +134,6 @@ provider "google" {
   user_project_override = true
 }
 
-# Set the Terraform provider
 provider "google-beta" {
   project = var.project_id
   region  = var.region
@@ -224,7 +239,7 @@ data "google_iam_policy" "project" {
       "serviceAccount:${google_service_account.gce_neo4j.email}",
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
       "group:data-engineering@digital.cabinet-office.gov.uk",
-      "group:data-analysts@digital.cabinet-office.gov.uk",
+      "group:data-analysis@digital.cabinet-office.gov.uk",
       "group:data-products@digital.cabinet-office.gov.uk"
     ]
   }
