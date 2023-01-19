@@ -38,7 +38,7 @@ resource "google_storage_bucket_iam_policy" "repository" {
 
 data "google_iam_policy" "bucket_repository" {
   binding {
-    role = "roles/storage.objectAdmin"
+    role = "roles/storage.admin"
     members = [
       "serviceAccount:${google_service_account.storage_github.email}",
     ]
