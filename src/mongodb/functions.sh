@@ -1,5 +1,5 @@
 #! /bin/bash
-PROJECT_ID="govuk-knowledge-graph-dev"
+PROJECT_ID="govuk-knowledge-graph-staging"
 
 # Extract datasets of nodes, attributes and edges from the MongoDB content store
 # database.

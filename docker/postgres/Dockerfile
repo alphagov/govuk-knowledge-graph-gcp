@@ -41,7 +41,7 @@ ENV GITHUB_REF=${GITHUB_REF}
 # own CMD
 ENTRYPOINT []
 
-ENV PROJECT_ID=govuk-knowledge-graph-dev
+ENV PROJECT_ID=govuk-knowledge-graph-staging
 
 # Run a script from a copy of the HEAD of the repository
 CMD \

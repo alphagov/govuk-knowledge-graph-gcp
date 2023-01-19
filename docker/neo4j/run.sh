@@ -1,6 +1,6 @@
 #!/bin/bash
-PROJECT_ID="govuk-knowledge-graph-dev"
-DOMAIN="govgraphdev.dev"
+PROJECT_ID="govuk-knowledge-graph-staging"
+DOMAIN="govgraphstaging.dev"
 
 # Refresh certificates needed for HTTPS/BOLT connections"
 # https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd

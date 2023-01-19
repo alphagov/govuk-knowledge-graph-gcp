@@ -1,5 +1,5 @@
 #!/bin/bash
-PROJECT_ID="govuk-knowledge-graph-dev"
+PROJECT_ID="govuk-knowledge-graph-staging"
 
 # Run both mongod and scripts that interact with the database
 # https://docs.docker.com/config/containers/multi-service_container/
