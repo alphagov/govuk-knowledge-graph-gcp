@@ -20,6 +20,17 @@ hosted on AWS (Amazon Web Services).
 * [Staging](https://console.cloud.google.com/welcome?project=govuk-knowledge-graph-staging)
 * [Development](https://console.cloud.google.com/welcome?project=govuk-knowledge-graph-dev)
 
+## IAM roles/permissions required in other projects
+
+The following service accounts in each environment (prod, staging, dev) require
+the following roles in the production environments of the following projects.
+
+- `roles/storage.objectViewer` in `govuk-s3-mirror` for the bucket
+  `govuk-s3-mirror_govuk-integration-database-backups`, for the `gce_mongodb`
+  and `gce_postgres` service accounts.
+- `roles/bigquery.dataViewer` in `ga4-analytics-352613` for the dataset
+  `analytics_330577055` for the `bigquery_page_transitions` service account.
+
 ## Dev environment
 
 Copy `terraform/*.tf` into `terraform-dev`, and discard changes to the project
