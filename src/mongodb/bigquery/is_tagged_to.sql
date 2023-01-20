@@ -2,9 +2,8 @@
 DELETE graph.is_tagged_to WHERE TRUE;
 INSERT INTO graph.is_tagged_to
 SELECT
-  from_url AS url,
-  has_homepage.url AS taxon_url
-FROM content.expanded_links
-INNER JOIN graph.has_homepage ON has_homepage.homepage_url = to_url
-WHERE expanded_links.link_type = 'taxons'
+  "https://www.gov.uk/" || from_content_id AS url,
+  "https://www.gov.uk/" || to_content_id AS taxon_url
+FROM content.expanded_links_content_ids
+WHERE link_type = 'taxons'
 ;
