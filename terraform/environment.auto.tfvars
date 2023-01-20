@@ -1,0 +1,6 @@
+environment                      = "production"
+project_id                       = "govuk-knowledge-graph"
+project_number                   = "19513753240"
+govgraph_domain                  = "govgraph.dev"
+govgraph_static_ip_address       = "35.246.18.75"
+govgraphsearch_static_ip_address = "34.160.3.9"

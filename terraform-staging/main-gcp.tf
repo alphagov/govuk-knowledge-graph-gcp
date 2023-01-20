@@ -21,97 +21,57 @@
 # and enforce consistency.
 variable "environment" {
   type    = string
-  default = "development"
 }
 
 variable "project_id" {
   type    = string
-  default = "govuk-knowledge-graph-staging" # Change this
 }
 
 variable "project_number" {
   type    = string
-  default = "957740527277" # Change this
 }
 
 variable "billing_account" {
   type    = string
-  default = "015C7A-FAF970-B0D375" # Change this once you know it
 }
 
 variable "folder_id" {
   type    = string
-  default = "278098142879" # Change this
 }
 
 variable "region" {
   type    = string
-  default = "europe-west2" # Change this
 }
 
 variable "zone" {
   type    = string
-  default = "europe-west2-b" # Change this
 }
 
 # Google Cloud Storage location https://cloud.google.com/storage/docs/locations
 variable "location" {
   type    = string
-  default = "EUROPE-WEST2"
 }
 
 variable "govgraph_domain" {
   type    = string
-  default = "govgraph-staging.dev"
 }
 
 # Static IP address for govgraph
 variable "govgraph_static_ip_address" {
   type    = string
-  default = "35.189.74.112"
 }
 
 # Static IP address for govgraphsearch
 variable "govgraphsearch_static_ip_address" {
   type    = string
-  default = "35.189.74.112"
 }
 
 variable "services" {
   type = list(any)
-  default = [
-    # List all the services you use here
-    "storage.googleapis.com",
-    "iam.googleapis.com",
-    "appengine.googleapis.com",
-    "artifactregistry.googleapis.com",
-    "cloudscheduler.googleapis.com",
-    "bigquery.googleapis.com",
-    "bigquerydatatransfer.googleapis.com",
-    "run.googleapis.com",
-    "compute.googleapis.com",
-    "dns.googleapis.com",
-    "eventarc.googleapis.com",
-    "networkmanagement.googleapis.com",
-    "pubsub.googleapis.com",
-    "sourcerepo.googleapis.com",
-    "vpcaccess.googleapis.com",
-    "workflows.googleapis.com",
-  ]
 }
 
 variable "postgres-startup-script" {
   type    = string
-  default = <<-EOF
-#cloud-config
-
-bootcmd:
-- mkfs.ext4 -F /dev/nvme0n1
-- mkdir -p /mnt/disks/local-ssd
-- mount -o discard,defaults,nobarrier /dev/nvme0n1 /mnt/disks/local-ssd
-- mkdir -p /mnt/disks/local-ssd/postgresql-data
-- mkdir -p /mnt/disks/local-ssd/data
-EOF
 }
 
 terraform {
