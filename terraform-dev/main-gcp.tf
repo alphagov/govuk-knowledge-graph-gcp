@@ -20,98 +20,58 @@
 # Set variables to reuse them across the resources
 # and enforce consistency.
 variable "environment" {
-  type    = string
-  default = "development"
+  type = string
 }
 
 variable "project_id" {
-  type    = string
-  default = "govuk-knowledge-graph-dev" # Change this
+  type = string
 }
 
 variable "project_number" {
-  type    = string
-  default = "628722085506" # Change this
+  type = string
 }
 
 variable "billing_account" {
-  type    = string
-  default = "015C7A-FAF970-B0D375" # Change this once you know it
+  type = string
 }
 
 variable "folder_id" {
-  type    = string
-  default = "278098142879" # Change this
+  type = string
 }
 
 variable "region" {
-  type    = string
-  default = "europe-west2" # Change this
+  type = string
 }
 
 variable "zone" {
-  type    = string
-  default = "europe-west2-b" # Change this
+  type = string
 }
 
 # Google Cloud Storage location https://cloud.google.com/storage/docs/locations
 variable "location" {
-  type    = string
-  default = "EUROPE-WEST2"
+  type = string
 }
 
 variable "govgraph_domain" {
-  type    = string
-  default = "govgraphdev.dev"
+  type = string
 }
 
 # Static IP address for govgraph
 variable "govgraph_static_ip_address" {
-  type    = string
-  default = "34.89.100.153"
+  type = string
 }
 
 # Static IP address for govgraphsearch
 variable "govgraphsearch_static_ip_address" {
-  type    = string
-  default = "34.160.154.17"
+  type = string
 }
 
 variable "services" {
   type = list(any)
-  default = [
-    # List all the services you use here
-    "storage.googleapis.com",
-    "iam.googleapis.com",
-    "appengine.googleapis.com",
-    "artifactregistry.googleapis.com",
-    "cloudscheduler.googleapis.com",
-    "bigquery.googleapis.com",
-    "bigquerydatatransfer.googleapis.com",
-    "run.googleapis.com",
-    "compute.googleapis.com",
-    "dns.googleapis.com",
-    "eventarc.googleapis.com",
-    "networkmanagement.googleapis.com",
-    "pubsub.googleapis.com",
-    "sourcerepo.googleapis.com",
-    "vpcaccess.googleapis.com",
-    "workflows.googleapis.com",
-  ]
 }
 
 variable "postgres-startup-script" {
-  type    = string
-  default = <<-EOF
-#cloud-config
-
-bootcmd:
-- mkfs.ext4 -F /dev/nvme0n1
-- mkdir -p /mnt/disks/local-ssd
-- mount -o discard,defaults,nobarrier /dev/nvme0n1 /mnt/disks/local-ssd
-- mkdir -p /mnt/disks/local-ssd/postgresql-data
-- mkdir -p /mnt/disks/local-ssd/data
-EOF
+  type = string
 }
 
 terraform {

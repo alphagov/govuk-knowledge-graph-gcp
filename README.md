@@ -33,10 +33,7 @@ the following roles in the production environments of the following projects.
 
 ## Dev environment
 
-Copy `terraform/*.tf` into `terraform-dev`, and discard changes to the project
-name and number that are mentioned in `main-gcp.tf` and `backend.tf` (and
-anywhere else that they have been used since this part of the README was last
-updated).
+Copy `terraform/*.tf` into `terraform-dev`.
 
 In the rest of the code:
 
