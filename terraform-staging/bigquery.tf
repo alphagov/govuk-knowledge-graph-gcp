@@ -2670,3 +2670,37 @@ resource "google_bigquery_table" "has_successor" {
 ]
 EOF
 }
+
+resource "google_bigquery_dataset" "test" {
+  dataset_id    = "test"
+  friendly_name = "test"
+  description   = "Test queries"
+  location      = "europe-west2"
+}
+
+resource "google_bigquery_table" "tables_metadata" {
+  dataset_id    = google_bigquery_dataset.test.dataset_id
+  table_id      = "tables-metadata"
+  friendly_name = "Tables metadata"
+  description   = "Table modified date and row count, sorted ascending"
+  view {
+    use_legacy_sql = false
+    query          = <<EOF
+WITH tables AS (
+  SELECT * FROM content.__TABLES__
+  UNION ALL
+  SELECT * FROM graph.__TABLES__
+)
+SELECT
+  dataset_id,
+  table_id,
+  TIMESTAMP_MILLIS(last_modified_time) AS last_modified,
+  row_count
+FROM tables
+ORDER BY
+  last_modified,
+  row_count
+;
+EOF
+  }
+}
