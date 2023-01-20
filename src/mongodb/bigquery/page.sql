@@ -48,7 +48,8 @@ INSERT INTO graph.part
 SELECT
   page.*
   REPLACE(
-    "part" AS document_type,
+    parts.url AS url,
+    page.document_type || "_part" AS document_type,
     parts.part_title AS title,
     parts.part_index AS part_index,
     parts.slug AS slug
