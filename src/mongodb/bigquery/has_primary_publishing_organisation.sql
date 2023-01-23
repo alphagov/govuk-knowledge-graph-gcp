@@ -2,9 +2,8 @@
 DELETE graph.has_primary_publishing_organisation WHERE TRUE;
 INSERT INTO graph.has_primary_publishing_organisation
 SELECT
-  from_url,
-  has_homepage.url  AS primary_publishing_organisation_url
-FROM content.expanded_links
-INNER JOIN graph.has_homepage ON has_homepage.homepage_url = to_url
-WHERE expanded_links.link_type = 'primary_publishing_organisation'
+  "https://www.gov.uk/" || from_content_id AS url,
+  "https://www.gov.uk/" || to_content_id AS primary_publishing_organisation_url
+FROM content.expanded_links_content_ids
+WHERE link_type = 'primary_publishing_organisation'
 ;
