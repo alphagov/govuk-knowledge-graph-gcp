@@ -327,7 +327,9 @@ temp/page.bigquery: \
 	data/description.csv.gz \
 	data/department_analytics_profile.csv.gz \
 	data/parts.csv.gz \
-	temp/content.bigquery
+	temp/content.bigquery \
+	temp/is_tagged_to.bigquery \
+	temp/taxon_levels.mongodb
 	source functions.sh; query_bigquery file_name=bigquery/page.sql
 	touch $@
 
@@ -365,8 +367,7 @@ temp/hyperlinks_to.bigquery: \
 	touch temp/hyperlinks_to.bigquery
 
 temp/is_tagged_to.bigquery: \
-	data/expanded_links.csv.gz \
-	temp/has_homepage.bigquery
+	data/expanded_links.csv.gz
 	source functions.sh; query_bigquery file_name=bigquery/is_tagged_to.sql
 
 temp/organisation.bigquery: temp/page.bigquery

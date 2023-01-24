@@ -1,5 +1,5 @@
-// Taxon levels from the roots, which are the homepage, a hierarchy of world
-// taxons, and some odd others.
+// Taxon levels from the roots, which are currently the homepage, a hierarchy of
+// world taxons, and some odd others.
 db.content_items.aggregate([
   { $match: { document_type: "taxon" } },
   { $project: {
