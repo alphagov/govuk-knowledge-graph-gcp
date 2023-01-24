@@ -276,6 +276,8 @@ resource "google_compute_instance_template" "neo4j" {
   }
 
   metadata = {
+    google-logging-enabled    = true
+    serial-port-logging-enable = true
     gce-container-declaration = module.neo4j-container.metadata_value
   }
 
@@ -305,6 +307,8 @@ resource "google_compute_instance_template" "mongodb" {
   }
 
   metadata = {
+    google-logging-enabled    = true
+    serial-port-logging-enable = true
     gce-container-declaration = module.mongodb-container.metadata_value
   }
 
@@ -346,6 +350,8 @@ resource "google_compute_instance_template" "postgres" {
   metadata = {
     # https://cloud.google.com/container-optimized-os/docs/concepts/disks-and-filesystem#mounting_and_formatting_disks
     user-data                 = var.postgres-startup-script
+    google-logging-enabled    = true
+    serial-port-logging-enable = true
     gce-container-declaration = module.postgres-container.metadata_value
   }
 
@@ -359,5 +365,13 @@ resource "google_compute_instance_template" "postgres" {
   service_account {
     email  = google_service_account.gce_postgres.email
     scopes = ["cloud-platform"]
+  }
+}
+
+# Project-level metadata, on all machines
+resource "google_compute_project_metadata" "default" {
+  metadata = {
+    google-logging-enabled     = true
+    serial-port-logging-enable = true
   }
 }
