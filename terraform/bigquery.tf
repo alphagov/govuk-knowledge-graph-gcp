@@ -103,6 +103,7 @@ data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
       "serviceAccount:${google_service_account.gce_mongodb.email}",
       "serviceAccount:${google_service_account.gce_postgres.email}",
       "serviceAccount:${google_service_account.gce_neo4j.email}",
+      "serviceAccount:${google_service_account.workflow_bank_holidays.email}",
     ]
   }
   binding {
@@ -1869,6 +1870,104 @@ resource "google_bigquery_table" "pagerank" {
   }
 ]
 EOF
+}
+
+resource "google_bigquery_table" "bank_holiday_raw" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "bank_holiday_raw"
+  friendly_name = "UK Bank Holiday raw JSON data"
+  description   = "UK Bank Holiday raw JSON data"
+  schema = jsonencode(
+    [
+      {
+        fields = [
+          {
+            fields = [
+              {
+                mode        = "NULLABLE"
+                name        = "title"
+                type        = "STRING"
+                description = "Name of the bank holiday"
+              },
+              {
+                mode        = "NULLABLE"
+                name        = "notes"
+                type        = "STRING"
+                description = "Notes about the bank holiday"
+              },
+              {
+                mode        = "NULLABLE"
+                name        = "date"
+                type        = "DATE"
+                description = "Date of a single occurrence of the bank holiday"
+              },
+              {
+                mode        = "NULLABLE"
+                name        = "bunting"
+                type        = "BOOLEAN"
+                description = "Whether to display bunting on the GOV.UK website on the date of the bank holiday"
+              },
+            ]
+            mode        = "REPEATED"
+            name        = "events"
+            type        = "RECORD"
+            description = "Bank holidays in the given division"
+          },
+          {
+            mode        = "NULLABLE"
+            name        = "division"
+            type        = "STRING"
+            description = "Part of the UK"
+          },
+        ]
+        mode        = "REPEATED"
+        name        = "body"
+        type        = "RECORD"
+        description = "Root of the JSON data"
+      },
+    ]
+  )
+}
+
+resource "google_bigquery_table" "bank_holiday" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "bank_holiday"
+  friendly_name = "UK Bank Holidays"
+  description   = "UK Bank Holidays"
+  schema = jsonencode(
+    [
+      {
+        mode        = "REQUIRED"
+        name        = "division"
+        type        = "STRING"
+        description = "Part of the UK"
+      },
+      {
+        mode        = "REQUIRED"
+        name        = "title"
+        type        = "STRING"
+        description = "Name of the bank holiday"
+      },
+      {
+        mode        = "REQUIRED"
+        name        = "date"
+        type        = "DATE"
+        description = "Date of a single occurrence of the bank holiday"
+      },
+      {
+        mode        = "REQUIRED"
+        name        = "bunting"
+        type        = "BOOLEAN"
+        description = "Whether to display bunting on the GOV.UK website on the date of the bank holiday"
+      },
+      {
+        mode        = "NULLABLE"
+        name        = "notes"
+        type        = "STRING"
+        description = "Notes about the bank holiday"
+      },
+    ]
+  )
 }
 
 resource "google_bigquery_dataset" "graph" {
