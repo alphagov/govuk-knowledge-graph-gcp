@@ -72,6 +72,10 @@ main:
                           value: $${object_bucket}
                         - key: object_name
                           value: $${object_name}
+                        - key: google-logging-enabled
+                          value: true
+                        - key: serial-port-logging-enable
+                          value: true
                         - key: gce-container-declaration
                           value: ${jsonencode(module.mongodb-container.metadata_value)}
           - return_started_mongodb:
@@ -99,6 +103,8 @@ main:
                           value: $${object_name}
                         - key: user-data
                           value: ${jsonencode(var.postgres-startup-script)}
+                        - key: google-logging-enabled
+                          value: true
                         - key: gce-container-declaration
                           value: ${jsonencode(module.postgres-container.metadata_value)}
           - return_started_postgres:
