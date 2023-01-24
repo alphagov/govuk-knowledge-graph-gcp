@@ -154,8 +154,8 @@ USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///appointment_role.csv' AS line
 FIELDTERMINATOR ','
-MATCH (p:RoleAppointment { url: "https://www.gov.uk/" + line.role_appointment_content_id })
-MATCH (q:Role { url: "https://www.gov.uk/" +  line.role_content_id })
+MATCH (p:RoleAppointment { url: line.appointment_url })
+MATCH (q:Role { url: line.role_url })
 CREATE (p)-[:LINKS_TO { linkTargetType: 'role' }]->(q)
 ;
 
@@ -164,8 +164,8 @@ USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///appointment_person.csv' AS line
 FIELDTERMINATOR ','
-MATCH (p:RoleAppointment { url: "https://www.gov.uk/" + line.role_appointment_content_id })
-MATCH (q:Person { url: "https://www.gov.uk/" +  line.person_content_id })
+MATCH (p:RoleAppointment { url: line.appointment_url })
+MATCH (q:Person { url: line.person_url })
 CREATE (p)-[:LINKS_TO { linkTargetType: 'person' }]->(q)
 ;
 
@@ -179,8 +179,8 @@ USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
 FROM 'file:///role_organisation.csv' AS line
 FIELDTERMINATOR ','
-MATCH (r:Role { url: "https://www.gov.uk/" + line.role_content_id })
-MATCH (o:Organisation { url: "https://www.gov.uk/" + line.organisation_content_id })
+MATCH (r:Role { url: line.role_url })
+MATCH (o:Organisation { url: line.organisation_url })
 CREATE (o)-[:LINKS_TO { linkTargetType: 'ordered_roles' }]->(r)
 CREATE (r)-[:BELONGS_TO]->(o)
 ;
