@@ -198,6 +198,7 @@ data "google_iam_policy" "project" {
       "serviceAccount:${google_service_account.gce_postgres.email}",
       "serviceAccount:${google_service_account.gce_neo4j.email}",
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
+      "serviceAccount:${google_service_account.workflow_bank_holidays.email}",
       "group:data-engineering@digital.cabinet-office.gov.uk",
       "group:data-analysis@digital.cabinet-office.gov.uk",
       "group:data-products@digital.cabinet-office.gov.uk"
@@ -304,6 +305,7 @@ data "google_iam_policy" "project" {
     members = [
       "serviceAccount:${google_service_account.workflow_govuk_integration_database_backups.email}",
       "serviceAccount:${google_service_account.workflow_neo4j.email}",
+      "serviceAccount:${google_service_account.workflow_bank_holidays.email}",
     ]
   }
 
@@ -326,6 +328,7 @@ data "google_iam_policy" "project" {
     members = [
       "serviceAccount:${google_service_account.eventarc.email}",
       "serviceAccount:${google_service_account.scheduler_neo4j.email}",
+      "serviceAccount:${google_service_account.scheduler_bank_holidays.email}",
     ]
   }
 

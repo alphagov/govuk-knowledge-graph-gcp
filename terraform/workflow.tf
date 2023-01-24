@@ -197,7 +197,6 @@ main:
 EOF
 }
 
-
 # A service account for Cloud Scheduler to run neo4j on/off workflows
 resource "google_service_account" "scheduler_neo4j" {
   account_id   = "scheduler-neo4j"
@@ -233,6 +232,114 @@ resource "google_cloud_scheduler_job" "neo4j_off" {
     uri         = "https://workflowexecutions.googleapis.com/v1/${google_workflows_workflow.neo4j_off.id}/executions"
     oauth_token {
       service_account_email = google_service_account.scheduler_neo4j.email
+    }
+  }
+}
+
+# A workflow to fetch bank holiday data
+resource "google_service_account" "workflow_bank_holidays" {
+  account_id   = "workflow-bank-holidays"
+  display_name = "Service account for the bank-holidays workflow"
+}
+
+resource "google_workflows_workflow" "bank_holidays" {
+  name            = "bank-holidays"
+  region          = var.region
+  description     = "Fetch bank holiday data from https://www.gov.uk/bank-holidays.json"
+  service_account = google_service_account.workflow_bank_holidays.id
+  source_contents = <<-EOF
+  # This workflow does the following:
+  # - Downloads https://www.gov.uk/bank-holidays.json
+  # - Rewrites the dictionary keys to be human-readable names of countries
+  # - Creates a new JSON object that BigQuery's automatic schema detection will
+  #   understand.
+  # - Saves the JSON object to a bucket
+  # - Loads the JSON into BigQuery
+  # - Extracts data from the JSON
+  # In terraform you need to escape the $$ or it will cause errors.
+main:
+    steps:
+    - getBankHolidaysObject:
+        call: http.get
+        args:
+            url: https://www.gov.uk/bank-holidays.json
+        result: bankHolidaysObject
+    - renameDivisions:
+        assign:
+        - bankHolidaysObject["body"]["england-and-wales"]["division"]: "England and Wales"
+        - bankHolidaysObject["body"]["northern-ireland"]["division"]: "Northern Ireland"
+        - bankHolidaysObject["body"]["scotland"]["division"]: "Scotland"
+    - renameKeys:
+        assign:
+        - finalJsonObject:
+            - body:
+                - '$${bankHolidaysObject["body"]["england-and-wales"]}'
+                - '$${bankHolidaysObject["body"]["northern-ireland"]}'
+                - '$${bankHolidaysObject["body"]["scotland"]}'
+    - writeBankHolidaysFile:
+        call: googleapis.storage.v1.objects.insert
+        args:
+            bucket: '${var.project_id}-data-processed'
+            name: 'bank-holidays/bank-holidays.json'
+            body: $${finalJsonObject[0]}
+    - uploadToBigQuery:
+        call: googleapis.bigquery.v2.jobs.query
+        args:
+            projectId: '${var.project_id}'
+            body:
+                useLegacySql: false
+                query: $${
+                    "LOAD DATA OVERWRITE content.bank_holiday_raw " +
+                    "FROM FILES ( " +
+                    "  format = 'JSON', " +
+                    "  uris = ['gs://${var.project_id}-data-processed/bank-holidays/bank-holidays.json'] " +
+                    "  ) " +
+                    ";"
+                    }
+        result: queryResult
+    - extractFromJson:
+        call: googleapis.bigquery.v2.jobs.query
+        args:
+            projectId: '${var.project_id}'
+            body:
+                useLegacySql: false
+                query: $${
+                    "DELETE FROM content.bank_holiday WHERE TRUE; " +
+                    "INSERT INTO content.bank_holiday " +
+                    "SELECT " +
+                    "  body.division AS division, " +
+                    "  events.title, " +
+                    "  events.date, " +
+                    "  events.bunting, " +
+                    "  events.notes " +
+                    "FROM content.bank_holiday_raw, " +
+                    "UNNEST(body) AS body, " +
+                    "UNNEST(events) AS events " +
+                    ";"
+                    }
+        result: queryResult
+EOF
+}
+
+# A service account for Cloud Scheduler to run the bank-holidays workflow
+resource "google_service_account" "scheduler_bank_holidays" {
+  account_id   = "scheduler-bank-holidays"
+  display_name = "Service Account for scheduling the bank holidays workflow"
+  description  = "Service Account for scheduling the bank holidays workflow"
+}
+
+# A schedule to fetch bank holiday data
+resource "google_cloud_scheduler_job" "bank_holidays" {
+  name        = "bank-holidays"
+  description = "Fetch bank holiday data"
+  schedule    = "0 2 * * *"
+  time_zone   = "Europe/London"
+
+  http_target {
+    http_method = "POST"
+    uri         = "https://workflowexecutions.googleapis.com/v1/${google_workflows_workflow.bank_holidays.id}/executions"
+    oauth_token {
+      service_account_email = google_service_account.scheduler_bank_holidays.email
     }
   }
 }
