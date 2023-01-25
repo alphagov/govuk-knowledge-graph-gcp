@@ -2152,6 +2152,12 @@ resource "google_bigquery_table" "page" {
     "name": "primary_publishing_organisation",
     "type": "STRING",
     "description": "Title of the primary organisation that published the page"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "organisations",
+    "type": "STRING",
+    "description": "Array of titles of organisations that published the page"
   }
 ]
 EOF
@@ -2301,6 +2307,12 @@ resource "google_bigquery_table" "part" {
     "name": "primary_publishing_organisation",
     "type": "STRING",
     "description": "Title of the primary organisation that published the page"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "organisations",
+    "type": "STRING",
+    "description": "Array of titles of organisations that published the page"
   }
 ]
 EOF
