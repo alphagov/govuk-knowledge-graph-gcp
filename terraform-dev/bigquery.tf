@@ -2140,6 +2140,13 @@ resource "google_bigquery_table" "page" {
     "name": "taxons",
     "type": "STRING",
     "description": "Array of titles of taxons that the page is tagged to"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "taxon_ancestors",
+    "type": "STRING",
+    "description": "Array of titles of ancestors of taxons that the page is tagged to"
+  }
   }
 ]
 EOF
@@ -2277,6 +2284,13 @@ resource "google_bigquery_table" "part" {
     "name": "taxons",
     "type": "STRING",
     "description": "Array of titles of taxons that the page is tagged to"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "taxon_ancestors",
+    "type": "STRING",
+    "description": "Array of titles of ancestors of taxons that the page is tagged to"
+  }
   }
 ]
 EOF

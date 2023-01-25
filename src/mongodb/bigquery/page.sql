@@ -1,6 +1,7 @@
 -- Create a table of page nodes
 DELETE graph.page WHERE TRUE;
 INSERT INTO graph.page
+-- Titles of taxons that the page is tagged to
 WITH tagged_taxons AS (
   SELECT
     is_tagged_to.url AS url,
@@ -8,6 +9,14 @@ WITH tagged_taxons AS (
   FROM graph.is_tagged_to
   INNER JOIN content.taxon_levels ON (taxon_levels.url = is_tagged_to.taxon_url) -- gives us the URL of the taxon's homepage
   INNER JOIN content.title AS taxon_title ON (taxon_title.url = taxon_levels.homepage_url) -- gives us the title of the taxon's homepage
+  GROUP BY
+    url
+),
+-- Titles of ancestors of all the taxons that the page is tagged to
+ancestor_taxons AS ( SELECT
+    url,
+    ARRAY_AGG(taxon_ancestors.ancestor_title) AS ancestor_titles
+  FROM graph.taxon_ancestors
   GROUP BY
     url
 )
@@ -32,7 +41,8 @@ SELECT
   CAST(NULL AS INT64) AS part_index,
   CAST(NULL AS STRING) AS slug,
   pagerank.pagerank,
-  tagged_taxons.taxons
+  tagged_taxons.taxons,
+  ancestor_taxons.ancestor_titles
 FROM content.url AS u
 LEFT JOIN content.document_type USING (url)
 LEFT JOIN content.phase USING (url)
@@ -52,6 +62,7 @@ LEFT JOIN content.department_analytics_profile USING (url)
 LEFT JOIN content.content AS c USING (url)
 LEFT JOIN content.pagerank USING (url)
 LEFT JOIN tagged_taxons ON (tagged_taxons.url = 'https://www.gov.uk/' || content_id.content_id)
+LEFT JOIN ancestor_taxons ON (ancestor_taxons.url = 'https://www.gov.uk/' || content_id.content_id)
 ;
 
 -- Derive a table of parts nodes from their parent page nodes

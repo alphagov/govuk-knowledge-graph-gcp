@@ -5,5 +5,5 @@ SELECT
   "https://www.gov.uk/" || from_content_id AS url,
   "https://www.gov.uk/" || to_content_id AS parent_url
 FROM content.expanded_links_content_ids
-WHERE link_type = 'parent_taxons'
+WHERE link_type IN ('parent_taxons', 'root_taxon')
 ;
