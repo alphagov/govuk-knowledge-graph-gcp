@@ -36,6 +36,15 @@ organisations AS (
   INNER JOIN content.title AS organisation ON (organisation.url = expanded_links.to_url)
   WHERE link_type = 'organisations'
   GROUP BY expanded_links.from_url
+),
+hyperlinks AS (
+  SELECT
+    url,
+    -- Use DISTINCT because some links are in the table multiple times with
+    -- different link_text
+    ARRAY_AGG(DISTINCT link_url) AS hyperlinks
+  FROM content.embedded_links
+  GROUP BY url
 )
 SELECT
   u.url,
@@ -61,7 +70,8 @@ SELECT
   tagged_taxons.taxons,
   ancestor_taxons.ancestor_titles,
   primary_publishing_organisation.organisation,
-  organisations.organisations
+  organisations.organisations,
+  hyperlinks.hyperlinks
 FROM content.url AS u
 LEFT JOIN content.document_type USING (url)
 LEFT JOIN content.phase USING (url)
@@ -82,6 +92,7 @@ LEFT JOIN content.content AS c USING (url)
 LEFT JOIN content.pagerank USING (url)
 LEFT JOIN primary_publishing_organisation USING (url)
 LEFT JOIN organisations USING (url)
+LEFT JOIN hyperlinks USING (url)
 LEFT JOIN tagged_taxons ON (tagged_taxons.url = 'https://www.gov.uk/' || content_id.content_id)
 LEFT JOIN ancestor_taxons ON (ancestor_taxons.url = 'https://www.gov.uk/' || content_id.content_id)
 ;

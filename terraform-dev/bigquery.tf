@@ -2158,6 +2158,12 @@ resource "google_bigquery_table" "page" {
     "name": "organisations",
     "type": "STRING",
     "description": "Array of titles of organisations that published the page"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "hyperlinks",
+    "type": "STRING",
+    "description": "Array of hyperlinks from the body of the page"
   }
 ]
 EOF
@@ -2313,6 +2319,12 @@ resource "google_bigquery_table" "part" {
     "name": "organisations",
     "type": "STRING",
     "description": "Array of titles of organisations that published the page"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "hyperlinks",
+    "type": "STRING",
+    "description": "Array of hyperlinks from the body of the page"
   }
 ]
 EOF
