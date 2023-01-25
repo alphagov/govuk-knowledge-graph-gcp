@@ -2146,7 +2146,12 @@ resource "google_bigquery_table" "page" {
     "name": "taxon_ancestors",
     "type": "STRING",
     "description": "Array of titles of ancestors of taxons that the page is tagged to"
-  }
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "primary_publishing_organisation",
+    "type": "STRING",
+    "description": "Title of the primary organisation that published the page"
   }
 ]
 EOF
@@ -2290,7 +2295,12 @@ resource "google_bigquery_table" "part" {
     "name": "taxon_ancestors",
     "type": "STRING",
     "description": "Array of titles of ancestors of taxons that the page is tagged to"
-  }
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "primary_publishing_organisation",
+    "type": "STRING",
+    "description": "Title of the primary organisation that published the page"
   }
 ]
 EOF

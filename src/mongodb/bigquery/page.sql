@@ -19,6 +19,14 @@ ancestor_taxons AS ( SELECT
   FROM graph.taxon_ancestors
   GROUP BY
     url
+),
+primary_publishing_organisation AS (
+  SELECT
+    expanded_links.from_url AS url,
+    organisation.title AS organisation
+  FROM content.expanded_links AS expanded_links
+  INNER JOIN content.title AS organisation ON (organisation.url = expanded_links.to_url)
+  WHERE link_type = 'primary_publishing_organisation'
 )
 SELECT
   u.url,
@@ -42,7 +50,8 @@ SELECT
   CAST(NULL AS STRING) AS slug,
   pagerank.pagerank,
   tagged_taxons.taxons,
-  ancestor_taxons.ancestor_titles
+  ancestor_taxons.ancestor_titles,
+  primary_publishing_organisation.organisation
 FROM content.url AS u
 LEFT JOIN content.document_type USING (url)
 LEFT JOIN content.phase USING (url)
@@ -61,6 +70,7 @@ LEFT JOIN content.description USING (url)
 LEFT JOIN content.department_analytics_profile USING (url)
 LEFT JOIN content.content AS c USING (url)
 LEFT JOIN content.pagerank USING (url)
+LEFT JOIN primary_publishing_organisation USING (url)
 LEFT JOIN tagged_taxons ON (tagged_taxons.url = 'https://www.gov.uk/' || content_id.content_id)
 LEFT JOIN ancestor_taxons ON (ancestor_taxons.url = 'https://www.gov.uk/' || content_id.content_id)
 ;
