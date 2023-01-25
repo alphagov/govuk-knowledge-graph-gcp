@@ -1,4 +1,5 @@
-// Taxon levels from the root, which is the homepage
+// Taxon levels from the roots, which are currently the homepage, a hierarchy of
+// world taxons, and some odd others.
 db.content_items.aggregate([
   { $match: { document_type: "taxon" } },
   { $project: {
@@ -8,12 +9,20 @@ db.content_items.aggregate([
   } },
   { $out: "taxons" }
 ])
+
+// root_taxons:
 db.content_items.aggregate([
-  { $match: { "_id": "/" } },
+  { $match: { "document_type": { "$in": ["homepage", "taxon"] } } },
+  { $match: { "expanded_links.parent_taxons": { "$exists": false } } },
+  { $match: { "expanded_links.root_taxon": { "$exists": false } } },
   { $project: {
     _id: false,
-    homepage_url: true,
-    "children": "$expanded_links.level_one_taxons.content_id",
+    "homepage_url": { "$concat": [ "https://www.gov.uk", "$_id" ] },
+    "_id": false,
+    "children": { "$concatArrays": [
+      { "$ifNull": [ "$expanded_links.level_one_taxons.content_id", [] ] },
+      { "$ifNull": [ "$expanded_links.child_taxons.content_id", [] ] },
+    ] },
   } },
   { $graphLookup: {
         from: "taxons",

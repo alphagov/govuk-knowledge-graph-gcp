@@ -2134,6 +2134,12 @@ resource "google_bigquery_table" "page" {
     "name": "pagerank",
     "type": "BIGNUMERIC",
     "description": "Page rank of a page on GOV.UK"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "taxon_titles",
+    "type": "STRING",
+    "description": "Array of titles of taxons that the page is tagged to"
   }
 ]
 EOF
@@ -2265,6 +2271,12 @@ resource "google_bigquery_table" "part" {
     "name": "pagerank",
     "type": "BIGNUMERIC",
     "description": "Page rank of a page on GOV.UK"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "taxon_titles",
+    "type": "STRING",
+    "description": "Array of titles of taxons that the page is tagged to"
   }
 ]
 EOF
