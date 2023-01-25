@@ -4,7 +4,7 @@ INSERT INTO graph.page
 WITH tagged_taxons AS (
   SELECT
     is_tagged_to.url AS url,
-    ARRAY_AGG(taxon_title.title) AS taxon_titles
+    ARRAY_AGG(taxon_title.title) AS taxons
   FROM graph.is_tagged_to
   INNER JOIN content.taxon_levels ON (taxon_levels.url = is_tagged_to.taxon_url) -- gives us the URL of the taxon's homepage
   INNER JOIN content.title AS taxon_title ON (taxon_title.url = taxon_levels.homepage_url) -- gives us the title of the taxon's homepage
@@ -32,7 +32,7 @@ SELECT
   CAST(NULL AS INT64) AS part_index,
   CAST(NULL AS STRING) AS slug,
   pagerank.pagerank,
-  tagged_taxons.taxon_titles
+  tagged_taxons.taxons
 FROM content.url AS u
 LEFT JOIN content.document_type USING (url)
 LEFT JOIN content.phase USING (url)

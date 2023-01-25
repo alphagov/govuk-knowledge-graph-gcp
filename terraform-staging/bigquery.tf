@@ -2137,7 +2137,7 @@ resource "google_bigquery_table" "page" {
   },
   {
     "mode": "REPEATED",
-    "name": "taxon_titles",
+    "name": "taxons",
     "type": "STRING",
     "description": "Array of titles of taxons that the page is tagged to"
   }
@@ -2274,7 +2274,7 @@ resource "google_bigquery_table" "part" {
   },
   {
     "mode": "REPEATED",
-    "name": "taxon_titles",
+    "name": "taxons",
     "type": "STRING",
     "description": "Array of titles of taxons that the page is tagged to"
   }
