@@ -324,6 +324,24 @@ main:
                     ";"
                     }
         result: queryResult
+    - deriveBankHolidayNameTable:
+        call: googleapis.bigquery.v2.jobs.query
+        args:
+            projectId: '${var.project_id}'
+            body:
+                useLegacySql: false
+                query: $${
+                    "DELETE FROM graph.bank_holiday_title WHERE TRUE; " +
+                    "INSERT INTO graph.bank_holiday_title " +
+                    "SELECT DISTINCT " +
+                    "  'https://www.gov.uk/' || REPLACE(REPLACE(TO_BASE64(SHA256(events.title)), '+', '-'), '/', '_') AS url, " +
+                    "  events.title AS title " +
+                    "FROM content.bank_holiday_raw, " +
+                    "  UNNEST(body) AS body, " +
+                    "  UNNEST(events) AS events " +
+                    "; "
+                    }
+        result: queryResult
 EOF
 }
 
