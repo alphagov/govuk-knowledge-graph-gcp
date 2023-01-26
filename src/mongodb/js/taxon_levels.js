@@ -1,11 +1,14 @@
 // Taxon levels from the roots, which are currently the homepage, a hierarchy of
 // world taxons, and some odd others.
 db.content_items.aggregate([
-  { $match: { document_type: "taxon" } },
+  { $match: { "document_type": { "$in": ["homepage", "taxon"] } } },
   { $project: {
     "homepage_url": { "$concat": [ "https://www.gov.uk", "$_id" ] },
     "_id": "$content_id",
-    "children": "$expanded_links.child_taxons.content_id",
+    "children": { "$concatArrays": [
+      { "$ifNull": [ "$expanded_links.level_one_taxons.content_id", [] ] },
+      { "$ifNull": [ "$expanded_links.child_taxons.content_id", [] ] },
+    ] },
   } },
   { $out: "taxons" }
 ])
@@ -20,8 +23,7 @@ db.content_items.aggregate([
     "homepage_url": { "$concat": [ "https://www.gov.uk", "$_id" ] },
     "_id": false,
     "children": { "$concatArrays": [
-      { "$ifNull": [ "$expanded_links.level_one_taxons.content_id", [] ] },
-      { "$ifNull": [ "$expanded_links.child_taxons.content_id", [] ] },
+      [ "$content_id" ] ,
     ] },
   } },
   { $graphLookup: {
@@ -42,7 +44,7 @@ db.content_items.aggregate([
   { $set: {
     "url": { "$concat": [ "https://www.gov.uk/", "$descendants._id" ] },
     "homepage_url": "$descendants.homepage_url",
-    "level": { $add: [ "$descendants.level", 1 ] }
+    "level": { $add: [ "$descendants.level", 0 ] }
   } },
   { $project: {
     _id: false,
