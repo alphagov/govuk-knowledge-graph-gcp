@@ -2140,6 +2140,30 @@ resource "google_bigquery_table" "page" {
     "name": "taxons",
     "type": "STRING",
     "description": "Array of titles of taxons that the page is tagged to"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "taxon_ancestors",
+    "type": "STRING",
+    "description": "Array of titles of ancestors of taxons that the page is tagged to"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "primary_publishing_organisation",
+    "type": "STRING",
+    "description": "Title of the primary organisation that published the page"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "organisations",
+    "type": "STRING",
+    "description": "Array of titles of organisations that published the page"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "hyperlinks",
+    "type": "STRING",
+    "description": "Array of hyperlinks from the body of the page"
   }
 ]
 EOF
@@ -2277,6 +2301,30 @@ resource "google_bigquery_table" "part" {
     "name": "taxons",
     "type": "STRING",
     "description": "Array of titles of taxons that the page is tagged to"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "taxon_ancestors",
+    "type": "STRING",
+    "description": "Array of titles of ancestors of taxons that the page is tagged to"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "primary_publishing_organisation",
+    "type": "STRING",
+    "description": "Title of the primary organisation that published the page"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "organisations",
+    "type": "STRING",
+    "description": "Array of titles of organisations that published the page"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "hyperlinks",
+    "type": "STRING",
+    "description": "Array of hyperlinks from the body of the page"
   }
 ]
 EOF
