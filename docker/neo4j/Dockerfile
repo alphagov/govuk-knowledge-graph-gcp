@@ -1,6 +1,6 @@
 FROM neo4j:4.4.8-community
 
-# Generate certificates needed for HTTPS/BOLT connections"
+# Generate certificates needed for HTTPS/BOLT connections
 ADD neo4j.conf /var/lib/neo4j/conf
 
 # Install gcloud
@@ -18,8 +18,12 @@ RUN \
 
 RUN \
   # Install utilities
+  # gettext is for envsubst
+  # moreutils is for sponge
   apt-get update \
   && apt-get install -y \
+    gettext \
+    moreutils \
     curl \
     unzip \
     certbot \
@@ -46,8 +50,6 @@ ENV GITHUB_REF=${GITHUB_REF}
 # Use a modified entrypoint script that doesn't run CMD as the neo4j user, but
 # as root, so that certbot will work.
 COPY ./docker-entrypoint.sh /startup/
-
-ENV PROJECT_ID govuk-knowledge-graph
 
 # Run a script from a copy of the HEAD of the repository
 CMD \

@@ -1,5 +1,4 @@
 #!/bin/bash
-PROJECT_ID="govuk-knowledge-graph"
 # Run both mongod and scripts that interact with the database
 # https://docs.docker.com/config/containers/multi-service_container/
 
@@ -18,7 +17,7 @@ sleep 5
 OBJECT=$(
 gcloud compute instances describe mongodb \
   --project $PROJECT_ID \
-  --zone europe-west2-b \
+  --zone $ZONE \
   --format="value[separator=\"/\"](metadata.items.object_bucket, metadata.items.object_name)"
 )
 OBJECT_URL="gs://$OBJECT"
@@ -39,7 +38,7 @@ make
 
 # Stop this instance
 # https://stackoverflow.com/a/41232669
-gcloud compute instances delete mongodb --quiet --zone=europe-west2-b
+gcloud compute instances delete mongodb --quiet --zone=$ZONE
 
 # In case the instance is still running, bring the background process back into
 # the foreground and leave it there

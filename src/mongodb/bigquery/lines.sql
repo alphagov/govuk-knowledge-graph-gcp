@@ -1,8 +1,4 @@
 -- Derive a table of one row per line of text, per page
-DECLARE PROJECT_ID STRING DEFAULT 'govuk-knowledge-graph';
-DECLARE URI STRING;
-SET URI=FORMAT('gs://%s-data-processed/bigquery/lines_*.csv.gz', PROJECT_ID);
-
 DELETE content.lines WHERE TRUE;
 INSERT INTO content.lines
 SELECT
@@ -15,7 +11,7 @@ FROM
 ;
 
 EXPORT DATA OPTIONS(
-  uri=(URI),
+  uri='gs://$PROJECT_ID-data-processed/bigquery/lines_*.csv.gz',
   format='CSV',
   compression='GZIP',
   overwrite=true

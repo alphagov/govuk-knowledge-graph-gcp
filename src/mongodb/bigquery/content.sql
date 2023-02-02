@@ -1,8 +1,4 @@
--- Cocatenate tables of content from various document types into one
-DECLARE PROJECT_ID STRING DEFAULT 'govuk-knowledge-graph';
-DECLARE URI STRING;
-SET URI=FORMAT('gs://%s-data-processed/bigquery/content_*.csv.gz', PROJECT_ID);
-
+-- Concatenate tables of content from various document types into one
 CREATE OR REPLACE TABLE `content.content` AS
 SELECT * FROM `content.body_content`
 UNION ALL
@@ -32,7 +28,7 @@ SELECT * EXCEPT(govspeak) FROM `content.role_content`
 ;
 
 EXPORT DATA OPTIONS(
-  uri=(URI),
+  uri='gs://$PROJECT_ID-data-processed/bigquery/content_*.csv.gz',
   format='CSV',
   compression='GZIP',
   overwrite=true

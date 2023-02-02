@@ -20,6 +20,8 @@ RUN \
   | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - \
   && apt-get update -y \
   && apt-get install google-cloud-cli -y \
+  # Install gettext for envsubst
+  && apt-get install gettext -y \
   # Clean up
   && rm -rf /var/lib/apt/lists/*
 
@@ -28,8 +30,6 @@ ENV GITHUB_SHA=${GITHUB_SHA}
 
 ARG GITHUB_REF=missing
 ENV GITHUB_REF=${GITHUB_REF}
-
-ENV PROJECT_ID govuk-knowledge-graph
 
 # Run a script from a copy of the HEAD of the repository
 CMD \

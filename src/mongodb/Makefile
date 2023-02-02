@@ -1,5 +1,3 @@
-PROJECT_ID=govuk-knowledge-graph
-
 SHELL := /bin/bash
 
 # Parallelise with all cores, if possible
@@ -247,9 +245,9 @@ temp/content.bigquery: data/step_by_step_content.csv.gz data/parts_content.csv.g
 	-gcloud storage rm \
 		"gs://${PROJECT_ID}-data-processed/bigquery/content_[0-9]*.csv.gz" \
     --continue-on-error
-	bq query \
-		--use_legacy_sql=false \
-		< ./bigquery/content.sql
+	envsubst < ./bigquery/content.sql \
+		| bq query --use_legacy_sql=false \
+		< /dev/stdin
 	gcloud storage objects compose \
 		"gs://${PROJECT_ID}-data-processed/bigquery/content_header.csv.gz" \
 		"gs://${PROJECT_ID}-data-processed/bigquery/content_[0-9]*.csv.gz" \
@@ -262,9 +260,9 @@ temp/lines.bigquery: temp/content.bigquery
 	-gcloud storage rm \
 		"gs://${PROJECT_ID}-data-processed/bigquery/lines_[0-9]*.csv.gz" \
     --continue-on-error
-	bq query \
-		--use_legacy_sql=false \
-		< ./bigquery/lines.sql
+	envsubst < ./bigquery/lines.sql \
+		| bq query --use_legacy_sql=false \
+		< /dev/stdin
 	gcloud storage objects compose \
 		"gs://${PROJECT_ID}-data-processed/bigquery/lines_header.csv.gz" \
 		"gs://${PROJECT_ID}-data-processed/bigquery/lines_[0-9]*.csv.gz" \
@@ -276,9 +274,9 @@ temp/embedded_links.bigquery: data/step_by_step_embedded_links.csv.gz data/parts
 	-gcloud storage rm \
 		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_[0-9]*.csv.gz" \
     --continue-on-error
-	bq query \
-		--use_legacy_sql=false \
-		< ./bigquery/embedded_links.sql
+	envsubst < ./bigquery/embedded_links.sql \
+	  | bq query --use_legacy_sql=false \
+	  < /dev/stdin
 	gcloud storage objects compose \
 		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_header.csv.gz" \
 		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_[0-9]*.csv.gz" \

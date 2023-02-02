@@ -1,5 +1,4 @@
 #!/bin/bash
-PROJECT_ID="govuk-knowledge-graph"
 
 # Increase the amount of shared memory available.
 # This requires the containe to run in privileged mode.
@@ -30,13 +29,13 @@ sleep 5
 BUCKET=$(
   gcloud compute instances describe postgres \
     --project $PROJECT_ID \
-    --zone europe-west2-b \
+    --zone $ZONE \
     --format="value(metadata.items.object_bucket)"
 )
 OBJECT=$(
 gcloud compute instances describe postgres \
   --project $PROJECT_ID \
-  --zone europe-west2-b \
+  --zone $ZONE \
   --format="value(metadata.items.object_name)"
 )
 OBJECT_URL="gs://$BUCKET/$OBJECT"
@@ -70,7 +69,7 @@ make
 
 # Stop this instance
 # https://stackoverflow.com/a/41232669
-gcloud compute instances delete postgres --quiet --zone=europe-west2-b
+gcloud compute instances delete postgres --quiet --zone=$ZONE
 
 # In case the instance is still running, bring the background process back into
 # the foreground and leave it there
