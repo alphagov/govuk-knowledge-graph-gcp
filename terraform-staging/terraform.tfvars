@@ -1,4 +1,4 @@
-folder_id                        = "278098142879"
+folder_id       = "278098142879"
 billing_account = "015C7A-FAF970-B0D375"
 region          = "europe-west2"
 zone            = "europe-west2-b"
