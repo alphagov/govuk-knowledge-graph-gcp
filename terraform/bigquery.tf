@@ -1970,6 +1970,29 @@ resource "google_bigquery_table" "bank_holiday" {
   )
 }
 
+resource "google_bigquery_table" "bank_holiday_title" {
+  dataset_id    = google_bigquery_dataset.graph.dataset_id
+  table_id      = "bank_holiday_title"
+  friendly_name = "Titles of UK Bank Holidays"
+  description   = "Titles of UK Bank Holidays"
+  schema = jsonencode(
+    [
+      {
+        mode        = "REQUIRED"
+        name        = "url"
+        type        = "STRING"
+        description = "URL of a bank holiday name"
+      },
+      {
+        mode        = "REQUIRED"
+        name        = "title"
+        type        = "STRING"
+        description = "Title of a bank holiday"
+      }
+    ]
+  )
+}
+
 resource "google_bigquery_dataset" "graph" {
   dataset_id    = "graph"
   friendly_name = "graph"
@@ -1984,6 +2007,7 @@ data "google_iam_policy" "bigquery_dataset_graph" {
       "projectWriters",
       "serviceAccount:${google_service_account.gce_mongodb.email}",
       "serviceAccount:${google_service_account.gce_postgres.email}",
+      "serviceAccount:${google_service_account.workflow_bank_holidays.email}",
     ]
   }
   binding {
