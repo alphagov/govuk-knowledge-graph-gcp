@@ -61,9 +61,12 @@ variable "govgraph_static_ip_address" {
   type    = string
 }
 
-# Static IP address for govgraphsearch
-variable "govgraphsearch_static_ip_address" {
-  type    = string
+variable "govgraphsearch_domain" {
+  type = string
+}
+
+variable "application_title" {
+  type = string
 }
 
 variable "services" {
