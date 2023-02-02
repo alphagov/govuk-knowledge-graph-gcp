@@ -21,6 +21,8 @@ services = [
   "sourcerepo.googleapis.com",
   "vpcaccess.googleapis.com",
   "workflows.googleapis.com",
+  "iap.googleapis.com",
+  "secretmanager.googleapis.com",
 ]
 
 postgres-startup-script = <<EOF

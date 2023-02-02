@@ -20,50 +20,53 @@
 # Set variables to reuse them across the resources
 # and enforce consistency.
 variable "environment" {
-  type    = string
+  type = string
 }
 
 variable "project_id" {
-  type    = string
+  type = string
 }
 
 variable "project_number" {
-  type    = string
+  type = string
 }
 
 variable "billing_account" {
-  type    = string
+  type = string
 }
 
 variable "folder_id" {
-  type    = string
+  type = string
 }
 
 variable "region" {
-  type    = string
+  type = string
 }
 
 variable "zone" {
-  type    = string
+  type = string
 }
 
 # Google Cloud Storage location https://cloud.google.com/storage/docs/locations
 variable "location" {
-  type    = string
+  type = string
 }
 
 variable "govgraph_domain" {
-  type    = string
+  type = string
 }
 
 # Static IP address for govgraph
 variable "govgraph_static_ip_address" {
-  type    = string
+  type = string
 }
 
-# Static IP address for govgraphsearch
-variable "govgraphsearch_static_ip_address" {
-  type    = string
+variable "govgraphsearch_domain" {
+  type = string
+}
+
+variable "application_title" {
+  type = string
 }
 
 variable "services" {
@@ -71,7 +74,7 @@ variable "services" {
 }
 
 variable "postgres-startup-script" {
-  type    = string
+  type = string
 }
 
 terraform {
