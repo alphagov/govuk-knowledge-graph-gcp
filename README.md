@@ -31,17 +31,10 @@ the following roles in the production environments of the following projects.
 - `roles/bigquery.dataViewer` in `ga4-analytics-352613` for the dataset
   `analytics_330577055` for the `bigquery_page_transitions` service account.
 
-## Dev environment
+## Dev and staging environments
 
-Copy `terraform/*.tf` into `terraform-dev`.
-
-In the rest of the code:
-
-* Search for `PROJECT_ID=` and change its value to `govuk-knowledge-graph-dev`
-* Search for `PROJECT_ID ` and change its value to `govuk-knowledge-graph-dev`
-* Search for `DOMAIN=` and change its value to `govgraphdev.dev`
-* Search for `dbms.default_advertised_address=` in `docker/neo4j/neo4j.conf` and
-  change its value to `govgraphdev.dev`.
+Push a local branch to the `dev` or `staging` branch, and GitHub actions will
+deploy the changes to only that GCP project.
 
 ## Licence
 

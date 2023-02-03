@@ -1,8 +1,4 @@
--- Cocatenate tables of embedded links from various document types into one
-DECLARE PROJECT_ID STRING DEFAULT 'govuk-knowledge-graph';
-DECLARE URI STRING;
-SET URI=FORMAT('gs://%s-data-processed/bigquery/embedded_links_*.csv.gz', PROJECT_ID);
-
+-- Concatenate tables of embedded links from various document types into one
 CREATE OR REPLACE TABLE `content.embedded_links`AS
 SELECT * FROM `content.body_embedded_links`
 UNION ALL
@@ -35,7 +31,7 @@ SELECT * FROM `content.role_embedded_links`
 ;
 
 EXPORT DATA OPTIONS(
-  uri=(URI),
+  uri='gs://$PROJECT_ID-data-processed/bigquery/embedded_links_*.csv.gz',
   format='CSV',
   compression='GZIP',
   overwrite=true
@@ -75,7 +71,7 @@ SELECT * FROM `content.role_embedded_links`
 ;
 
 EXPORT DATA OPTIONS(
-  uri=(URI),
+  uri='gs://$PROJECT_ID-data-processed/bigquery/embedded_links_*.csv.gz',
   format='CSV',
   compression='GZIP',
   overwrite=true

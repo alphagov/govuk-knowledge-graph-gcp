@@ -1,6 +1,4 @@
 #!/bin/bash
-PROJECT_ID="govuk-knowledge-graph"
-DOMAIN="govgraph.dev"
 
 # Refresh certificates needed for HTTPS/BOLT connections"
 # https://medium.com/neo4j/getting-certificates-for-neo4j-with-letsencrypt-a8d05c415bbd
@@ -43,10 +41,12 @@ chmod -R g+rx *
 # turn on bash's job control
 set -m
 
-# Start neo4j as a daemon
-gosu neo4j:neo4j neo4j start
+# Configure Neo4j to listen to its domain name
+envsubst < /var/lib/neo4j/conf/neo4j.conf \
+  | gosu neo4j:neo4j sponge /var/lib/neo4j/conf/neo4j.conf
 
-# Import data from a bucket
+# Start neo4j as a daemon
+gosu neo4j:neo4j neo4j start --verbose
 
 # Download the files to the local Neo4j import directory, because Neo4j can't
 # import from a pipe.

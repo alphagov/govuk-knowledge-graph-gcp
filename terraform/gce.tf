@@ -165,6 +165,14 @@ module "neo4j-container" {
       {
         name  = "NEO4JLABS_PLUGINS"
         value = "[\"apoc\"]"
+      },
+      {
+        name  = "PROJECT_ID"
+        value = var.project_id
+      },
+      {
+        name  = "DOMAIN"
+        value = var.govgraph_domain
       }
     ]
   }
@@ -190,6 +198,16 @@ module "mongodb-container" {
         name      = "tempfs-1"
         readOnly  = false
       },
+    ]
+    env = [
+      {
+        name  = "PROJECT_ID"
+        value = var.project_id
+      },
+      {
+        name  = "ZONE"
+        value = var.zone
+      }
     ]
   }
 
@@ -230,6 +248,14 @@ module "postgres-container" {
       {
         name  = "POSTGRES_HOST_AUTH_METHOD"
         value = "trust"
+      },
+      {
+        name  = "PROJECT_ID"
+        value = var.project_id
+      },
+      {
+        name  = "ZONE"
+        value = var.zone
       }
     ]
     volumeMounts = [

@@ -13,7 +13,8 @@ WITH tagged_taxons AS (
     url
 ),
 -- Titles of ancestors of all the taxons that the page is tagged to
-ancestor_taxons AS ( SELECT
+ancestor_taxons AS (
+  SELECT
     url,
     ARRAY_AGG(taxon_ancestors.ancestor_title) AS ancestor_titles
   FROM graph.taxon_ancestors

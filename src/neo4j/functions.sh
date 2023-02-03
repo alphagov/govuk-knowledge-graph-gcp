@@ -1,6 +1,4 @@
 #! /bin/bash
-PROJECT_ID="govuk-knowledge-graph"
-DOMAIN="govgraph.dev"
 
 # Wrapper around cypher-shell to preset export CSV files
 #
