@@ -56,11 +56,6 @@ variable "govgraph_domain" {
   type = string
 }
 
-# Static IP address for govgraph
-variable "govgraph_static_ip_address" {
-  type = string
-}
-
 variable "govgraphsearch_domain" {
   type = string
 }
