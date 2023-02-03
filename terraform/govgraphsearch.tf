@@ -82,15 +82,13 @@ resource "google_vpc_access_connector" "cloudrun_connector" {
 data "google_iam_policy" "govgraphsearch_iap" {
   binding {
     role = "roles/iap.httpsResourceAccessor"
-    members = [
-      "user:duncan.garmonsway@digital.cabinet-office.gov.uk",
-      "user:max.froumentin@digital.cabinet-office.gov.uk",
-    ]
+    members = var.govgraphsearch_iap_members
   }
 }
 
-resource "google_iap_web_iam_policy" "policy" {
-  policy_data = data.google_iam_policy.govgraphsearch_iap.policy_data
+resource "google_iap_web_backend_service_iam_policy" "govgraphsearch" {
+  web_backend_service = module.govgraphsearch_lb.backend_services["govgraphsearch"].name
+  policy_data         = data.google_iam_policy.govgraphsearch_iap.policy_data
 }
 
 # Allow anyone who has already been through IAP to load the app
@@ -108,7 +106,6 @@ resource "google_cloud_run_service_iam_policy" "govgraphsearch" {
   service     = google_cloud_run_service.govgraphsearch.name
   policy_data = data.google_iam_policy.govgraphsearch.policy_data
 }
-
 
 # The app itself
 resource "google_cloud_run_service" "govgraphsearch" {
