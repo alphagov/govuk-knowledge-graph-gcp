@@ -1193,6 +1193,12 @@ resource "google_bigquery_table" "redirect" {
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "URL that overrides the other"
+  },
+  {
+    "name": "to_url_bare",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL that overrides the other, omitting parameters and anchors"
   }
 ]
 EOF
