@@ -5,7 +5,6 @@
 resource "google_compute_address" "govgraph" {
   name    = "govgraph"
   region  = var.region
-  address = var.govgraph_static_ip_address
 }
 
 resource "google_dns_managed_zone" "govgraph" {
