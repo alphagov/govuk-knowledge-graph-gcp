@@ -292,11 +292,6 @@ MATCH (n)-[r:LINKS_TO {linkTargetType: 'available_translations'}]->(n)
 DELETE r
 ;
 
-// Reuse `suggested_ordered_related_items` links as `HYPERLINKS_TO`.
-MATCH (p)-[:LINKS_TO {linkTargetType: 'suggested_ordered_related_items'}]->(q)
-CREATE (p)-[:HYPERLINKS_TO]->(q)
-;
-
 // Reuse `ordered_related_items` links as `HYPERLINKS_TO`.
 MATCH (p)-[:LINKS_TO {linkTargetType: 'ordered_related_items'}]->(q)
 CREATE (p)-[:HYPERLINKS_TO]->(q)

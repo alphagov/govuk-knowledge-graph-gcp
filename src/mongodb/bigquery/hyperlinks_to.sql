@@ -35,7 +35,6 @@ SELECT
   to_url AS link_url
 FROM content.expanded_links
 WHERE expanded_links.link_type IN (
-  'suggested_ordered_related_items',
   'ordered_related_items',
   'ordered_related_items_overrides'
 )
