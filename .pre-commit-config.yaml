@@ -1,0 +1,5 @@
+repos:
+  - repo: https://github.com/CyberGRX/pre-commit
+    rev: v1.0.0
+    hooks:
+      - id: cypher-linter
