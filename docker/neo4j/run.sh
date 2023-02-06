@@ -67,8 +67,8 @@ gcloud storage cp --recursive \
   "gs://${PROJECT_ID}-data-processed/publishing-api/*" \
   "/var/lib/neo4j/import"
 
-gcloud storage cp --recursive \
-  "gs://${PROJECT_ID}-data-processed/entities/*" \
+gcloud storage cp \
+  "gs://cpto-content-metadata/named_entities_counts/named_entities_counts.csv.gz" \
   "/var/lib/neo4j/import"
 
 # Decompress all those files (the semicolon is escaped for the shell, but might
