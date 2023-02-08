@@ -1,25 +1,56 @@
 -- Create a table of page nodes
 DELETE graph.page WHERE TRUE;
 INSERT INTO graph.page
--- Titles of taxons that the page is tagged to
-WITH tagged_taxons AS (
+WITH
+tagged_taxons_including_duplicates AS (
+  -- One row per url per tagged taxon per ancestor, then aggregate the
+  -- taxon/title pairs into one array, and ancestor/title pairs into another
+  -- array.  Those arrays will contain duplicates, which will be dealt with in a
+  -- subsequent query.
   SELECT
     is_tagged_to.url AS url,
-    ARRAY_AGG(taxon_title.title) AS taxons
+    ARRAY_AGG(STRUCT(is_tagged_to.taxon_url, taxon_title.title AS taxon_title)) AS taxons,
+    ARRAY_AGG(STRUCT(taxon_ancestors.ancestor_url, taxon_ancestors.ancestor_title)) AS ancestors,
   FROM graph.is_tagged_to
-  INNER JOIN content.taxon_levels ON (taxon_levels.url = is_tagged_to.taxon_url) -- gives us the URL of the taxon's homepage
-  INNER JOIN content.title AS taxon_title ON (taxon_title.url = taxon_levels.homepage_url) -- gives us the title of the taxon's homepage
-  GROUP BY
-    url
+  -- content.taxon_levels gives us the URL of the taxon's homepage
+  INNER JOIN content.taxon_levels ON (taxon_levels.url = is_tagged_to.taxon_url)
+   -- content.title gives us the title of the taxon's homepage
+  INNER JOIN content.title AS taxon_title ON (taxon_title.url = taxon_levels.homepage_url)
+  -- root taxons don't have ancestors, so don't inner join
+  LEFT JOIN graph.taxon_ancestors ON taxon_ancestors.url = is_tagged_to.taxon_url
+  GROUP BY url
 ),
--- Titles of ancestors of all the taxons that the page is tagged to
-ancestor_taxons AS (
+tagged_taxons AS (
+  -- Remove duplicates from arrays of taxon/title pairs and ancestor/title
+  -- pairs.
   SELECT
     url,
-    ARRAY_AGG(taxon_ancestors.ancestor_title) AS ancestor_titles
-  FROM graph.taxon_ancestors
-  GROUP BY
-    url
+    -- array column of distinct taxon/title pairs
+    ( SELECT
+        -- 2. Aggregate the taxon/title pairs again
+        ARRAY_AGG(STRUCT(taxon_url, taxon_title))
+      FROM (
+        -- 1. Unnest the taxon/title pairs and deduplicate
+        SELECT DISTINCT
+          taxon_url,
+          taxon_title
+        FROM UNNEST(taxons)
+      )
+    ) AS taxons,
+    -- array column of distinct ancestor/title pairs
+    ( SELECT
+      -- 2. Aggregate the ancestor/title pairs again
+      ARRAY_AGG(STRUCT(ancestor_url, ancestor_title))
+      FROM (
+        -- 1. Unnest the ancestor/title pairs and deduplicate
+        SELECT DISTINCT
+          ancestor_url,
+          ancestor_title
+        FROM
+          UNNEST(ancestors)
+      )
+    ) AS ancestors
+  FROM tagged_taxons_including_duplicates
 ),
 primary_publishing_organisation AS (
   SELECT
@@ -68,8 +99,10 @@ SELECT
   CAST(NULL AS INT64) AS part_index,
   CAST(NULL AS STRING) AS slug,
   pagerank.pagerank,
-  tagged_taxons.taxons,
-  ancestor_taxons.ancestor_titles,
+  -- Extract only the titles of the url/title pairs, by unnesting and
+  -- re-aggregating
+  (select ARRAY_AGG(taxon_title) from unnest(tagged_taxons.taxons)) AS taxon_titles,
+  (select ARRAY_AGG(ancestor_title) from unnest(tagged_taxons.ancestors)) AS ancestor_titles,
   primary_publishing_organisation.organisation,
   organisations.organisations,
   hyperlinks.hyperlinks
@@ -95,7 +128,6 @@ LEFT JOIN primary_publishing_organisation USING (url)
 LEFT JOIN organisations USING (url)
 LEFT JOIN hyperlinks USING (url)
 LEFT JOIN tagged_taxons ON (tagged_taxons.url = 'https://www.gov.uk/' || content_id.content_id)
-LEFT JOIN ancestor_taxons ON (ancestor_taxons.url = 'https://www.gov.uk/' || content_id.content_id)
 ;
 
 -- Derive a table of parts nodes from their parent page nodes
