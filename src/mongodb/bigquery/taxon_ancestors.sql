@@ -6,10 +6,13 @@ WITH RECURSIVE
   -- a table called 'taxon', BigQuery confuses them.
   T1 AS (
     (
+      -- The base case is that a taxon is one of its own ancestors. This makes
+      -- it simple to query for pages that are tagged to a taxon or its
+      -- ancestors.
       SELECT
         url,
-        parent_url,
-      FROM graph.has_parent
+        url AS parent_url,
+      FROM content.taxon_levels
     )
     UNION ALL
     (
