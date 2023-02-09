@@ -126,6 +126,8 @@ resource "google_cloud_run_service" "govgraphsearch" {
       containers {
         image = "europe-west2-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.cloud_run_source_deploy.repository_id}/govuk-knowledge-graph-search:latest"
         env {
+          name  = "PROJECT_ID"
+          value = var.project_id
         }
       }
     }
