@@ -118,6 +118,7 @@ data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
       "projectReaders",
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
       "serviceAccount:cpto-content-metadata-sa@cpto-content-metadata.iam.gserviceaccount.com",
+      "serviceAccount:${google_service_account.govgraphsearch.email}",
       "group:data-engineering@digital.cabinet-office.gov.uk",
       "group:data-analysis@digital.cabinet-office.gov.uk",
       "group:data-products@digital.cabinet-office.gov.uk"
@@ -2026,6 +2027,7 @@ data "google_iam_policy" "bigquery_dataset_graph" {
     role = "roles/bigquery.dataViewer"
     members = [
       "projectReaders",
+      "serviceAccount:${google_service_account.govgraphsearch.email}",
       "group:data-engineering@digital.cabinet-office.gov.uk",
       "group:data-analysis@digital.cabinet-office.gov.uk",
       "group:data-products@digital.cabinet-office.gov.uk"

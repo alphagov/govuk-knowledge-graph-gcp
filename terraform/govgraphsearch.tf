@@ -107,6 +107,13 @@ resource "google_cloud_run_service_iam_policy" "govgraphsearch" {
   policy_data = data.google_iam_policy.govgraphsearch.policy_data
 }
 
+# Service account for the service
+resource "google_service_account" "govgraphsearch" {
+  account_id   = "govgraphsearch"
+  display_name = "GovGraph Search"
+  description  = "Service account for the GovGraph search Cloud Run app"
+}
+
 # The app itself
 resource "google_cloud_run_service" "govgraphsearch" {
   name                       = "govuk-knowledge-graph-search"
@@ -123,6 +130,7 @@ resource "google_cloud_run_service" "govgraphsearch" {
       }
     }
     spec {
+      service_account_name       = google_service_account.govgraphsearch.name
       containers {
         image = "europe-west2-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.cloud_run_source_deploy.repository_id}/govuk-knowledge-graph-search:latest"
         env {
