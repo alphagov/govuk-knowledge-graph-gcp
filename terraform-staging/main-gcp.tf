@@ -201,6 +201,7 @@ data "google_iam_policy" "project" {
       "serviceAccount:${google_service_account.gce_neo4j.email}",
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
       "serviceAccount:${google_service_account.workflow_bank_holidays.email}",
+      "serviceAccount:${google_service_account.govgraphsearch.email}",
       "group:data-engineering@digital.cabinet-office.gov.uk",
       "group:data-analysis@digital.cabinet-office.gov.uk",
       "group:data-products@digital.cabinet-office.gov.uk"
