@@ -93,6 +93,7 @@ resource "google_bigquery_dataset" "content" {
   friendly_name = "content"
   description   = "GOV.UK content data"
   location      = "europe-west2"
+  max_time_travel_hours = "48"
 }
 
 data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
@@ -2005,6 +2006,7 @@ resource "google_bigquery_dataset" "graph" {
   friendly_name = "graph"
   description   = "GOV.UK content data as a graph"
   location      = "europe-west2"
+  max_time_travel_hours = "48"
 }
 
 data "google_iam_policy" "bigquery_dataset_graph" {
@@ -2867,6 +2869,7 @@ resource "google_bigquery_dataset" "test" {
   friendly_name = "test"
   description   = "Test queries"
   location      = "europe-west2"
+  max_time_travel_hours = "48"
 }
 
 resource "google_bigquery_table" "tables_metadata" {
