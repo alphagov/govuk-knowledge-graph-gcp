@@ -2052,7 +2052,7 @@ resource "google_bigquery_table" "page" {
     "mode": "REQUIRED",
     "name": "url",
     "type": "STRING",
-    "description": "URL of a page node (not the same as the URL of the home"
+    "description": "URL of a page node"
   },
   {
     "mode": "NULLABLE",

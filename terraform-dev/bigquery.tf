@@ -117,6 +117,7 @@ data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
     members = [
       "projectReaders",
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
+      "serviceAccount:${google_service_account.bigquery_scheduled_queries_search.email}",
       "serviceAccount:cpto-content-metadata-sa@cpto-content-metadata.iam.gserviceaccount.com",
       "serviceAccount:${google_service_account.govgraphsearch.email}",
       "group:data-engineering@digital.cabinet-office.gov.uk",
@@ -1936,30 +1937,30 @@ resource "google_bigquery_table" "bank_holiday_raw" {
   )
 }
 
-resource "google_bigquery_table" "bank_holiday" {
+resource "google_bigquery_table" "bank_holiday_occurrence" {
   dataset_id    = google_bigquery_dataset.content.dataset_id
-  table_id      = "bank_holiday"
-  friendly_name = "UK Bank Holidays"
-  description   = "UK Bank Holidays"
+  table_id      = "bank_holiday_occurrence"
+  friendly_name = "UK Bank Holiday occurrences"
+  description   = "UK Bank Holiday occurrences"
   schema = jsonencode(
     [
       {
         mode        = "REQUIRED"
-        name        = "division"
+        name        = "url"
         type        = "STRING"
-        description = "Part of the UK"
-      },
-      {
-        mode        = "REQUIRED"
-        name        = "title"
-        type        = "STRING"
-        description = "Name of the bank holiday"
+        description = "URL of a bank holiday"
       },
       {
         mode        = "REQUIRED"
         name        = "date"
         type        = "DATE"
         description = "Date of a single occurrence of the bank holiday"
+      },
+      {
+        mode        = "REQUIRED"
+        name        = "division"
+        type        = "STRING"
+        description = "Part of the UK"
       },
       {
         mode        = "REQUIRED"
@@ -1977,24 +1978,41 @@ resource "google_bigquery_table" "bank_holiday" {
   )
 }
 
-resource "google_bigquery_table" "bank_holiday_title" {
-  dataset_id    = google_bigquery_dataset.graph.dataset_id
-  table_id      = "bank_holiday_title"
-  friendly_name = "Titles of UK Bank Holidays"
-  description   = "Titles of UK Bank Holidays"
+resource "google_bigquery_table" "bank_holiday_url" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "bank_holiday_url"
+  friendly_name = "Bank holiday URL"
+  description   = "Unique URLs of UK bank holidays"
   schema = jsonencode(
     [
       {
         mode        = "REQUIRED"
         name        = "url"
         type        = "STRING"
-        description = "URL of a bank holiday name"
+        description = "URL of a bank holiday, derived from its title"
+      }
+    ]
+  )
+}
+
+resource "google_bigquery_table" "bank_holiday_title" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "bank_holiday_title"
+  friendly_name = "Bank holiday title"
+  description   = "Titles of UK bank holidays"
+  schema = jsonencode(
+    [
+      {
+        mode        = "REQUIRED"
+        name        = "url"
+        type        = "STRING"
+        description = "URL of a bank holiday"
       },
       {
         mode        = "REQUIRED"
         name        = "title"
         type        = "STRING"
-        description = "Title of a bank holiday"
+        description = "Title of the bank holiday"
       }
     ]
   )
@@ -2016,6 +2034,7 @@ data "google_iam_policy" "bigquery_dataset_graph" {
       "serviceAccount:${google_service_account.gce_mongodb.email}",
       "serviceAccount:${google_service_account.gce_postgres.email}",
       "serviceAccount:${google_service_account.workflow_bank_holidays.email}",
+      "serviceAccount:${google_service_account.bigquery_scheduled_queries_search.email}",
     ]
   }
   binding {
@@ -2052,7 +2071,7 @@ resource "google_bigquery_table" "page" {
     "mode": "REQUIRED",
     "name": "url",
     "type": "STRING",
-    "description": "URL of a page node (not the same as the URL of the home"
+    "description": "URL of a page"
   },
   {
     "mode": "NULLABLE",
@@ -2167,36 +2186,6 @@ resource "google_bigquery_table" "page" {
     "name": "pagerank",
     "type": "BIGNUMERIC",
     "description": "Page rank of a page on GOV.UK"
-  },
-  {
-    "mode": "REPEATED",
-    "name": "taxons",
-    "type": "STRING",
-    "description": "Array of titles of taxons that the page is tagged to"
-  },
-  {
-    "mode": "REPEATED",
-    "name": "taxon_ancestors",
-    "type": "STRING",
-    "description": "Array of titles of ancestors of taxons that the page is tagged to"
-  },
-  {
-    "mode": "NULLABLE",
-    "name": "primary_publishing_organisation",
-    "type": "STRING",
-    "description": "Title of the primary organisation that published the page"
-  },
-  {
-    "mode": "REPEATED",
-    "name": "organisations",
-    "type": "STRING",
-    "description": "Array of titles of organisations that published the page"
-  },
-  {
-    "mode": "REPEATED",
-    "name": "hyperlinks",
-    "type": "STRING",
-    "description": "Array of hyperlinks from the body of the page"
   }
 ]
 EOF
@@ -2328,36 +2317,6 @@ resource "google_bigquery_table" "part" {
     "name": "pagerank",
     "type": "BIGNUMERIC",
     "description": "Page rank of a page on GOV.UK"
-  },
-  {
-    "mode": "REPEATED",
-    "name": "taxons",
-    "type": "STRING",
-    "description": "Array of titles of taxons that the page is tagged to"
-  },
-  {
-    "mode": "REPEATED",
-    "name": "taxon_ancestors",
-    "type": "STRING",
-    "description": "Array of titles of ancestors of taxons that the page is tagged to"
-  },
-  {
-    "mode": "NULLABLE",
-    "name": "primary_publishing_organisation",
-    "type": "STRING",
-    "description": "Title of the primary organisation that published the page"
-  },
-  {
-    "mode": "REPEATED",
-    "name": "organisations",
-    "type": "STRING",
-    "description": "Array of titles of organisations that published the page"
-  },
-  {
-    "mode": "REPEATED",
-    "name": "hyperlinks",
-    "type": "STRING",
-    "description": "Array of hyperlinks from the body of the page"
   }
 ]
 EOF
@@ -2451,6 +2410,12 @@ resource "google_bigquery_table" "person" {
     "type": "STRING",
     "mode": "NULLABLE",
     "description": "The ID of a person"
+  },
+  {
+    "name": "description",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Description of a person"
   }
 ]
 EOF
@@ -2474,6 +2439,12 @@ resource "google_bigquery_table" "taxon" {
     "type": "STRING",
     "mode": "NULLABLE",
     "description": "The name of a taxon"
+  },
+  {
+    "name": "description",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The description of a taxon"
   },
   {
     "name": "content_id",
