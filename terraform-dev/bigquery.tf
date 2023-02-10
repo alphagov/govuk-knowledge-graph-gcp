@@ -89,10 +89,10 @@ EOF
 }
 
 resource "google_bigquery_dataset" "content" {
-  dataset_id    = "content"
-  friendly_name = "content"
-  description   = "GOV.UK content data"
-  location      = "europe-west2"
+  dataset_id            = "content"
+  friendly_name         = "content"
+  description           = "GOV.UK content data"
+  location              = "europe-west2"
   max_time_travel_hours = "48"
 }
 
@@ -2002,10 +2002,10 @@ resource "google_bigquery_table" "bank_holiday_title" {
 }
 
 resource "google_bigquery_dataset" "graph" {
-  dataset_id    = "graph"
-  friendly_name = "graph"
-  description   = "GOV.UK content data as a graph"
-  location      = "europe-west2"
+  dataset_id            = "graph"
+  friendly_name         = "graph"
+  description           = "GOV.UK content data as a graph"
+  location              = "europe-west2"
   max_time_travel_hours = "48"
 }
 
@@ -2865,10 +2865,10 @@ EOF
 }
 
 resource "google_bigquery_dataset" "test" {
-  dataset_id    = "test"
-  friendly_name = "test"
-  description   = "Test queries"
-  location      = "europe-west2"
+  dataset_id            = "test"
+  friendly_name         = "test"
+  description           = "Test queries"
+  location              = "europe-west2"
   max_time_travel_hours = "48"
 }
 
