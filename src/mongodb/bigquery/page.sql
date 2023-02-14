@@ -14,7 +14,7 @@ SELECT
   public_updated_at.public_updated_at,
   first_published_at.first_published_at,
   withdrawn_at.withdrawn_at,
-  withdrawn_explanation.withdrawn_explanation,
+  withdrawn_explanation.text AS withdrawn_explanation,
   title.title,
   description.description,
   department_analytics_profile.department_analytics_profile,
