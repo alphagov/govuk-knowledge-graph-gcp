@@ -303,39 +303,57 @@ main:
                     ";"
                     }
         result: queryResult
+    - composeQuery:
+        assign:
+          - query: "         DELETE FROM content.bank_holiday_occurrence WHERE TRUE; "
+          - query: $${query+"INSERT INTO content.bank_holiday_occurrence "}
+          - query: $${query+"SELECT "}
+          - query: $${query+"  'https://www.gov.uk/' || REPLACE(REPLACE(TO_BASE64(SHA256(events.title)), '+', '-'), '/', '_') AS url, "}
+          - query: $${query+"  events.date, "}
+          - query: $${query+"  body.division AS division, "}
+          - query: $${query+"  events.bunting, "}
+          - query: $${query+"  events.notes "}
+          - query: $${query+"FROM content.bank_holiday_raw, "}
+          - query: $${query+"UNNEST(body) AS body, "}
+          - query: $${query+"UNNEST(events) AS events "}
+          - query: $${query+";"}
     - extractFromJson:
         call: googleapis.bigquery.v2.jobs.query
         args:
             projectId: '${var.project_id}'
             body:
                 useLegacySql: false
-                query: $${
-                    "DELETE FROM content.bank_holiday WHERE TRUE; " +
-                    "INSERT INTO content.bank_holiday " +
-                    "SELECT " +
-                    "  body.division AS division, " +
-                    "  events.title, " +
-                    "  events.date, " +
-                    "  events.bunting, " +
-                    "  events.notes " +
-                    "FROM content.bank_holiday_raw, " +
-                    "UNNEST(body) AS body, " +
-                    "UNNEST(events) AS events " +
-                    ";"
-                    }
+                query: $${query}
         result: queryResult
-    - deriveBankHolidayNameTable:
+    - deriveBankHolidayUrlTable:
         call: googleapis.bigquery.v2.jobs.query
         args:
             projectId: '${var.project_id}'
             body:
                 useLegacySql: false
                 query: $${
-                    "DELETE FROM graph.bank_holiday_title WHERE TRUE; " +
-                    "INSERT INTO graph.bank_holiday_title " +
+                    "DELETE FROM content.bank_holiday_url WHERE TRUE; " +
+                    "INSERT INTO content.bank_holiday_url " +
+                    "SELECT DISTINCT " +
+                    "  'https://www.gov.uk/' || REPLACE(REPLACE(TO_BASE64(SHA256(events.title)), '+', '-'), '/', '_') AS url " +
+                    "FROM content.bank_holiday_raw, " +
+                    "  UNNEST(body) AS body, " +
+                    "  UNNEST(events) AS events " +
+                    "; "
+                    }
+        result: queryResult
+    - deriveBankHolidayTitleTable:
+        call: googleapis.bigquery.v2.jobs.query
+        args:
+            projectId: '${var.project_id}'
+            body:
+                useLegacySql: false
+                query: $${
+                    "DELETE FROM content.bank_holiday_title WHERE TRUE; " +
+                    "INSERT INTO content.bank_holiday_title " +
                     "SELECT DISTINCT " +
                     "  'https://www.gov.uk/' || REPLACE(REPLACE(TO_BASE64(SHA256(events.title)), '+', '-'), '/', '_') AS url, " +
-                    "  events.title AS title " +
+                    "  events.title " +
                     "FROM content.bank_holiday_raw, " +
                     "  UNNEST(body) AS body, " +
                     "  UNNEST(events) AS events " +
