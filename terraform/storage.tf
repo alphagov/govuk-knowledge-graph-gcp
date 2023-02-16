@@ -228,3 +228,8 @@ resource "google_storage_bucket_object" "embedded_links" {
   source = "govuk-knowledge-graph-data-processed/bigquery/embedded_links_header.csv.gz"
   bucket = "${var.project_id}-data-processed"
 }
+resource "google_storage_bucket_object" "page_to_page_transitions" {
+  name   = "ga4/page_to_page_transitions_header.csv.gz"
+  source = "govuk-knowledge-graph-data-processed/ga4/page_to_page_transitions_header.csv.gz"
+  bucket = "${var.project_id}-data-processed"
+}

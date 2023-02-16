@@ -55,14 +55,17 @@ gcloud storage cp --recursive \
   "/var/lib/neo4j/import"
 
 gcloud storage cat \
+  "gs://${PROJECT_ID}-data-processed/bigquery/content_header.csv.gz" \
   "gs://${PROJECT_ID}-data-processed/bigquery/content_[0-9]*.csv.gz" \
   > /var/lib/neo4j/import/content.csv.gz
 
 gcloud storage cat \
+  "gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_header.csv.gz" \
   "gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_[0-9]*.csv.gz" \
   > /var/lib/neo4j/import/embedded_links.csv.gz
 
 gcloud storage cat \
+  "gs://${PROJECT_ID}-data-processed/bigquery/page_to_page_transitions_header.csv.gz" \
   "gs://${PROJECT_ID}-data-processed/ga4/page_to_page_transitions_[0-9]*.csv.gz" \
   > /var/lib/neo4j/import/page_to_page_transitions.csv.gz
 

@@ -54,7 +54,6 @@ EXPORT DATA OPTIONS(
   format='CSV',
   compression='GZIP',
   overwrite=true,
-  header=true
 ) AS
 
 WITH
