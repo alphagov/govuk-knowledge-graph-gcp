@@ -112,9 +112,6 @@ data/first_published_at.csv.gz: temp/define_url.mongodb
 data/withdrawn_at.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/withdrawn_at.sh
 
-data/withdrawn_explanation.csv.gz: temp/define_url.mongodb
-	source functions.sh; source sh/withdrawn_explanation.sh
-
 # Create a dataset in MongoDB that contains a clean-up version of the title
 # field of each document.  The query doesn't create a file, so a dummy target
 # file is created by the `touch` command, so that subsequent steps know that
@@ -127,6 +124,13 @@ temp/title.mongodb: temp/define_url.mongodb
 # Download a CSV file of the title dataset that was previously created.
 data/title.csv.gz: temp/title.mongodb
 	source functions.sh; source sh/title.sh
+
+temp/withdrawn_explanation.mongodb: temp/define_url.mongodb
+	mongo content_store js/withdrawn_explanation.js
+	touch temp/withdrawn_explanation.mongodb
+
+data/withdrawn_explanation.csv.gz: temp/withdrawn_explanation.mongodb
+	source functions.sh; source sh/withdrawn_explanation.sh
 
 temp/description.mongodb: temp/define_url.mongodb
 	mongo content_store js/description.js

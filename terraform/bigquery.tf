@@ -415,14 +415,27 @@ resource "google_bigquery_table" "withdrawn_explanation" {
     "description": "URL of a piece of static content on the www.gov.uk domain"
   },
   {
-    "name": "withdrawn_explanation",
+    "name": "html",
     "type": "STRING",
     "mode": "REQUIRED",
-    "description": "The explanation for withdrawing the content."
+    "description": "The explanation for withdrawing the content, as HTML."
+  },
+  {
+    "name": "text",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "The explanation for withdrawing the content, plain text extracted from the HTML."
+  },
+  {
+    "name": "text_without_blank_lines",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The explanation for withdrawing the content, as plain text, omitting blank lines"
   }
 ]
 EOF
 }
+
 
 resource "google_bigquery_table" "title" {
   dataset_id    = google_bigquery_dataset.content.dataset_id
