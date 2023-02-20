@@ -81,7 +81,7 @@ resource "google_vpc_access_connector" "cloudrun_connector" {
 # Allow access the app via IAP (Identity-Aware Proxy)
 data "google_iam_policy" "govgraphsearch_iap" {
   binding {
-    role = "roles/iap.httpsResourceAccessor"
+    role    = "roles/iap.httpsResourceAccessor"
     members = var.govgraphsearch_iap_members
   }
 }
@@ -116,21 +116,24 @@ resource "google_service_account" "govgraphsearch" {
 
 # The app itself
 resource "google_cloud_run_service" "govgraphsearch" {
-  name                       = "govuk-knowledge-graph-search"
-  location                   = var.region
-  autogenerate_revision_name = true
+  name     = "govuk-knowledge-graph-search"
+  location = var.region
+  metadata {
+    annotations = {
+      # The ingress setting can only be set when the cloudrun service already
+      # exists.
+      "run.googleapis.com/ingress" = "internal-and-cloud-load-balancing"
+    }
+  }
   template {
     metadata {
       annotations = {
         "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.cloudrun_connector.self_link
         "run.googleapis.com/vpc-access-egress"    = "private-ranges-only"
-        # The ingress setting can only be set when the cloudrun service already
-        # exists.
-        "run.googleapis.com/ingress" = "internal-and-cloud-load-balancing"
       }
     }
     spec {
-      service_account_name       = google_service_account.govgraphsearch.email
+      service_account_name = google_service_account.govgraphsearch.email
       containers {
         image = "europe-west2-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.cloud_run_source_deploy.repository_id}/govuk-knowledge-graph-search:latest"
         env {
