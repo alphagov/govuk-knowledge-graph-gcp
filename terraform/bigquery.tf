@@ -53,7 +53,7 @@ EXPORT DATA OPTIONS(
   uri='gs://${var.project_id}-data-processed/ga4/page_to_page_transitions_*.csv.gz',
   format='CSV',
   compression='GZIP',
-  overwrite=true,
+  overwrite=true
 ) AS
 
 WITH
