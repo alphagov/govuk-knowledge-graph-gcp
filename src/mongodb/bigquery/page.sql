@@ -58,3 +58,11 @@ FROM graph.page
 INNER JOIN content.parts ON page.url = parts.base_path
 ;
 INSERT INTO graph.page SELECT * FROM graph.part;
+
+-- Remove non-part rows for travel advice, because the first part doesn't have a
+-- slug, so its URL is the same as the non-part.
+DELETE graph.page
+WHERE TRUE
+AND page.document_type = "travel_advice"
+AND page.part_index IS NULL
+;
