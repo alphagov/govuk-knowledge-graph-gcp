@@ -65,7 +65,7 @@ gcloud storage cat \
   > /var/lib/neo4j/import/embedded_links.csv.gz
 
 gcloud storage cat \
-  "gs://${PROJECT_ID}-data-processed/bigquery/page_to_page_transitions_header.csv.gz" \
+  "gs://${PROJECT_ID}-data-processed/ga4/page_to_page_transitions_header.csv.gz" \
   "gs://${PROJECT_ID}-data-processed/ga4/page_to_page_transitions_[0-9]*.csv.gz" \
   > /var/lib/neo4j/import/page_to_page_transitions.csv.gz
 
