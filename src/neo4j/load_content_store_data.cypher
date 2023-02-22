@@ -5,19 +5,6 @@ FIELDTERMINATOR ','
 CREATE (p:Page { url: line.url })
 ;
 
-USING PERIODIC COMMIT
-LOAD CSV WITH HEADERS
-FROM 'file:///parts.csv' AS line
-FIELDTERMINATOR ','
-CREATE (p:Page { url: line.url })
-SET
-  p:Part,
-  p.partNumber = toInteger(line.part_index),
-  p.documentType = "part",
-  p.slug = line.slug,
-  p.title = line.part_title
-;
-
 CREATE CONSTRAINT ON (p:Page) ASSERT p.url IS UNIQUE;
 CREATE CONSTRAINT ON (p:Organisation) ASSERT p.url IS UNIQUE;
 CREATE CONSTRAINT ON (p:Taxon) ASSERT p.url IS UNIQUE;
@@ -25,6 +12,21 @@ CREATE CONSTRAINT ON (p:BankHoliday) ASSERT p.url IS UNIQUE;
 CREATE CONSTRAINT ON (p:Date) ASSERT p.url IS UNIQUE;
 CREATE CONSTRAINT ON (p:Division) ASSERT p.url IS UNIQUE;
 CREATE CONSTRAINT ON (p:Person) ASSERT p.url IS UNIQUE;
+
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///parts.csv' AS line
+FIELDTERMINATOR ','
+// The 'summary' part of travel_advice pages has the same URL as the whole set
+// of parts, so we can't use CREATE, we have to use MERGE.
+MERGE (p:Page { url: line.url })
+SET
+  p:Part,
+  p.partNumber = toInteger(line.part_index),
+  p.documentType = "part",
+  p.slug = line.slug,
+  p.title = line.part_title
+;
 
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS
