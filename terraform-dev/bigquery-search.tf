@@ -292,55 +292,55 @@ resource "google_bigquery_table" "search_role" {
   table_id      = "role"
   friendly_name = "Role"
   description   = "Role table for the govsearch app"
-  schema              = jsonencode(
+  schema = jsonencode(
     [
       {
-        name = "name"
-        type = "STRING"
+        name        = "name"
+        type        = "STRING"
         description = "Name of the role"
       },
       {
-        name = "homepage"
-        type = "STRING"
+        name        = "homepage"
+        type        = "STRING"
         description = "URL of a page on GOV.UK about the role"
       },
       {
-        name = "description"
-        type = "STRING"
+        name        = "description"
+        type        = "STRING"
         description = "Description of the role"
       },
       {
         fields = [
           {
-            name = "name"
-            type = "STRING"
+            name        = "name"
+            type        = "STRING"
             description = "Name of the person"
           },
           {
-            name = "homepage"
-            type = "STRING"
+            name        = "homepage"
+            type        = "STRING"
             description = "URL of a page on GOV.UK about the person"
           },
           {
-            name = "startDate"
-            type = "TIMESTAMP"
+            name        = "startDate"
+            type        = "TIMESTAMP"
             description = "Date when the person's appointment to the role began"
           },
           {
-            name = "endDate"
-            type = "TIMESTAMP"
+            name        = "endDate"
+            type        = "TIMESTAMP"
             description = "Date when the person's appointment to the role ended"
           },
         ]
-        mode   = "REPEATED"
-        name   = "personNames"
-        type   = "RECORD"
+        mode        = "REPEATED"
+        name        = "personNames"
+        type        = "RECORD"
         description = "Array of people who have been appointed to this role"
       },
       {
-        mode = "REPEATED"
-        name = "orgNames"
-        type = "STRING"
+        mode        = "REPEATED"
+        name        = "orgNames"
+        type        = "STRING"
         description = "Array of names organisations that the role relates to"
       },
     ]
