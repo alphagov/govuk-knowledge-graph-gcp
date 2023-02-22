@@ -41,11 +41,17 @@ resource "google_artifact_registry_repository" "cloud_run_source_deploy" {
 
 # Then push a docker image to that place.
 
-# Then create a DNS zone
+# Then create DNS zones
 resource "google_dns_managed_zone" "govgraphsearch" {
   name        = "govgraphsearch"
   description = "DNS zone for govgraphsearch domain"
   dns_name    = "${var.govgraphsearch_domain}."
+}
+
+resource "google_dns_managed_zone" "govsearch" {
+  name        = "gov-search-zone"
+  description = "The zone for the gov-search service domain"
+  dns_name    = "${var.govsearch_domain}."
 }
 
 # Then manually buy a domain in Cloud Domains and link it to this zone.
@@ -87,7 +93,7 @@ data "google_iam_policy" "govgraphsearch_iap" {
 }
 
 resource "google_iap_web_backend_service_iam_policy" "govgraphsearch" {
-  web_backend_service = module.govgraphsearch_lb.backend_services["govgraphsearch"].name
+  web_backend_service = google_compute_backend_service.govgraphsearch.name
   policy_data         = data.google_iam_policy.govgraphsearch_iap.policy_data
 }
 
@@ -149,50 +155,103 @@ resource "google_cloud_run_service" "govgraphsearch" {
   }
 }
 
+# We could use a lovely, convenient, official Google terraform module, which
+# would create a lot of terraform for us behind the scenes, but unfortunately it
+# forces downtime when adding/removing certificates for domains.
 # https://cloud.google.com/blog/topics/developers-practitioners/new-terraform-module-serverless-load-balancing
-# Creates:
-module "govgraphsearch_lb" {
-  source                          = "GoogleCloudPlatform/lb-http/google//modules/serverless_negs"
-  project                         = var.project_id
-  name                            = "govgraphsearch"
-  ssl                             = true
-  managed_ssl_certificate_domains = ["${var.govgraphsearch_domain}."]
-  http_forward                    = true
-  https_redirect                  = true
-  backends = {
-    govgraphsearch = {
-      description             = null
-      protocol                = "HTTP"
-      port_name               = "http"
-      enable_cdn              = false
-      compression_mode        = null
-      custom_request_headers  = null
-      custom_response_headers = null
-      security_policy         = null
-      log_config = {
-        enable      = true
-        sample_rate = 1.0
-      }
-      groups = [
-        {
-          group = google_compute_region_network_endpoint_group.govgraphsearch_eg.self_link
-        }
-      ]
-      # Protect the app with IAP (Identity-Aware Proxy)
-      iap_config = {
-        enable               = true
-        oauth2_client_id     = data.google_secret_manager_secret_version.iap_oauth_client_id.secret_data
-        oauth2_client_secret = data.google_secret_manager_secret_version.iap_oauth_client_secret.secret_data
-      }
-    }
+# https://github.com/terraform-google-modules/terraform-google-lb-http/issues/241
+
+resource "google_compute_backend_service" "govgraphsearch" {
+  name                            = "govgraphsearch-backend-govgraphsearch"
+  port_name                       = "http"
+  protocol                        = "HTTP"
+  backend {
+    group = google_compute_region_network_endpoint_group.govgraphsearch_eg.self_link
+  }
+  iap {
+    oauth2_client_id     = data.google_secret_manager_secret_version.iap_oauth_client_id.secret_data
+    oauth2_client_secret = data.google_secret_manager_secret_version.iap_oauth_client_secret.secret_data
   }
 }
 
-# Direct DNS to the IP address of the frontend of the load balancer
+resource "google_compute_global_address" "govgraphsearch" {
+  name               = "govgraphsearch-address"
+}
+
+resource "google_compute_global_forwarding_rule" "govgraphsearch_http" {
+    name                  = "govgraphsearch"
+    port_range = "80"
+    ip_address            = google_compute_global_address.govgraphsearch.address
+    target                = google_compute_target_http_proxy.govgraphsearch.self_link
+}
+
+resource "google_compute_global_forwarding_rule" "govgraphsearch_https" {
+    name                  = "govgraphsearch-https"
+    port_range = "443"
+    ip_address            = google_compute_global_address.govgraphsearch.address
+    target                = google_compute_target_https_proxy.govgraphsearch.self_link
+}
+
+resource "google_compute_managed_ssl_certificate" "govgraphsearch" {
+  name                      = "govgraphsearch-cert"
+  managed {
+    domains = [
+      var.govgraphsearch_domain,
+    ]
+  }
+}
+
+resource "google_compute_managed_ssl_certificate" "govsearch" {
+  name                      = "govsearch-cert"
+description               = "The SSL certificate of the GGS service domain: gov-search.service.gov.uk"
+  managed {
+    domains = [
+      var.govsearch_domain,
+    ]
+  }
+}
+
+resource "google_compute_target_http_proxy" "govgraphsearch" {
+    name               = "govgraphsearch-http-proxy"
+    url_map            = google_compute_url_map.govgraphsearch_https_redirect.self_link
+}
+
+resource "google_compute_target_https_proxy" "govgraphsearch" {
+    name               = "govgraphsearch-https-proxy"
+    ssl_certificates   = [
+        google_compute_managed_ssl_certificate.govgraphsearch.self_link,
+        google_compute_managed_ssl_certificate.govsearch.self_link,
+    ]
+    url_map            = google_compute_url_map.govgraphsearch.self_link
+}
+
+resource "google_compute_url_map" "govgraphsearch" {
+    default_service    = google_compute_backend_service.govgraphsearch.self_link
+    name               = "govgraphsearch-url-map"
+}
+
+resource "google_compute_url_map" "govgraphsearch_https_redirect" {
+    name               = "govgraphsearch-https-redirect"
+    default_url_redirect {
+redirect_response_code = "MOVED_PERMANENTLY_DEFAULT"
+        https_redirect         = true
+        strip_query            = false
+    }
+}
+
+# Direct DNS to the IP address of the frontends of the load balancers
 resource "google_dns_record_set" "govgraphsearch" {
   name         = google_dns_managed_zone.govgraphsearch.dns_name
   type         = "A"
   ttl          = 300
   managed_zone = google_dns_managed_zone.govgraphsearch.name
-  rrdatas      = [module.govgraphsearch_lb.external_ip]
+  rrdatas      = [google_compute_global_address.govgraphsearch.address]
+}
+
+resource "google_dns_record_set" "govsearch" {
+  name         = google_dns_managed_zone.govsearch.dns_name
+  type         = "A"
+  ttl          = 300
+  managed_zone = google_dns_managed_zone.govsearch.name
+  rrdatas      = [google_compute_global_address.govgraphsearch.address]
 }
