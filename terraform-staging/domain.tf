@@ -3,8 +3,8 @@
 # Static external IP address for a Neo4j instance.  Global addresses don't work,
 # because they are only for load balancers, so it must be regional.
 resource "google_compute_address" "govgraph" {
-  name    = "govgraph"
-  region  = var.region
+  name   = "govgraph"
+  region = var.region
 }
 
 resource "google_dns_managed_zone" "govgraph" {
