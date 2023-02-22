@@ -191,6 +191,7 @@ resource "google_compute_global_forwarding_rule" "govgraphsearch_https" {
   name       = "govgraphsearch-https"
   port_range = "443"
   ip_address = google_compute_global_address.govgraphsearch.address
+  # google_compute_target_https_proxy.govgraphsearch is in environment.tf
   target     = google_compute_target_https_proxy.govgraphsearch.self_link
 }
 
@@ -203,28 +204,9 @@ resource "google_compute_managed_ssl_certificate" "govgraphsearch" {
   }
 }
 
-resource "google_compute_managed_ssl_certificate" "govsearch" {
-  name        = "govsearch-cert"
-  description = "The SSL certificate of the GGS service domain: gov-search.service.gov.uk"
-  managed {
-    domains = [
-      var.govsearch_domain,
-    ]
-  }
-}
-
 resource "google_compute_target_http_proxy" "govgraphsearch" {
   name    = "govgraphsearch-http-proxy"
   url_map = google_compute_url_map.govgraphsearch_https_redirect.self_link
-}
-
-resource "google_compute_target_https_proxy" "govgraphsearch" {
-  name = "govgraphsearch-https-proxy"
-  ssl_certificates = [
-    google_compute_managed_ssl_certificate.govgraphsearch.self_link,
-    google_compute_managed_ssl_certificate.govsearch.self_link,
-  ]
-  url_map = google_compute_url_map.govgraphsearch.self_link
 }
 
 resource "google_compute_url_map" "govgraphsearch" {

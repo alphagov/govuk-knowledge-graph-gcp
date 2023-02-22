@@ -60,6 +60,10 @@ variable "govgraphsearch_domain" {
   type = string
 }
 
+variable "govsearch_domain" {
+  type = string
+}
+
 variable "application_title" {
   type = string
 }
