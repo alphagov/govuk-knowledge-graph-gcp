@@ -48,12 +48,6 @@ resource "google_dns_managed_zone" "govgraphsearch" {
   dns_name    = "${var.govgraphsearch_domain}."
 }
 
-resource "google_dns_managed_zone" "govsearch" {
-  name        = "gov-search-zone"
-  description = "The zone for the gov-search service domain"
-  dns_name    = "${var.govsearch_domain}."
-}
-
 # Then manually buy a domain in Cloud Domains and link it to this zone.
 
 # Then create everything else below.
@@ -229,13 +223,5 @@ resource "google_dns_record_set" "govgraphsearch" {
   type         = "A"
   ttl          = 300
   managed_zone = google_dns_managed_zone.govgraphsearch.name
-  rrdatas      = [google_compute_global_address.govgraphsearch.address]
-}
-
-resource "google_dns_record_set" "govsearch" {
-  name         = google_dns_managed_zone.govsearch.dns_name
-  type         = "A"
-  ttl          = 300
-  managed_zone = google_dns_managed_zone.govsearch.name
   rrdatas      = [google_compute_global_address.govgraphsearch.address]
 }
