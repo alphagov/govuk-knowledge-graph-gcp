@@ -36,6 +36,23 @@ hyperlinks AS (
     ARRAY_AGG(DISTINCT link_url) AS hyperlinks
   FROM content.embedded_links
   GROUP BY url
+),
+entities AS (
+  WITH page_type_count AS (
+    SELECT
+      url,
+      type,
+      sum(total_count) AS total_count
+    FROM `cpto-content-metadata.named_entities.named_entities_counts`
+    GROUP BY
+      url,
+      type
+  )
+  SELECT
+    url,
+    ARRAY_AGG(STRUCT(type, total_count)) AS entities
+  FROM page_type_count
+  GROUP BY url
 )
 SELECT
   page.url,
@@ -54,11 +71,13 @@ SELECT
   tagged_taxons.ancestor_titles AS taxons,
   primary_publishing_organisation.organisation AS primary_organisation,
   organisations.organisations,
-  hyperlinks.hyperlinks
+  hyperlinks.hyperlinks,
+  entities.entities
 FROM graph.page
 LEFT JOIN primary_publishing_organisation USING (url)
 LEFT JOIN organisations USING (url)
 LEFT JOIN hyperlinks USING (url)
+LEFT JOIN entities USING (url)
 LEFT JOIN tagged_taxons ON (tagged_taxons.url = 'https://www.gov.uk/' || content_id)
 WHERE
   page.document_type IS NULL

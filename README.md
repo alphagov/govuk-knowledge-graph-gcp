@@ -31,7 +31,8 @@ the following roles in the production environments of the following projects.
 - `roles/bigquery.dataViewer` in `ga4-analytics-352613` for the dataset
   `analytics_330577055` for the `bigquery_page_transitions` service account.
 - `storage.objectViewer` in `cpto-content-metadata` for the bucket
-  `cpto-content-metadata`, for the `gce_neo4j` service account.
+  `cpto-content-metadata`, for the `gce_neo4j` and
+  `bigquery_scheduled_queries_search` service accounts.
 
 ## Dev and staging environments
 

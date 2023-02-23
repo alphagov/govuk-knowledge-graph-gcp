@@ -153,6 +153,24 @@ resource "google_bigquery_table" "search_page" {
     "name": "hyperlinks",
     "type": "STRING",
     "description": "Array of hyperlinks from the body of the page"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "entities",
+    "type": "RECORD",
+    "description": "Array of entity types and their frequency in the page",
+    "fields": [
+      {
+        "name"        : "type",
+        "type"        : "STRING",
+        "description" : "The type of thing that the entity is"
+      },
+      {
+        "name"        : "total_count",
+        "type"        : "INTEGER",
+        "description" : "The number of occurrences of entities of that type"
+      }
+    ]
   }
 ]
 EOF
