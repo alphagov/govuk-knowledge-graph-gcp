@@ -295,7 +295,8 @@ main:
             body:
                 useLegacySql: false
                 query: $${
-                    "LOAD DATA OVERWRITE content.bank_holiday_raw " +
+                    "DELETE FROM content.bank_holiday_raw WHERE TRUE; " +
+                    "LOAD DATA INTO content.bank_holiday_raw " +
                     "FROM FILES ( " +
                     "  format = 'JSON', " +
                     "  uris = ['gs://${var.project_id}-data-processed/bank-holidays/bank-holidays.json'] " +
