@@ -13,4 +13,8 @@ govgraphsearch_iap_members = [
   # bis.gov.uk, presumably because of some DNS registration by BEIS as part of a
   # machinery of government change.
   "domain:bis.gov.uk",
+
+  # Users at DIT (Department for International Trade) use a different domain to
+  # access Google services, so we allow this as well.
+  "domain:digital.bis.gov.uk",
 ]
