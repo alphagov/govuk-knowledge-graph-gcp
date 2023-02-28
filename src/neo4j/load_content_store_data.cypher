@@ -210,6 +210,8 @@ CREATE (p)-[r:HAS_PART {
 SET
   p.text = c.text,
   c.publishingApp = p.publishingApp,
+  c.description = p.description,
+  c.phase = p.phase,
   c.contentId = p.contentId,
   c.locale = p.locale,
   c.firstPublishedAt = p.firstPublishedAt,
