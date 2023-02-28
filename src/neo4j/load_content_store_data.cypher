@@ -129,7 +129,7 @@ LOAD CSV WITH HEADERS
 FROM 'file:///title.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
-SET p.title = line.title
+SET p.title = apoc.text.clean(line.title)
 ;
 
 USING PERIODIC COMMIT
@@ -137,7 +137,7 @@ LOAD CSV WITH HEADERS
 FROM 'file:///description.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
-SET p.description = line.description
+SET p.description = apoc.text.clean(line.description)
 ;
 
 USING PERIODIC COMMIT
@@ -152,7 +152,7 @@ LOAD CSV WITH HEADERS
 FROM 'file:///content.csv' AS line
 FIELDTERMINATOR ','
 MATCH (p:Page { url: line.url })
-SET p.text = line.text
+SET p.text = apoc.text.clean(line.text)
 ;
 
 // coalesce() handles a handful of links that have malformed URLs, or empty link
