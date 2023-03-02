@@ -17,6 +17,7 @@ data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
       "serviceAccount:${google_service_account.gce_postgres.email}",
       "serviceAccount:${google_service_account.gce_neo4j.email}",
       "serviceAccount:${google_service_account.workflow_bank_holidays.email}",
+      "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
     ]
   }
   binding {
@@ -29,7 +30,6 @@ data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
     role = "roles/bigquery.dataViewer"
     members = [
       "projectReaders",
-      "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
       "serviceAccount:${google_service_account.bigquery_scheduled_queries_search.email}",
       "serviceAccount:cpto-content-metadata-sa@cpto-content-metadata.iam.gserviceaccount.com",
       "serviceAccount:${google_service_account.govgraphsearch.email}",
@@ -1938,6 +1938,29 @@ resource "google_bigquery_table" "bank_holiday_title" {
         name        = "title"
         type        = "STRING"
         description = "Title of the bank holiday"
+      }
+    ]
+  )
+}
+
+resource "google_bigquery_table" "page_views" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "page_views"
+  friendly_name = "Page views"
+  description   = "Number of views of GOV.UK pages over 7 days"
+  schema = jsonencode(
+    [
+      {
+        mode        = "REQUIRED"
+        name        = "url"
+        type        = "STRING"
+        description = "URL of a page"
+      },
+      {
+        mode        = "REQUIRED"
+        name        = "number_of_views"
+        type        = "INTEGER"
+        description = "Number of views of the URL"
       }
     ]
   )
