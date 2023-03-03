@@ -109,7 +109,7 @@ resource "google_bigquery_table" "search_page" {
   {
     "mode": "NULLABLE",
     "name": "page_views",
-    "type": "BIGNUMERIC",
+    "type": "INTEGER",
     "description": "Number of page views from GA4 over 7 recent days"
   },
   {
