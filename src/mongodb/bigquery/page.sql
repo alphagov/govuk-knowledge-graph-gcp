@@ -57,11 +57,13 @@ SELECT
     parts.part_index AS part_index,
     parts.slug AS slug,
     page_views.number_of_views,
+    pagerank.pagerank
   )
 FROM graph.page
 INNER JOIN content.parts ON page.url = parts.base_path
 LEFT JOIN content.content AS c ON c.url = parts.url
 LEFT JOIN content.page_views on (page_views.url = parts.url)
+LEFT JOIN content.pagerank on (pagerank.url = parts.url) (url)
 ;
 INSERT INTO graph.page SELECT * FROM graph.part;
 
