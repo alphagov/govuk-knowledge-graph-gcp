@@ -12,7 +12,7 @@ main:
     - init:
         assign:
           - projectId: '${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}'
-          - bucket:  '${"govuk-knowledge-graph-dev-data-processed"}'
+          - bucket:  '${projectId + "-data-processed"}'
           - file_name: page_views
           - file_prefix: '${"ga4/" + file_name}'
           - file_suffix: .csv.gz
