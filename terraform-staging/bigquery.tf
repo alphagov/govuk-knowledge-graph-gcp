@@ -38,6 +38,8 @@ WITH tables AS (
   SELECT * FROM content.__TABLES__
   UNION ALL
   SELECT * FROM graph.__TABLES__
+  UNION ALL
+  SELECT * FROM search.__TABLES__
 )
 SELECT
   dataset_id,
