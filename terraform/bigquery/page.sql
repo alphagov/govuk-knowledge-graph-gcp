@@ -64,6 +64,7 @@ SELECT
   public_updated_at,
   withdrawn_at,
   withdrawn_explanation,
+  page_views,
   pagerank,
   title,
   description,

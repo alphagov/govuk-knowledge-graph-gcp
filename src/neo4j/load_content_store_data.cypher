@@ -371,6 +371,16 @@ SET n:ExternalPage
 REMOVE n:Page
 ;
 
+// Page view counts from Google Analytics (GA4, BigQuery)
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS
+FROM 'file:///page_views.csv' AS line
+FIELDTERMINATOR ','
+MATCH (p:Page { url: line.from_url })
+SET
+  p.number_of_views = toInteger(line.number_of_views)
+;
+
 // Page-to-page transitions from Google Analytics (GA4, BigQuery)
 USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS

@@ -1,0 +1,247 @@
+# Google Workflow
+#
+# (1) Refresh the content.page_views table
+# (2) Delete any files that were left after last time
+# (3) Export the table to a bucket as a single, compressed CSV file
+# (4) Delete the incremental files
+#
+# https://medium.com/google-cloud/get-a-single-one-csv-file-with-bigquery-export-956d2a147886
+
+main:
+  steps:
+    - init:
+        assign:
+          - projectId: '${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}'
+          - bucket:  '${"govuk-knowledge-graph-dev-data-processed"}'
+          - file_name: page_views
+          - file_prefix: '${"ga4/" + file_name}'
+          - file_suffix: .csv.gz
+          - finalFileName: '${file_prefix + file_suffix}'
+          - listResultDelete:
+              nextPageToken: ''
+          - listResultClean:
+              nextPageToken: ''
+          - listResult:
+              nextPageToken: ''
+          - fileList:
+              - ''
+          - datasetId: content
+          - tableId: page_views
+          - run_date: '${text.substring(time.format(sys.now()), 0, 10)}'
+          - query: "CALL content.page_views();"
+    - refresh-table:
+        call: googleapis.bigquery.v2.jobs.insert
+        args:
+          projectId: ${projectId}
+          body:
+            configuration:
+              query:
+                query: ${query}
+                allowLargeResults: true
+                useLegacySql: false
+    - delete-existing-files:
+        call: list_and_delete_files
+        args:
+          pagetoken: '${listResultDelete.nextPageToken}'
+          bucket: '${bucket}'
+          prefix: '${file_prefix}'
+        result: listResultDelete
+    - missed-files-delete: # Non recursive loop, to prevent depth errors
+        switch:
+          - condition: '${"nextPageToken" in listResultDelete}'
+            next: delete-existing-files
+    - wait:
+        call: sys.sleep
+        args:
+          seconds: 1
+    - export-headers:
+        call: googleapis.bigquery.v2.jobs.query
+        args:
+          projectId: '${projectId}'
+          body:
+            query: >-
+              ${"
+                EXPORT DATA OPTIONS(
+                  uri='gs://" + bucket + "/" + file_prefix + "_0_header_*.csv',
+                  format='CSV',
+                  compression='GZIP', overwrite=true,
+                  header=true
+                )
+                  AS SELECT * FROM `" + datasetId + "." + tableId +"`
+                  LIMIT 0
+                ;
+              "}
+            useLegacySql: false
+    - export-data:
+        call: googleapis.bigquery.v2.jobs.insert
+        args:
+          projectId: '${projectId}'
+          body:
+            configuration:
+              extract:
+                compression: GZIP
+                destinationFormat: CSV
+                destinationUris:
+                  - '${"gs://" + bucket + "/" + file_prefix + "_1_data_*.csv"}'
+                fieldDelimiter: ','
+                printHeader: false
+                sourceTable:
+                  projectId: '${projectId}'
+                  datasetId: '${datasetId}'
+                  tableId: '${tableId}'
+    - create-empty-file:
+        call: http.post
+        args:
+          url: >-
+            ${"https://storage.googleapis.com/upload/storage/v1/b/" + bucket +
+            "/o?name=" + finalFileName + "&uploadType=media"}
+          auth:
+            type: OAuth2
+    - compose:
+        call: list_and_compose_file
+        args:
+          pagetoken: '${listResult.nextPageToken}'
+          bucket: '${bucket}'
+          prefix: '${file_prefix}'
+          projectId: '${projectId}'
+          finalFileName: '${finalFileName}'
+        result: listResult
+    - mised-files-compose: # Non recursive loop, to prevent depth errors
+        switch:
+          - condition: '${"nextPageToken" in listResult}'
+            next: compose
+    - delete-incremental-files:
+        call: list_and_delete_files
+        args:
+          pagetoken: '${listResultClean.nextPageToken}'
+          bucket: '${bucket}'
+          prefix: '${file_prefix + "_"}'
+        result: listResultClean
+    - missed-files-incremental: # Non recursive loop, to prevent depth errors
+        switch:
+          - condition: '${"nextPageToken" in listResultDelete}'
+            next: delete-incremental-files
+    - the-end:
+        return: ${listResultDelete}
+
+# Delete any old files
+# Adapted from:
+# https://github.com/alphagov/govuk-content-metadata/blob/da29f7cbe8767e5b5d440f141a90d0d05b9824b4/src/post_extraction_process/post-extraction-gc-workflow.yaml
+list_and_delete_files:
+    params:
+      - pagetoken
+      - bucket
+      - prefix
+    steps:
+      - list-files:
+          call: googleapis.storage.v1.objects.list
+          args:
+            bucket: ${bucket}
+            pageToken: ${pagetoken}
+            prefix: ${prefix}
+            maxResults: 62
+          result: listResultDelete
+      - check-if-any-files:
+          switch:
+            - condition: '${not("items" in listResultDelete)}'
+              next: return-step
+      - delete-files:
+          try:
+              for:
+                value: file
+                in: ${listResultDelete.items}
+                steps:
+                    - delete-file:
+                          call: googleapis.storage.v1.objects.delete
+                          args:
+                            bucket: ${bucket}
+                            object: ${text.replace_all(file.name,"/","%2F")}
+                          result: deleteResult
+          except:
+            as: e
+            steps:
+              - known-errors:
+                  switch:
+                    - condition: ${not("KeyError" in e)}
+                      return: "files do not exists"
+      - return-step:
+          return: ${listResultDelete}
+
+# Export a BigQuery table to a single file
+# https://medium.com/google-cloud/get-a-single-one-csv-file-with-bigquery-export-956d2a147886
+list_and_compose_file:
+    params:
+      - pagetoken
+      - bucket
+      - prefix
+      - projectId
+      - finalFileName
+    steps:
+      - list-files:
+          call: googleapis.storage.v1.objects.list
+          args:
+            bucket: ${bucket}
+            pageToken: ${pagetoken}
+            prefix: ${prefix}
+            maxResults: 62
+          result: listResult
+      - init-iter:
+          assign:
+            - finalFileFormatted:
+                name: ${finalFileName}
+            - fileList:
+                - ${finalFileFormatted}
+      - process-files:
+          for:
+            value: file
+            in: ${listResult.items}
+            steps:
+              - concat-file:
+                  assign:
+                    - fileFormatted:
+                        name: ${file.name}
+                    - fileList: ${list.concat(fileList, fileFormatted)}
+              - test-concat:
+                  switch:
+                    - condition: ${len(fileList) == 32}
+                      steps:
+                        - compose-files:
+                            call: compose_file
+                            args:
+                              fileList: ${fileList}
+                              projectId: ${projectId}
+                              bucket: ${bucket}
+                              finalFileName: ${finalFileName}
+                            next: init-for-iter
+                        - init-for-iter:
+                            assign:
+                              - fileList:
+                                  - ${finalFileFormatted}
+      - finish-compose: # Process the latest files in the fileList buffer
+          switch:
+            - condition: ${len(fileList) > 1} # If there is more than the finalFileName in the list
+              steps:
+                - last-compose-files:
+                    call: compose_file
+                    args:
+                      fileList: ${fileList}
+                      projectId: ${projectId}
+                      bucket: ${bucket}
+                      finalFileName: ${finalFileName}
+      - return-step:
+          return: ${listResult}
+
+compose_file:
+  params:
+    - fileList
+    - projectId
+    - bucket
+    - finalFileName
+  steps:
+    - compose:
+        call: googleapis.storage.v1.objects.compose
+        args:
+          destinationBucket: ${bucket}
+          destinationObject: ${text.replace_all(finalFileName,"/","%2F")}
+          body:
+            sourceObjects: ${fileList}

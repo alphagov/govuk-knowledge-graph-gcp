@@ -165,6 +165,12 @@ resource "google_bigquery_table" "page" {
   },
   {
     "mode": "NULLABLE",
+    "name": "page_views",
+    "type": "INTEGER",
+    "description": "Number of page views from GA4 over 7 recent days"
+  },
+  {
+    "mode": "NULLABLE",
     "name": "pagerank",
     "type": "BIGNUMERIC",
     "description": "Page rank of a page on GOV.UK"
@@ -293,6 +299,12 @@ resource "google_bigquery_table" "part" {
     "name": "slug",
     "type": "STRING",
     "description": "What to add to the base_path of the part to get the url"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "page_views",
+    "type": "INTEGER",
+    "description": "Number of page views from GA4 over 7 recent days"
   },
   {
     "mode": "NULLABLE",
