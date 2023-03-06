@@ -337,6 +337,7 @@ data "google_iam_policy" "project" {
       "serviceAccount:${google_service_account.eventarc.email}",
       "serviceAccount:${google_service_account.scheduler_neo4j.email}",
       "serviceAccount:${google_service_account.scheduler_bank_holidays.email}",
+      "serviceAccount:${google_service_account.scheduler_page_views.email}",
     ]
   }
 
