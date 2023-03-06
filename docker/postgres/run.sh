@@ -44,6 +44,20 @@ FILE_PATH="data/$OBJECT"
 # https://stackoverflow.com/questions/6575221
 date
 gcloud storage cp "$OBJECT_URL" "$FILE_PATH"
+
+# Check that the file size is larger than an arbitrary size of 2GiB.
+# Typically they are about 27GiB.
+# On 2023-03-03 the database backup files had a problem and were only a few
+# megabytes.
+minimumsize=2147483648
+actualsize=$(wc -c <"$FILE_PATH")
+if [ $actualsize -le $minimumsize ]; then
+  # Turn this instance off and exit.  The data that is currrently in BigQuery
+  # will remain there.
+  gcloud compute instances delete postgres --quiet --zone=$ZONE
+  exit 1
+fi
+
 date
 pg_restore \
   -U postgres \
