@@ -17,4 +17,9 @@ govgraphsearch_iap_members = [
   # Users at DIT (Department for International Trade) use a different domain to
   # access Google services, so we allow this as well.
   "domain:digital.bis.gov.uk",
+
+  # Users at MoJ (Ministry of Justice) use two different domains, and we don't
+  # know which one is a Google domain, so we allow both.
+  "domain:justice.gov.uk",
+  "domain:digital.justice.gov.uk"
 ]
