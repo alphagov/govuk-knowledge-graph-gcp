@@ -25,11 +25,15 @@ BIGQUERY.SQL = $(wildcard bigquery/*.sql)
 # to trigger subsequent targets.
 BIGQUERY = $(patsubst bigquery/%.sql, temp/%.bigquery, $(BIGQUERY.SQL))
 
+# Names of tables in the postgres database to export to Cloud Storage
+# and BigQuery
+EXPORT = actions change_notes documents editions events expanded_links link_changes link_sets links path_reservations role_appointments roles schema_migrations unpublishings users
+
 # A step to create all the targets described in the CSV.GZ and BIGQUERY
 # variables, which means that all the .sh and .sql scripts in the SH and
 # BIGQUERY variables will be executed.
 .PHONY: all
-all: $(CSV.GZ) $(BIGQUERY)
+all: $(CSV.GZ) $(BIGQUERY) $(EXPORT)
 
 # A step to print the names of all the targets that were derived from the names
 # of .sh scripts.  This is for debugging only.
@@ -213,3 +217,42 @@ data/role_appointment_role.csv.gz
 
 temp/belongs_to.bigquery: data/role_role_organisation.csv.gz
 	source functions.sh; query_bigquery file_name=bigquery/belongs_to.sql
+
+actions:
+	source functions.sh; export_to_bigquery table_name=$@
+
+change_notes:
+	source functions.sh; export_to_bigquery table_name=$@
+
+documents:
+	source functions.sh; export_to_bigquery table_name=$@
+
+editions:
+	source functions.sh; export_to_bigquery table_name=$@
+
+events:
+	source functions.sh; export_to_bigquery table_name=$@
+
+expanded_links:
+	source functions.sh; export_to_bigquery table_name=$@
+
+link_changes:
+	source functions.sh; export_to_bigquery table_name=$@
+
+link_sets:
+	source functions.sh; export_to_bigquery table_name=$@
+
+links:
+	source functions.sh; export_to_bigquery table_name=$@
+
+path_reservations:
+	source functions.sh; export_to_bigquery table_name=$@
+
+role_appointments:
+	source functions.sh; export_to_bigquery table_name=$@
+
+roles:
+	source functions.sh; export_to_bigquery table_name=$@
+
+unpublishings:
+	source functions.sh; export_to_bigquery table_name=$@

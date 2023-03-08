@@ -26,6 +26,11 @@ RUN \
   gcc \
   ruby-full \
   && gem install govspeak -v 7.0.0 \
+  # Install duckdb
+  && curl -L -o duckdb.zip https://github.com/duckdb/duckdb/releases/download/v0.7.1/duckdb_cli-linux-amd64.zip \
+  && unzip duckdb.zip \
+  && rm duckdb.zip \
+  && mv duckdb /usr/bin \
   # Clean up
   && apt-get remove -y gcc \
   && apt-get autoremove -y \
