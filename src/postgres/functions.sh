@@ -143,6 +143,10 @@ convert_govspeak_to_html () {
 # extract_hyperlinks_from_html \
 #   input_col=html \
 #   id_cols=url \
+#
+# extract_abbreviations_from_html \
+#   input_col=html \
+#   id_cols=url \
 extract_text_from_html () {
   local input_col id_cols # reset in case they are defined globally
   local "${@}"
@@ -167,6 +171,20 @@ extract_hyperlinks_from_html () {
       --line-buffer \
       --keep-order \
       python3 ../../src/utils/extract_hyperlinks_from_html.py \
+      --input_col=${input_col} \
+      --id_cols=${id_cols} \
+  ;}
+}
+extract_abbreviations_from_html () {
+  local input_col id_cols # reset in case they are defined globally
+  local "${@}"
+  { echo $id_cols,abbreviation_title,abbreviation_text & \
+    parallel \
+      --pipe \
+      --round-robin \
+      --line-buffer \
+      --keep-order \
+      python3 ../../src/utils/extract_abbreviations_from_html.py \
       --input_col=${input_col} \
       --id_cols=${id_cols} \
   ;}

@@ -1079,6 +1079,228 @@ resource "google_bigquery_table" "body_content_embedded_links" {
 EOF
 }
 
+resource "google_bigquery_table" "step_by_step_abbreviations" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "step_by_step_abbreviations"
+  friendly_name = "Step-by-step abbreviations"
+  description   = "Text and acronyms of abbreviations from the text of step-by-step pages"
+  schema        = <<EOF
+[
+  {
+    "name": "count",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Number of occurrences of a link with the same URL and link-text in the same document"
+  },
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "abbreviation_title",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Title of an abbreviation"
+  },
+  {
+    "name": "abbreviation_text",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Acronym of an abbreviation"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "parts_abbreviations" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "parts_abbreviations"
+  friendly_name = "Parts abbreviations"
+  description   = "Text and acronyms of abbreviations from the text of parts of 'guide' and 'travel_advice' documents"
+  schema        = <<EOF
+[
+  {
+    "name": "count",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Number of occurrences of a link with the same URL and link-text in the same document"
+  },
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "base_path",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of the parent document of the part"
+  },
+  {
+    "name": "part_index",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "The order of the part among other parts in the same document, counting from 0"
+  },
+  {
+    "name": "abbreviation_title",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Title of an abbreviation"
+  },
+  {
+    "name": "abbreviation_text",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Acronym of an abbreviation"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "transaction_abbreviations" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "transaction_abbreviations"
+  friendly_name = "Transaction abbreviations"
+  description   = "Text and acronyms of abbreviations from the text of 'transaction' pages"
+  schema        = <<EOF
+[
+  {
+    "name": "count",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Number of occurrences of a link with the same URL and link-text in the same document"
+  },
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "abbreviation_title",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Title of an abbreviation"
+  },
+  {
+    "name": "abbreviation_text",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Acronym of an abbreviation"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "place_abbreviations" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "place_abbreviations"
+  friendly_name = "Place abbreviations"
+  description   = "Text and acronyms of abbreviations from the text of 'place' pages"
+  schema        = <<EOF
+[
+  {
+    "name": "count",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Number of occurrences of a link with the same URL and link-text in the same document"
+  },
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "abbreviation_title",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Title of an abbreviation"
+  },
+  {
+    "name": "abbreviation_text",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Acronym of an abbreviation"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "body_abbreviations" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "body_abbreviations"
+  friendly_name = "Body abbreviations"
+  description   = "Text and acronyms of abbreviations from the text of several types of pages, others are in tables with the suffix '_abbreviations'"
+  schema        = <<EOF
+[
+  {
+    "name": "count",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Number of occurrences of a link with the same URL and link-text in the same document"
+  },
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "abbreviation_title",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Title of an abbreviation"
+  },
+  {
+    "name": "abbreviation_text",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Acronym of an abbreviation"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "body_content_abbreviations" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "body_content_abbreviations"
+  friendly_name = "Body content abbreviations"
+  description   = "Text and acronyms from the text of several types of pages, others are in tables with the suffix '_abbreviations'"
+  schema        = <<EOF
+[
+  {
+    "name": "count",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Number of occurrences of a link with the same URL and link-text in the same document"
+  },
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "abbreviation_title",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Title of an abbreviation"
+  },
+  {
+    "name": "abbreviation_text",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Acronym  of an abbreviation"
+  }
+]
+EOF
+}
+
 resource "google_bigquery_table" "url_override" {
   dataset_id    = google_bigquery_dataset.content.dataset_id
   table_id      = "url_override"
@@ -1501,6 +1723,41 @@ resource "google_bigquery_table" "role_embedded_links" {
     "type": "STRING",
     "mode": "NULLABLE",
     "description": "Plain text that is displayed in place of the URL"
+  }
+]
+EOF
+}
+
+resource "google_bigquery_table" "role_abbreviations" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_abbreviations"
+  friendly_name = "Role abbreviations"
+  description   = "Text and acronyms of abbreviations from the text of 'role' pages"
+  schema        = <<EOF
+[
+  {
+    "name": "count",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Number of occurrences of a link with the same URL and link-text in the same document"
+  },
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "abbreviation_title",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Title of an abbreviation"
+  },
+  {
+    "name": "abbreviation_text",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Acronym  of an abbreviation"
   }
 ]
 EOF

@@ -136,6 +136,9 @@ data/role_content_text.csv.gz: data/role_content.csv.gz
 data/role_embedded_links.csv.gz: data/role_content.csv.gz
 	source functions.sh; source sh/embedded_links.sh
 
+data/role_abbreviations.csv.gz: data/role_content.csv.gz
+	source functions.sh; source sh/abbreviations.sh
+
 data/role_redirects.csv.gz:
 	source functions.sh; source sh/redirects.sh
 
