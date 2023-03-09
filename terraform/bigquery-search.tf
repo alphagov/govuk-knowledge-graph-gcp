@@ -448,6 +448,22 @@ resource "google_bigquery_table" "search_taxon" {
   )
 }
 
+resource "google_bigquery_table" "search_entity_types" {
+  dataset_id    = google_bigquery_dataset.search.dataset_id
+  table_id      = "entityTypes"
+  friendly_name = "Entity types"
+  description   = "Entity types table for the govsearch app, from https://github.com/alphagov/govuk-content-metadata"
+  schema = jsonencode(
+    [
+      {
+        name        = "type"
+        type        = "STRING"
+        description = "Name of the entity type"
+      }
+    ]
+  )
+}
+
 resource "google_bigquery_table" "search_transaction" {
   dataset_id    = google_bigquery_dataset.search.dataset_id
   table_id      = "transaction"
@@ -597,6 +613,17 @@ resource "google_bigquery_data_transfer_config" "search_taxon" {
   schedule       = "every day 06:00"
   params = {
     query = file("bigquery/taxon.sql")
+  }
+  service_account_name = google_service_account.bigquery_scheduled_queries_search.email
+}
+
+resource "google_bigquery_data_transfer_config" "search_entity_type" {
+  data_source_id = "scheduled_query" # This is a magic word
+  display_name   = "Entity type"
+  location       = var.region
+  schedule       = "every day 06:00"
+  params = {
+    query = file("bigquery/entity-type.sql")
   }
   service_account_name = google_service_account.bigquery_scheduled_queries_search.email
 }
