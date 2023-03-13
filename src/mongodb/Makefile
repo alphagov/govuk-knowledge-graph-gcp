@@ -151,6 +151,10 @@ data/step_by_step_embedded_links.csv.gz: temp/step_by_step_content.mongodb
 	source functions.sh; source sh/step_by_step_embedded_links.sh
 	touch data/step_by_step_embedded_links.csv.gz
 
+data/step_by_step_abbreviations.csv.gz: temp/step_by_step_content.mongodb
+	source functions.sh; source sh/step_by_step_abbreviations.sh
+	touch data/step_by_step_abbreviations.csv.gz
+
 data/department_analytics_profile.csv.gz: temp/define_url.mongodb temp/index.mongodb
 	source functions.sh; source sh/department_analytics_profile.sh
 
@@ -193,6 +197,10 @@ data/parts_embedded_links.csv.gz: temp/parts_content.mongodb
 	source functions.sh; source sh/parts_embedded_links.sh
 	touch data/parts_embedded_links.csv.gz
 
+data/parts_abbreviations.csv.gz: temp/parts_content.mongodb
+	source functions.sh; source sh/parts_abbreviations.sh
+	touch data/parts_abbreviations.csv.gz
+
 temp/transaction_content.mongodb: temp/define_url.mongodb temp/index.mongodb
 	mongo content_store js/transaction_content.js
 	touch temp/transaction_content.mongodb
@@ -205,6 +213,10 @@ data/transaction_embedded_links.csv.gz: temp/transaction_content.mongodb
 	source functions.sh; source sh/transaction_embedded_links.sh
 	touch data/transaction_embedded_links.csv.gz
 
+data/transaction_abbreviations.csv.gz: temp/transaction_content.mongodb
+	source functions.sh; source sh/transaction_abbreviations.sh
+	touch data/transaction_abbreviations.csv.gz
+
 temp/place_content.mongodb: temp/define_url.mongodb temp/index.mongodb
 	mongo content_store js/place_content.js
 	touch temp/place_content.mongodb
@@ -216,6 +228,10 @@ data/place_content.csv.gz: temp/place_content.mongodb
 data/place_embedded_links.csv.gz: temp/place_content.mongodb
 	source functions.sh; source sh/place_embedded_links.sh
 	touch data/place_embedded_links.csv.gz
+
+data/place_abbreviations.csv.gz: temp/place_content.mongodb
+	source functions.sh; source sh/place_abbreviations.sh
+	touch data/place_abbreviations.csv.gz
 
 # Some document types have the body text in the 'body' field (not 'body.content')
 temp/body.mongodb: temp/define_url.mongodb temp/index.mongodb
@@ -230,6 +246,10 @@ data/body_embedded_links.csv.gz: temp/body.mongodb
 	source functions.sh; source sh/body_embedded_links.sh
 	touch data/body_embedded_links.csv.gz
 
+data/body_abbreviations.csv.gz: temp/body.mongodb
+	source functions.sh; source sh/body_abbreviations.sh
+	touch data/body_abbreviations.csv.gz
+
 # Some document types have the body text in the 'body.content' field (not 'body')
 temp/body_content.mongodb: temp/define_url.mongodb temp/index.mongodb
 	mongo content_store js/body_content.js
@@ -242,6 +262,10 @@ data/body_content.csv.gz: temp/body_content.mongodb
 data/body_content_embedded_links.csv.gz: temp/body_content.mongodb
 	source functions.sh; source sh/body_content_embedded_links.sh
 	touch data/body_content_embedded_links.csv.gz
+
+data/body_content_abbreviations.csv.gz: temp/body_content.mongodb
+	source functions.sh; source sh/body_content_abbreviations.sh
+	touch data/body_content_abbreviations.csv.gz
 
 # Combine the tables of content of each document type, export back into a
 # storage bucket as many files, and concatenate those files into a single file.
@@ -271,6 +295,17 @@ temp/embedded_links.bigquery: data/step_by_step_embedded_links.csv.gz data/parts
 		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_[0-9]*.csv.gz" \
     --continue-on-error
 	envsubst < ./bigquery/embedded_links.sql \
+	  | bq query --use_legacy_sql=false \
+	  < /dev/stdin
+	touch $@
+
+# Combine the tables of abbreviations of each document type, export back into a
+# storage bucket as many files, and concatenate those files into a single file.
+temp/abbreviations.bigquery: data/step_by_step_abbreviations.csv.gz data/parts_abbreviations.csv.gz data/transaction_abbreviations.csv.gz data/place_abbreviations.csv.gz data/body_abbreviations.csv.gz data/body_content_abbreviations.csv.gz
+	-gcloud storage rm \
+		"gs://${PROJECT_ID}-data-processed/bigquery/abbreviations_[0-9]*.csv.gz" \
+    --continue-on-error
+	envsubst < ./bigquery/abbreviations.sql \
 	  | bq query --use_legacy_sql=false \
 	  < /dev/stdin
 	touch $@
