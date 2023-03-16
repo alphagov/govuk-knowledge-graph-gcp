@@ -33,7 +33,11 @@ def ensure_newline(s):
 
 
 def prepare_line(s):
-    return ensure_newline(ast.literal_eval(s[2:-1])).splitlines(keepends=True)
+    return ensure_newline(parse_line(s)).splitlines(keepends=True)
+
+
+def parse_line(s):
+    ast.literal_eval(s[2:-1])
 
 
 path = "@"
@@ -42,20 +46,24 @@ addition = "+"
 quote = '"'
 symbols = {path: 4, deletion: 2, addition: 1}
 lines = {path: "", deletion: "", addition: ""}
+out = {}
 
 
 if __name__ == "__main__":
     state = 0
     for line in sys.stdin:
+        sys.stdout.writelines("\n**\n" + line + "**\n")
         symbol = line[0]
         lines[symbol] = line
         state = state ^ symbols[symbol]
         match state:
             case 4:  # @: new record
-                sys.stdout.writelines(lines[path])
+                out['path'] = parse_line(lines[path])
+                sys.stdout.writelines(lines[path][2:-1])
             case 6:  # @-: wait for next symbol
                 pass
             case 5:  # @+: addition, then wait for new record
+                out['addition'] = parse_line(lines[addition])
                 sys.stdout.writelines(lines[addition])
                 state = 0
             case 7:  # @-+: update, then await new record
@@ -64,16 +72,28 @@ if __name__ == "__main__":
                     text1 = prepare_line(lines[deletion])
                     text2 = prepare_line(lines[addition])
                     diff_generator = difflib.unified_diff(text1, text2)
-                    sys.stdout.writelines(list(diff_generator))
+                    diff = list(diff_generator)
+                    out['diff'] = diff
+                    sys.stdout.writelines(diff)
                 # Otherwise output the original deletion and deletion
                 else:
+                    out['deletion'] = parse_line(lines[deletion])
+                    out['addition'] = parse_line(lines[addition])
                     sys.stdout.writelines(lines[deletion])
                     sys.stdout.writelines(lines[addition])
                 state = 0
                 pass
             case 2:  # @-@: delete and new record
+                # Write current record
+                out['deletion'] = parse_line(lines[deletion])
                 sys.stdout.writelines(lines[deletion])
+                json.dump(out, sys.stdout, ensure_ascii=False, indent=4)
+                # Begin new record
+                out = {}
+                out['path'] = parse_line(lines[path])
                 sys.stdout.writelines(lines[path])
                 state = symbols[path]
             case _:
                 raise ValueError
+    # Write final record
+    json.dump(out, sys.stdout, ensure_ascii=False, indent=4)
