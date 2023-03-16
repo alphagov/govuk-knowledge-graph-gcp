@@ -11,8 +11,10 @@ persons AS (
       has_role.ended_on AS endDate
   )) AS personNames
   FROM graph.role
-  LEFT JOIN graph.has_role ON has_role.role_url = role.url
-  LEFT JOIN graph.person ON person.url = has_role.person_url
+  -- If nobody has ever been appointed to the role, we don't want any null
+  -- results here, therefore use INNER JOIN.
+  INNER JOIN graph.has_role ON has_role.role_url = role.url
+  INNER JOIN graph.person ON person.url = has_role.person_url
   LEFT JOIN graph.has_homepage ON has_homepage.url = person.url
   GROUP BY role.url
 ),
