@@ -2222,3 +2222,20 @@ resource "google_bigquery_table" "page_views" {
     ]
   )
 }
+
+resource "google_bigquery_table" "content_items" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "content_items"
+  friendly_name = "Content items"
+  description   = "The raw JSON from the MongoDB Content Store database"
+  schema = jsonencode(
+    [
+      {
+        mode        = "REQUIRED"
+        name        = "item"
+        type        = "JSON"
+        description = "JSON representation of a content item"
+      }
+    ]
+  )
+}
