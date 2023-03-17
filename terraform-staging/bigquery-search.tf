@@ -528,6 +528,50 @@ resource "google_bigquery_table" "search_bank_holiday" {
   )
 }
 
+resource "google_bigquery_table" "search_link" {
+  dataset_id    = google_bigquery_dataset.search.dataset_id
+  table_id      = "link"
+  friendly_name = "Link"
+  description   = "Link table for the govsearch app"
+  schema = jsonencode(
+    [
+      {
+        name        = "to_url"
+        type        = "STRING"
+        description = "Full URL of the destination"
+      },
+      {
+        name        = "to_title"
+        type        = "STRING"
+        description = "Title of the destination page, if it is in GOV.UK"
+      },
+      {
+        fields = [
+          {
+            name        = "from_url"
+            type        = "STRING"
+            description = "URL of the page where the link is shown"
+          },
+          {
+            name        = "from_title"
+            type        = "STRING"
+            description = "Title of the page where the link is shown"
+          },
+          {
+            name        = "link_text"
+            type        = "STRING"
+            description = "Text displayed in place of the link"
+          },
+        ]
+        mode        = "REPEATED"
+        name        = "links"
+        type        = "RECORD"
+        description = "Array of links to the same destination, from different pages or with different link text"
+      },
+    ]
+  )
+}
+
 resource "google_bigquery_table" "search_thing" {
   dataset_id    = google_bigquery_dataset.search.dataset_id
   table_id      = "thing"
@@ -635,6 +679,17 @@ resource "google_bigquery_data_transfer_config" "search_bank_holiday" {
   schedule       = "every day 06:00"
   params = {
     query = file("bigquery/bank-holiday.sql")
+  }
+  service_account_name = google_service_account.bigquery_scheduled_queries_search.email
+}
+
+resource "google_bigquery_data_transfer_config" "search_link" {
+  data_source_id = "scheduled_query" # This is a magic word
+  display_name   = "Link"
+  location       = var.region
+  schedule       = "every day 06:00"
+  params = {
+    query = file("bigquery/link.sql")
   }
   service_account_name = google_service_account.bigquery_scheduled_queries_search.email
 }
