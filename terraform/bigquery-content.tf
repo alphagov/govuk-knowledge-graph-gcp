@@ -2239,3 +2239,38 @@ resource "google_bigquery_table" "content_items" {
     ]
   )
 }
+
+resource "google_bigquery_table" "organisation_govuk_status" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "organisation_govuk_status"
+  friendly_name = "Organisation GOV.UK status"
+  description   = "The status of the organisation in GOV.UK"
+  schema = jsonencode(
+    [
+      {
+        mode        = "REQUIRED"
+        name        = "url"
+        type        = "STRING"
+        description = "URL of an organisation on the GOV.UK website"
+      },
+      {
+        mode        = "NULLABLE"
+        name        = "status"
+        type        = "STRING"
+        description = "Status of an organisation on the GOV.UK website"
+      },
+      {
+        mode        = "NULLABLE"
+        name        = "updated_at"
+        type        = "TIMESTAMP"
+        description = "Date and time that an organisation's status was last updated"
+      },
+      {
+        mode        = "NULLABLE"
+        name        = "organisation_url"
+        type        = "STRING"
+        description = "URL of an organisation, not necessarily on GOV.UK"
+      }
+    ]
+  )
+}

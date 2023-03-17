@@ -336,6 +336,14 @@ data/taxon_levels.csv.gz: temp/taxon_levels.mongodb
 data/content_items.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/content_items.sh
 
+# Status of a government organisation
+temp/organisation_govuk_status.mongodb: temp/define_url.mongodb
+	mongo content_store js/organisation_govuk_status.js
+	touch temp/organisation_govuk_status.mongodb
+
+data/organisation_govuk_status.csv.gz: temp/organisation_govuk_status.mongodb
+	source functions.sh; source sh/organisation_govuk_status.sh
+
 # Assume that the content.pagerank table has been refreshed by another process
 temp/page.bigquery: \
 	data/url.csv.gz \
