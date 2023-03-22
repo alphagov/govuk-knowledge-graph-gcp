@@ -172,6 +172,7 @@ data "google_iam_policy" "project" {
     members = [
       "user:duncan.garmonsway@digital.cabinet-office.gov.uk",
       "user:max.froumentin@digital.cabinet-office.gov.uk",
+      "user:james.marvin@digital.cabinet-office.gov.uk",
     ]
   }
 
