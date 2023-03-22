@@ -8,4 +8,5 @@ application_title     = "GovGraph Search (staging)"
 govgraphsearch_iap_members = [
   "user:duncan.garmonsway@digital.cabinet-office.gov.uk",
   "user:max.froumentin@digital.cabinet-office.gov.uk",
+  "user:james.marvin@digital.cabinet-office.gov.uk",
 ]

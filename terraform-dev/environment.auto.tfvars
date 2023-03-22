@@ -9,4 +9,5 @@ govgraphsearch_iap_members = [
   "domain:digital.cabinet-office.gov.uk",
   "user:duncan.garmonsway@digital.cabinet-office.gov.uk",
   "user:max.froumentin@digital.cabinet-office.gov.uk",
+  "user:james.marvin@digital.cabinet-office.gov.uk",
 ]
