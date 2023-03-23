@@ -68,10 +68,6 @@ variable "application_title" {
   type = string
 }
 
-variable "govgraphsearch_iap_members" {
-  type = set(string)
-}
-
 variable "services" {
   type = list(any)
 }
