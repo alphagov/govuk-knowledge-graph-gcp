@@ -1,5 +1,5 @@
 -- Link each organisation, person, and taxon to its homepage
-DELETE FROM graph.has_homepage WHERE TRUE;
+TRUNCATE TABLE graph.has_homepage;
 INSERT INTO graph.has_homepage
 SELECT
   'https://www.gov.uk/' || content_id AS url,

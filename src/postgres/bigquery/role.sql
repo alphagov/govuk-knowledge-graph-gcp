@@ -1,5 +1,5 @@
 -- Create a table of role nodes
-DELETE FROM graph.role WHERE TRUE;
+TRUNCATE TABLE graph.role;
 INSERT INTO graph.role
 SELECT
   role_url.url,

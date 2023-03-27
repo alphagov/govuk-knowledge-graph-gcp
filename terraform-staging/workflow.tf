@@ -295,7 +295,7 @@ main:
             body:
                 useLegacySql: false
                 query: $${
-                    "DELETE FROM content.bank_holiday_raw WHERE TRUE; " +
+                    "TRUNCATE TABLE content.bank_holiday_raw; " +
                     "LOAD DATA INTO content.bank_holiday_raw " +
                     "FROM FILES ( " +
                     "  format = 'JSON', " +
@@ -306,7 +306,7 @@ main:
         result: queryResult
     - composeQuery:
         assign:
-          - query: "         DELETE FROM content.bank_holiday_occurrence WHERE TRUE; "
+          - query: "         TRUNCATE TABLE content.bank_holiday_occurrence; "
           - query: $${query+"INSERT INTO content.bank_holiday_occurrence "}
           - query: $${query+"SELECT "}
           - query: $${query+"  'https://www.gov.uk/' || REPLACE(REPLACE(TO_BASE64(SHA256(events.title)), '+', '-'), '/', '_') AS url, "}
@@ -333,7 +333,7 @@ main:
             body:
                 useLegacySql: false
                 query: $${
-                    "DELETE FROM content.bank_holiday_url WHERE TRUE; " +
+                    "TRUNCATE TABLE content.bank_holiday_url; " +
                     "INSERT INTO content.bank_holiday_url " +
                     "SELECT DISTINCT " +
                     "  'https://www.gov.uk/' || REPLACE(REPLACE(TO_BASE64(SHA256(events.title)), '+', '-'), '/', '_') AS url " +
@@ -350,7 +350,7 @@ main:
             body:
                 useLegacySql: false
                 query: $${
-                    "DELETE FROM content.bank_holiday_title WHERE TRUE; " +
+                    "TRUNCATE TABLE content.bank_holiday_title; " +
                     "INSERT INTO content.bank_holiday_title " +
                     "SELECT DISTINCT " +
                     "  'https://www.gov.uk/' || REPLACE(REPLACE(TO_BASE64(SHA256(events.title)), '+', '-'), '/', '_') AS url, " +

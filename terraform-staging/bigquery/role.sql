@@ -1,4 +1,4 @@
-DELETE FROM search.role WHERE TRUE;
+TRUNCATE TABLE search.role;
 INSERT INTO search.role
 WITH
 persons AS (

@@ -1,5 +1,5 @@
 -- Table of things on GOV.UK, and the type of thing that they are
-DELETE FROM search.entityTypes WHERE TRUE;
+TRUNCATE TABLE search.entityTypes;
 INSERT INTO search.entityTypes
 SELECT DISTINCT
   type

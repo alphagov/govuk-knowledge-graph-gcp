@@ -1,6 +1,6 @@
 -- Count the number of views of pages on GOV.UK as collected by GA4.
 -- Only pages that exist in the content store are included.
-DELETE FROM content.page_views WHERE TRUE;
+TRUNCATE TABLE content.page_views;
 INSERT INTO content.page_views
 WITH
 page_views AS (
