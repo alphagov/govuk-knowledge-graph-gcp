@@ -39,6 +39,8 @@ WITH tables AS (
   UNION ALL
   SELECT * FROM graph.__TABLES__
   UNION ALL
+  SELECT * FROM publishing.__TABLES__
+  UNION ALL
   SELECT * FROM search.__TABLES__
 )
 SELECT
