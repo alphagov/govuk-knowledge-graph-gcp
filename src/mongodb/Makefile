@@ -333,6 +333,9 @@ temp/taxon_levels.mongodb: temp/define_url.mongodb temp/index.mongodb
 data/taxon_levels.csv.gz: temp/taxon_levels.mongodb
 	source functions.sh; source sh/taxon_levels.sh
 
+data/content_items.csv.gz: temp/define_url.mongodb
+	source functions.sh; source sh/content_items.sh
+
 # Assume that the content.pagerank table has been refreshed by another process
 temp/page.bigquery: \
 	data/url.csv.gz \
