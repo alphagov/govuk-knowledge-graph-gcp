@@ -146,6 +146,10 @@ resource "google_cloud_run_service" "govgraphsearch" {
           name  = "PROJECT_ID"
           value = var.project_id
         }
+        env {
+          name  = "DISABLE_AUTH"
+          value = "true"
+        }
       }
     }
   }
