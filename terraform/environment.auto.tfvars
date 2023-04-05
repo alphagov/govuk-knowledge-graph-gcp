@@ -5,7 +5,10 @@ govgraph_domain       = "govgraph.dev"
 govgraphsearch_domain = "govgraphsearch.dev"
 govsearch_domain      = "gov-search.service.gov.uk"
 application_title     = "GovGraph Search"
-
+enable_auth           = "false"
+oauth_auth_url        = "https://signon.publishing.service.gov.uk/oauth/authorize"
+oauth_token_url       = "https://signon.publishing.service.gov.uk/oauth/access_token"
+oauth_callback_url    = "https://govgraphsearch.dev/auth/gds/callback"
 govgraphsearch_iap_members = [
   "domain:digital.cabinet-office.gov.uk",
 
