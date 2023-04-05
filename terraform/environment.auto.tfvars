@@ -5,6 +5,7 @@ govgraph_domain       = "govgraph.dev"
 govgraphsearch_domain = "govgraphsearch.dev"
 govsearch_domain      = "gov-search.service.gov.uk"
 application_title     = "GovGraph Search"
+disable_auth          = "true"
 
 govgraphsearch_iap_members = [
   "domain:digital.cabinet-office.gov.uk",

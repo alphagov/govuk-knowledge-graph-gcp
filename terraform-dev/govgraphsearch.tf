@@ -121,15 +121,15 @@ resource "google_cloud_run_service" "govgraphsearch" {
         }
         env {
           name  = "OAUTH_AUTH_URL"
-          value = "https://signon.integration.publishing.service.gov.uk/oauth/authorize"
+          value = var.oauth_auth_url
         }
         env {
           name  = "OAUTH_TOKEN_URL"
-          value = "https://signon.integration.publishing.service.gov.uk/oauth/access_token"
+          value = var.oauth_token_url
         }
         env {
           name  = "OAUTH_CALLBACK_URL"
-          value = "https://govgraphsearchdev.dev/auth/gds/callback"
+          value = var.oauth_callback_url
         }
         env {
           name = "OAUTH_ID"

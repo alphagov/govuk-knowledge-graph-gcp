@@ -10,3 +10,4 @@ govgraphsearch_iap_members = [
   "user:max.froumentin@digital.cabinet-office.gov.uk",
   "user:james.marvin@digital.cabinet-office.gov.uk",
 ]
+disable_auth          = "true"
