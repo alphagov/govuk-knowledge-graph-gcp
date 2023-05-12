@@ -32,7 +32,9 @@ data "google_iam_policy" "bigquery_dataset_graph" {
       "serviceAccount:${google_service_account.govgraphsearch.email}",
       "group:data-engineering@digital.cabinet-office.gov.uk",
       "group:data-analysis@digital.cabinet-office.gov.uk",
-      "group:data-products@digital.cabinet-office.gov.uk"
+      "group:data-products@digital.cabinet-office.gov.uk",
+      "serviceAccount:cpto-content-metadata-sa@cpto-content-metadata.iam.gserviceaccount.com",
+      "serviceAccount:wif-ner-new-content-inference@cpto-content-metadata.iam.gserviceaccount.com"
     ]
   }
 }

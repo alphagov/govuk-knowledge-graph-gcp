@@ -58,9 +58,9 @@ EOF
 }
 
 resource "google_bigquery_routine" "page_views" {
-  dataset_id = google_bigquery_dataset.content.dataset_id
-  routine_id     = "page_views"
-  routine_type = "PROCEDURE"
-  language = "SQL"
+  dataset_id      = google_bigquery_dataset.content.dataset_id
+  routine_id      = "page_views"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
   definition_body = file("bigquery/page-views.sql")
 }
