@@ -6,5 +6,6 @@ govgraphsearch_domain = "govgraphsearchstaging.dev"
 govsearch_domain      = "NOT_IN_USE"
 application_title     = "GovGraph Search (staging)"
 govgraphsearch_iap_members = [
+  "user:duncan.garmonsway@digital.cabinet-office.gov.uk",
   "group:data-products@digital.cabinet-office.gov.uk",
 ]
