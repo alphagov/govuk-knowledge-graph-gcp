@@ -12,7 +12,7 @@ hosted on AWS (Amazon Web Services).
 
 ## Documentation
 
-[GOV.UK Data Community Technical Documentation](https://docs.data-community.publishing.service.gov.uk/analysis/govgraph/pipeline-v2/)
+[GOV.UK Data Community Technical Documentation](https://gds-data-docs-bkbishsofa-nw.a.run.app/engineering/knowledge-graph-pipeline-v2/#advantages-of-the-new-pipeline)
 
 ## Links to GCP projects
 
