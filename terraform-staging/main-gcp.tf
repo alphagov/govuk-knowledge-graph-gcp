@@ -173,13 +173,13 @@ data "google_iam_policy" "project" {
       "user:duncan.garmonsway@digital.cabinet-office.gov.uk",
       "user:max.froumentin@digital.cabinet-office.gov.uk",
       "user:james.marvin@digital.cabinet-office.gov.uk",
+      "user:anthony.borisade@digital.cabinet-office.gov.uk",
     ]
   }
 
   binding {
     role = "roles/editor"
     members = [
-      "user:anthony.borisade@digital.cabinet-office.gov.uk",
       "serviceAccount:${var.project_number}@cloudservices.gserviceaccount.com",
       "serviceAccount:${var.project_id}@appspot.gserviceaccount.com",
     ]
