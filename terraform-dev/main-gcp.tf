@@ -175,6 +175,7 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/editor"
     members = [
+      "user:anthony.borisade@digital.cabinet-office.gov.uk",
       "serviceAccount:${var.project_number}@cloudservices.gserviceaccount.com",
       "serviceAccount:${var.project_id}@appspot.gserviceaccount.com",
     ]
