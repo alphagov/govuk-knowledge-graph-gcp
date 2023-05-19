@@ -67,7 +67,7 @@ resource "google_compute_region_network_endpoint_group" "govgraphsearch_eg" {
   region = var.region
   cloud_run {
     service = google_cloud_run_service.govgraphsearch.name
-    url_mask = "<tag>.${var.govgraphsearch_domain}"
+    url_mask = "/<tag>"
   }
 }
 
