@@ -80,6 +80,14 @@ variable "postgres-startup-script" {
   type = string
 }
 
+variable "alerts_error_message_old_data" {
+  type = string
+}
+
+variable "alerts_error_message_no_data" {
+  type = string
+}
+
 terraform {
   required_providers {
     google = {

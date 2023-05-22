@@ -95,24 +95,24 @@ resource "google_bigquery_table" "tables_metadata_check_results" {
   schema = jsonencode(
     [
       {
-        name        = "dataset_id"
-        type        = "STRING"
+        name = "dataset_id"
+        type = "STRING"
       },
       {
-        name        = "table_id"
-        type        = "STRING"
+        name = "table_id"
+        type = "STRING"
       },
       {
-        name        = "last_modified"
-        type        = "TIMESTAMP"
+        name = "last_modified"
+        type = "TIMESTAMP"
       },
       {
-        name        = "row_count"
-        type        = "INTEGER"
+        name = "row_count"
+        type = "INTEGER"
       },
       {
-        name        = "result"
-        type        = "STRING"
+        name = "result"
+        type = "STRING"
       },
     ]
   )
@@ -126,7 +126,10 @@ resource "google_bigquery_data_transfer_config" "check_tables_metadata" {
   params = {
     query = templatefile(
       "bigquery/check-tables-metadata.sql",
-      { project_id = var.project_id }
+      {
+        alerts_error_message_old_data = var.alerts_error_message_old_data,
+        alerts_error_message_no_data  = var.alerts_error_message_no_data,
+      }
     )
   }
   service_account_name = google_service_account.bigquery_scheduled_queries_search.email
@@ -146,11 +149,11 @@ resource "google_monitoring_alert_policy" "tables_metadata" {
   conditions {
     display_name = "Error condition"
     condition_matched_log {
-      filter = "resource.type=\"bigquery_resource\" severity=\"ERROR\" protoPayload.methodName=\"jobservice.jobcompleted\" SEARCH(protoPayload.status.message, \"Old data in table\") OR SEARCH(protoPayload.status.message, \"No data in table\")"
+      filter = "resource.type=\"bigquery_resource\" severity=\"ERROR\" protoPayload.methodName=\"jobservice.jobcompleted\" SEARCH(protoPayload.status.message, \"${var.alerts_error_message_old_data}\") OR SEARCH(protoPayload.status.message, \"${var.alerts_error_message_no_data}\")"
     }
   }
 
-  notification_channels = [ google_monitoring_notification_channel.data_products.name ]
+  notification_channels = [google_monitoring_notification_channel.data_products.name]
   alert_strategy {
     notification_rate_limit {
       // One day
@@ -160,9 +163,9 @@ resource "google_monitoring_alert_policy" "tables_metadata" {
 }
 
 resource "google_bigquery_routine" "page_views" {
-  dataset_id = google_bigquery_dataset.content.dataset_id
-  routine_id     = "page_views"
-  routine_type = "PROCEDURE"
-  language = "SQL"
+  dataset_id      = google_bigquery_dataset.content.dataset_id
+  routine_id      = "page_views"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
   definition_body = file("bigquery/page-views.sql")
 }

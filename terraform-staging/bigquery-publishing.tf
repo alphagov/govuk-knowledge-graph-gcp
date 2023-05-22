@@ -44,7 +44,7 @@ resource "google_bigquery_table" "publishing_actions" {
   table_id      = "actions"
   friendly_name = "Actions"
   description   = "Actions table from the GOV.UK Publishing API PostgreSQL database"
-  schema              = jsonencode(
+  schema = jsonencode(
     [
       {
         mode = "NULLABLE"
@@ -105,7 +105,7 @@ resource "google_bigquery_table" "publishing_change_notes" {
   table_id      = "change_notes"
   friendly_name = "Change notes"
   description   = "Change notes table from the GOV.UK Publishing API PostgreSQL database"
-  schema              = jsonencode(
+  schema = jsonencode(
     [
       {
         mode = "NULLABLE"
@@ -146,7 +146,7 @@ resource "google_bigquery_table" "publishing_documents" {
   table_id      = "documents"
   friendly_name = "Documents"
   description   = "Documents table from the GOV.UK Publishing API PostgreSQL database"
-  schema              = jsonencode(
+  schema = jsonencode(
     [
       {
         mode = "NULLABLE"
@@ -192,7 +192,7 @@ resource "google_bigquery_table" "publishing_editions" {
   table_id      = "editions"
   friendly_name = "Editions"
   description   = "Editions table from the GOV.UK Publishing API PostgreSQL database"
-  schema              = jsonencode(
+  schema = jsonencode(
     [
       {
         mode = "NULLABLE"
@@ -348,7 +348,7 @@ resource "google_bigquery_table" "publishing_events" {
   table_id      = "events"
   friendly_name = "Events"
   description   = "Events table from the GOV.UK Publishing API PostgreSQL database"
-  schema              = jsonencode(
+  schema = jsonencode(
     [
       {
         mode = "NULLABLE"
@@ -399,7 +399,7 @@ resource "google_bigquery_table" "publishing_expanded_links" {
   table_id      = "expanded_links"
   friendly_name = "Expanded links"
   description   = "Expanded links table from the GOV.UK Publishing API PostgreSQL database"
-  schema              = jsonencode(
+  schema = jsonencode(
     [
       {
         mode = "NULLABLE"
@@ -450,7 +450,7 @@ resource "google_bigquery_table" "publishing_link_changes" {
   table_id      = "link_changes"
   friendly_name = "Link changes"
   description   = "Link changes table from the GOV.UK Publishing API PostgreSQL database"
-  schema              = jsonencode(
+  schema = jsonencode(
     [
       {
         mode = "NULLABLE"
@@ -501,7 +501,7 @@ resource "google_bigquery_table" "publishing_link_sets" {
   table_id      = "link_sets"
   friendly_name = "Link sets"
   description   = "Link sets table from the GOV.UK Publishing API PostgreSQL database"
-  schema              = jsonencode(
+  schema = jsonencode(
     [
       {
         mode = "NULLABLE"
@@ -537,7 +537,7 @@ resource "google_bigquery_table" "publishing_links" {
   table_id      = "links"
   friendly_name = "Links"
   description   = "Links table from the GOV.UK Publishing API PostgreSQL database"
-  schema              = jsonencode(
+  schema = jsonencode(
     [
       {
         mode = "NULLABLE"
@@ -588,7 +588,7 @@ resource "google_bigquery_table" "publishing_path_reservations" {
   table_id      = "path_reservations"
   friendly_name = "Path reservations"
   description   = "Path reservations table from the GOV.UK Publishing API PostgreSQL database"
-  schema              = jsonencode(
+  schema = jsonencode(
     [
       {
         mode = "NULLABLE"
@@ -624,7 +624,7 @@ resource "google_bigquery_table" "publishing_role_appointments" {
   table_id      = "role_appointments"
   friendly_name = "Role appointments"
   description   = "Role appointments table from the GOV.UK Publishing API PostgreSQL database"
-  schema              = jsonencode(
+  schema = jsonencode(
     [
       {
         mode = "NULLABLE"
@@ -650,80 +650,80 @@ resource "google_bigquery_table" "publishing_roles" {
   table_id      = "roles"
   friendly_name = "Roles"
   description   = "Roles table from the GOV.UK Publishing API PostgreSQL database"
-    schema              = jsonencode(
-        [
-            {
-                mode = "NULLABLE"
-                name = "url"
-                type = "STRING"
-            },
-            {
-                mode = "NULLABLE"
-                name = "schema_name"
-                type = "STRING"
-            },
-            {
-                mode = "NULLABLE"
-                name = "document_type"
-                type = "STRING"
-            },
-            {
-                mode = "NULLABLE"
-                name = "publishing_app"
-                type = "STRING"
-            },
-            {
-                mode = "NULLABLE"
-                name = "phase"
-                type = "STRING"
-            },
-            {
-                mode = "NULLABLE"
-                name = "content_id"
-                type = "STRING"
-            },
-            {
-                mode = "NULLABLE"
-                name = "locale"
-                type = "STRING"
-            },
-            {
-                mode = "NULLABLE"
-                name = "updated_at"
-                type = "TIMESTAMP"
-            },
-            {
-                mode = "NULLABLE"
-                name = "public_updated_at"
-                type = "TIMESTAMP"
-            },
-            {
-                mode = "NULLABLE"
-                name = "first_published_at"
-                type = "TIMESTAMP"
-            },
-            {
-                mode = "NULLABLE"
-                name = "base_path"
-                type = "STRING"
-            },
-            {
-                mode = "NULLABLE"
-                name = "title"
-                type = "STRING"
-            },
-            {
-                mode = "NULLABLE"
-                name = "description"
-                type = "STRING"
-            },
-            {
-                mode = "NULLABLE"
-                name = "details"
-                type = "JSON"
-            },
-        ]
-    )
+  schema = jsonencode(
+    [
+      {
+        mode = "NULLABLE"
+        name = "url"
+        type = "STRING"
+      },
+      {
+        mode = "NULLABLE"
+        name = "schema_name"
+        type = "STRING"
+      },
+      {
+        mode = "NULLABLE"
+        name = "document_type"
+        type = "STRING"
+      },
+      {
+        mode = "NULLABLE"
+        name = "publishing_app"
+        type = "STRING"
+      },
+      {
+        mode = "NULLABLE"
+        name = "phase"
+        type = "STRING"
+      },
+      {
+        mode = "NULLABLE"
+        name = "content_id"
+        type = "STRING"
+      },
+      {
+        mode = "NULLABLE"
+        name = "locale"
+        type = "STRING"
+      },
+      {
+        mode = "NULLABLE"
+        name = "updated_at"
+        type = "TIMESTAMP"
+      },
+      {
+        mode = "NULLABLE"
+        name = "public_updated_at"
+        type = "TIMESTAMP"
+      },
+      {
+        mode = "NULLABLE"
+        name = "first_published_at"
+        type = "TIMESTAMP"
+      },
+      {
+        mode = "NULLABLE"
+        name = "base_path"
+        type = "STRING"
+      },
+      {
+        mode = "NULLABLE"
+        name = "title"
+        type = "STRING"
+      },
+      {
+        mode = "NULLABLE"
+        name = "description"
+        type = "STRING"
+      },
+      {
+        mode = "NULLABLE"
+        name = "details"
+        type = "JSON"
+      },
+    ]
+  )
 }
 
 resource "google_bigquery_table" "publishing_unpublishings" {
@@ -731,7 +731,7 @@ resource "google_bigquery_table" "publishing_unpublishings" {
   table_id      = "unpublishings"
   friendly_name = "Unpublishings"
   description   = "Unpublishings table from the GOV.UK Publishing API PostgreSQL database"
-  schema              = jsonencode(
+  schema = jsonencode(
     [
       {
         mode = "NULLABLE"
