@@ -34,3 +34,6 @@ bootcmd:
 - mkdir -p /mnt/disks/local-ssd/postgresql-data
 - mkdir -p /mnt/disks/local-ssd/data
 EOF
+
+alerts_error_message_old_data = "Old data in table"
+alerts_error_message_no_data  = "No data in table"
