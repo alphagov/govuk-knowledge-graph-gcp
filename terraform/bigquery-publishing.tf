@@ -29,6 +29,7 @@ data "google_iam_policy" "bigquery_dataset_publishing" {
       "group:data-engineering@digital.cabinet-office.gov.uk",
       "group:data-analysis@digital.cabinet-office.gov.uk",
       "group:data-products@digital.cabinet-office.gov.uk",
+      "serviceAccount:${google_service_account.bigquery_scheduled_queries_search.email}",
     ]
   }
 }
