@@ -179,7 +179,6 @@ data "google_iam_policy" "project" {
     role = "roles/owner"
     members = [
       "user:duncan.garmonsway@digital.cabinet-office.gov.uk",
-      "user:max.froumentin@digital.cabinet-office.gov.uk",
       "user:james.marvin@digital.cabinet-office.gov.uk",
       "user:anthony.borisade@digital.cabinet-office.gov.uk",
       "user:guilhem.forey@digital.cabinet-office.gov.uk",
