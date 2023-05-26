@@ -30,7 +30,7 @@ data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
     role = "roles/bigquery.dataViewer"
     members = [
       "projectReaders",
-      "serviceAccount:cpto-content-metadata-sa@cpto-content-metadata.iam.gserviceaccount.com",
+      "serviceAccount:ner-bulk-inference@cpto-content-metadata.iam.gserviceaccount.com",
       "serviceAccount:wif-ner-new-content-inference@cpto-content-metadata.iam.gserviceaccount.com",
       "serviceAccount:${google_service_account.bigquery_scheduled_queries_search.email}",
       "serviceAccount:${google_service_account.govgraphsearch.email}",
