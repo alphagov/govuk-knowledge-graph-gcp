@@ -138,6 +138,12 @@ resource "google_bigquery_table" "page" {
     "description": "The title of a page"
   },
   {
+    "name": "internal_name",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The internal name of a taxon"
+  },
+  {
     "mode": "NULLABLE",
     "name": "description",
     "type": "STRING",
@@ -267,6 +273,12 @@ resource "google_bigquery_table" "part" {
     "name": "part_title",
     "type": "STRING",
     "description": "The title of a part"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "internal_name",
+    "type": "STRING",
+    "description": "The internal name of a taxon"
   },
   {
     "mode": "NULLABLE",
@@ -425,6 +437,12 @@ resource "google_bigquery_table" "taxon" {
     "type": "STRING",
     "mode": "NULLABLE",
     "description": "The name of a taxon"
+  },
+  {
+    "name": "internal_name",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The internal name of a taxon"
   },
   {
     "name": "description",

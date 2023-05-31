@@ -3,6 +3,7 @@ INSERT INTO graph.taxon
 SELECT
   taxon_levels.url,
   page.title,
+  page.internal_name,
   page.description,
   page.content_id,
   taxon_levels.level

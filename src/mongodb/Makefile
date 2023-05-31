@@ -97,6 +97,9 @@ data/document_type.csv.gz: temp/define_url.mongodb
 data/locale.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/locale.sh
 
+data/internal_name.csv.gz: temp/define_url.mongodb
+	source functions.sh; source sh/internal_name.sh
+
 data/publishing_app.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/publishing_app.sh
 

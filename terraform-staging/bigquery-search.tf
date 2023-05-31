@@ -376,7 +376,7 @@ resource "google_bigquery_table" "search_taxon" {
       {
         name        = "name"
         type        = "STRING"
-        description = "Name of the taxon"
+        description = "Internal name of a taxon"
       },
       {
         name        = "homepage"
@@ -398,7 +398,7 @@ resource "google_bigquery_table" "search_taxon" {
           {
             name        = "name"
             type        = "STRING"
-            description = "Name of the taxon"
+            description = "Internal name of a taxon"
           },
           {
             name        = "level"
@@ -421,7 +421,7 @@ resource "google_bigquery_table" "search_taxon" {
           {
             name        = "name"
             type        = "STRING"
-            description = "Name of the taxon"
+            description = "Internal name of a taxon"
           },
           {
             name        = "level"

@@ -4,7 +4,14 @@ WITH
 taxons AS (
   SELECT
   taxon.url AS taxon_url,
-  taxon.title AS name,
+  /*
+  Title is preferred to internal name because it is typically of better quality;
+  internal name should be used if title is not unique / repeated.
+  */
+  CASE WHEN
+    COUNT(taxon.title) OVER (PARTITION BY taxon.title) = 1 THEN taxon.title
+    ELSE taxon.internal_name
+  END AS name,
   taxon.description,
   taxon.level,
   has_homepage.homepage_url AS url
@@ -39,19 +46,3 @@ SELECT
 FROM taxons
 LEFT JOIN ancestor_taxons USING (taxon_url)
 LEFT JOIN child_taxons USING (taxon_url)
-
--- name: string,
--- homepage: string,
--- description: string,
--- level: number,
--- ancestorTaxons: {
---   url: string,
---   name: string,
---   level: number,
--- }[],
--- childTaxons: {
---   url: string,
---   name: string,
---   level: number
--- }[]
---
