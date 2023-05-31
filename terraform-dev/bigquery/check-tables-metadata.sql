@@ -5,7 +5,19 @@ INSERT INTO `test.tables-metadata-check-results`
 SELECT
   *,
   CASE
-    WHEN row_count = 0 THEN ERROR(CONCAT('${alerts_error_message_no_data} `', dataset_id, ".", table_id, "` last updated at ", last_modified, "."))
+    -- Raise an alert for tables that have zero rows
+    WHEN row_count = 0
+      -- But ignore tables that are expected to have zero rows
+      AND CONCAT(dataset_id, ".", table_id) NOT IN
+      (
+        'content.place_abbreviations',
+        'content.transaction_abbreviations',
+        'content.step_by_step_abbreviations',
+        'content.parts_abbreviations'
+      )
+      THEN ERROR(CONCAT('${alerts_error_message_no_data} `', dataset_id, ".",
+          table_id, "` last updated at ", last_modified, "."))
+    -- Raise an alert for tables that haven't been updated for more than a day
     WHEN last_modified < TIMESTAMP_ADD(CURRENT_TIMESTAMP(), INTERVAL - 25 HOUR) THEN ERROR(CONCAT('${alerts_error_message_old_data} `', dataset_id, ".", table_id, "` last updated at ", last_modified, "."))
     ELSE CONCAT('Table `', dataset_id, ".", table_id, "` has ", row_count, " rows, last updated at ", last_modified, ".")
   END AS result
