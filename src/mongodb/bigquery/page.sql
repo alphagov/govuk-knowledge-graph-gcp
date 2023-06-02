@@ -21,8 +21,7 @@ SELECT
   c.text,
   CAST(NULL AS INT64) AS part_index,
   CAST(NULL AS STRING) AS slug,
-  page_views.number_of_views AS page_views,
-  pagerank.pagerank
+  page_views.number_of_views AS page_views
 FROM content.url AS u
 LEFT JOIN content.document_type USING (url)
 LEFT JOIN content.phase USING (url)
@@ -41,7 +40,6 @@ LEFT JOIN content.description USING (url)
 LEFT JOIN content.department_analytics_profile USING (url)
 LEFT JOIN content.content AS c USING (url)
 LEFT JOIN content.page_views USING (url)
-LEFT JOIN content.pagerank USING (url)
 ;
 
 -- Derive a table of parts nodes from their parent page nodes
@@ -56,14 +54,12 @@ SELECT
     c.text AS text,
     parts.part_index AS part_index,
     parts.slug AS slug,
-    page_views.number_of_views AS page_views,
-    pagerank.pagerank AS pagerank
+    page_views.number_of_views AS page_views
   )
 FROM graph.page
 INNER JOIN content.parts ON page.url = parts.base_path
 LEFT JOIN content.content AS c ON c.url = parts.url
 LEFT JOIN content.page_views on (page_views.url = parts.url)
-LEFT JOIN content.pagerank on (pagerank.url = parts.url)
 ;
 INSERT INTO graph.page SELECT * FROM graph.part;
 

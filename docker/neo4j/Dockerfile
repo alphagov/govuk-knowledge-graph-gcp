@@ -28,13 +28,6 @@ RUN \
     unzip \
     certbot \
     python3-certbot-nginx \
-  # Install the Graph Data Science plugin \
-  # https://neo4j.com/docs/graph-data-science/current/installation/neo4j-server/ \
-  && cd /tmp \
-  && curl -O https://graphdatascience.ninja/neo4j-graph-data-science-2.1.5.zip \
-  && unzip neo4j-graph-data-science-2.1.5.zip neo4j-graph-data-science-2.1.5.jar \
-  && mv neo4j-graph-data-science-2.1.5.jar /var/lib/neo4j/plugins \
-  && rm neo4j-graph-data-science-2.1.5.zip \
   # Clean up
   && apt-get -y purge --auto-remove \
     curl \

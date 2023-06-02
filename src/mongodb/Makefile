@@ -344,7 +344,6 @@ temp/organisation_govuk_status.mongodb: temp/define_url.mongodb
 data/organisation_govuk_status.csv.gz: temp/organisation_govuk_status.mongodb
 	source functions.sh; source sh/organisation_govuk_status.sh
 
-# Assume that the content.pagerank table has been refreshed by another process
 temp/page.bigquery: \
 	data/url.csv.gz \
 	data/document_type.csv.gz \

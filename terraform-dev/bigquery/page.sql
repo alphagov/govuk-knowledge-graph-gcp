@@ -65,7 +65,6 @@ SELECT
   withdrawn_at,
   withdrawn_explanation,
   page_views,
-  pagerank,
   title,
   description,
   text,

@@ -99,11 +99,6 @@ gcloud storage cat \
   "gs://${PROJECT_ID}-repository/src/neo4j/load_content_store_data.cypher" \
   | cypher-shell --address "neo4j+s://${DOMAIN}:7687"
 
-# Create the page rank statistic
-gcloud storage cat \
-  "gs://${PROJECT_ID}-repository/src/neo4j/pagerank.cypher" \
-  | cypher-shell --address "neo4j+s://${DOMAIN}:7687"
-
 # Ingest the Publishing API data
 gcloud storage cat \
   "gs://${PROJECT_ID}-repository/src/neo4j/load_publishing_api_data.cypher" \
@@ -123,7 +118,7 @@ gcloud storage cat \
 cd /var/lib/neo4j
 gcloud storage cp --recursive "gs://${PROJECT_ID}-repository/src" .
 cd src/neo4j
-source functions.sh; source sh/pagerank.sh
+source functions.sh
 
 # Stay alive
 sleep infinity
