@@ -1,5 +1,5 @@
 -- Table of things on GOV.UK, and the type of thing that they are
-DELETE FROM search.thing WHERE TRUE;
+TRUNCATE TABLE search.thing;
 INSERT INTO search.thing
 SELECT 'Person' AS type, title AS name
 FROM graph.person

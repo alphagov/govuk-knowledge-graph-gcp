@@ -1,5 +1,5 @@
 -- Create links between people and roles
-DELETE FROM graph.has_role WHERE TRUE;
+TRUNCATE TABLE graph.has_role;
 INSERT INTO graph.has_role
 SELECT
   appointment_person.person_url AS person_url,

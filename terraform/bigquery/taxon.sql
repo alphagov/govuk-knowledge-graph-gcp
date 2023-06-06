@@ -1,4 +1,4 @@
-DELETE FROM search.taxon WHERE TRUE;
+TRUNCATE TABLE search.taxon;
 INSERT INTO search.taxon
 WITH
 taxons AS (

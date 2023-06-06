@@ -1,5 +1,5 @@
 -- Create links between roles and organisations
-DELETE FROM graph.belongs_to WHERE TRUE;
+TRUNCATE TABLE graph.belongs_to;
 INSERT INTO graph.belongs_to
 SELECT
   *

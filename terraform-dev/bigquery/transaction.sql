@@ -1,4 +1,4 @@
-DELETE FROM search.transaction WHERE TRUE;
+TRUNCATE TABLE search.transaction;
 INSERT INTO search.transaction
 SELECT
   title AS name,

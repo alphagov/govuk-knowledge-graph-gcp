@@ -1,4 +1,4 @@
-DELETE FROM search.organisation WHERE TRUE;
+TRUNCATE TABLE search.organisation;
 INSERT INTO search.organisation
 WITH
 parent_organisation AS (

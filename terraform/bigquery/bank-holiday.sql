@@ -1,4 +1,4 @@
-DELETE FROM search.bank_holiday WHERE TRUE;
+TRUNCATE TABLE search.bank_holiday;
 INSERT INTO search.bank_holiday
 SELECT
   bank_holiday_title.title AS name,
