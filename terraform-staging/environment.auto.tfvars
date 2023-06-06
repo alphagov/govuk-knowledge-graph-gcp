@@ -5,6 +5,10 @@ govgraph_domain       = "govgraphstaging.dev"
 govgraphsearch_domain = "govgraphsearchstaging.dev"
 govsearch_domain      = "NOT_IN_USE"
 application_title     = "GovGraph Search (staging)"
+enable_auth           = "false"
+oauth_auth_url        = "https://signon.publishing.service.gov.uk/oauth/authorize"
+oauth_token_url       = "https://signon.publishing.service.gov.uk/oauth/access_token"
+oauth_callback_url    = "https://govgraphsearch.dev/auth/gds/callback"
 govgraphsearch_iap_members = [
   "group:data-products@digital.cabinet-office.gov.uk",
 ]

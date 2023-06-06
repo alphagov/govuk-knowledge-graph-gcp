@@ -29,6 +29,20 @@ resource "google_secret_manager_secret" "iap_oauth_client_secret" {
   }
 }
 
+resource "google_secret_manager_secret" "sso_oauth_client_id" {
+  secret_id = "OAUTH_ID"
+  replication {
+    automatic = true
+  }
+}
+
+resource "google_secret_manager_secret" "sso_oauth_client_secret" {
+  secret_id = "OAUTH_SECRET"
+  replication {
+    automatic = true
+  }
+}
+
 # Then manually paste the OAUTH credentials into the Secret Manager
 
 # Then create a place to put the app images
@@ -61,6 +75,14 @@ data "google_secret_manager_secret_version" "iap_oauth_client_secret" {
   secret = "iap-oauth-client-secret"
 }
 
+data "google_secret_manager_secret_version" "sso_oauth_client_id" {
+  secret = "OAUTH_ID"
+}
+
+data "google_secret_manager_secret_version" "sso_oauth_client_secret" {
+  secret = "OAUTH_SECRET"
+}
+
 # Boilerplate
 resource "google_compute_region_network_endpoint_group" "govgraphsearch_eg" {
   name   = "govgraphsearch-eg"
@@ -91,7 +113,7 @@ resource "google_iap_web_backend_service_iam_policy" "govgraphsearch" {
   policy_data         = data.google_iam_policy.govgraphsearch_iap.policy_data
 }
 
-# Allow anyone who has already been through IAP to load the app
+# Allow anyone who has already been through IAP or GOV.UK Signon to load the app
 data "google_iam_policy" "govgraphsearch" {
   binding {
     role = "roles/run.invoker"
@@ -147,8 +169,38 @@ resource "google_cloud_run_service" "govgraphsearch" {
           value = var.project_id
         }
         env {
-          name  = "DISABLE_AUTH"
-          value = "true"
+          name  = "ENABLE_AUTH"
+          value = var.enable_auth
+        }
+        env {
+          name  = "OAUTH_AUTH_URL"
+          value = var.oauth_auth_url
+        }
+        env {
+          name  = "OAUTH_TOKEN_URL"
+          value = var.oauth_token_url
+        }
+        env {
+          name  = "OAUTH_CALLBACK_URL"
+          value = var.oauth_callback_url
+        }
+        env {
+          name = "OAUTH_ID"
+          value_from {
+            secret_key_ref {
+              key  = "latest"
+              name = "OAUTH_ID"
+            }
+          }
+        }
+        env {
+          name = "OAUTH_SECRET"
+          value_from {
+            secret_key_ref {
+              key  = "latest"
+              name = "OAUTH_SECRET"
+            }
+          }
         }
       }
     }

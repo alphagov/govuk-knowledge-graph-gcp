@@ -1,5 +1,33 @@
+# Create this first, on its own: The IAP OAuth consent screen (Identity-Aware
+# Proxy)
+resource "google_iap_brand" "project_brand" {
+  # The support_email must be your own email address, or a Google Group that you
+  # manage.
+  support_email     = "duncan.garmonsway@digital.cabinet-office.gov.uk"
+  application_title = var.application_title
+}
+
+# Then manually create OAUTH credentials:
+# https://console.cloud.google.com/apis/credentials/oauthclient
+
+# Add a redirect URI of the form
+# https://iap.googleapis.com/v1/oauth/clientIds/CLIENT_ID:handleRedirect
+
 # Then create the secrets in Secret Manager
 # https://blog.gruntwork.io/a-comprehensive-guide-to-managing-secrets-in-your-terraform-code-1d586955ace1#bebe
+resource "google_secret_manager_secret" "iap_oauth_client_id" {
+  secret_id = "iap-oauth-client-id"
+  replication {
+    automatic = true
+  }
+}
+
+resource "google_secret_manager_secret" "iap_oauth_client_secret" {
+  secret_id = "iap-oauth-client-secret"
+  replication {
+    automatic = true
+  }
+}
 
 resource "google_secret_manager_secret" "sso_oauth_client_id" {
   secret_id = "OAUTH_ID"
@@ -39,6 +67,14 @@ resource "google_dns_managed_zone" "govgraphsearch" {
 # Then create everything else below.
 
 # Retrieve the value of the secret
+data "google_secret_manager_secret_version" "iap_oauth_client_id" {
+  secret = "iap-oauth-client-id"
+}
+
+data "google_secret_manager_secret_version" "iap_oauth_client_secret" {
+  secret = "iap-oauth-client-secret"
+}
+
 data "google_secret_manager_secret_version" "sso_oauth_client_id" {
   secret = "OAUTH_ID"
 }
@@ -56,21 +92,34 @@ resource "google_compute_region_network_endpoint_group" "govgraphsearch_eg" {
   }
 }
 
-# Allow anyone who has already been through SSO to load the app
+# Connect to the same VPC where Neo4j is
+resource "google_vpc_access_connector" "cloudrun_connector" {
+  name = "cloudrun-connector"
+  subnet {
+    name = "cloudrun-subnet"
+  }
+}
+
+# Allow access the app via IAP (Identity-Aware Proxy)
+data "google_iam_policy" "govgraphsearch_iap" {
+  binding {
+    role    = "roles/iap.httpsResourceAccessor"
+    members = var.govgraphsearch_iap_members
+  }
+}
+
+resource "google_iap_web_backend_service_iam_policy" "govgraphsearch" {
+  web_backend_service = google_compute_backend_service.govgraphsearch.name
+  policy_data         = data.google_iam_policy.govgraphsearch_iap.policy_data
+}
+
+# Allow anyone who has already been through IAP or GOV.UK Signon to load the app
 data "google_iam_policy" "govgraphsearch" {
   binding {
     role = "roles/run.invoker"
     members = [
       "allUsers",
     ]
-  }
-}
-
-# Connect to the same VPC where Neo4j is
-resource "google_vpc_access_connector" "cloudrun_connector" {
-  name = "cloudrun-connector"
-  subnet {
-    name = "cloudrun-subnet"
   }
 }
 
@@ -120,16 +169,20 @@ resource "google_cloud_run_service" "govgraphsearch" {
           value = var.project_id
         }
         env {
+          name  = "ENABLE_AUTH"
+          value = var.enable_auth
+        }
+        env {
           name  = "OAUTH_AUTH_URL"
-          value = "https://signon.integration.publishing.service.gov.uk/oauth/authorize"
+          value = var.oauth_auth_url
         }
         env {
           name  = "OAUTH_TOKEN_URL"
-          value = "https://signon.integration.publishing.service.gov.uk/oauth/access_token"
+          value = var.oauth_token_url
         }
         env {
           name  = "OAUTH_CALLBACK_URL"
-          value = "https://govgraphsearchdev.dev/auth/gds/callback"
+          value = var.oauth_callback_url
         }
         env {
           name = "OAUTH_ID"
@@ -166,6 +219,10 @@ resource "google_compute_backend_service" "govgraphsearch" {
   protocol  = "HTTP"
   backend {
     group = google_compute_region_network_endpoint_group.govgraphsearch_eg.self_link
+  }
+  iap {
+    oauth2_client_id     = data.google_secret_manager_secret_version.iap_oauth_client_id.secret_data
+    oauth2_client_secret = data.google_secret_manager_secret_version.iap_oauth_client_secret.secret_data
   }
 }
 

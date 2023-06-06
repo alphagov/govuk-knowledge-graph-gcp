@@ -68,6 +68,22 @@ variable "application_title" {
   type = string
 }
 
+variable "enable_auth" {
+  type = string
+}
+
+variable "oauth_auth_url" {
+  type = string
+}
+
+variable "oauth_token_url" {
+  type = string
+}
+
+variable "oauth_callback_url" {
+  type = string
+}
+
 variable "govgraphsearch_iap_members" {
   type = set(string)
 }
