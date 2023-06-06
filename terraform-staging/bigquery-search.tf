@@ -115,12 +115,6 @@ resource "google_bigquery_table" "search_page" {
   },
   {
     "mode": "NULLABLE",
-    "name": "pagerank",
-    "type": "BIGNUMERIC",
-    "description": "Page rank of a page on GOV.UK"
-  },
-  {
-    "mode": "NULLABLE",
     "name": "title",
     "type": "STRING",
     "description": "The title of a page"
