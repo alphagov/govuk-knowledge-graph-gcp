@@ -333,7 +333,7 @@ main:
             body:
                 useLegacySql: false
                 query: $${
-                    "TRUNCATE content.bank_holiday_url; " +
+                    "TRUNCATE TABLE content.bank_holiday_url; " +
                     "INSERT INTO content.bank_holiday_url " +
                     "SELECT DISTINCT " +
                     "  'https://www.gov.uk/' || REPLACE(REPLACE(TO_BASE64(SHA256(events.title)), '+', '-'), '/', '_') AS url " +
