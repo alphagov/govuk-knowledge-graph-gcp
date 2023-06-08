@@ -196,7 +196,6 @@ data "google_iam_policy" "project" {
     members = [
       "user:duncan.garmonsway@digital.cabinet-office.gov.uk",
       "user:james.marvin@digital.cabinet-office.gov.uk",
-      "user:anthony.borisade@digital.cabinet-office.gov.uk",
       "user:guilhem.forey@digital.cabinet-office.gov.uk",
       "user:somme.sakounthong@digital.cabinet-office.gov.uk",
     ]
