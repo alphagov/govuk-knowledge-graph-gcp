@@ -1,3 +1,10 @@
+# Service account for the service
+resource "google_service_account" "govgraphsearch" {
+  account_id   = "govgraphsearch"
+  display_name = "GovGraph Search"
+  description  = "Service account for the GovGraph search Cloud Run app"
+}
+
 # Create this first, on its own: The IAP OAuth consent screen (Identity-Aware
 # Proxy)
 resource "google_iap_brand" "project_brand" {
@@ -41,6 +48,35 @@ resource "google_secret_manager_secret" "sso_oauth_client_secret" {
   replication {
     automatic = true
   }
+}
+
+# Allow the Cloud Run service to access the GOV.UK Signon secrets
+data "google_iam_policy" "sso_oauth_client_id" {
+  binding {
+    role = "roles/secretmanager.secretAccessor"
+    members = [
+      "serviceAccount:${google_service_account.govgraphsearch.email}",
+    ]
+  }
+}
+
+resource "google_secret_manager_secret_iam_policy" "sso_oauth_client_id" {
+  secret_id = google_secret_manager_secret.sso_oauth_client_id.secret_id
+  policy_data = data.google_iam_policy.sso_oauth_client_id.policy_data
+}
+
+data "google_iam_policy" "sso_oauth_client_secret" {
+  binding {
+    role = "roles/secretmanager.secretAccessor"
+    members = [
+      "serviceAccount:${google_service_account.govgraphsearch.email}",
+    ]
+  }
+}
+
+resource "google_secret_manager_secret_iam_policy" "sso_oauth_client_secret" {
+  secret_id = google_secret_manager_secret.sso_oauth_client_secret.secret_id
+  policy_data = data.google_iam_policy.sso_oauth_client_secret.policy_data
 }
 
 # Then manually paste the OAUTH credentials into the Secret Manager
@@ -127,13 +163,6 @@ resource "google_cloud_run_service_iam_policy" "govgraphsearch" {
   location    = var.region
   service     = google_cloud_run_service.govgraphsearch.name
   policy_data = data.google_iam_policy.govgraphsearch.policy_data
-}
-
-# Service account for the service
-resource "google_service_account" "govgraphsearch" {
-  account_id   = "govgraphsearch"
-  display_name = "GovGraph Search"
-  description  = "Service account for the GovGraph search Cloud Run app"
 }
 
 # The app itself
