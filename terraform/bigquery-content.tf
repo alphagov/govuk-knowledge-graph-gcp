@@ -32,6 +32,7 @@ data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
       "projectReaders",
       "serviceAccount:ner-bulk-inference@cpto-content-metadata.iam.gserviceaccount.com",
       "serviceAccount:wif-ner-new-content-inference@cpto-content-metadata.iam.gserviceaccount.com",
+      "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
       "serviceAccount:${google_service_account.bigquery_scheduled_queries_search.email}",
       "serviceAccount:${google_service_account.govgraphsearch.email}",
       "group:data-engineering@digital.cabinet-office.gov.uk",
