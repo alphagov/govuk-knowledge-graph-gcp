@@ -65,7 +65,14 @@ SELECT
   withdrawn_at,
   withdrawn_explanation,
   page_views,
-  title,
+  /*
+  Title is preferred to internal name because it is typically of better quality;
+  internal name should be used if title is not unique / repeated.
+  */
+  CASE WHEN
+    COUNT(page.title) OVER (PARTITION BY page.title) = 1 THEN page.title
+    ELSE page.internal_name
+  END AS name,
   description,
   text,
   tagged_taxons.ancestor_titles AS taxons,

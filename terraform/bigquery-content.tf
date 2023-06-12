@@ -87,6 +87,29 @@ resource "google_bigquery_table" "phase" {
 EOF
 }
 
+resource "google_bigquery_table" "internal_name" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "internal_name"
+  friendly_name = "GOV.UK content ID"
+  description   = "Internal name of a taxon"
+  schema        = <<EOF
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a taxon"
+  },
+  {
+    "name": "internal_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Internal name of a taxon"
+  }
+]
+EOF
+}
+
 resource "google_bigquery_table" "content_id" {
   dataset_id    = google_bigquery_dataset.content.dataset_id
   table_id      = "content_id"

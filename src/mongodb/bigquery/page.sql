@@ -16,6 +16,7 @@ SELECT
   withdrawn_at.withdrawn_at,
   withdrawn_explanation.text AS withdrawn_explanation,
   title.title,
+  internal_name.internal_name,
   description.description,
   department_analytics_profile.department_analytics_profile,
   c.text,
@@ -35,6 +36,7 @@ LEFT JOIN content.public_updated_at USING (url)
 LEFT JOIN content.first_published_at USING (url)
 LEFT JOIN content.withdrawn_at USING (url)
 LEFT JOIN content.withdrawn_explanation USING (url)
+LEFT JOIN content.internal_name USING (url)
 LEFT JOIN content.title USING (url)
 LEFT JOIN content.description USING (url)
 LEFT JOIN content.department_analytics_profile USING (url)

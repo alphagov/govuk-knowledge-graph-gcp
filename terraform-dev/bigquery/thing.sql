@@ -13,7 +13,16 @@ UNION ALL
 SELECT 'BankHoliday' AS type, title AS name
 FROM content.bank_holiday_title
 UNION ALL
-SELECT 'Taxon' AS type, title AS name
+SELECT
+    'Taxon' AS type,
+    /*
+    Title is preferred to internal name because it is typically of better
+    quality; internal name should be used if title is not unique / repeated.
+    */
+    CASE WHEN
+        COUNT(taxon.title) OVER (PARTITION BY taxon.title) = 1 THEN taxon.title
+        ELSE taxon.internal_name
+    END AS name
 FROM graph.taxon
 UNION ALL
 SELECT 'Transaction' AS type, title AS name
