@@ -7,7 +7,11 @@ SELECT
   CASE
     -- Raise an alert for tables that have zero rows
     WHEN row_count = 0
-      -- But ignore tables that are expected to have zero rows
+      -- And that aren't likely to be still being refreshed.
+      -- Annoyingly, it isn't possible to TRUNCATE in the same transaction, so
+      -- tables will briefly be empty until they are repopulated.
+      AND last_modified < TIMESTAMP_ADD(CURRENT_TIMESTAMP(), INTERVAL - 10 MINUTE)
+      -- Ignore tables that are expected to have zero rows
       AND CONCAT(dataset_id, ".", table_id) NOT IN
       (
         'content.place_abbreviations',
