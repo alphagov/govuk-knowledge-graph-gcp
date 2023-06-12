@@ -190,6 +190,14 @@ resource "google_cloud_run_service" "govgraphsearch" {
       containers {
         image = "europe-west2-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.cloud_run_source_deploy.repository_id}/govuk-knowledge-graph-search:latest"
         env {
+          name  = "REDIS_HOST"
+          value = google_redis_instance.session_store.host
+        }
+        env {
+          name  = "REDIS_PORT"
+          value = google_redis_instance.session_store.port
+        }
+        env {
           name  = "NEO4J_URL"
           value = "http://${google_compute_address.neo4j_internal.address}:7474/db/neo4j/tx"
         }
