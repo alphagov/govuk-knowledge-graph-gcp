@@ -64,11 +64,3 @@ LEFT JOIN content.content AS c ON c.url = parts.url
 LEFT JOIN content.page_views on (page_views.url = parts.url)
 ;
 INSERT INTO graph.page SELECT * FROM graph.part;
-
--- Remove non-part rows for travel advice, because the first part doesn't have a
--- slug, so its URL is the same as the non-part.
-DELETE graph.page
-WHERE TRUE
-AND page.document_type = "travel_advice"
-AND page.part_index IS NULL
-;

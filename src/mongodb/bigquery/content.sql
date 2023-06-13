@@ -10,16 +10,13 @@ FROM `content.parts_content`
 UNION ALL
 -- For 'guide' documents, the first part has two different routes: the url with
 -- and without the slug.
--- For 'travel_advice' documents, the first part only has one route: the url
--- without the slug, because there is no slug.
 -- So append another row of each first part that has a slug, i.e. the base_path
 -- and url are different.
 SELECT
   base_path as url,
   * EXCEPT(url, base_path, part_index)
 FROM `content.parts_content`
-WHERE part_index = 0
-AND base_path <> url
+WHERE part_index = 1
 UNION ALL
 SELECT * FROM `content.place_content`
 UNION ALL
