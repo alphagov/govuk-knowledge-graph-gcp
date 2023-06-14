@@ -71,7 +71,7 @@ SELECT
   */
   CASE WHEN
     COUNT(page.title) OVER (PARTITION BY page.title) = 1 THEN page.title
-    ELSE page.internal_name
+    ELSE COALESCE(page.internal_name, page.title)
   END AS name,
   description,
   text,

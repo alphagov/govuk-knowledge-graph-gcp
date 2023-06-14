@@ -10,7 +10,7 @@ taxons AS (
   */
   CASE WHEN
     COUNT(taxon.title) OVER (PARTITION BY taxon.title) = 1 THEN taxon.title
-    ELSE taxon.internal_name
+    ELSE COALESCE(taxon.internal_name, taxon.title)
   END AS name,
   taxon.description,
   taxon.level,
