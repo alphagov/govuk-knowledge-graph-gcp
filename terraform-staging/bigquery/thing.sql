@@ -28,3 +28,9 @@ UNION ALL
 SELECT 'Transaction' AS type, title AS name
 FROM graph.page
 WHERE document_type = 'transaction'
+UNION ALL
+SELECT DISTINCT 'AbbreviationText' AS type, abbreviation_text AS name
+FROM content.abbreviations
+UNION ALL
+SELECT DISTINCT 'AbbreviationTitle' AS type, abbreviation_title AS name
+FROM content.abbreviations

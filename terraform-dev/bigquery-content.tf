@@ -2276,3 +2276,30 @@ resource "google_bigquery_table" "organisation_govuk_status" {
     ]
   )
 }
+
+resource "google_bigquery_table" "abbreviations" {
+  dataset_id    = "content"
+  table_id      = "abbreviations"
+  friendly_name = "Abbreviations"
+  description   = "Abbreviations defined on GOV.UK pages"
+  schema = jsonencode(
+    [
+      {
+        name = "count"
+        type = "INTEGER"
+      },
+      {
+        name = "url"
+        type = "STRING"
+      },
+      {
+        name = "abbreviation_title"
+        type = "STRING"
+      },
+      {
+        name = "abbreviation_text"
+        type = "STRING"
+      },
+    ]
+  )
+}
