@@ -160,6 +160,42 @@ gcloud compute ssh --zone "europe-west2-b" "mongodb" --project "govuk-knowledge-
 gcloud compute ssh --zone "europe-west2-b" "postgres" --project "govuk-knowledge-graph" -- container "klt--wttb"
 ```
 
+## Keeping terraform the same in all environments
+
+The terraform configuration of each environment `terraform`,
+`terraform-staging`, `terraform-dev` should be the same, apart from some
+unavoidable differences, such as the project number and feature flags.  This
+makes it easier to promote a change from one environment to another.  The
+workflow envisaged by this system is:
+
+1. Check out a new branch based on `main`.
+1. Edit the terraform configuration of the environment that you're using, e.g.
+   `terraform-dev`.
+1. Deploy that terraform configuration to the environment that you're using,
+   e.g. `govuk-knowledge-graph-dev`.
+1. Iterate until you're ready to submit a pull request.
+1. Copy the terraform files that you have changed into the other environments,
+   e.g. `terraform` and `terraform-staging`.
+1. Check that each of the environments is the same by navigating to the root of
+   the repository and running the bash script `diff-terraform.sh`.
+  The file `diff-exclude` lists which files are permitted to differ between
+  environments.
+1. Submit a pull request.
+1. A GitHub action called `diff-terraform` will do the same checks.
+1. After merging the pull request, deploy the terraform to the production
+   environment.
+1. Optionally deploy the terraform to the other non-production environments,
+   after checking that nobody is currently using them.
+
+This workflow ensures that the non-production environments are "eventually
+consistent" with the production environment.
+
+### Why not have a single `terraform` folder for all environments?
+
+This would avoid repetition.  If you know a way to achieve this that can cope
+with the environments having certain unavoidable differences (project numbers,
+feature flags), then please suggest it.
+
 ## Licence
 
 Unless stated otherwise, the codebase is released under [the MIT License][mit].
