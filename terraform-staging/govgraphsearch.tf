@@ -10,7 +10,7 @@ resource "google_service_account" "govgraphsearch" {
 resource "google_iap_brand" "project_brand" {
   # The support_email must be your own email address, or a Google Group that you
   # manage.
-  support_email     = "duncan.garmonsway@digital.cabinet-office.gov.uk"
+  support_email     = "govsearch-developers@digital.cabinet-office.gov.uk"
   application_title = var.application_title
 }
 
