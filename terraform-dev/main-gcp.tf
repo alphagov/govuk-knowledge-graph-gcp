@@ -104,6 +104,10 @@ variable "alerts_error_message_no_data" {
   type = string
 }
 
+variable "enable_redis_session_store_instance" {
+  default = true
+}
+
 terraform {
   required_providers {
     google = {
