@@ -576,7 +576,7 @@ resource "google_bigquery_table" "parts" {
   {
     "name": "slug",
     "type": "STRING",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "description": "What to add to the base_path to get the url"
   },
   {
