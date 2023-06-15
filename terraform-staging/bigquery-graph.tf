@@ -168,7 +168,7 @@ resource "google_bigquery_table" "page" {
     "description": "The order of the part among other parts in the same document, counting from 0"
   },
   {
-    "mode": "NULLABLE",
+    "mode": "REQUIRED",
     "name": "slug",
     "type": "STRING",
     "description": "What to add to the base_path to get the url"
@@ -305,7 +305,7 @@ resource "google_bigquery_table" "part" {
     "description": "The order of the part among other parts in the same document, counting from 0"
   },
   {
-    "mode": "NULLABLE",
+    "mode": "REQUIRED",
     "name": "slug",
     "type": "STRING",
     "description": "What to add to the base_path of the part to get the url"
