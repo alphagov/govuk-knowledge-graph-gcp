@@ -186,6 +186,17 @@ resource "google_compute_project_default_network_tier" "default" {
 resource "google_project_iam_policy" "project" {
   project     = var.project_id
   policy_data = data.google_iam_policy.project.policy_data
+
+
+  # Add the necessary role and member for Redis service account
+  bindings = [
+    {
+      role    = "roles/redis.serviceAgent"
+      members = [
+        "serviceAccount:service-${var.project_number}@cloud-redis.iam.gserviceaccount.com"
+      ]
+    },
+  ]
 }
 
 # All IAM members at the project level must be given here.
