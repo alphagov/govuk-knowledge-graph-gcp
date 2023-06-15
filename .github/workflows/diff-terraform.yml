@@ -1,0 +1,16 @@
+# Check that the terraform configuration is the same in every environment,
+# except for certain unavoidable differences allowed by the file `diff-exclude`.
+
+name: diff-terraform
+
+on:
+  push:
+    paths:
+      - 'terraform*/**'
+
+jobs:
+  diff-terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: ./diff-terraform.sh
