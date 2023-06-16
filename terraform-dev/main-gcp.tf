@@ -191,7 +191,7 @@ resource "google_project_iam_policy" "project" {
   # Add the necessary role and member for Redis service account
   bindings = [
     {
-      role    = "roles/redis.serviceAgent"
+      role = "roles/redis.serviceAgent"
       members = [
         "serviceAccount:service-${var.project_number}@cloud-redis.iam.gserviceaccount.com"
       ]
