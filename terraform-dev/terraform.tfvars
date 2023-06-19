@@ -4,27 +4,29 @@ region          = "europe-west2"
 zone            = "europe-west2-b"
 location        = "EUROPE-WEST2"
 
-services = [
-  "storage.googleapis.com",
-  "iam.googleapis.com",
-  "appengine.googleapis.com",
-  "artifactregistry.googleapis.com",
-  "cloudscheduler.googleapis.com",
-  "bigquery.googleapis.com",
-  "bigquerydatatransfer.googleapis.com",
-  "run.googleapis.com",
-  "compute.googleapis.com",
-  "dns.googleapis.com",
-  "eventarc.googleapis.com",
-  "networkmanagement.googleapis.com",
-  "pubsub.googleapis.com",
-  "sourcerepo.googleapis.com",
-  "vpcaccess.googleapis.com",
-  "workflows.googleapis.com",
-  "iap.googleapis.com",
-  "secretmanager.googleapis.com",
-  "redis.googleapis.com"
-]
+services = concat(
+  [
+    "storage.googleapis.com",
+    "iam.googleapis.com",
+    "appengine.googleapis.com",
+    "artifactregistry.googleapis.com",
+    "cloudscheduler.googleapis.com",
+    "bigquery.googleapis.com",
+    "bigquerydatatransfer.googleapis.com",
+    "run.googleapis.com",
+    "compute.googleapis.com",
+    "dns.googleapis.com",
+    "eventarc.googleapis.com",
+    "networkmanagement.googleapis.com",
+    "pubsub.googleapis.com",
+    "sourcerepo.googleapis.com",
+    "vpcaccess.googleapis.com",
+    "workflows.googleapis.com",
+    "iap.googleapis.com",
+    "secretmanager.googleapis.com"
+  ],
+  var.enable_redis_session_store_instance ? ["redis.googleapis.com"] : []
+)
 
 postgres-startup-script = <<EOF
 #cloud-config
