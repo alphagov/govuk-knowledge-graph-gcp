@@ -12,3 +12,4 @@ oauth_callback_url    = "https://govgraphsearchdev.dev/auth/gds/callback"
 govgraphsearch_iap_members = [
   "allUsers"
 ]
+enable_redis_session_store_instance = true

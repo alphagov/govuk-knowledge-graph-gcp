@@ -9,6 +9,7 @@ enable_auth           = "false"
 oauth_auth_url        = "https://signon.publishing.service.gov.uk/oauth/authorize"
 oauth_token_url       = "https://signon.publishing.service.gov.uk/oauth/access_token"
 oauth_callback_url    = "https://govgraphsearch.dev/auth/gds/callback"
+enable_redis_session_store_instance = false
 govgraphsearch_iap_members = [
   "group:data-products@digital.cabinet-office.gov.uk",
 ]

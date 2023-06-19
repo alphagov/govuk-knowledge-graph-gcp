@@ -105,7 +105,7 @@ variable "alerts_error_message_no_data" {
 }
 
 variable "enable_redis_session_store_instance" {
-  default = true
+  type = string
 }
 
 terraform {
