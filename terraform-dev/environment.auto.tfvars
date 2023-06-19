@@ -9,4 +9,6 @@ enable_auth           = "true"
 oauth_auth_url        = "https://signon.integration.publishing.service.gov.uk/oauth/authorize"
 oauth_token_url       = "https://signon.integration.publishing.service.gov.uk/oauth/access_token"
 oauth_callback_url    = "https://govgraphsearchdev.dev/auth/gds/callback"
-govgraphsearch_iap_members = [ "allUsers" ]
+govgraphsearch_iap_members = [
+  "allUsers"
+]

@@ -1,0 +1,31 @@
+name: Format and validate terraform
+
+on:
+  push:
+    paths:
+      - 'terraform*/**'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        directory: ["terraform", "terraform-staging", "terraform-dev"]
+    defaults:
+      run:
+        working-directory: ${{ matrix.directory }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Format terraform
+        run: terraform fmt -recursive -check -diff
+
+      - name: Initialise terraform
+        run: terraform init -backend=false
+
+      - name: Validate terraform
+        run: terraform validate

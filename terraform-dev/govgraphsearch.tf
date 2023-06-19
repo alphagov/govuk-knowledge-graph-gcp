@@ -61,7 +61,7 @@ data "google_iam_policy" "sso_oauth_client_id" {
 }
 
 resource "google_secret_manager_secret_iam_policy" "sso_oauth_client_id" {
-  secret_id = google_secret_manager_secret.sso_oauth_client_id.secret_id
+  secret_id   = google_secret_manager_secret.sso_oauth_client_id.secret_id
   policy_data = data.google_iam_policy.sso_oauth_client_id.policy_data
 }
 
@@ -75,7 +75,7 @@ data "google_iam_policy" "sso_oauth_client_secret" {
 }
 
 resource "google_secret_manager_secret_iam_policy" "sso_oauth_client_secret" {
-  secret_id = google_secret_manager_secret.sso_oauth_client_secret.secret_id
+  secret_id   = google_secret_manager_secret.sso_oauth_client_secret.secret_id
   policy_data = data.google_iam_policy.sso_oauth_client_secret.policy_data
 }
 
