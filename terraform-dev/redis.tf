@@ -7,4 +7,7 @@ resource "google_redis_instance" "session_store" {
 
   # Enable / Disable instance
   count = var.enable_redis_session_store_instance ? 1 : 0
+
+  # Service account needs to be binded to this role before creating the instance
+  depends_on = [data.google_iam_policy.project]
 }
