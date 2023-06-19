@@ -104,6 +104,10 @@ variable "alerts_error_message_no_data" {
   type = string
 }
 
+variable "enable_redis_session_store_instance" {
+  type = string
+}
+
 terraform {
   required_providers {
     google = {
@@ -382,6 +386,14 @@ data "google_iam_policy" "project" {
     role = "roles/workflows.serviceAgent"
     members = [
       "serviceAccount:service-${var.project_number}@gcp-sa-workflows.iam.gserviceaccount.com",
+    ]
+  }
+
+  # Add the necessary role and member for Redis service account
+  binding {
+    role = "roles/redis.serviceAgent"
+    members = [
+      "serviceAccount:service-${var.project_number}@cloud-redis.iam.gserviceaccount.com"
     ]
   }
 }
