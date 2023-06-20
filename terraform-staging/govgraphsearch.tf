@@ -198,6 +198,10 @@ resource "google_cloud_run_service" "govgraphsearch" {
           value = try(google_redis_instance.session_store[0].port, "")
         }
         env {
+          name  = "NODE_ENV"
+          value = var.environment
+        }
+        env {
           name  = "NEO4J_URL"
           value = "http://${google_compute_address.neo4j_internal.address}:7474/db/neo4j/tx"
         }
