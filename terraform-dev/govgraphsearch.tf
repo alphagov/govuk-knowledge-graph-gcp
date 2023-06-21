@@ -171,6 +171,8 @@ resource "google_cloud_run_service" "govgraphsearch" {
   location = var.region
   # https://github.com/hashicorp/terraform-provider-google/issues/9438#issuecomment-871946786
   autogenerate_revision_name = true
+
+  depends_on = [ google_redis_instance.session_store ]
   metadata {
     annotations = {
       # The ingress setting can only be set when the cloudrun service already
