@@ -240,6 +240,10 @@ resource "google_cloud_run_service" "govgraphsearch" {
           value = var.enable_auth
         }
         env {
+          name  = "SIGNON_URL"
+          value = var.signon_url
+        }
+        env {
           name  = "OAUTH_AUTH_URL"
           value = var.oauth_auth_url
         }

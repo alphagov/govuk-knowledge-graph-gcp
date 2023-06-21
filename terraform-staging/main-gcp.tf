@@ -72,6 +72,10 @@ variable "enable_auth" {
   type = string
 }
 
+variable "signon_url" {
+  type = string
+}
+
 variable "oauth_auth_url" {
   type = string
 }
