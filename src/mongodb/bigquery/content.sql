@@ -1,5 +1,6 @@
 -- Concatenate tables of content from various document types into one
-CREATE OR REPLACE TABLE `content.content` AS
+TRUNCATE TABLE `content.content`;
+INSERT INTO `content.content`
 SELECT * FROM `content.body_content`
 UNION ALL
 SELECT * FROM `content.body`
