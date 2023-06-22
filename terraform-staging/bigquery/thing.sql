@@ -27,7 +27,9 @@ FROM graph.taxon
 UNION ALL
 SELECT 'Transaction' AS type, title AS name
 FROM graph.page
-WHERE document_type = 'transaction'
+WHERE document_type = 'transaction' AND
+/* Exclude "alpha" (depcrecated) taxons */
+phase != "alpha"
 UNION ALL
 SELECT DISTINCT 'AbbreviationText' AS type, abbreviation_text AS name
 FROM content.abbreviations
