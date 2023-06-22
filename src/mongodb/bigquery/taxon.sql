@@ -9,6 +9,4 @@ SELECT
   taxon_levels.level
 FROM content.taxon_levels
 INNER JOIN graph.page AS page ON taxon_levels.homepage_url = page.url
-/* Exclude "alpha" (depcrecated) taxons */
-WHERE page.phase != "alpha"
 ;

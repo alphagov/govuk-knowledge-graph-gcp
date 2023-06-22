@@ -46,3 +46,6 @@ SELECT
 FROM taxons
 LEFT JOIN ancestor_taxons USING (taxon_url)
 LEFT JOIN child_taxons USING (taxon_url)
+/* Use content.phase to filter "alpha" (deprecated) taxons */
+LEFT JOIN content.phase ON phase.url = taxons.url
+WHERE phase.phase != "alpha"
