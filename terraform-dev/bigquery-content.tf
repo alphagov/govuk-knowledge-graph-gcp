@@ -35,9 +35,7 @@ data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
       "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
       "serviceAccount:${google_service_account.bigquery_scheduled_queries_search.email}",
       "serviceAccount:${google_service_account.govgraphsearch.email}",
-      "group:data-engineering@digital.cabinet-office.gov.uk",
-      "group:data-analysis@digital.cabinet-office.gov.uk",
-      "group:data-products@digital.cabinet-office.gov.uk"
+      "group:govsearch-data-viewers@digital.cabinet-office.gov.uk"
     ]
   }
 }
