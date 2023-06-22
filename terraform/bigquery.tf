@@ -135,11 +135,11 @@ resource "google_bigquery_data_transfer_config" "check_tables_metadata" {
   service_account_name = google_service_account.bigquery_scheduled_queries_search.email
 }
 
-resource "google_monitoring_notification_channel" "data_products" {
-  display_name = "Data Products"
+resource "google_monitoring_notification_channel" "govsearch_developers" {
+  display_name = "GovSearch Developers"
   type         = "email"
   labels = {
-    email_address = "data-products@digital.cabinet-office.gov.uk"
+    email_address = "govsearch-developers@digital.cabinet-office.gov.uk"
   }
 }
 
@@ -153,7 +153,7 @@ resource "google_monitoring_alert_policy" "tables_metadata" {
     }
   }
 
-  notification_channels = [google_monitoring_notification_channel.data_products.name]
+  notification_channels = [google_monitoring_notification_channel.govsearch_developers.name]
   alert_strategy {
     notification_rate_limit {
       // One day
