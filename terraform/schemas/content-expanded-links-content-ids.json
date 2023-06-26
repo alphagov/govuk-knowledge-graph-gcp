@@ -1,0 +1,20 @@
+[
+    {
+      "name": "link_type",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "The type of relationship between two content IDs, from one to the other"
+    },
+    {
+      "name": "from_content_id",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "The origin content ID"
+    },
+    {
+      "name": "to_content_id",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "The destination content ID"
+    }
+]

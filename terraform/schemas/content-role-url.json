@@ -1,0 +1,8 @@
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a 'role' on the www.gov.uk domain"
+    }
+]

@@ -1,0 +1,14 @@
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a role on GOV.UK"
+    },
+    {
+      "name": "payment_type",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "Payment type of a role on GOV.UK"
+    }
+]

@@ -1,0 +1,14 @@
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a piece of static content on the www.gov.uk domain"
+    },
+    {
+      "name": "acronym",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "The official acronym of an organisation on GOV.UK"
+    }
+  ]

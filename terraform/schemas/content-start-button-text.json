@@ -1,0 +1,14 @@
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a piece of static content on the www.gov.uk domain"
+    },
+    {
+      "name": "start_button_text",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "Custom text to be displayed on the green button that leads you to another page"
+    }
+]

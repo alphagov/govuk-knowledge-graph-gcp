@@ -1,0 +1,8 @@
+[
+    {
+      "mode": "REQUIRED",
+      "name": "url",
+      "type": "STRING",
+      "description": "URL of a bank holiday, derived from its title"
+    }
+  ]

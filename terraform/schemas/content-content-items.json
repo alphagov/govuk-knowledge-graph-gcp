@@ -1,0 +1,8 @@
+[
+    {
+      "mode": "REQUIRED",
+      "name": "item",
+      "type": "JSON",
+      "description": "JSON representation of a content item"
+    }
+]
