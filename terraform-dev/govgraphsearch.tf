@@ -50,6 +50,14 @@ resource "google_secret_manager_secret" "sso_oauth_client_secret" {
   }
 }
 
+# Create a secret for cookie signing
+resource "google_secret_manager_secret" "cookie-session-signature" {
+  secret_id = "cookie-session-signature"
+  replication {
+    automatic = true
+  }
+}
+
 # Allow the Cloud Run service to access the GOV.UK Signon secrets
 data "google_iam_policy" "sso_oauth_client_id" {
   binding {
@@ -77,6 +85,20 @@ data "google_iam_policy" "sso_oauth_client_secret" {
 resource "google_secret_manager_secret_iam_policy" "sso_oauth_client_secret" {
   secret_id   = google_secret_manager_secret.sso_oauth_client_secret.secret_id
   policy_data = data.google_iam_policy.sso_oauth_client_secret.policy_data
+}
+
+data "google_iam_policy" "cookie-session-signature" {
+  binding {
+    role = "roles/secretmanager.secretAccessor"
+    members = [
+      "serviceAccount:${google_service_account.govgraphsearch.email}",
+    ]
+  }
+}
+
+resource "google_secret_manager_secret_iam_policy" "cookie-session-signature" {
+  secret_id   = google_secret_manager_secret.cookie-session-signature.secret_id
+  policy_data = data.google_iam_policy.cookie-session-signature.policy_data
 }
 
 # Then manually paste the OAUTH credentials into the Secret Manager
@@ -117,6 +139,10 @@ data "google_secret_manager_secret_version" "sso_oauth_client_id" {
 
 data "google_secret_manager_secret_version" "sso_oauth_client_secret" {
   secret = "OAUTH_SECRET"
+}
+
+data "google_secret_manager_secret_version" "cookie-session-signature" {
+  secret = "cookie-session-signature"
 }
 
 # Boilerplate
@@ -240,6 +266,15 @@ resource "google_cloud_run_service" "govgraphsearch" {
             secret_key_ref {
               key  = "latest"
               name = "OAUTH_SECRET"
+            }
+          }
+        }
+        env {
+          name = "cookie-session-signature"
+          value_from {
+            secret_key_ref {
+              key  = "latest"
+              name = "cookie-session-signature"
             }
           }
         }
