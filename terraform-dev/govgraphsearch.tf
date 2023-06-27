@@ -154,7 +154,7 @@ resource "google_compute_region_network_endpoint_group" "govgraphsearch_eg" {
   }
 }
 
-# Connect to the same VPC where Neo4j is
+# Connect to the VPC
 resource "google_vpc_access_connector" "cloudrun_connector" {
   name = "cloudrun-connector"
   subnet {

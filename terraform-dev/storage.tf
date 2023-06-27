@@ -83,7 +83,7 @@ data "google_iam_policy" "bucket_repository" {
   }
 }
 
-# Bucket for dataset extracted from MongoDB and Postgres for upload into Neo4j
+# Bucket for dataset extracted from MongoDB and Postgres for upload into BigQuery
 resource "google_storage_bucket" "data_processed" {
   name                        = "${var.project_id}-data-processed" # Must be globally unique
   force_destroy               = false                              # terraform won't delete the bucket unless it is empty
