@@ -1,19 +1,14 @@
-{
-    "table_id": "role_locale",
-    "friendly_name": "Role locale",
-    "description": "Locale of a role",
-    "schema": [
-        {
-            "name": "url",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "URL of a role on GOV.UK"
-        },
-        {
-            "name": "locale",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "Locale of a role on GOV.UK"
-        }
-    ]
-}
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a role on GOV.UK"
+    },
+    {
+      "name": "locale",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "Locale of a role on GOV.UK"
+    }
+]

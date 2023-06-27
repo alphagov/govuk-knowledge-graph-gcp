@@ -1,31 +1,26 @@
-{
-    "table_id": "transaction_abbreviations",
-    "friendly_name": "Transaction abbreviations",
-    "description": "Text and acronyms of abbreviations from the text of 'transaction' pages",
-    "schema": [
-        {
-            "name": "count",
-            "type": "INTEGER",
-            "mode": "REQUIRED",
-            "description": "Number of occurrences of a link with the same URL and link-text in the same document"
-        },
-        {
-            "name": "url",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "URL of a piece of static content on the www.gov.uk domain"
-        },
-        {
-            "name": "abbreviation_title",
-            "type": "STRING",
-            "mode": "NULLABLE",
-            "description": "Title of an abbreviation"
-        },
-        {
-            "name": "abbreviation_text",
-            "type": "STRING",
-            "mode": "NULLABLE",
-            "description": "Acronym of an abbreviation"
-        }
-    ]
-}
+[
+    {
+      "name": "count",
+      "type": "INTEGER",
+      "mode": "REQUIRED",
+      "description": "Number of occurrences of a link with the same URL and link-text in the same document"
+    },
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a piece of static content on the www.gov.uk domain"
+    },
+    {
+      "name": "abbreviation_title",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "Title of an abbreviation"
+    },
+    {
+      "name": "abbreviation_text",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "Acronym of an abbreviation"
+    }
+]

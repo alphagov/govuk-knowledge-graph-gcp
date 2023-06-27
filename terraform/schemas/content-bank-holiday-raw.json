@@ -1,53 +1,48 @@
-{
-    "table_id": "bank_holiday_raw",
-    "friendly_name": "UK Bank Holiday raw JSON data",
-    "description": "UK Bank Holiday raw JSON data",
-    "schema": [
+[
+    {
+      "fields": [
         {
-            "fields": [
-                {
-                    "fields": [
-                        {
-                            "mode": "NULLABLE",
-                            "name": "title",
-                            "type": "STRING",
-                            "description": "Name of the bank holiday"
-                        },
-                        {
-                            "mode": "NULLABLE",
-                            "name": "notes",
-                            "type": "STRING",
-                            "description": "Notes about the bank holiday"
-                        },
-                        {
-                            "mode": "NULLABLE",
-                            "name": "date",
-                            "type": "DATE",
-                            "description": "Date of a single occurrence of the bank holiday"
-                        },
-                        {
-                            "mode": "NULLABLE",
-                            "name": "bunting",
-                            "type": "BOOLEAN",
-                            "description": "Whether to display bunting on the GOV.UK website on the date of the bank holiday"
-                        }
-                    ],
-                    "mode": "REPEATED",
-                    "name": "events",
-                    "type": "RECORD",
-                    "description": "Bank holidays in the given division"
-                },
-                {
-                    "mode": "NULLABLE",
-                    "name": "division",
-                    "type": "STRING",
-                    "description": "Part of the UK"
-                }
-            ],
-            "mode": "REPEATED",
-            "name": "body",
-            "type": "RECORD",
-            "description": "Root of the JSON data"
+          "fields": [
+            {
+              "mode": "NULLABLE",
+              "name": "title",
+              "type": "STRING",
+              "description": "Name of the bank holiday"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "notes",
+              "type": "STRING",
+              "description": "Notes about the bank holiday"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "date",
+              "type": "DATE",
+              "description": "Date of a single occurrence of the bank holiday"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "bunting",
+              "type": "BOOLEAN",
+              "description": "Whether to display bunting on the GOV.UK website on the date of the bank holiday"
+            }
+          ],
+          "mode": "REPEATED",
+          "name": "events",
+          "type": "RECORD",
+          "description": "Bank holidays in the given division"
+        },
+        {
+          "mode": "NULLABLE",
+          "name": "division",
+          "type": "STRING",
+          "description": "Part of the UK"
         }
-    ]
-}
+      ],
+      "mode": "REPEATED",
+      "name": "body",
+      "type": "RECORD",
+      "description": "Root of the JSON data"
+    }
+]

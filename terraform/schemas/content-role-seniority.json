@@ -1,19 +1,14 @@
-{
-    "table_id": "role_seniority",
-    "friendly_name": "Role seniority",
-    "description": "Seniority of roles",
-    "schema": [
-        {
-            "name": "url",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "URL of a role on GOV.UK"
-        },
-        {
-            "name": "seniority",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "Seniority of a role on GOV.UK"
-        }
-    ]
-}
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a role on GOV.UK"
+    },
+    {
+      "name": "seniority",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "Seniority of a role on GOV.UK"
+    }
+]

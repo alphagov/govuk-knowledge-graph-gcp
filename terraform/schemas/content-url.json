@@ -1,13 +1,8 @@
-{
-    "table_id": "",
-    "friendly_name": "",
-    "description": "",
-    "schema": [
-        {
-            "name": "url",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "URL of a piece of static content on the www.gov.uk domain"
-        }
-    ]
-}
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a piece of static content on the www.gov.uk domain"
+    }
+  ]

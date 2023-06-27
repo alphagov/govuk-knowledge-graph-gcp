@@ -1,19 +1,14 @@
-{
-    "table_id": "appointment_ended_on",
-    "friendly_name": "Appointment ended on",
-    "description": "When an appointment to a role ended",
-    "schema": [
-        {
-            "name": "url",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "URL of a role appointment on GOV.UK"
-        },
-        {
-            "name": "ended_on",
-            "type": "TIMESTAMP",
-            "mode": "REQUIRED",
-            "description": "When an appointment to a role ended"
-        }
-    ]
-}
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a role appointment on GOV.UK"
+    },
+    {
+      "name": "ended_on",
+      "type": "TIMESTAMP",
+      "mode": "REQUIRED",
+      "description": "When an appointment to a role ended"
+    }
+]

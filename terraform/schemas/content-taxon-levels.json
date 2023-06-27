@@ -1,25 +1,20 @@
-{
-    "table_id": "taxon_levels",
-    "friendly_name": "Taxon levels",
-    "description": "The level of each taxon in the hierarchy, with level 1 as the top",
-    "schema": [
-        {
-            "name": "url",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "URL of a taxon"
-        },
-        {
-            "name": "homepage_url",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "URL of a taxon's home page on GOV.UK"
-        },
-        {
-            "name": "level",
-            "type": "INTEGER",
-            "mode": "REQUIRED",
-            "description": "Level of the taxon in the hierarchy, with level 1 as the top"
-        }
-    ]
-}
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a taxon"
+    },
+    {
+      "name": "homepage_url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a taxon's home page on GOV.UK"
+    },
+    {
+      "name": "level",
+      "type": "INTEGER",
+      "mode": "REQUIRED",
+      "description": "Level of the taxon in the hierarchy, with level 1 as the top"
+    }
+]

@@ -1,19 +1,14 @@
-{
-    "table_id": "role_publishing_app",
-    "friendly_name": "Role publishing app",
-    "description": "Publishing app of a role",
-    "schema": [
-        {
-            "name": "url",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "URL of a role on GOV.UK"
-        },
-        {
-            "name": "publishing_app",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "Publishing app of a role on GOV.UK"
-        }
-    ]
-}
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a role on GOV.UK"
+    },
+    {
+      "name": "publishing_app",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "Publishing app of a role on GOV.UK"
+    }
+]

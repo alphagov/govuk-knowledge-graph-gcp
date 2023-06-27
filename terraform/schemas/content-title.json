@@ -1,19 +1,14 @@
-{
-    "table_id": "title",
-    "friendly_name": "Title",
-    "description": "Titles of static content on the www.gov.uk domain, not including parts of 'guide' and 'travel_advice' pages, which are in the 'parts' table.",
-    "schema": [
-        {
-            "name": "url",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "URL of a piece of static content on the www.gov.uk domain"
-        },
-        {
-            "name": "title",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "The title of a content item"
-        }
-    ]
-}
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a piece of static content on the www.gov.uk domain"
+    },
+    {
+      "name": "title",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "The title of a content item"
+    }
+]

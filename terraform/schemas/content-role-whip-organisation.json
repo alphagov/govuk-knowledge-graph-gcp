@@ -1,19 +1,14 @@
-{
-    "table_id": "role_whip_organisation",
-    "friendly_name": "Role whip organisation",
-    "description": "Whip organisation of roles",
-    "schema": [
-        {
-            "name": "url",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "URL of a role on GOV.UK"
-        },
-        {
-            "name": "whip_organisation",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "Whip organisation of a role on GOV.UK"
-        }
-    ]
-}
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a role on GOV.UK"
+    },
+    {
+      "name": "whip_organisation",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "Whip organisation of a role on GOV.UK"
+    }
+]

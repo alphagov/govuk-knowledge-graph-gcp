@@ -1,13 +1,8 @@
-{
-    "table_id": "role_url",
-    "friendly_name": "Unique URLs of roles on GOV.UK",
-    "description": "Unique URLs of roles on the www.gov.uk domain",
-    "schema": [
-        {
-            "name": "url",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "URL of a 'role' on the www.gov.uk domain"
-        }
-    ]
-}
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a 'role' on the www.gov.uk domain"
+    }
+]

@@ -1,19 +1,14 @@
-{
-    "table_id": "document_type",
-    "friendly_name": "Document type",
-    "description": "The kind of thing that a content item on GOV.UK represents",
-    "schema": [
-        {
-            "name": "url",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "URL of a piece of static content on the www.gov.uk domain"
-        },
-        {
-            "name": "document_type",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "The kind of thing that a content item on GOV.UK represents"
-        }
-    ]
-}
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a piece of static content on the www.gov.uk domain"
+    },
+    {
+      "name": "document_type",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "The kind of thing that a content item on GOV.UK represents"
+    }
+  ]

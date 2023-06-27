@@ -1,19 +1,14 @@
-{
-    "table_id": "role_first_published_at",
-    "friendly_name": "Role first published at",
-    "description": "When a role was first published",
-    "schema": [
-        {
-            "name": "url",
-            "type": "STRING",
-            "mode": "REQUIRED",
-            "description": "URL of a role role on GOV.UK"
-        },
-        {
-            "name": "first_published_at",
-            "type": "TIMESTAMP",
-            "mode": "REQUIRED",
-            "description": "When a role was first published"
-        }
-    ]
-}
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a role role on GOV.UK"
+    },
+    {
+      "name": "first_published_at",
+      "type": "TIMESTAMP",
+      "mode": "REQUIRED",
+      "description": "When a role was first published"
+    }
+]
