@@ -1,14 +1,14 @@
 [
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a piece of static content on the www.gov.uk domain"
-    },
-    {
-      "name": "department_analytics_profile",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "Analytics identifier with which to record views"
-    }
-  ]
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "department_analytics_profile",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Analytics identifier with which to record views"
+  }
+]

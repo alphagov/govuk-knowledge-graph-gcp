@@ -1,38 +1,38 @@
 [
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a piece of static content on the www.gov.uk domain"
-    },
-    {
-      "name": "base_path",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of the parent document of the part"
-    },
-    {
-      "name": "part_index",
-      "type": "INTEGER",
-      "mode": "REQUIRED",
-      "description": "The order of the part among other parts in the same document, counting from 0"
-    },
-    {
-      "name": "html",
-      "type": "STRING",
-      "mode": "NULLABLE",
-      "description": "The content of the page as HTML"
-    },
-    {
-      "name": "text",
-      "type": "STRING",
-      "mode": "NULLABLE",
-      "description": "The content of the page as plain text extracted from the HTML"
-    },
-    {
-      "name": "text_without_blank_lines",
-      "type": "STRING",
-      "mode": "NULLABLE",
-      "description": "The content of the page as plain text, omitting blank lines"
-    }
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "base_path",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of the parent document of the part"
+  },
+  {
+    "name": "part_index",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "The order of the part among other parts in the same document, counting from 0"
+  },
+  {
+    "name": "html",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The content of the page as HTML"
+  },
+  {
+    "name": "text",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The content of the page as plain text extracted from the HTML"
+  },
+  {
+    "name": "text_without_blank_lines",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The content of the page as plain text, omitting blank lines"
+  }
 ]

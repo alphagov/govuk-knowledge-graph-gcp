@@ -1,26 +1,26 @@
 [
-    {
-      "mode": "REQUIRED",
-      "name": "url",
-      "type": "STRING",
-      "description": "URL of an organisation on the GOV.UK website"
-    },
-    {
-      "mode": "NULLABLE",
-      "name": "status",
-      "type": "STRING",
-      "description": "Status of an organisation on the GOV.UK website"
-    },
-    {
-      "mode": "NULLABLE",
-      "name": "updated_at",
-      "type": "TIMESTAMP",
-      "description": "Date and time that an organisation's status was last updated"
-    },
-    {
-      "mode": "NULLABLE",
-      "name": "organisation_url",
-      "type": "STRING",
-      "description": "URL of an organisation, not necessarily on GOV.UK"
-    }
+  {
+    "mode": "REQUIRED",
+    "name": "url",
+    "type": "STRING",
+    "description": "URL of an organisation on the GOV.UK website"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "status",
+    "type": "STRING",
+    "description": "Status of an organisation on the GOV.UK website"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "updated_at",
+    "type": "TIMESTAMP",
+    "description": "Date and time that an organisation's status was last updated"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "organisation_url",
+    "type": "STRING",
+    "description": "URL of an organisation, not necessarily on GOV.UK"
+  }
 ]

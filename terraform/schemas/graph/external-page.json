@@ -1,8 +1,8 @@
 [
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a page that isn't on the https://www.gov.uk domain"
-    }
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a page that isn't on the https://www.gov.uk domain"
+  }
 ]

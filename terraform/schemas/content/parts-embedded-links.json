@@ -1,44 +1,44 @@
 [
-    {
-      "name": "count",
-      "type": "INTEGER",
-      "mode": "REQUIRED",
-      "description": "Number of occurrences of a link with the same URL and link-text in the same document"
-    },
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a piece of static content on the www.gov.uk domain"
-    },
-    {
-      "name": "base_path",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of the parent document of the part"
-    },
-    {
-      "name": "part_index",
-      "type": "INTEGER",
-      "mode": "REQUIRED",
-      "description": "The order of the part among other parts in the same document, counting from 0"
-    },
-    {
-      "name": "link_url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL target of a hyperlink"
-    },
-    {
-      "name": "link_url_bare",
-      "type": "STRING",
-      "mode": "NULLABLE",
-      "description": "URL target of a hyperlink, omitting parameters and anchors"
-    },
-    {
-      "name": "link_text",
-      "type": "STRING",
-      "mode": "NULLABLE",
-      "description": "Plain text that is displayed in place of the URL"
-    }
+  {
+    "name": "count",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Number of occurrences of a link with the same URL and link-text in the same document"
+  },
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "base_path",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of the parent document of the part"
+  },
+  {
+    "name": "part_index",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "The order of the part among other parts in the same document, counting from 0"
+  },
+  {
+    "name": "link_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL target of a hyperlink"
+  },
+  {
+    "name": "link_url_bare",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "URL target of a hyperlink, omitting parameters and anchors"
+  },
+  {
+    "name": "link_text",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Plain text that is displayed in place of the URL"
+  }
 ]

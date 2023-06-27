@@ -1,14 +1,14 @@
 [
-    {
-      "name": "appointment_url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a role appointment on GOV.UK"
-    },
-    {
-      "name": "role_url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a role on GOV.UK"
-    }
+  {
+    "name": "appointment_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role appointment on GOV.UK"
+  },
+  {
+    "name": "role_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  }
 ]

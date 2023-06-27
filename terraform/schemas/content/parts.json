@@ -1,32 +1,32 @@
 [
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "Complete URL of the part"
-    },
-    {
-      "name": "base_path",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of the parent document of the part"
-    },
-    {
-      "name": "slug",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "What to add to the base_path to get the url"
-    },
-    {
-      "name": "part_index",
-      "type": "INTEGER",
-      "mode": "REQUIRED",
-      "description": "The order of the part among other parts in the same document, counting from 0"
-    },
-    {
-      "name": "part_title",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "The title of the part"
-    }
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Complete URL of the part"
+  },
+  {
+    "name": "base_path",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of the parent document of the part"
+  },
+  {
+    "name": "slug",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "What to add to the base_path to get the url"
+  },
+  {
+    "name": "part_index",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "The order of the part among other parts in the same document, counting from 0"
+  },
+  {
+    "name": "part_title",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "The title of the part"
+  }
 ]

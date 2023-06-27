@@ -1,14 +1,14 @@
 [
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a piece of static content on the www.gov.uk domain"
-    },
-    {
-      "name": "publishing_app",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "The application that published a content item on GOV.UK"
-    }
-  ]
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a piece of static content on the www.gov.uk domain"
+  },
+  {
+    "name": "publishing_app",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "The application that published a content item on GOV.UK"
+  }
+]

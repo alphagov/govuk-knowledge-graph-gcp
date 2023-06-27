@@ -1,8 +1,8 @@
 [
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a role appointment on GOV.UK"
-    }
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role appointment on GOV.UK"
+  }
 ]

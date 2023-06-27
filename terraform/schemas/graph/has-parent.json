@@ -1,14 +1,14 @@
 [
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a taxon"
-    },
-    {
-      "name": "parent_url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a more general taxon"
-    }
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a taxon"
+  },
+  {
+    "name": "parent_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a more general taxon"
+  }
 ]

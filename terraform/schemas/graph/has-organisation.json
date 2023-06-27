@@ -1,14 +1,14 @@
 [
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a page"
-    },
-    {
-      "name": "organisation_url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a UK government organisation"
-    }
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a page"
+  },
+  {
+    "name": "organisation_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a UK government organisation"
+  }
 ]
