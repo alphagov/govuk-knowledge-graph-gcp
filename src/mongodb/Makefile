@@ -271,7 +271,7 @@ data/body_content_abbreviations.csv.gz: temp/body_content.mongodb
 	touch data/body_content_abbreviations.csv.gz
 
 # Combine the tables of content of each document type, export back into a
-# storage bucket as many files, and concatenate those files into a single file.
+# storage bucket as many files.
 temp/content.bigquery: data/step_by_step_content.csv.gz data/parts_content.csv.gz data/transaction_content.csv.gz data/place_content.csv.gz data/body.csv.gz data/body_content.csv.gz
 	-gcloud storage rm \
 		"gs://${PROJECT_ID}-data-processed/bigquery/content_[0-9]*.csv.gz" \
@@ -282,7 +282,7 @@ temp/content.bigquery: data/step_by_step_content.csv.gz data/parts_content.csv.g
 	touch temp/content.bigquery
 
 # Derive a table of one row per line of content per page, export back into a
-# storage bucket as many files, and concatenate those files into a single file.
+# storage bucket as many files.
 temp/lines.bigquery: temp/content.bigquery
 	-gcloud storage rm \
 		"gs://${PROJECT_ID}-data-processed/bigquery/lines_[0-9]*.csv.gz" \
@@ -292,7 +292,7 @@ temp/lines.bigquery: temp/content.bigquery
 		< /dev/stdin
 
 # Combine the tables of embedded_links of each document type, export back into a
-# storage bucket as many files, and concatenate those files into a single file.
+# storage bucket as many files.
 temp/embedded_links.bigquery: data/step_by_step_embedded_links.csv.gz data/parts_embedded_links.csv.gz data/transaction_embedded_links.csv.gz data/place_embedded_links.csv.gz data/body_embedded_links.csv.gz data/body_content_embedded_links.csv.gz
 	-gcloud storage rm \
 		"gs://${PROJECT_ID}-data-processed/bigquery/embedded_links_[0-9]*.csv.gz" \
@@ -303,7 +303,7 @@ temp/embedded_links.bigquery: data/step_by_step_embedded_links.csv.gz data/parts
 	touch $@
 
 # Combine the tables of abbreviations of each document type, export back into a
-# storage bucket as many files, and concatenate those files into a single file.
+# storage bucket as many files.
 temp/abbreviations.bigquery: data/step_by_step_abbreviations.csv.gz data/parts_abbreviations.csv.gz data/transaction_abbreviations.csv.gz data/place_abbreviations.csv.gz data/body_abbreviations.csv.gz data/body_content_abbreviations.csv.gz
 	-gcloud storage rm \
 		"gs://${PROJECT_ID}-data-processed/bigquery/abbreviations_[0-9]*.csv.gz" \
