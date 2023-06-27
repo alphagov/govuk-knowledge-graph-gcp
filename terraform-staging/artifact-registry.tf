@@ -41,8 +41,7 @@ data "google_iam_policy" "artifact_registry_docker" {
     role = "roles/artifactregistry.reader"
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
-      "serviceAccount:${google_service_account.gce_postgres.email}",
-      "serviceAccount:${google_service_account.gce_neo4j.email}",
+      "serviceAccount:${google_service_account.gce_postgres.email}"
     ]
   }
 
