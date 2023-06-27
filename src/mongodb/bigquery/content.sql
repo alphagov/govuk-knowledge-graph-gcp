@@ -16,7 +16,7 @@ SELECT
   base_path as url,
   * EXCEPT(url, base_path, part_index)
 FROM `content.parts_content`
-WHERE part_index = 1
+WHERE part_index = 0
 UNION ALL
 SELECT * FROM `content.place_content`
 UNION ALL
