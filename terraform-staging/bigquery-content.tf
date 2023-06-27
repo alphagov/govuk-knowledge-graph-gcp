@@ -15,7 +15,6 @@ data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
       "projectWriters",
       "serviceAccount:${google_service_account.gce_mongodb.email}",
       "serviceAccount:${google_service_account.gce_postgres.email}",
-      "serviceAccount:${google_service_account.gce_neo4j.email}",
       "serviceAccount:${google_service_account.workflow_bank_holidays.email}",
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
     ]
