@@ -1,5 +1,3 @@
-# https://neo4j.com/docs/operations-manual/current/cloud-deployments/neo4j-gcp/automation-gcp/
-
 resource "google_service_account" "gce_mongodb" {
   account_id   = "gce-mongodb"
   display_name = "Service Account for MongoDB Instance"
