@@ -25,7 +25,7 @@ resource "google_dns_record_set" "govsearch" {
 
 resource "google_compute_managed_ssl_certificate" "govsearch" {
   name        = "govsearch-cert"
-  description = "The SSL certificate of the GGS service domain: gov-search.service.gov.uk"
+  description = "The SSL certificate of the GovSearch service domain"
   managed {
     domains = [
       var.govsearch_domain,

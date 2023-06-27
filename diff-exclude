@@ -1,5 +1,4 @@
 environment.auto.tfvars
 backend.tf
-environment.tf
 .terraform
 .terraform.lock.hcl
