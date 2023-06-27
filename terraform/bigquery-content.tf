@@ -618,7 +618,7 @@ resource "google_bigquery_table" "bank_holiday_raw" {
   table_id      = "bank_holiday_raw"
   friendly_name = "UK Bank Holiday raw JSON data"
   description   = "UK Bank Holiday raw JSON data"
-  schema = file("schemas/content/bank-holiday-raw.json")
+  schema        = file("schemas/content/bank-holiday-raw.json")
 }
 
 resource "google_bigquery_table" "bank_holiday_occurrence" {
@@ -626,7 +626,7 @@ resource "google_bigquery_table" "bank_holiday_occurrence" {
   table_id      = "bank_holiday_occurrence"
   friendly_name = "UK Bank Holiday occurrences"
   description   = "UK Bank Holiday occurrences"
-  schema = file("schemas/content/bank-holiday-occurrence.json")
+  schema        = file("schemas/content/bank-holiday-occurrence.json")
 }
 
 resource "google_bigquery_table" "bank_holiday_url" {
@@ -634,7 +634,7 @@ resource "google_bigquery_table" "bank_holiday_url" {
   table_id      = "bank_holiday_url"
   friendly_name = "Bank holiday URL"
   description   = "Unique URLs of UK bank holidays"
-  schema = file("schemas/content/bank-holiday-url.json")
+  schema        = file("schemas/content/bank-holiday-url.json")
 }
 
 resource "google_bigquery_table" "bank_holiday_title" {
@@ -642,7 +642,7 @@ resource "google_bigquery_table" "bank_holiday_title" {
   table_id      = "bank_holiday_title"
   friendly_name = "Bank holiday title"
   description   = "Titles of UK bank holidays"
-  schema = file("schemas/content/bank-holiday-title.json")
+  schema        = file("schemas/content/bank-holiday-title.json")
 }
 
 resource "google_bigquery_table" "page_views" {
@@ -650,7 +650,7 @@ resource "google_bigquery_table" "page_views" {
   table_id      = "page_views"
   friendly_name = "Page views"
   description   = "Number of views of GOV.UK pages over 7 days"
-  schema = file("schemas/content/page-views.json")
+  schema        = file("schemas/content/page-views.json")
 }
 
 resource "google_bigquery_table" "content_items" {
@@ -658,7 +658,7 @@ resource "google_bigquery_table" "content_items" {
   table_id      = "content_items"
   friendly_name = "Content items"
   description   = "The raw JSON from the MongoDB Content Store database"
-  schema = file("schemas/content/content-items.json")
+  schema        = file("schemas/content/content-items.json")
 }
 
 resource "google_bigquery_table" "organisation_govuk_status" {
@@ -666,7 +666,7 @@ resource "google_bigquery_table" "organisation_govuk_status" {
   table_id      = "organisation_govuk_status"
   friendly_name = "Organisation GOV.UK status"
   description   = "The status of the organisation in GOV.UK"
-  schema = file("schemas/content/organisation-govuk-status.json")
+  schema        = file("schemas/content/organisation-govuk-status.json")
 }
 
 resource "google_bigquery_table" "abbreviations" {
@@ -674,5 +674,5 @@ resource "google_bigquery_table" "abbreviations" {
   table_id      = "abbreviations"
   friendly_name = "Abbreviations"
   description   = "Abbreviations defined on GOV.UK pages"
-  schema = file("schemas/content/abbreviations.json")
+  schema        = file("schemas/content/abbreviations.json")
 }
