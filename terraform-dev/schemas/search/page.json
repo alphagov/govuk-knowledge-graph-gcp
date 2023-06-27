@@ -1,0 +1,122 @@
+[
+  {
+    "mode": "REQUIRED",
+    "name": "url",
+    "type": "STRING",
+    "description": "URL of a page"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "documentType",
+    "type": "STRING",
+    "description": "The kind of thing that a page is about"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "contentId",
+    "type": "STRING",
+    "description": "The ID of the content item of a page"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "locale",
+    "type": "STRING",
+    "description": "The ISO 639-1 two-letter code of the language of an edition on GOV.UK"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "publishing_app",
+    "type": "STRING",
+    "description": "The application that published a content item on GOV.UK"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "first_published_at",
+    "type": "TIMESTAMP",
+    "description": "The date that a page was first published.  Automatically determined by the publishing-api, unless overridden by the publishing application."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "public_updated_at",
+    "type": "TIMESTAMP",
+    "description": "When a page was last significantly changed (a major update). Shown to users.  Automatically determined by the publishing-api, unless overridden by the publishing application."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "withdrawn_at",
+    "type": "TIMESTAMP",
+    "description": "The date the page was withdrawn."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "withdrawn_explanation",
+    "type": "STRING",
+    "description": "The explanation for withdrawing a page"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "page_views",
+    "type": "INTEGER",
+    "description": "Number of page views from GA4 over 7 recent days"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "title",
+    "type": "STRING",
+    "description": "The title of a page"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "description",
+    "type": "STRING",
+    "description": "Description of a page"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "text",
+    "type": "STRING",
+    "description": "The content of the page as plain text extracted from the HTML"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "taxons",
+    "type": "STRING",
+    "description": "Array of titles of taxons that the page is tagged to, and their ancestors"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "primary_organisation",
+    "type": "STRING",
+    "description": "Title of the primary organisation that published the page"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "organisations",
+    "type": "STRING",
+    "description": "Array of titles of organisations that published the page"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "hyperlinks",
+    "type": "STRING",
+    "description": "Array of hyperlinks from the body of the page"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "entities",
+    "type": "RECORD",
+    "description": "Array of entity types and their frequency in the page",
+    "fields": [
+      {
+        "name": "type",
+        "type": "STRING",
+        "description": "The type of thing that the entity is"
+      },
+      {
+        "name": "total_count",
+        "type": "INTEGER",
+        "description": "The number of occurrences of entities of that type"
+      }
+    ]
+  }
+]

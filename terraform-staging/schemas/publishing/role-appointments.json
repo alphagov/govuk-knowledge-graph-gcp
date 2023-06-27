@@ -1,0 +1,17 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "url",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "content_id",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "details",
+    "type": "JSON"
+  }
+]

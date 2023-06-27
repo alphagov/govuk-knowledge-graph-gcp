@@ -1,0 +1,14 @@
+[
+  {
+    "name": "organisation_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of an organisation"
+  },
+  {
+    "name": "role_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role"
+  }
+]
