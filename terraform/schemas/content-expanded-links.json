@@ -1,20 +1,25 @@
-[
-    {
-      "name": "link_type",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "The type of the relationship between the URLs"
-    },
-    {
-      "name": "from_url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "The origin URL"
-    },
-    {
-      "name": "to_url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "The destination URL"
-    }
-]
+{
+    "table_id": "expanded_links",
+    "friendly_name": "Expanded links",
+    "description": "Typed relationships between two URLs, from one to the other",
+    "schema": [
+        {
+            "name": "link_type",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "The type of the relationship between the URLs"
+        },
+        {
+            "name": "from_url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "The origin URL"
+        },
+        {
+            "name": "to_url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "The destination URL"
+        }
+    ]
+}

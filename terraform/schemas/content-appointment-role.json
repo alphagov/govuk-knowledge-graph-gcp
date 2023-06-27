@@ -1,14 +1,19 @@
-[
-    {
-      "name": "appointment_url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a role appointment on GOV.UK"
-    },
-    {
-      "name": "role_url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a role on GOV.UK"
-    }
-]
+{
+    "table_id": "appointment_role",
+    "friendly_name": "Appointment role",
+    "description": "The role that a person is appointed to",
+    "schema": [
+        {
+            "name": "appointment_url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "URL of a role appointment on GOV.UK"
+        },
+        {
+            "name": "role_url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "URL of a role on GOV.UK"
+        }
+    ]
+}

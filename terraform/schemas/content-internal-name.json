@@ -1,14 +1,19 @@
-[
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a taxon"
-    },
-    {
-      "name": "internal_name",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "Internal name of a taxon"
-    }
-  ]
+{
+    "table_id": "internal_name",
+    "friendly_name": "GOV.UK content ID",
+    "description": "Internal name of a taxon",
+    "schema": [
+        {
+            "name": "url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "URL of a taxon"
+        },
+        {
+            "name": "internal_name",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "Internal name of a taxon"
+        }
+    ]
+}

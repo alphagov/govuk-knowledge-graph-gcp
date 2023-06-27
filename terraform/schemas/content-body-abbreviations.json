@@ -1,26 +1,31 @@
-[
-    {
-      "name": "count",
-      "type": "INTEGER",
-      "mode": "REQUIRED",
-      "description": "Number of occurrences of a link with the same URL and link-text in the same document"
-    },
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a piece of static content on the www.gov.uk domain"
-    },
-    {
-      "name": "abbreviation_title",
-      "type": "STRING",
-      "mode": "NULLABLE",
-      "description": "Title of an abbreviation"
-    },
-    {
-      "name": "abbreviation_text",
-      "type": "STRING",
-      "mode": "NULLABLE",
-      "description": "Acronym of an abbreviation"
-    }
-]
+{
+    "table_id": "body_abbreviations",
+    "friendly_name": "Body abbreviations",
+    "description": "Text and acronyms of abbreviations from the text of several types of pages, others are in tables with the suffix '_abbreviations'",
+    "schema": [
+        {
+            "name": "count",
+            "type": "INTEGER",
+            "mode": "REQUIRED",
+            "description": "Number of occurrences of a link with the same URL and link-text in the same document"
+        },
+        {
+            "name": "url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "URL of a piece of static content on the www.gov.uk domain"
+        },
+        {
+            "name": "abbreviation_title",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Title of an abbreviation"
+        },
+        {
+            "name": "abbreviation_text",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Acronym of an abbreviation"
+        }
+    ]
+}

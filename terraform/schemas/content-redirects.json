@@ -1,20 +1,25 @@
-[
-    {
-      "name": "from_url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a piece of static content on the www.gov.uk domain"
-    },
-    {
-      "name": "to_url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL that overrides the other"
-    },
-    {
-      "name": "to_url_bare",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL that overrides the other, omitting parameters and anchors"
-    }
-]
+{
+    "table_id": "redirects",
+    "friendly_name": "Redirects",
+    "description": "A kind of redirect on GOV.UK. Another is 'url_override'",
+    "schema": [
+        {
+            "name": "from_url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "URL of a piece of static content on the www.gov.uk domain"
+        },
+        {
+            "name": "to_url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "URL that overrides the other"
+        },
+        {
+            "name": "to_url_bare",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "URL that overrides the other, omitting parameters and anchors"
+        }
+    ]
+}

@@ -1,18 +1,28 @@
-[
-    {
-      "name": "count",
-      "type": "INTEGER"
-    },
-    {
-      "name": "url",
-      "type": "STRING"
-    },
-    {
-      "name": "abbreviation_title",
-      "type": "STRING"
-    },
-    {
-      "name": "abbreviation_text",
-      "type": "STRING"
+{
+    "table_id": "abbreviations",
+    "friendly_name": "Abbreviations",
+    "description": "Abbreviations defined on GOV.UK pages",
+    "schema": {
+        "table_id": "",
+        "friendly_name": "",
+        "description": "",
+        "schema": [
+            {
+                "name": "count",
+                "type": "INTEGER"
+            },
+            {
+                "name": "url",
+                "type": "STRING"
+            },
+            {
+                "name": "abbreviation_title",
+                "type": "STRING"
+            },
+            {
+                "name": "abbreviation_text",
+                "type": "STRING"
+            }
+        ]
     }
-]
+}

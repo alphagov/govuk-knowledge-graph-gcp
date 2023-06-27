@@ -1,14 +1,19 @@
-[
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a role on GOV.UK"
-    },
-    {
-      "name": "attends_cabinet_type",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "Whether the incumbent of a role attends cabinet"
-    }
-]
+{
+    "table_id": "role_attends_cabinet_type",
+    "friendly_name": "Role attends cabinet type",
+    "description": "Whether the incumbent of a role attends cabinet",
+    "schema": [
+        {
+            "name": "url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "URL of a role on GOV.UK"
+        },
+        {
+            "name": "attends_cabinet_type",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "Whether the incumbent of a role attends cabinet"
+        }
+    ]
+}

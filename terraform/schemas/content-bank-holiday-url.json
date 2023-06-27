@@ -1,8 +1,13 @@
-[
-    {
-      "mode": "REQUIRED",
-      "name": "url",
-      "type": "STRING",
-      "description": "URL of a bank holiday, derived from its title"
-    }
-  ]
+{
+    "table_id": "bank_holiday_url",
+    "friendly_name": "Bank holiday URL",
+    "description": "Unique URLs of UK bank holidays",
+    "schema": [
+        {
+            "mode": "REQUIRED",
+            "name": "url",
+            "type": "STRING",
+            "description": "URL of a bank holiday, derived from its title"
+        }
+    ]
+}

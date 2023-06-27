@@ -1,14 +1,19 @@
-[
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a role on GOV.UK"
-    },
-    {
-      "name": "description",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "Description of a role"
-    }
-]
+{
+    "table_id": "role_description",
+    "friendly_name": "Role description",
+    "description": "Description of a role on GOV.UK",
+    "schema": [
+        {
+            "name": "url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "URL of a role on GOV.UK"
+        },
+        {
+            "name": "description",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "Description of a role"
+        }
+    ]
+}

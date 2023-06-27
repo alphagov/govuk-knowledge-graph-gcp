@@ -1,8 +1,13 @@
-[
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a role appointment on GOV.UK"
-    }
-]
+{
+    "table_id": "appointment_url",
+    "friendly_name": "Appointment url",
+    "description": "Unique URLs of role appointments on GOV.UK",
+    "schema": [
+        {
+            "name": "url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "URL of a role appointment on GOV.UK"
+        }
+    ]
+}

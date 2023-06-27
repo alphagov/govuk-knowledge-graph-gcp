@@ -1,20 +1,25 @@
-[
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a piece of static content on the www.gov.uk domain"
-    },
-    {
-      "name": "link_url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "Link that the start button will link the user to"
-    },
-    {
-      "name": "link_url_bare",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "Link that the start button will link the user to, omitting parameters and anchors"
-    }
-]
+{
+    "table_id": "transaction_start_link",
+    "friendly_name": "Transaction start link",
+    "description": "Link that the start button will link the user to",
+    "schema": [
+        {
+            "name": "url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "URL of a piece of static content on the www.gov.uk domain"
+        },
+        {
+            "name": "link_url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "Link that the start button will link the user to"
+        },
+        {
+            "name": "link_url_bare",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "Link that the start button will link the user to, omitting parameters and anchors"
+        }
+    ]
+}

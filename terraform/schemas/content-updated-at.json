@@ -1,14 +1,19 @@
-[
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a piece of static content on the www.gov.uk domain"
-    },
-    {
-      "name": "updated_at",
-      "type": "TIMESTAMP",
-      "mode": "REQUIRED",
-      "description": "When a content item was last changed (however insignificantly)"
-    }
-  ]
+{
+    "table_id": "updated_at",
+    "friendly_name": "Updated at date-time",
+    "description": "When a content item was last significantly changed (a major update). Shown to users.  Automatically determined by the publishing-api, unless overridden by the publishing application.",
+    "schema": [
+        {
+            "name": "url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "URL of a piece of static content on the www.gov.uk domain"
+        },
+        {
+            "name": "updated_at",
+            "type": "TIMESTAMP",
+            "mode": "REQUIRED",
+            "description": "When a content item was last changed (however insignificantly)"
+        }
+    ]
+}

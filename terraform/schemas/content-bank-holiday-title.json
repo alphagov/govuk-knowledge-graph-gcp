@@ -1,14 +1,19 @@
-[
-    {
-      "mode": "REQUIRED",
-      "name": "url",
-      "type": "STRING",
-      "description": "URL of a bank holiday"
-    },
-    {
-      "mode": "REQUIRED",
-      "name": "title",
-      "type": "STRING",
-      "description": "Title of the bank holiday"
-    }
-  ]
+{
+    "table_id": "bank_holiday_title",
+    "friendly_name": "Bank holiday title",
+    "description": "Titles of UK bank holidays",
+    "schema": [
+        {
+            "mode": "REQUIRED",
+            "name": "url",
+            "type": "STRING",
+            "description": "URL of a bank holiday"
+        },
+        {
+            "mode": "REQUIRED",
+            "name": "title",
+            "type": "STRING",
+            "description": "Title of the bank holiday"
+        }
+    ]
+}

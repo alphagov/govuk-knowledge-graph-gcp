@@ -1,14 +1,19 @@
-[
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a role role on GOV.UK"
-    },
-    {
-      "name": "updated_at",
-      "type": "TIMESTAMP",
-      "mode": "REQUIRED",
-      "description": "When a role was updated"
-    }
-]
+{
+    "table_id": "role_updated_at",
+    "friendly_name": "Role updated at",
+    "description": "When a role was updated",
+    "schema": [
+        {
+            "name": "url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "URL of a role role on GOV.UK"
+        },
+        {
+            "name": "updated_at",
+            "type": "TIMESTAMP",
+            "mode": "REQUIRED",
+            "description": "When a role was updated"
+        }
+    ]
+}

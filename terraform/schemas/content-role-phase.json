@@ -1,14 +1,19 @@
-[
-    {
-      "name": "url",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "URL of a role on GOV.UK"
-    },
-    {
-      "name": "phase",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "The service design phase of a role - https://www.gov.uk/service-manual/phases"
-    }
-]
+{
+    "table_id": "role_phase",
+    "friendly_name": "Role phase",
+    "description": "Phase of a role",
+    "schema": [
+        {
+            "name": "url",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "URL of a role on GOV.UK"
+        },
+        {
+            "name": "phase",
+            "type": "STRING",
+            "mode": "REQUIRED",
+            "description": "The service design phase of a role - https://www.gov.uk/service-manual/phases"
+        }
+    ]
+}

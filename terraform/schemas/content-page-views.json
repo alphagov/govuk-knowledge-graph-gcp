@@ -1,14 +1,19 @@
-[
-    {
-      "mode": "REQUIRED",
-      "name": "url",
-      "type": "STRING",
-      "description": "URL of a page"
-    },
-    {
-      "mode": "REQUIRED",
-      "name": "number_of_views",
-      "type": "INTEGER",
-      "description": "Number of views of the URL"
-    }
-  ]
+{
+    "table_id": "page_views",
+    "friendly_name": "Page views",
+    "description": "Number of views of GOV.UK pages over 7 days",
+    "schema": [
+        {
+            "mode": "REQUIRED",
+            "name": "url",
+            "type": "STRING",
+            "description": "URL of a page"
+        },
+        {
+            "mode": "REQUIRED",
+            "name": "number_of_views",
+            "type": "INTEGER",
+            "description": "Number of views of the URL"
+        }
+    ]
+}
