@@ -228,10 +228,6 @@ resource "google_cloud_run_service" "govgraphsearch" {
           value = var.environment
         }
         env {
-          name  = "NEO4J_URL"
-          value = "http://${google_compute_address.neo4j_internal.address}:7474/db/neo4j/tx"
-        }
-        env {
           name  = "PROJECT_ID"
           value = var.project_id
         }
