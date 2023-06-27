@@ -1,0 +1,38 @@
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a UK government organisation"
+    },
+    {
+      "name": "title",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "The name of an organisation"
+    },
+    {
+      "name": "analytics_identifier",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "A short identifier we send to Google Analytics for multi-valued fields. This means we avoid the truncated values we would get if we sent the path or slug of eg organisations."
+    },
+    {
+      "name": "content_id",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "The ID of an organisation"
+    },
+    {
+      "name": "phase",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "The service design phase of an organisation - https://www.gov.uk/service-manual/phases"
+    },
+    {
+      "name": "acronym",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "The official acronym of an organisation on GOV.UK"
+    }
+]

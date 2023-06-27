@@ -1,0 +1,14 @@
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of an organisation"
+    },
+    {
+      "name": "successor_url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of its successor organisation"
+    }
+]

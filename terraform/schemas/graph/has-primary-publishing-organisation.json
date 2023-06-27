@@ -1,0 +1,14 @@
+[
+    {
+      "name": "url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a page"
+    },
+    {
+      "name": "primary_publishing_organisation_url",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "URL of a UK government organisation"
+    }
+]
