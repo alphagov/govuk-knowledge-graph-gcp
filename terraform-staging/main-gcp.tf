@@ -229,7 +229,6 @@ data "google_iam_policy" "project" {
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
       "serviceAccount:${google_service_account.gce_postgres.email}",
-      "serviceAccount:${google_service_account.gce_neo4j.email}",
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
       "serviceAccount:${google_service_account.bigquery_scheduled_queries_search.email}",
       "serviceAccount:${google_service_account.workflow_bank_holidays.email}",
@@ -286,8 +285,7 @@ data "google_iam_policy" "project" {
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
       "serviceAccount:${google_service_account.gce_postgres.email}",
-      "serviceAccount:${google_service_account.workflow_govuk_integration_database_backups.email}",
-      "serviceAccount:${google_service_account.workflow_neo4j.email}",
+      "serviceAccount:${google_service_account.workflow_govuk_integration_database_backups.email}"
     ]
   }
 
@@ -337,7 +335,6 @@ data "google_iam_policy" "project" {
     role = "roles/logging.logWriter"
     members = [
       "serviceAccount:${google_service_account.workflow_govuk_integration_database_backups.email}",
-      "serviceAccount:${google_service_account.workflow_neo4j.email}",
       "serviceAccount:${google_service_account.workflow_bank_holidays.email}",
     ]
   }
@@ -360,7 +357,6 @@ data "google_iam_policy" "project" {
     role = "roles/workflows.invoker"
     members = [
       "serviceAccount:${google_service_account.eventarc.email}",
-      "serviceAccount:${google_service_account.scheduler_neo4j.email}",
       "serviceAccount:${google_service_account.scheduler_bank_holidays.email}",
       "serviceAccount:${google_service_account.scheduler_page_views.email}",
     ]
