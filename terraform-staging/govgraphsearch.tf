@@ -350,7 +350,7 @@ resource "google_compute_global_forwarding_rule" "govgraphsearch_https" {
   name       = "govgraphsearch-https"
   port_range = "443"
   ip_address = google_compute_global_address.govgraphsearch.address
-  target = google_compute_target_https_proxy.govgraphsearch.self_link
+  target     = google_compute_target_https_proxy.govgraphsearch.self_link
 }
 
 resource "google_compute_managed_ssl_certificate" "govgraphsearch" {
