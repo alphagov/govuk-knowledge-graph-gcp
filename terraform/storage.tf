@@ -48,8 +48,7 @@ data "google_iam_policy" "bucket_repository" {
     role = "roles/storage.objectViewer"
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
-      "serviceAccount:${google_service_account.gce_postgres.email}",
-      "serviceAccount:${google_service_account.gce_neo4j.email}",
+      "serviceAccount:${google_service_account.gce_postgres.email}"
     ]
   }
 
@@ -107,7 +106,6 @@ data "google_iam_policy" "bucket_data_processed" {
     members = [
       "serviceAccount:${google_service_account.gce_mongodb.email}",
       "serviceAccount:${google_service_account.gce_postgres.email}",
-      "serviceAccount:${google_service_account.gce_neo4j.email}",
       "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
       "serviceAccount:${google_service_account.workflow_bank_holidays.email}",
     ]
@@ -170,13 +168,6 @@ resource "google_storage_bucket_iam_policy" "ssl_certificates" {
 }
 
 data "google_iam_policy" "bucket_ssl_certificates" {
-  binding {
-    role = "roles/storage.objectAdmin"
-    members = [
-      "serviceAccount:${google_service_account.gce_neo4j.email}",
-    ]
-  }
-
   binding {
     role = "roles/storage.legacyBucketOwner"
     members = [
