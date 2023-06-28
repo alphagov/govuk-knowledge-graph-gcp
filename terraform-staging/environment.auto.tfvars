@@ -13,4 +13,5 @@ oauth_callback_url                  = "https://govgraphsearch.dev/auth/gds/callb
 enable_redis_session_store_instance = false
 govgraphsearch_iap_members = [
   "group:data-products@digital.cabinet-office.gov.uk",
+  "user:govsearchtest@gmail.com",
 ]
