@@ -1,0 +1,7 @@
+[
+  {
+    "name": "type",
+    "type": "STRING",
+    "description": "Name of the entity type"
+  }
+]

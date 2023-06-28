@@ -1,0 +1,68 @@
+[
+    {
+        "name": "name",
+        "type": "STRING",
+        "description": "Internal name of a taxon"
+    },
+    {
+        "name": "homepage",
+        "type": "STRING",
+        "description": "URL of a page on GOV.UK about the taxon"
+    },
+    {
+        "name": "description",
+        "type": "STRING",
+        "description": "Description of the taxon"
+    },
+    {
+        "name": "level",
+        "type": "INTEGER",
+        "description": "Level of the taxon in the hierarchy. The root is level 0."
+    },
+    {
+        "fields": [
+            {
+                "name": "name",
+                "type": "STRING",
+                "description": "Internal name of a taxon"
+            },
+            {
+                "name": "level",
+                "type": "INTEGER",
+                "description": "Level of the taxon in the hierarchy. The root is level 0."
+            },
+            {
+                "name": "url",
+                "type": "STRING",
+                "description": "URL of a page on GOV.UK about the taxon"
+            }
+        ],
+        "mode": "REPEATED",
+        "name": "ancestorTaxons",
+        "type": "RECORD",
+        "description": "Array of ancestor taxons of this taxon"
+    },
+    {
+        "fields": [
+            {
+                "name": "name",
+                "type": "STRING",
+                "description": "Internal name of a taxon"
+            },
+            {
+                "name": "level",
+                "type": "INTEGER",
+                "description": "Level of the taxon in the hierarchy. The root is level 0."
+            },
+            {
+                "name": "url",
+                "type": "STRING",
+                "description": "URL of a page on GOV.UK about the taxon"
+            }
+        ],
+        "mode": "REPEATED",
+        "name": "childTaxons",
+        "type": "RECORD",
+        "description": "Array of child taxons of this taxon"
+    }
+]

@@ -90,30 +90,7 @@ resource "google_bigquery_table" "tables_metadata_check_results" {
   table_id      = "tables-metadata-check-results"
   friendly_name = "Tables metadata check results"
   description   = "Results of the previous run of the check-tables-metatdata scheduled query"
-  schema = jsonencode(
-    [
-      {
-        name = "dataset_id"
-        type = "STRING"
-      },
-      {
-        name = "table_id"
-        type = "STRING"
-      },
-      {
-        name = "last_modified"
-        type = "TIMESTAMP"
-      },
-      {
-        name = "row_count"
-        type = "INTEGER"
-      },
-      {
-        name = "result"
-        type = "STRING"
-      },
-    ]
-  )
+  schema        = file("schemas/test/tables-metadata-check-results.json")
 }
 
 resource "google_bigquery_data_transfer_config" "check_tables_metadata" {

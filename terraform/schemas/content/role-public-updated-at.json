@@ -1,0 +1,14 @@
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role role on GOV.UK"
+  },
+  {
+    "name": "public_updated_at",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "When a role was publicly updated"
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of page"
+  },
+  {
+    "name": "taxon_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a taxon"
+  }
+]

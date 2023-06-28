@@ -1,0 +1,26 @@
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a person in the UK government"
+  },
+  {
+    "name": "title",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The name of a person"
+  },
+  {
+    "name": "content_id",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The ID of a person"
+  },
+  {
+    "name": "description",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Description of a person"
+  }
+]

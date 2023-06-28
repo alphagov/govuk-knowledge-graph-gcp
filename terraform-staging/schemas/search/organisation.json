@@ -1,0 +1,53 @@
+[
+    {
+        "name": "name",
+        "type": "STRING",
+        "description": "Name of the organisation"
+    },
+    {
+        "name": "homepage",
+        "type": "STRING",
+        "description": "URL of a page on GOV.UK about the organisation"
+    },
+    {
+        "name": "parentName",
+        "type": "STRING",
+        "description": "Name of the parent organisation of this organisation"
+    },
+    {
+        "mode": "REPEATED",
+        "name": "childOrgNames",
+        "type": "STRING",
+        "description": "Array of names of organisations that are subsidiaries of this one"
+    },
+    {
+        "fields": [
+            {
+                "name": "roleName",
+                "type": "STRING",
+                "description": "Title of the role"
+            },
+            {
+                "name": "personName",
+                "type": "STRING",
+                "description": "Name of the current appointee to this role"
+            }
+        ],
+        "mode": "REPEATED",
+        "name": "personRoleNames",
+        "type": "RECORD",
+        "description": "Array of roles that relate to this organisation"
+    },
+    {
+        "mode": "REPEATED",
+        "name": "supersededBy",
+        "type": "STRING",
+        "description": "Name of an organisation that superseded this one"
+    },
+    {
+        "mode": "REPEATED",
+        "name": "supersedes",
+        "type": "STRING",
+        "description": "Array of names organisations that this one supersedes"
+    }
+]

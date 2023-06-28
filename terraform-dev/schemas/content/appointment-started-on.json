@@ -1,0 +1,14 @@
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role appointment on GOV.UK"
+  },
+  {
+    "name": "started_on",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "When an appointment to a role started"
+  }
+]

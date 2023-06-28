@@ -1,0 +1,14 @@
+[
+  {
+    "name": "from_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a homepage of a role on GOV.UK being redirected from"
+  },
+  {
+    "name": "to_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a homepage of a role on GOV.UK being redirected to"
+  }
+]

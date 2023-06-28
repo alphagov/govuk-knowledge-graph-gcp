@@ -1,0 +1,27 @@
+[
+    {
+        "name": "name",
+        "type": "STRING",
+        "description": "Name of the transaction"
+    },
+    {
+        "name": "homepage",
+        "type": "STRING",
+        "description": "URL of a page on GOV.UK about the transaction"
+    },
+    {
+        "name": "description",
+        "type": "STRING",
+        "description": "Description of the transaction"
+    },
+    {
+        "name": "start_button_text",
+        "type": "STRING",
+        "description": "Text of the start button"
+    },
+    {
+        "name": "start_button_link",
+        "type": "STRING",
+        "description": "The URL that the start button links to"
+    }
+]

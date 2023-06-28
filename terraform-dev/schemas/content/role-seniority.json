@@ -1,0 +1,14 @@
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a role on GOV.UK"
+  },
+  {
+    "name": "seniority",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Seniority of a role on GOV.UK"
+  }
+]
