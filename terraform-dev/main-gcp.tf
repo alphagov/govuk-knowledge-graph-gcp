@@ -112,6 +112,14 @@ variable "enable_redis_session_store_instance" {
   type = string
 }
 
+variable "gtm_id" {
+  type = string
+}
+
+variable "gtm_auth" {
+  type = string
+}
+
 terraform {
   required_providers {
     google = {
