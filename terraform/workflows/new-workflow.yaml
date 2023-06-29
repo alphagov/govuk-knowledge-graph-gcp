@@ -1,0 +1,101 @@
+  # This workflow does the following:
+  # - Creates an instance from the template for a given database backup file
+  # In terraform you need to escape the $$ or it will cause errors.
+
+main:
+  params: [event]
+  steps:
+  - log_event:
+      call: sys.log
+      args:
+          text: ${event}
+          severity: INFO
+  - decode_pubsub_message:
+      assign:
+      - base64: ${base64.decode(event.data.message.data)}
+      - message_text: ${text.decode(base64)}
+  - log_message_text:
+      call: sys.log
+      args:
+          text: ${message_text}
+          severity: INFO
+  - parse_pubsub_message:
+      assign:
+      - message_json: ${json.decode(message_text)}
+  - log_message_json:
+      call: sys.log
+      args:
+          json: ${message_json}
+          severity: INFO
+  - extract_metadata:
+      assign:
+      - object_bucket: ${message_json.bucket}
+      - object_name: ${message_json.name}
+  - maybe_start_an_instance:
+      switch:
+        - condition: ${text.match_regex(object_name, "^mongo-api/\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}-content_store_production\\.gz$")}
+          steps:
+          - log_starting_mongodb_instance:
+              call: sys.log
+              args:
+                  text: "Starting mongodb instance"
+                  severity: INFO
+          - start_mongodb:
+              call: googleapis.compute.v1.instances.insert
+              args:
+                  project: govuk-knowledge-graph
+                  zone: europe-west2-b
+                  sourceInstanceTemplate: https://www.googleapis.com/compute/v1/projects/govuk-knowledge-graph/global/instanceTemplates/mongodb
+                  body:
+                      name: mongodb
+                      metadata:
+                        items:
+                        - key: object_bucket
+                          value: ${object_bucket}
+                        - key: object_name
+                          value: ${object_name}
+                        - key: google-logging-enabled
+                          value: true
+                        - key: serial-port-logging-enable
+                          value: true
+                        - key: gce-container-declaration
+                          value: "\"spec\":\n  \"containers\":\n  - \"env\":\n    - \"name\": \"PROJECT_ID\"\n      \"value\": \"govuk-knowledge-graph\"\n    - \"name\": \"ZONE\"\n      \"value\": \"europe-west2-b\"\n    \"image\": \"europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/mongodb:latest\"\n    \"stdin\": true\n    \"tty\": true\n    \"volumeMounts\":\n    - \"mountPath\": \"/data/db\"\n      \"name\": \"tempfs-0\"\n      \"readOnly\": false\n    - \"mountPath\": \"/data/configdb\"\n      \"name\": \"tempfs-1\"\n      \"readOnly\": false\n  \"restartPolicy\": \"Never\"\n  \"volumes\":\n  - \"emptyDir\":\n      \"medium\": \"Memory\"\n    \"name\": \"tempfs-0\"\n  - \"emptyDir\":\n      \"medium\": \"Memory\"\n    \"name\": \"tempfs-1\"\n"
+          - return_started_mongodb:
+              return: ${"Started mongodb instance"}
+        - condition: ${text.match_regex(object_name, "^publishing-api-postgres/\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}-publishing_api_production\\.gz$")}
+          steps:
+          - log_starting_postgres_instance:
+              call: sys.log
+              args:
+                  text: "Starting postgres instance"
+                  severity: INFO
+          - start_postgres:
+              call: googleapis.compute.v1.instances.insert
+              args:
+                  project: govuk-knowledge-graph
+                  zone: europe-west2-b
+                  sourceInstanceTemplate: https://www.googleapis.com/compute/v1/projects/govuk-knowledge-graph/global/instanceTemplates/postgres
+                  body:
+                      name: postgres
+                      metadata:
+                        items:
+                        - key: object_bucket
+                          value: ${object_bucket}
+                        - key: object_name
+                          value: ${object_name}
+                        - key: user-data
+                          value: "#cloud-config\n\nbootcmd:\n- mkfs.ext4 -F /dev/nvme0n1\n- mkdir -p /mnt/disks/local-ssd\n- mount -o discard,defaults,nobarrier /dev/nvme0n1 /mnt/disks/local-ssd\n- mkdir -p /mnt/disks/local-ssd/postgresql-data\n- mkdir -p /mnt/disks/local-ssd/data\n"
+                        - key: google-logging-enabled
+                          value: true
+                        - key: gce-container-declaration
+                          value: "\"spec\":\n  \"containers\":\n  - \"env\":\n    - \"name\": \"POSTGRES_HOST_AUTH_METHOD\"\n      \"value\": \"trust\"\n    - \"name\": \"PROJECT_ID\"\n      \"value\": \"govuk-knowledge-graph\"\n    - \"name\": \"ZONE\"\n      \"value\": \"europe-west2-b\"\n    \"image\": \"europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/postgres:latest\"\n    \"securityContext\":\n      \"privileged\": true\n    \"stdin\": true\n    \"tty\": true\n    \"volumeMounts\":\n    - \"mountPath\": \"/var/lib/postgresql/data\"\n      \"name\": \"local-ssd-postgresql-data\"\n      \"readOnly\": false\n    - \"mountPath\": \"/data\"\n      \"name\": \"local-ssd-data\"\n      \"readOnly\": false\n  \"restartPolicy\": \"Never\"\n  \"volumes\":\n  - \"hostPath\":\n      \"path\": \"/mnt/disks/local-ssd/postgresql-data\"\n    \"name\": \"local-ssd-postgresql-data\"\n  - \"hostPath\":\n      \"path\": \"/mnt/disks/local-ssd/data\"\n    \"name\": \"local-ssd-data\"\n"
+          - return_started_postgres:
+              return: ${"Started postgres instance"}
+  - log_not_starting_instance:
+      call: sys.log
+      args:
+          text: "Not starting any instance"
+          severity: INFO
+  - return_did_not_start:
+      return: ${"Did not start any instance"}
+}
