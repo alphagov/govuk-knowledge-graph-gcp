@@ -51,11 +51,41 @@ resource "google_service_account" "workflow_bank_holidays" {
   display_name = "Service account for the bank-holidays workflow"
 }
 
-locals {
-  load_raw_query        = replace(templatefile("queries/load_bank_holiday_raw.sql", { project_id = var.project_id }), "\n", " ")
-  load_occurrence_query = replace(file("queries/load_bank_holiday_occurrences.sql"), "\n", " ")
-  load_url_query        = replace(file("queries/load_bank_holiday_url.sql"), "\n", " ")
-  load_titles_query     = replace(file("queries/load_bank_holiday_titles.sql"), "\n", " ")
+resource "google_bigquery_routine" "load_bank_holiday_occurrences" {
+  dataset_id = google_bigquery_dataset.content.dataset_id
+  routine_id     = "load_bank_holiday_occurrences"
+  routine_type = "PROCEDURE"
+  language = "SQL"
+  definition_body = file("queries/load_bank_holiday_occurrences.sql")
+}
+
+resource "google_bigquery_routine" "load_bank_holiday_raw" {
+  dataset_id = google_bigquery_dataset.content.dataset_id
+  routine_id     = "load_bank_holiday_raw"
+  routine_type = "PROCEDURE"
+  language = "SQL"
+  definition_body = templatefile(
+    "queries/load_bank_holiday_raw.sql", 
+    { 
+      project_id = var.project_id 
+    }
+  )
+}
+
+resource "google_bigquery_routine" "load_bank_holiday_titles" {
+  dataset_id = google_bigquery_dataset.content.dataset_id
+  routine_id     = "load_bank_holiday_titles"
+  routine_type = "PROCEDURE"
+  language = "SQL"
+  definition_body = file("queries/load_bank_holiday_titles.sql")
+}
+
+resource "google_bigquery_routine" "load_bank_holiday_url" {
+  dataset_id = google_bigquery_dataset.content.dataset_id
+  routine_id     = "load_bank_holiday_url"
+  routine_type = "PROCEDURE"
+  language = "SQL"
+  definition_body = file("queries/load_bank_holiday_url.sql")
 }
 
 resource "google_workflows_workflow" "bank_holidays" {
@@ -68,10 +98,10 @@ resource "google_workflows_workflow" "bank_holidays" {
     {
       processed_bucket     = "${var.project_id}-data-processed",
       project_id           = var.project_id,
-      load_raw_query       = local.load_raw_query,
-      load_occurence_query = local.load_occurrence_query,
-      load_url_query       = local.load_url_query,
-      load_titles_query    = local.load_titles_query
+      load_raw_query       = "CALL ${google_bigquery_routine.load_bank_holiday_raw.dataset_id}.${google_bigquery_routine.load_bank_holiday_raw.routine_id}()"
+      load_occurence_query = "CALL ${google_bigquery_routine.load_bank_holiday_raw.dataset_id}.${google_bigquery_routine.load_bank_holiday_occurrences.routine_id}()"
+      load_url_query       = "CALL ${google_bigquery_routine.load_bank_holiday_raw.dataset_id}.${google_bigquery_routine.load_bank_holiday_url.routine_id}()"
+      load_titles_query    = "CALL ${google_bigquery_routine.load_bank_holiday_raw.dataset_id}.${google_bigquery_routine.load_bank_holiday_titles.routine_id}()"
     }
   )
 }
