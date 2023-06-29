@@ -15,4 +15,5 @@ gtm_auth                            = "PLACEHOLDER"
 gtm_id                              = "PLACEHOLDER"
 govgraphsearch_iap_members = [
   "group:data-products@digital.cabinet-office.gov.uk",
+  "user:govsearchtest@gmail.com",
 ]
