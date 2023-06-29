@@ -98,10 +98,10 @@ resource "google_workflows_workflow" "bank_holidays" {
     {
       processed_bucket     = "${var.project_id}-data-processed",
       project_id           = var.project_id,
-      load_raw_query       = "CALL ${google_bigquery_routine.load_bank_holiday_raw.dataset_id}.${google_bigquery_routine.load_bank_holiday_raw.routine_id}()"
-      load_occurence_query = "CALL ${google_bigquery_routine.load_bank_holiday_raw.dataset_id}.${google_bigquery_routine.load_bank_holiday_occurrences.routine_id}()"
-      load_url_query       = "CALL ${google_bigquery_routine.load_bank_holiday_raw.dataset_id}.${google_bigquery_routine.load_bank_holiday_url.routine_id}()"
-      load_titles_query    = "CALL ${google_bigquery_routine.load_bank_holiday_raw.dataset_id}.${google_bigquery_routine.load_bank_holiday_titles.routine_id}()"
+      load_raw_query       = "CALL content.load_bank_holiday_raw()"
+      load_occurence_query = "CALL content.load_bank_holiday_occurrences()"
+      load_url_query       = "CALL content.load_bank_holiday_url()"
+      load_titles_query    = "CALL content.load_bank_holiday_titles()"
     }
   )
 }
