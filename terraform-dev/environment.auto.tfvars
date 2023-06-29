@@ -10,8 +10,8 @@ signon_url            = "https://signon.integration.publishing.service.gov.uk"
 oauth_auth_url        = "https://signon.integration.publishing.service.gov.uk/oauth/authorize"
 oauth_token_url       = "https://signon.integration.publishing.service.gov.uk/oauth/access_token"
 oauth_callback_url    = "https://govgraphsearchdev.dev/auth/gds/callback"
-GTM_AUTH              = "PLACEHOLDER"
-GTM_ID                = "PLACEHOLDER"
+gtm_auth              = "PLACEHOLDER"
+gtm_id                = "PLACEHOLDER"
 govgraphsearch_iap_members = [
   "allUsers"
 ]

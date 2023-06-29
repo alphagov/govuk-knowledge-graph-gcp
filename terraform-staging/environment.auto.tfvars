@@ -11,8 +11,8 @@ oauth_auth_url                      = "https://signon.publishing.service.gov.uk/
 oauth_token_url                     = "https://signon.publishing.service.gov.uk/oauth/access_token"
 oauth_callback_url                  = "https://govgraphsearch.dev/auth/gds/callback"
 enable_redis_session_store_instance = false
-GTM_AUTH                            = "PLACEHOLDER"
-GTM_ID                              = "PLACEHOLDER"
+gtm_auth                            = "PLACEHOLDER"
+gtm_id                              = "PLACEHOLDER"
 govgraphsearch_iap_members = [
   "group:data-products@digital.cabinet-office.gov.uk",
 ]
