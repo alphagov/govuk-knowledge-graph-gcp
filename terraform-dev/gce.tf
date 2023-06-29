@@ -1,11 +1,3 @@
-# https://neo4j.com/docs/operations-manual/current/cloud-deployments/neo4j-gcp/automation-gcp/
-
-resource "google_service_account" "gce_neo4j" {
-  account_id   = "gce-neo4j"
-  display_name = "Service Account for Neo4j Instance"
-  description  = "Service account for the Neo4j instance on GCE"
-}
-
 resource "google_service_account" "gce_mongodb" {
   account_id   = "gce-mongodb"
   display_name = "Service Account for MongoDB Instance"
@@ -48,80 +40,13 @@ resource "google_service_account_iam_policy" "gce_postgres" {
   policy_data        = data.google_iam_policy.service_account-gce_postgres.policy_data
 }
 
-# Allow a workflow to attach the neo4j service account to an instance.
-data "google_iam_policy" "service_account-gce_neo4j" {
-  binding {
-    role = "roles/iam.serviceAccountUser"
-    members = [
-      "serviceAccount:${google_service_account.workflow_neo4j.email}",
-    ]
-  }
-}
-
-resource "google_service_account_iam_policy" "gce_neo4j" {
-  service_account_id = google_service_account.gce_neo4j.name
-  policy_data        = data.google_iam_policy.service_account-gce_neo4j.policy_data
-}
-
 # terraform import google_compute_network.default default
 resource "google_compute_network" "default" {
   name        = "default"
   description = "Default network for the project"
 }
 
-resource "google_compute_firewall" "neo4j-letsencrypt-ingress" {
-  name    = "firewall-neo4j-letsencrypt-ingress"
-  network = google_compute_network.cloudrun.name
-  allow {
-    protocol = "tcp"
-    ports    = ["80"]
-  }
-  source_ranges           = ["0.0.0.0/0"]
-  target_service_accounts = [google_service_account.gce_neo4j.email]
-}
-
-resource "google_compute_firewall" "neo4j-allow-ssh" {
-  name    = "firewall-neo4j-allow-ssh"
-  network = google_compute_network.cloudrun.name
-  allow {
-    protocol = "tcp"
-    ports    = ["22"]
-  }
-  source_ranges           = ["0.0.0.0/0"]
-  target_service_accounts = [google_service_account.gce_neo4j.email]
-}
-
-resource "google_compute_firewall" "neo4j-ingress" {
-  name    = "firewall-neo4j-ingress"
-  network = google_compute_network.cloudrun.self_link
-
-  allow {
-    protocol = "tcp"
-    ports    = ["7473", "7474", "7687"]
-  }
-
-  # https://sites.google.com/a/digital.cabinet-office.gov.uk/gds/working-at-gds/gds-internal-it/gds-internal-it-network-public-ip-addresses
-  source_ranges = [
-    "213.86.153.212",
-    "213.86.153.213",
-    "213.86.153.214",
-    "213.86.153.235",
-    "213.86.153.236",
-    "213.86.153.237",
-    "213.86.153.211",
-    "213.86.153.231",
-    "51.149.8.0/25",
-    "51.149.8.128/29",
-    # It needs to accept connections from itself so that cypher-shell can access
-    # the database by its domain name, which the certificate requires, instead
-    # of localhost.
-    google_compute_address.govgraph.address
-  ]
-
-  target_service_accounts = [google_service_account.gce_neo4j.email]
-}
-
-# Network for Neo4j and GovGraph Search
+# Network for GovGraph Search
 resource "google_compute_network" "cloudrun" {
   name                            = "custom-vpc-for-cloud-run"
   auto_create_subnetworks         = false
@@ -132,7 +57,7 @@ resource "google_compute_network" "cloudrun" {
   routing_mode                    = "REGIONAL"
 }
 
-# Subnet for Neo4j and GovGraph Search
+# Subnet for GovGraph Search
 resource "google_compute_subnetwork" "cloudrun" {
   name                       = "cloudrun-subnet"
   ip_cidr_range              = "10.8.0.0/28"
@@ -143,39 +68,6 @@ resource "google_compute_subnetwork" "cloudrun" {
   purpose                    = "PRIVATE"
   region                     = "europe-west2"
   stack_type                 = "IPV4_ONLY"
-}
-
-# Static, internal IP address
-resource "google_compute_address" "neo4j_internal" {
-  name         = "neo4j-internal"
-  address_type = "INTERNAL"
-  subnetwork   = google_compute_subnetwork.cloudrun.id
-}
-
-# https://github.com/terraform-google-modules/terraform-google-container-vm
-module "neo4j-container" {
-  source  = "terraform-google-modules/container-vm/google"
-  version = "~> 2.0"
-
-  container = {
-    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/neo4j:latest"
-    tty : true
-    stdin : true
-    env = [
-      {
-        name  = "NEO4JLABS_PLUGINS"
-        value = "[\"apoc\"]"
-      },
-      {
-        name  = "PROJECT_ID"
-        value = var.project_id
-      },
-      {
-        name  = "DOMAIN"
-        value = var.govgraph_domain
-      }
-    ]
-  }
 }
 
 # https://github.com/terraform-google-modules/terraform-google-container-vm
@@ -289,37 +181,6 @@ module "postgres-container" {
   ]
 
   restart_policy = "Never"
-}
-
-resource "google_compute_instance_template" "neo4j" {
-  name         = "neo4j"
-  machine_type = "e2-highmem-16"
-
-  disk {
-    boot         = true
-    source_image = module.neo4j-container.source_image
-    disk_size_gb = 100
-  }
-
-  metadata = {
-    google-logging-enabled     = true
-    serial-port-logging-enable = true
-    gce-container-declaration  = module.neo4j-container.metadata_value
-  }
-
-  network_interface {
-    network    = google_compute_network.cloudrun.self_link
-    subnetwork = google_compute_subnetwork.cloudrun.self_link
-    access_config {
-      network_tier = "STANDARD"
-      nat_ip       = google_compute_address.govgraph.address
-    }
-  }
-
-  service_account {
-    email  = google_service_account.gce_neo4j.email
-    scopes = ["cloud-platform"]
-  }
 }
 
 resource "google_compute_instance_template" "mongodb" {

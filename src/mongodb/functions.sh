@@ -37,12 +37,6 @@ count_distinct () {
     --unescape_cols=${escape_cols}
 }
 
-# Wrapper around sed to replace single backslash with double backslashes,
-# because Neo4j interprets a single backslash as an escape character.
-double_backslashes () {
-  sed 's/\\/\\\\/g'
-}
-
 # Compress and upload to cloud bucket
 #
 # Usage:
@@ -55,8 +49,7 @@ double_backslashes () {
 upload () {
   local file_name # reset in case they are defined globally
   local "${@}"
-  double_backslashes \
-  | gzip -c \
+  gzip -c \
   | gcloud storage cp - "gs://${PROJECT_ID}-data-processed/content-store/${file_name}.csv.gz" --quiet
 }
 

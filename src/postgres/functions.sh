@@ -84,26 +84,16 @@ dump_table () {
     --command="\copy ${name} TO STDOUT WITH (FORMAT CSV, HEADER TRUE, DELIMITER ',');"
 }
 
-# Wrapper around sed to replace single backslash with double backslashes,
-# because Neo4j interprets a single backslash as an escape character.
-double_backslashes () {
-  sed 's/\\/\\\\/g'
-}
-
 # Compress and upload to cloud bucket
 #
 # Usage:
 # command_that_emits_text | upload file_name=myfile
 #
 # The suffix ".csv.gz" is automatically appended to the file name.
-#
-# Single backslashes are doubled, because Neo4j interprets a single backslash as
-# an escape character.
 upload () {
   local file_name # reset in case they are defined globally
   local "${@}"
-  double_backslashes \
-  | gzip -c \
+  gzip -c \
   | gcloud storage cp - "gs://${PROJECT_ID}-data-processed/publishing-api/${file_name}.csv.gz"
 }
 #

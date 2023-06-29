@@ -154,7 +154,7 @@ resource "google_compute_region_network_endpoint_group" "govgraphsearch_eg" {
   }
 }
 
-# Connect to the same VPC where Neo4j is
+# Connect to the VPC
 resource "google_vpc_access_connector" "cloudrun_connector" {
   name = "cloudrun-connector"
   subnet {
@@ -234,10 +234,6 @@ resource "google_cloud_run_service" "govgraphsearch" {
         env {
           name  = "NODE_ENV"
           value = var.environment
-        }
-        env {
-          name  = "NEO4J_URL"
-          value = "http://${google_compute_address.neo4j_internal.address}:7474/db/neo4j/tx"
         }
         env {
           name  = "PROJECT_ID"
