@@ -16,12 +16,12 @@ resource "google_workflows_workflow" "govuk_integration_database_backups" {
   description     = "Run a databases instances from their templates"
   service_account = google_service_account.workflow_govuk_integration_database_backups.id
   source_contents = templatefile(
-    "workflows/govuk-integration-database-backups.yaml", 
+    "workflows/govuk-integration-database-backups.yaml",
     {
-      project_id = var.project_id, 
-      zone = var.zone,
-      postgres_startup_script = jsonencode(var.postgres-startup-script), 
-      mongodb_metadata_value = jsonencode(module.mongodb-container.metadata_value), 
+      project_id              = var.project_id,
+      zone                    = var.zone,
+      postgres_startup_script = jsonencode(var.postgres-startup-script),
+      mongodb_metadata_value  = jsonencode(module.mongodb-container.metadata_value),
       postgres_metadata_value = jsonencode(module.postgres-container.metadata_value)
     }
   )
@@ -52,10 +52,10 @@ resource "google_service_account" "workflow_bank_holidays" {
 }
 
 locals {
-  load_raw_query = replace(templatefile("queries/load_bank_holiday_raw.sql", {project_id = var.project_id}), "\n", " ")
+  load_raw_query        = replace(templatefile("queries/load_bank_holiday_raw.sql", { project_id = var.project_id }), "\n", " ")
   load_occurrence_query = replace(file("queries/load_bank_holiday_occurrences.sql"), "\n", " ")
-  load_url_query = replace(file("queries/load_bank_holiday_url.sql"), "\n", " ")
-  load_titles_query = replace(file("queries/load_bank_holiday_titles.sql"), "\n", " ")
+  load_url_query        = replace(file("queries/load_bank_holiday_url.sql"), "\n", " ")
+  load_titles_query     = replace(file("queries/load_bank_holiday_titles.sql"), "\n", " ")
 }
 
 resource "google_workflows_workflow" "bank_holidays" {
@@ -64,14 +64,14 @@ resource "google_workflows_workflow" "bank_holidays" {
   description     = "Fetch bank holiday data from https://www.gov.uk/bank-holidays.json"
   service_account = google_service_account.workflow_bank_holidays.id
   source_contents = templatefile(
-    "workflows/bank-holidays.yaml", 
+    "workflows/bank-holidays.yaml",
     {
-      processed_bucket = "${var.project_id}-data-processed", 
-      project_id = var.project_id, 
-      load_raw_query = local.load_raw_query, 
-      load_occurence_query = local.load_occurrence_query, 
-      load_url_query = local.load_url_query,
-      load_titles_query = local.load_titles_query
+      processed_bucket     = "${var.project_id}-data-processed",
+      project_id           = var.project_id,
+      load_raw_query       = local.load_raw_query,
+      load_occurence_query = local.load_occurrence_query,
+      load_url_query       = local.load_url_query,
+      load_titles_query    = local.load_titles_query
     }
   )
 }
