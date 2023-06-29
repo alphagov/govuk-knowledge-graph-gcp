@@ -29,13 +29,13 @@ main:
     - writeBankHolidaysFile:
         call: googleapis.storage.v1.objects.insert
         args:
-            bucket: ${processed_bucket}
+            bucket: '${processed_bucket}'
             name: 'bank-holidays/bank-holidays.json'
             body: $${finalJsonObject[0]}
     - uploadToBigQuery:
         call: googleapis.bigquery.v2.jobs.query
         args:
-            projectId: ${project_id}
+            projectId: '${project_id}'
             body:
                 useLegacySql: false
                 query: ${load_raw_query}
@@ -46,7 +46,7 @@ main:
     - extractFromJson:
         call: googleapis.bigquery.v2.jobs.query
         args:
-            projectId: ${project_id}
+            projectId: '${project_id}'
             body:
                 useLegacySql: false
                 query: $${query}
@@ -54,7 +54,7 @@ main:
     - deriveBankHolidayUrlTable:
         call: googleapis.bigquery.v2.jobs.query
         args:
-            projectId: ${project_id}
+            projectId: '${project_id}'
             body:
                 useLegacySql: false
                 query: ${load_url_query}
@@ -62,7 +62,7 @@ main:
     - deriveBankHolidayTitleTable:
         call: googleapis.bigquery.v2.jobs.query
         args:
-            projectId: ${project_id}
+            projectId: '${project_id}'
             body:
                 useLegacySql: false
                 query: ${load_titles_query}
