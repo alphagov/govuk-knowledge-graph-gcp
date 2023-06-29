@@ -52,39 +52,39 @@ resource "google_service_account" "workflow_bank_holidays" {
 }
 
 resource "google_bigquery_routine" "load_bank_holiday_occurrences" {
-  dataset_id = google_bigquery_dataset.content.dataset_id
-  routine_id     = "load_bank_holiday_occurrences"
-  routine_type = "PROCEDURE"
-  language = "SQL"
+  dataset_id      = google_bigquery_dataset.content.dataset_id
+  routine_id      = "load_bank_holiday_occurrences"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
   definition_body = file("queries/load_bank_holiday_occurrences.sql")
 }
 
 resource "google_bigquery_routine" "load_bank_holiday_raw" {
-  dataset_id = google_bigquery_dataset.content.dataset_id
-  routine_id     = "load_bank_holiday_raw"
+  dataset_id   = google_bigquery_dataset.content.dataset_id
+  routine_id   = "load_bank_holiday_raw"
   routine_type = "PROCEDURE"
-  language = "SQL"
+  language     = "SQL"
   definition_body = templatefile(
-    "queries/load_bank_holiday_raw.sql", 
-    { 
-      project_id = var.project_id 
+    "queries/load_bank_holiday_raw.sql",
+    {
+      project_id = var.project_id
     }
   )
 }
 
 resource "google_bigquery_routine" "load_bank_holiday_titles" {
-  dataset_id = google_bigquery_dataset.content.dataset_id
-  routine_id     = "load_bank_holiday_titles"
-  routine_type = "PROCEDURE"
-  language = "SQL"
+  dataset_id      = google_bigquery_dataset.content.dataset_id
+  routine_id      = "load_bank_holiday_titles"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
   definition_body = file("queries/load_bank_holiday_titles.sql")
 }
 
 resource "google_bigquery_routine" "load_bank_holiday_url" {
-  dataset_id = google_bigquery_dataset.content.dataset_id
-  routine_id     = "load_bank_holiday_url"
-  routine_type = "PROCEDURE"
-  language = "SQL"
+  dataset_id      = google_bigquery_dataset.content.dataset_id
+  routine_id      = "load_bank_holiday_url"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
   definition_body = file("queries/load_bank_holiday_url.sql")
 }
 
