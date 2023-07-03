@@ -28,14 +28,25 @@ organisations AS (
   WHERE link_type = 'organisations'
   GROUP BY expanded_links.from_url
 ),
-hyperlinks AS (
+all_links AS (
+  SELECT
+    from_url as url, 
+    to_url as link_url
+  FROM
+    content.expanded_links
+  UNION ALL
   SELECT
     url,
-    -- Use DISTINCT because some links are in the table multiple times with
-    -- different link_text
-    ARRAY_AGG(DISTINCT link_url) AS hyperlinks
-  FROM content.embedded_links
-  GROUP BY url
+    link_url
+  FROM
+    content.embedded_links
+), 
+links AS (
+  SELECT DISTINCT 
+    url, 
+    link_url 
+  FROM 
+    all_links
 ),
 entities AS (
   WITH page_type_count AS (
@@ -78,12 +89,12 @@ SELECT
   tagged_taxons.ancestor_titles AS taxons,
   primary_publishing_organisation.organisation AS primary_organisation,
   organisations.organisations,
-  hyperlinks.hyperlinks,
+  links.link_url,
   entities.entities
 FROM graph.page
 LEFT JOIN primary_publishing_organisation USING (url)
 LEFT JOIN organisations USING (url)
-LEFT JOIN hyperlinks USING (url)
+LEFT JOIN links USING (url)
 LEFT JOIN entities USING (url)
 LEFT JOIN tagged_taxons ON (tagged_taxons.url = 'https://www.gov.uk/' || content_id)
 WHERE
