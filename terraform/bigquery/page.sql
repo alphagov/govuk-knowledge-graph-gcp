@@ -41,19 +41,12 @@ all_links AS (
   FROM
     content.embedded_links
 ), 
-unique_links AS (
-  SELECT DISTINCT 
-    url, 
-    link_url
-  FROM 
-    all_links
-), 
 links AS (
   SELECT
     url, 
-    ARRAY_AGG(link_url) as link_url
+    ARRAY_AGG(DISTINCT link_url) as link_url
   FROM 
-    unique_links
+    all_links
   GROUP BY
     url
 ),
