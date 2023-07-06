@@ -4,9 +4,10 @@ WITH
 parent_organisation AS (
   SELECT
     has_child_organisation.child_organisation_url AS url,
-    parent_organisation.title AS parentName,
+    ARRAY_AGG(DISTINCT parent_organisation.title) AS parentName,
   FROM graph.has_child_organisation
   LEFT JOIN graph.organisation AS parent_organisation ON parent_organisation.url = has_child_organisation.url
+  GROUP BY has_child_organisation.child_organisation_url
 ),
 child_organisations AS (
   SELECT
