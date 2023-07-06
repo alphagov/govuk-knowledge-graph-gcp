@@ -10,7 +10,9 @@
         "description": "URL of a page on GOV.UK about the organisation"
     },
     {
-        "name": "parentName",
+
+        "mode": "REPEATED",
+        "name": "parentOrgNames",
         "type": "STRING",
         "description": "Name of the parent organisation of this organisation"
     },

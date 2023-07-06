@@ -4,7 +4,7 @@ WITH
 parent_organisation AS (
   SELECT
     has_child_organisation.child_organisation_url AS url,
-    ARRAY_AGG(DISTINCT parent_organisation.title) AS parentName,
+    ARRAY_AGG(DISTINCT parent_organisation.title) AS parentOrgNames,
   FROM graph.has_child_organisation
   LEFT JOIN graph.organisation AS parent_organisation ON parent_organisation.url = has_child_organisation.url
   GROUP BY has_child_organisation.child_organisation_url
@@ -53,7 +53,7 @@ supersedes AS (
 SELECT
   organisation.title AS name,
   has_homepage.homepage_url AS homepage,
-  parent_organisation.parentName,
+  parent_organisation.parentOrgNames,
   child_organisations.childOrgNames,
   organisation_roles.personRoleNames,
   superseded_by.supersededBy,
