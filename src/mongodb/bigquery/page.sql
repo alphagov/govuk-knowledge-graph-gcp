@@ -4,6 +4,7 @@ INSERT INTO graph.page
 SELECT
   u.url,
   document_type.document_type,
+  schema_name.schema_name,
   phase.phase,
   content_id.content_id,
   analytics_identifier.analytics_identifier,
@@ -25,6 +26,7 @@ SELECT
   page_views.number_of_views AS page_views
 FROM content.url AS u
 LEFT JOIN content.document_type USING (url)
+LEFT JOIN content.schema_name USING (url)
 LEFT JOIN content.phase USING (url)
 LEFT JOIN content.content_id USING (url)
 LEFT JOIN content.analytics_identifier USING (url)

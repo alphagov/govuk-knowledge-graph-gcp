@@ -13,6 +13,12 @@
     },
     {
         "mode": "NULLABLE",
+        "name": "schema_name",
+        "type": "STRING",
+        "description": "How the data of a content item is arranged"
+    },
+    {
+        "mode": "NULLABLE",
         "name": "phase",
         "type": "STRING",
         "description": "The service design phase of a page - https://www.gov.uk/service-manual/phases"
