@@ -12,6 +12,12 @@
     "description": "The kind of role"
   },
   {
+      "mode": "NULLABLE",
+      "name": "schema_name",
+      "type": "STRING",
+      "description": "How the data of a content item is arranged"
+  },
+  {
     "name": "phase",
     "type": "STRING",
     "mode": "NULLABLE",

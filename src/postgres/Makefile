@@ -80,6 +80,10 @@ data/role_document_type.csv.gz: temp/roles.postgres
 	source functions.sh; source sh/document_type.sh
 	touch $@
 
+data/role_schema_name.csv.gz: temp/roles.postgres
+	source functions.sh; source sh/schema_name.sh
+	touch $@
+
 data/role_publishing_app.csv.gz: temp/roles.postgres
 	source functions.sh; source sh/publishing_app.sh
 	touch $@
@@ -192,6 +196,7 @@ data/role_role_organisation.csv.gz: temp/roles.postgres
 temp/role.bigquery: \
 data/role_role_url.csv.gz \
 data/role_document_type.csv.gz \
+data/role_schema_name.csv.gz \
 data/role_phase.csv.gz \
 data/role_content_id.csv.gz \
 data/role_locale.csv.gz \

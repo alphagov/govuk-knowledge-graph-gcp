@@ -4,6 +4,7 @@ INSERT INTO graph.role
 SELECT
   role_url.url,
   role_document_type.document_type,
+  role_schema_name.schema_name,
   role_phase.phase,
   role_content_id.content_id,
   role_locale.locale,
@@ -16,6 +17,7 @@ SELECT
   role_content.text
 FROM content.role_url
 LEFT JOIN content.role_document_type USING (url)
+LEFT JOIN content.role_schema_name USING (url)
 LEFT JOIN content.role_phase USING (url)
 LEFT JOIN content.role_content_id USING (url)
 LEFT JOIN content.role_locale USING (url)

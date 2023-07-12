@@ -56,7 +56,7 @@ clean.mongodb:
 clean.gz:
 	rm data/*
 
-# Create an index on the document_type field.  The query doesn't create a file,
+# Create indexes on certain fields.  The query doesn't create a file,
 # so a dummy target file is created by the `touch` command, so that subsequent
 # steps know that this step has been executed.  A similar trick is used in many
 # places in this Makefile.
@@ -93,6 +93,9 @@ data/acronym.csv.gz: temp/define_url.mongodb
 
 data/document_type.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/document_type.sh
+
+data/schema_name.csv.gz: temp/define_url.mongodb
+	source functions.sh; source sh/schema_name.sh
 
 data/locale.csv.gz: temp/define_url.mongodb
 	source functions.sh; source sh/locale.sh
@@ -350,6 +353,7 @@ data/organisation_govuk_status.csv.gz: temp/organisation_govuk_status.mongodb
 temp/page.bigquery: \
 	data/url.csv.gz \
 	data/document_type.csv.gz \
+	data/schema_name.csv.gz \
 	data/phase.csv.gz \
 	data/content_id.csv.gz \
 	data/analytics_identifier.csv.gz \
