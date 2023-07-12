@@ -1,7 +1,9 @@
 // HTML content of "transaction", following the schema:
 // https://github.com/alphagov/govuk-content-schemas/blob/main/dist/formats/transaction/frontend/schema.json
 db.content_items.aggregate([
-  { $match: { "document_type": "transaction" } },
+  { $match: { "schema_name": { $in: [
+    "transaction"
+  ] } } },
   { $project: {
     "url": true,
     "details.introductory_paragraph": true,

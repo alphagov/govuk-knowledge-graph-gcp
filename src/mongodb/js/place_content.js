@@ -1,7 +1,9 @@
 // HTML content of "place", following the schema:
 // https://github.com/alphagov/govuk-content-schemas/blob/main/dist/formats/place/frontend/schema.json
 db.content_items.aggregate([
-  { $match: { "document_type": "place" } },
+  { $match: { "schema_name": { $in: [
+    "place"
+  ] } } },
   { $project: {
     "url": true,
     "details.introduction": true,
