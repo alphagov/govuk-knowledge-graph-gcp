@@ -19,8 +19,11 @@ db.content_items.aggregate([
     "speech",
     "statistical_data_set",
     "take_part",
+    "topical_event",
     "topical_event_about_page",
-    "working_group"
+    "working_group",
+    "worldwide_corporate_information_page",
+    "worldwide_organisation",
   ] } } },
   { $project: { url: true, html: "$details.body" } },
   { $match: { "html": { "$exists": true, $ne: null } } },
