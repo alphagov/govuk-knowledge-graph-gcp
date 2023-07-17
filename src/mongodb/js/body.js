@@ -23,6 +23,7 @@ db.content_items.aggregate([
     "topical_event",
     "topical_event_about_page",
     "working_group",
+    "world_location_news",
     "worldwide_corporate_information_page",
     "worldwide_office",
     "worldwide_organisation",
