@@ -8,6 +8,7 @@ db.content_items.aggregate([
     "detailed_guide",
     "document_collection",
     "fatality_notice",
+    "historic_appointment",
     "history",
     "hmrc_manual_section",
     "html_publication",
@@ -23,6 +24,7 @@ db.content_items.aggregate([
     "topical_event_about_page",
     "working_group",
     "worldwide_corporate_information_page",
+    "worldwide_office",
     "worldwide_organisation",
   ] } } },
   { $project: {
