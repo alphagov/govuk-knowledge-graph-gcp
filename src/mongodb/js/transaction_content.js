@@ -4,7 +4,9 @@ db.content_items.aggregate([
   { $match: { "schema_name": { $in: [
     "licence",
     "local_transaction",
-    "transaction"
+    "transaction",
+    "statistics_announcement",
+    "smart_answer",
   ] } } },
   { $project: {
     "url": true,
@@ -17,6 +19,8 @@ db.content_items.aggregate([
     "details.what_you_need_to_know": true, // transaction
     "details.need_to_know": true, // local_transaction
     "details.other_ways_to_apply": true, // transaction
+    "details.cancellation_reason": true, // statistics_announcement
+    "details.hidden_search_terms": true, // smart_answer
   } },
   // Omit govspeak content
   { $redact: {
@@ -41,6 +45,8 @@ db.content_items.aggregate([
       { $ifNull: [ "$details.what_you_need_to_know.content", [] ] }, // transaction
       { $ifNull: [ "$details.need_to_know.content", [] ] }, // local_transaction
       { $ifNull: [ "$details.other_ways_to_apply.content", [] ] }, // transaction
+      [ { $ifNull: [ "$details.cancellation_reason", "" ] } ], // statistics_announcement
+      { $ifNull: [ "$details.hidden_search_terms", [] ] }, // smart_answer
     ] }
   } },
   // Concatenate all the strings, separated by newlines
