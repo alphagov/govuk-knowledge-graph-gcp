@@ -100,6 +100,14 @@ resource "google_bigquery_table" "document_type" {
   schema        = file("schemas/content/document-type.json")
 }
 
+resource "google_bigquery_table" "schema_name" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "schema_name"
+  friendly_name = "Schema name"
+  description   = "How the data of a content item is arranged"
+  schema        = file("schemas/content/schema-name.json")
+}
+
 resource "google_bigquery_table" "locale" {
   dataset_id    = google_bigquery_dataset.content.dataset_id
   table_id      = "locale"
@@ -474,6 +482,14 @@ resource "google_bigquery_table" "role_document_type" {
   friendly_name = "Role document type"
   description   = "Document type of a role on GOV.UK"
   schema        = file("schemas/content/role-document-type.json")
+}
+
+resource "google_bigquery_table" "role_schema_name" {
+  dataset_id    = google_bigquery_dataset.content.dataset_id
+  table_id      = "role_schema_name"
+  friendly_name = "Role document type"
+  description   = "How the data of a role is arranged"
+  schema        = file("schemas/content/role-schema-name.json")
 }
 
 resource "google_bigquery_table" "role_attends_cabinet_type" {

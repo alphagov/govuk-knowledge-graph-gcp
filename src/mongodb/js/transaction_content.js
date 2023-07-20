@@ -1,15 +1,26 @@
 // HTML content of "transaction", following the schema:
 // https://github.com/alphagov/govuk-content-schemas/blob/main/dist/formats/transaction/frontend/schema.json
 db.content_items.aggregate([
-  { $match: { "document_type": "transaction" } },
+  { $match: { "schema_name": { $in: [
+    "licence",
+    "local_transaction",
+    "transaction",
+    "statistics_announcement",
+    "smart_answer",
+  ] } } },
   { $project: {
     "url": true,
-    "details.introductory_paragraph": true,
-    "details.start_button_text": true,
-    "details.will_continue_on": true,
-    "details.more_information": true,
-    "details.what_you_need_to_know": true,
-    "details.other_ways_to_apply": true,
+    "details.introductory_paragraph": true, // transaction
+    "details.introduction": true, // local_transaction
+    "details.licence_overview": true, // licence
+    "details.start_button_text": true, // transaction
+    "details.will_continue_on": true, // transaction
+    "details.more_information": true, // transaction, local_transaction
+    "details.what_you_need_to_know": true, // transaction
+    "details.need_to_know": true, // local_transaction
+    "details.other_ways_to_apply": true, // transaction
+    "details.cancellation_reason": true, // statistics_announcement
+    "details.hidden_search_terms": true, // smart_answer
   } },
   // Omit govspeak content
   { $redact: {
@@ -25,12 +36,17 @@ db.content_items.aggregate([
   { $project: {
     url: true,
     content: { $concatArrays: [
-      { $ifNull: [ "$details.introductory_paragraph.content", [] ] },
-      [ { $ifNull: [ "$details.start_button_text", "" ] } ],
-      { $ifNull: [ "$details.will_continue_on.content", [] ] },
-      { $ifNull: [ "$details.more_information.content", [] ] },
-      { $ifNull: [ "$details.what_you_need_to_know.content", [] ] },
-      { $ifNull: [ "$details.other_ways_to_apply.content", [] ] },
+      { $ifNull: [ "$details.introductory_paragraph.content", [] ] }, // transaction
+      { $ifNull: [ "$details.introduction.content", [] ] }, // local_transaction
+      { $ifNull: [ "$details.licence_overview.content", [] ] }, // licence
+      [ { $ifNull: [ "$details.start_button_text", "" ] } ], // transaction
+      { $ifNull: [ "$details.will_continue_on.content", [] ] }, // transaction
+      { $ifNull: [ "$details.more_information.content", [] ] }, // transaction, local_transaction
+      { $ifNull: [ "$details.what_you_need_to_know.content", [] ] }, // transaction
+      { $ifNull: [ "$details.need_to_know.content", [] ] }, // local_transaction
+      { $ifNull: [ "$details.other_ways_to_apply.content", [] ] }, // transaction
+      [ { $ifNull: [ "$details.cancellation_reason", "" ] } ], // statistics_announcement
+      { $ifNull: [ "$details.hidden_search_terms", [] ] }, // smart_answer
     ] }
   } },
   // Concatenate all the strings, separated by newlines

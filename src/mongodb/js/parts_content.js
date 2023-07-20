@@ -1,6 +1,9 @@
 // html content of parts of "guide" and "travel_advice"
 db.content_items.aggregate([
-  { $match: { "details.parts": { $exists: true } } },
+  { $match: { "schema_name": { $in: [
+    "guide",
+    "travel_advice"
+  ] } } },
   { $project: {
     "_id": false,
     "base_path": "$url",

@@ -1,7 +1,9 @@
 // All step-by-step content as a string, following the schema:
 // https://github.com/alphagov/govuk-content-schemas/blob/main/dist/formats/step_by_step_nav/frontend/schema.json
 db.content_items.aggregate([
-  { $match: { "document_type": "step_by_step_nav" } },
+  { $match: { "schema_name": { $in: [
+    "step_by_step_nav"
+  ] } } },
   { $project: {
     url: true,
     introduction: { $filter: { // only the govspeak version
