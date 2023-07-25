@@ -40,7 +40,13 @@ all_links AS (
     link_url
   FROM
     content.embedded_links
-), 
+  UNION ALL
+  SELECT
+    url,
+    link_url
+  FROM
+    content.transaction_start_links
+),
 links AS (
   SELECT
     url, 
