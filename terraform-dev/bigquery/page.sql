@@ -45,7 +45,7 @@ all_links AS (
     url,
     link_url
   FROM
-    content.transaction_start_links
+    content.transaction_start_link
 ),
 links AS (
   SELECT
