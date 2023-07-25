@@ -98,8 +98,20 @@
   {
     "mode": "REPEATED",
     "name": "hyperlinks",
-    "type": "STRING",
-    "description": "Array of hyperlinks from the body of the page"
+    "type": "RECORD",
+    "description": "Array of hyperlinks from the body of the page", 
+    "fields": [
+      {
+        "name": "link_url", 
+        "type": "STRING", 
+        "description": "Link URL"
+      }, 
+      {
+        "name": "link_type", 
+        "type": "STRING", 
+        "description": "Type of link"
+      }
+    ]
   },
   {
     "mode": "REPEATED",
