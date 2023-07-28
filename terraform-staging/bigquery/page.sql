@@ -29,19 +29,22 @@ organisations AS (
   GROUP BY expanded_links.from_url
 ),
 all_links AS (
-  SELECT
+  SELECT DISTINCT
+    link_type,
     from_url as url, 
     to_url as link_url
   FROM
     content.expanded_links
   UNION ALL
-  SELECT
+  SELECT DISTINCT
+    "embedded" as link_type,
     url,
     link_url
   FROM
     content.embedded_links
   UNION ALL
-  SELECT
+  SELECT DISTINCT
+    "transaction_start_link" AS link_type,
     url,
     link_url
   FROM
@@ -50,7 +53,12 @@ all_links AS (
 links AS (
   SELECT
     url, 
-    ARRAY_AGG(DISTINCT link_url) as link_url
+    ARRAY_AGG(
+      STRUCT(
+        link_url, 
+        link_type
+      )
+    ) AS hyperlink
   FROM 
     all_links
   GROUP BY
@@ -97,7 +105,7 @@ SELECT
   tagged_taxons.ancestor_titles AS taxons,
   primary_publishing_organisation.organisation AS primary_organisation,
   organisations.organisations,
-  links.link_url,
+  links.hyperlink AS hyperlinks,
   entities.entities
 FROM graph.page
 LEFT JOIN primary_publishing_organisation USING (url)
