@@ -110,6 +110,12 @@
         "name": "link_type", 
         "type": "STRING", 
         "description": "Type of link"
+      }, 
+      {
+        "mode": "NULLABLE",
+        "name": "link_text", 
+        "type": "STRING", 
+        "description": "Text for the link"
       }
     ]
   },

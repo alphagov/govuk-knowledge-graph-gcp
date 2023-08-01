@@ -32,21 +32,24 @@ all_links AS (
   SELECT DISTINCT
     link_type,
     from_url as url, 
-    to_url as link_url
+    to_url as link_url,
+    CAST(NULL AS STRING) as link_text
   FROM
     content.expanded_links
   UNION ALL
   SELECT DISTINCT
     "embedded" as link_type,
     url,
-    link_url
+    link_url, 
+    link_text
   FROM
     content.embedded_links
   UNION ALL
   SELECT DISTINCT
     "transaction_start_link" AS link_type,
     url,
-    link_url
+    link_url, 
+    CAST(NULL AS string) as link_text
   FROM
     content.transaction_start_link
 ),
@@ -56,7 +59,8 @@ links AS (
     ARRAY_AGG(
       STRUCT(
         link_url, 
-        link_type
+        link_type, 
+        link_text
       )
     ) AS hyperlink
   FROM 
