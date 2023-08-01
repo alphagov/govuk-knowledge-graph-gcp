@@ -72,10 +72,22 @@
     "description": "Description of a page"
   },
   {
-    "mode": "NULLABLE",
+    "mode": "REPEATED",
     "name": "text",
-    "type": "STRING",
-    "description": "The content of the page as plain text extracted from the HTML"
+    "type": "RECORD",
+    "description": "The content of the page as plain text extracted from the HTML",
+    "fields": [
+      {
+        "name": "line_number", 
+        "type": "INTEGER", 
+        "description": "The line number the text appears on"
+      }, 
+      {
+        "name": "line", 
+        "type": "STRING", 
+        "description": "The text appearing on the given line"
+      }
+    ]
   },
   {
     "mode": "REPEATED",
@@ -102,11 +114,13 @@
     "description": "Array of hyperlinks from the body of the page", 
     "fields": [
       {
+        "mode": "REQUIRED",
         "name": "link_url", 
         "type": "STRING", 
         "description": "Link URL"
       }, 
       {
+        "mode": "REQUIRED",
         "name": "link_type", 
         "type": "STRING", 
         "description": "Type of link"

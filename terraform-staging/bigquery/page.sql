@@ -80,6 +80,20 @@ entities AS (
     ARRAY_AGG(STRUCT(type, total_count)) AS entities
   FROM page_type_count
   GROUP BY url
+), 
+lines as (
+  SELECT  
+    url, 
+    ARRAY_AGG(
+      STRUCT(
+        line_number, 
+        line
+      )
+    ) AS text
+  FROM
+    content.lines
+  GROUP BY
+    url
 )
 SELECT
   page.url,
@@ -101,7 +115,7 @@ SELECT
     ELSE COALESCE(page.internal_name, page.title)
   END AS name,
   description,
-  text,
+  lines.text,
   tagged_taxons.ancestor_titles AS taxons,
   primary_publishing_organisation.organisation AS primary_organisation,
   organisations.organisations,
@@ -113,6 +127,7 @@ LEFT JOIN organisations USING (url)
 LEFT JOIN links USING (url)
 LEFT JOIN entities USING (url)
 LEFT JOIN tagged_taxons ON (tagged_taxons.url = 'https://www.gov.uk/' || content_id)
+LEFT JOIN lines ON page.url = lines.url
 WHERE
   page.document_type IS NULL
   OR NOT page.document_type IN ('gone', 'redirect', 'placeholder', 'placeholder_person')
