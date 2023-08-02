@@ -89,6 +89,7 @@ lines as (
         line_number, 
         line
       )
+      ORDER BY line_number ASC
     ) AS text
   FROM
     content.lines
