@@ -1,0 +1,29 @@
+services:
+  publishing:
+    container_name: publishing
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./databases/publishing:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+  content_postgres:
+    container_name: content_postgres
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./databases/content_postgres:/var/lib/postgresql/data
+    ports:
+      - 6543:5432
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+  content_mongo:
+    container_name: content_mongo
+    restart: always
+    image: mongo:latest
+    volumes:
+      - ./databases/content_mongo:/data/db
+    ports:
+      - 27017:27017
