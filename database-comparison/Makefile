@@ -4,6 +4,19 @@ SHELL := /bin/bash
 NPROCS = $(shell grep -c 'processor' /proc/cpuinfo)
 MAKEFLAGS += -j$(NPROCS)
 
+.PHONY: clean
+clean:
+	rm data/*
+	source ./environments/publishing.env; \
+		psql \
+			--csv \
+			--command="DROP TABLE IF EXISTS editions_latest;" \
+
+export_all_urls: \
+	data/all-urls-publishing.csv \
+	data/all-urls-content-mongo.csv \
+	data/all-urls-content-postgres.csv
+
 .PHONY: restore_all
 restore_all:  restore_postgres restore_content_postgres restore_content_mongo ;
 
@@ -60,3 +73,37 @@ restore_content_mongo: docker_up
 			content_store_production/content_items.bson \
 		| mongorestore -v --db=content_store --collection=content_items -
 	echo $$(date) Finished restoring the content mongo database backup file
+
+data/all-urls-publishing.csv:
+	source ./environments/publishing.env; \
+		psql \
+			--file=queries/latest-edition-publishing.sql
+	source ./environments/publishing.env; \
+		psql \
+			--csv \
+			--command="SELECT base_path FROM editions_latest;" \
+	  > $@
+
+data/all-urls-content-mongo.csv:
+	source ./environments/content-mongo.env; \
+		mongoexport \
+			--quiet \
+			--db=content_store \
+			--type=csv \
+			--collection=content_items \
+			--fields=_id \
+		> $@
+
+data/all-urls-content-postgres.csv:
+	source ./environments/content-postgres.env; \
+		psql \
+			--csv \
+			--command="SELECT base_path from content_items;" \
+		> $@
+
+# Register which URLs (base paths) are present in each database
+data/register.csv: \
+	data/all-urls-publishing.csv \
+	data/all-urls-content-mongo.csv \
+	data/all-urls-content-postgres.csv
+	duckdb databases/duckdb < queries/create-register-of-all-urls.sql

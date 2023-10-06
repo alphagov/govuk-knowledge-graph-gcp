@@ -14,8 +14,17 @@ A comparison between three databases that contain GOV.UK content.
 
 # Running
 
-`make restore_all` creates a container for each database, and restores data into
-them from the backup files.
+- `make restore_all` creates a container for each database, and restores data
+  into them from the backup files.
+- `make register` exports a CSV file of all URLs, and which databases they are
+  present in.
+
+# Tearing down
+
+- `make clean` removes files and database tables that wouldn't otherwise be
+  replaced.
+- `make docker_down` removes docker instances and their local volumes
+- `make docker_stop` stops docker instances, preserving their state
 
 # Backup files
 
