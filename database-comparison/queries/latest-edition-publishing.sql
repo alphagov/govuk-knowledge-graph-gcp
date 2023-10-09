@@ -6,5 +6,5 @@ FROM editions
 WHERE TRUE
 AND base_path IS NOT NULL
 AND state <> 'draft'
-ORDER BY base_path, updated_at DESC
+ORDER BY base_path, updated_at DESC, user_facing_version DESC
 ;
