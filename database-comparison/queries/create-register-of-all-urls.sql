@@ -35,7 +35,7 @@ WITH all_base_paths AS (
 )
 PIVOT all_base_paths
 ON database
-USING FIRST(TRUE)
+USING FIRST(1)
 GROUP BY base_path
 ;
 
