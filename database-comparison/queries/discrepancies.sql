@@ -48,6 +48,7 @@ group by unpublishing_type, placeholder, state, phase, content_store, redirects
 order by unpublishing_type, placeholder, state, phase, content_store, redirects
 )
 ;
+\copy features TO 'data/features.csv' csv header;
 select * from features;
 
 --     state    | phase | content_store | redirects | placeholder | unpublishing_type | publishing | content_mongo_diff | content_postgres_diff
@@ -85,3 +86,58 @@ select * from features;
 --  unpublished | live  |               | f         | t           | gone              |          1 |                  0 |                     0
 --  unpublished | live  |               | t         | f           | substitute        |        211 |                  0 |                     0
 --              |       |               |           |             |                   |          0 |                 36 |                   -12
+
+-- We can use fewer features to predict presence in each database
+DROP TABLE IF EXISTS simple_features;
+CREATE TABLE simple_features AS (
+with simple_features AS (
+select
+  CASE
+    WHEN unpublishings.type IS NULL THEN NULL
+    WHEN unpublishings.type = 'vanish' THEN 'vanish'
+    ELSE 'not vanish'
+  END AS unpublishing_type,
+  CASE
+    WHEN unpublishings.type IS NOT NULL THEN NULL
+    ELSE  schema_name like '%placeholder%'
+  END AS placeholder,
+  publishing,
+  content_mongo,
+  content_postgres
+from register
+left join editions_latest using (base_path)
+left join unpublishings on editions_latest.id = unpublishings.edition_id
+)
+select
+  unpublishing_type, placeholder,
+  coalesce(sum(publishing), 0) as publishing,
+  coalesce(sum(content_mongo), 0) - coalesce(sum(publishing), 0) as content_mongo_diff,
+  coalesce(sum(content_postgres), 0) - coalesce(sum(content_mongo), 0) as content_postgres_diff
+from simple_features
+group by unpublishing_type, placeholder
+order by unpublishing_type, placeholder
+)
+;
+\copy simple_features TO 'data/simple_features.csv' csv header;
+select * from simple_features;
+
+-- Look at some remaining discrepancies
+psql -c "DROP TABLE IF EXISTS url_content_mongo; CREATE TABLE url_content_mongo (_id VARCHAR);"
+psql -c "\copy url_content_mongo FROM 'data/all-urls-content-mongo.csv' csv header"
+
+-- Absolutely no reason why
+-- https://www.gov.uk/api/content/government/topics/national-security is in the
+-- content store.  It redirects, but that isn't specified anywhere.
+-- https://www.gov.uk/api/content/world/organisations/uk-science-innovation-network-in-croatia/about/about
+-- is in the content store, but is a 404
+select
+  editions_latest.base_path,
+  editions_latest.updated_at,
+  editions_latest.redirects
+from editions_latest
+inner join url_content_mongo on url_content_mongo._id = editions_latest.base_path
+left join unpublishings on editions_latest.id = unpublishings.edition_id
+WHERE unpublishings.edition_id IS NULL
+AND  editions_latest.schema_name like '%placeholder%'
+ORDER BY editions_latest.updated_at DESC
+;
