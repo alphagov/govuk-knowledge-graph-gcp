@@ -41,6 +41,9 @@ GROUP BY schema_name
 --  role                        |     6
 --  specialist_document         |   353
 
+-- parts, transaction, step_by_step, place
+
+-- Compare with how many of those have govspeak
 SELECT schema_name, count(*)
 FROM editions_latest
 WHERE details #> '{body}' @> '[{"content_type": "text/govspeak"}]'::jsonb
@@ -174,4 +177,57 @@ SELECT base_path, details
 FROM editions_latest
 WHERE schema_name = 'news_article'
 LIMIT 1
+;
+
+-- details.body is a string, which I happen to know is HTML
+-- 559937 documents
+SELECT count(*)
+FROM editions_latest
+WHERE jsonb_typeof(details->'body') = 'string'
+;
+
+-- details.body is an array of HTML (4627) and/or govspeak (198318)
+SELECT count(*)
+FROM editions_latest
+WHERE details #> '{body}' @> '[{"content_type": "text/html"}]'::jsonb
+;
+SELECT count(*)
+FROM editions_latest
+WHERE details #> '{body}' @> '[{"content_type": "text/govspeak"}]'::jsonb
+;
+
+-- 1271 parts of "guide" and "travel_advice" have govspeak, none have HTML
+SELECT schema_name, count(*)
+FROM editions_latest
+WHERE details @? '$.parts[*].body ? (@.content_type == "text/html")'
+GROUP BY schema_name
+;
+SELECT schema_name, count(*)
+FROM editions_latest
+WHERE details @? '$.parts[*].body ? (@.content_type == "text/govspeak")'
+GROUP BY schema_name
+;
+
+-- 426 transactions that have more_information have govspeak, none have HTML
+SELECT schema_name, count(*)
+FROM editions_latest
+WHERE details @? '$.more_information[*] ? (@.content_type == "text/html")'
+GROUP BY schema_name
+;
+SELECT schema_name, count(*)
+FROM editions_latest
+WHERE details @? '$.more_information[*] ? (@.content_type == "text/govspeak")'
+GROUP BY schema_name
+;
+
+-- 51 step-by-steps that have an introduction have govspeak, none have HTML
+SELECT schema_name, count(*)
+FROM editions_latest
+WHERE details @? '$.step_by_step_nav.introduction[*] ? (@.content_type == "text/html")'
+GROUP BY schema_name
+;
+SELECT schema_name, count(*)
+FROM editions_latest
+WHERE details @? '$.step_by_step_nav.introduction[*] ? (@.content_type == "text/govspeak")'
+GROUP BY schema_name
 ;
