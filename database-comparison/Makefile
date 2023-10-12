@@ -81,7 +81,7 @@ data/all-urls-publishing.csv:
 	source ./environments/publishing.env; \
 		psql \
 			--csv \
-			--command="SELECT base_path FROM editions_latest;" \
+			--command="SELECT content_id,locale,base_path FROM editions_latest;" \
 	  > $@
 
 data/all-urls-content-mongo.csv:
@@ -91,19 +91,24 @@ data/all-urls-content-mongo.csv:
 			--db=content_store \
 			--type=csv \
 			--collection=content_items \
-			--fields=_id \
+			--fields=content_id,locale,_id \
 		> $@
 
 data/all-urls-content-postgres.csv:
 	source ./environments/content-postgres.env; \
 		psql \
 			--csv \
-			--command="SELECT base_path from content_items;" \
+			--command="SELECT content_id,locale,base_path from content_items;" \
 		> $@
 
 # Register which URLs (base paths) are present in each database
-data/register.csv: \
+data/register-of-all-urls.csv: \
 	data/all-urls-publishing.csv \
 	data/all-urls-content-mongo.csv \
 	data/all-urls-content-postgres.csv
 	duckdb databases/duckdb < queries/create-register-of-all-urls.sql
+
+# Register which URLs (base paths) are present in each database
+# when they have null content_id
+data/register-of-null-content-ids.csv: data/register-of-all-urls.csv
+	duckdb databases/duckdb < queries/create-register-of-null-content-ids.sql

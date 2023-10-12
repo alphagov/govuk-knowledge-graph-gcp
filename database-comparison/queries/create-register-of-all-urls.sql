@@ -23,20 +23,20 @@ SELECT * FROM read_csv(
 )
 ;
 
--- Table every base_path from all three tables, and TRUE/NULL for their presence
+-- Table every document from all three tables, and TRUE/NULL for their presence
 -- in each table.
 CREATE OR REPLACE TABLE register AS
 WITH all_base_paths AS (
-  SELECT base_path, 'publishing' AS database FROM url_publishing_postgres
+  SELECT content_id, locale, base_path, 'publishing' AS database FROM url_publishing_postgres
   UNION ALL
-  SELECT base_path, 'content_postgres' AS database FROM url_content_postgres
+  SELECT content_id, locale, base_path, 'content_postgres' AS database FROM url_content_postgres
   UNION ALL
-  SELECT _id AS base_path, 'content_mongo' AS database FROM url_content_mongo
+  SELECT content_id, locale, _id AS base_path, 'content_mongo' AS database FROM url_content_mongo
 )
 PIVOT all_base_paths
 ON database
 USING FIRST(1)
-GROUP BY base_path
+GROUP BY content_id, locale, base_path
 ;
 
 -- Export the register to a CSV file
