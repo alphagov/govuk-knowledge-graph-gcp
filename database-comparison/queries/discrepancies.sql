@@ -174,20 +174,28 @@ select * from feature_counts;
 🆗
 --  unpublishing_type | placeholder |    state    | phase | content_store | has_redirects | is_redirect | has_base_path | publishing | content_mongo_diff | content_postgres_diff
 -- -------------------+-------------+-------------+-------+---------------+---------------+-------------+---------------+------------+--------------------+-----------------------
+
 --  gone              | f           | unpublished | alpha | live          | f             | f           | t             |          4 |                  0 |                     0
---  gone              | f           | unpublished | live  | live          | f             | f           | f             |       1293 |              -1293 |                     0
 --  gone              | f           | unpublished | live  | live          | f             | f           | t             |       4896 |                  0 |                    -3
---  gone              | f           | unpublished | live  | live          | t             | t           | t             |         12 |                 -1 |                    -2
---  gone              | f           | unpublished | live  |               | f             | f           | t             |         13 |                -13 |                     0
 --  gone              | t           | unpublished | live  | live          | f             | f           | t             |        344 |                  0 |                     0
---  gone              | t           | unpublished | live  |               | f             | f           | t             |          1 |                 -1 |                     0
---  redirect          | f           | superseded  | live  |               | f             | f           | t             |          3 |                 -3 |                     0
+--  gone              | f           | unpublished | live  | live          | t             | t           | t             |         12 |                 -1 |                    -2
 --  redirect          | f           | unpublished | alpha | live          | f             | f           | t             |        602 |                  0 |                     0
 --  redirect          | f           | unpublished | beta  | live          | f             | f           | t             |        108 |                  0 |                     0
 --  redirect          | f           | unpublished | live  | live          | f             | f           | t             |      68579 |                  0 |                   -11
 --  redirect          | f           | unpublished | live  | live          | t             | t           | t             |        756 |                  0 |                     0
---  redirect          | f           | unpublished | live  |               | f             | f           | t             |         95 |                -95 |                     0
 --  redirect          | t           | unpublished | live  | live          | f             | f           | t             |        821 |                  0 |                     0
+--                    | f           | published   | alpha | live          | f             | f           | t             |        144 |                  0 |                     0
+--                    | f           | published   | beta  | live          | f             | f           | t             |      83715 |                  0 |                   -47
+--                    | f           | published   | beta  | live          | t             | t           | t             |        673 |                  0 |                     0
+--  withdrawal        | f           | unpublished | live  | live          | f             | f           | t             |      52801 |                  0 |                   -22
+--                    | f           | published   | live  | live          | f             | f           | t             |     585822 |               -233 |                 -3734
+--                    | f           | published   | live  | live          | t             | t           | t             |      87123 |                 -8 |                   -82
+
+--  gone              | f           | unpublished | live  | live          | f             | f           | f             |       1293 |              -1293 |                     0
+--  gone              | f           | unpublished | live  |               | f             | f           | t             |         13 |                -13 |                     0
+--  gone              | t           | unpublished | live  |               | f             | f           | t             |          1 |                 -1 |                     0
+--  redirect          | f           | superseded  | live  |               | f             | f           | t             |          3 |                 -3 |                     0
+--  redirect          | f           | unpublished | live  |               | f             | f           | t             |         95 |                -95 |                     0
 --  substitute        | f           | unpublished | alpha |               | f             | f           | t             |          1 |                 -1 |                     0
 --  substitute        | f           | unpublished | beta  |               | f             | f           | t             |          1 |                 -1 |                     0
 --  substitute        | f           | unpublished | live  |               | f             | f           | t             |       6029 |              -6029 |                     0
@@ -197,17 +205,52 @@ select * from feature_counts;
 --  vanish            | f           | unpublished | live  | live          | f             | f           | t             |        293 |               -293 |                     0
 --  vanish            | f           | unpublished | live  | live          | t             | t           | t             |          3 |                 -3 |                     0
 --  vanish            | t           | unpublished | live  | live          | f             | f           | t             |         99 |                -99 |                     0
---  withdrawal        | f           | unpublished | live  | live          | f             | f           | t             |      52801 |                  0 |                   -22
 --  withdrawal        | t           | unpublished | live  | live          | f             | f           | t             |          1 |                 -1 |                     0
---                    | f           | published   | alpha | live          | f             | f           | t             |        144 |                  0 |                     0
---                    | f           | published   | beta  | live          | f             | f           | t             |      83715 |                  0 |                   -47
---                    | f           | published   | beta  | live          | t             | t           | t             |        673 |                  0 |                     0
 --                    | f           | published   | live  | live          | f             | f           | f             |      15509 |             -15509 |                     0
---                    | f           | published   | live  | live          | f             | f           | t             |     585822 |               -233 |                 -3734
---                    | f           | published   | live  | live          | t             | t           | t             |      87123 |                 -8 |                   -82
 --                    | f           | superseded  | live  |               | f             | f           | t             |         15 |                -13 |                     0
 --                    | t           | published   | live  | live          | f             | f           | t             |       1264 |              -1218 |                   -10
 --                    | t           | superseded  | live  |               | f             | f           | t             |         24 |                -24 |                     0
+
+-- Content store if:
+-- content_store = 'live'
+-- -- Nothing is both 'live' and 'superseded' to test whether 'superseded' is
+-- -- worth checking. I think we ought to check it anyway, going by the
+-- -- documentation.
+-- and state<>'superseded'
+-- and coalesce(unpublishing.type <> 'vanish', true)
+-- and (not placeholder or (placeholder and coalesce(unpublishing.type in ('gone', 'redirect'), false)))
+-- and has_base_path
+
+-- placeholder | unpublishing  | in_content_store
+-- ------------|---------------|-----------------
+-- f           | gone/redirect | t
+-- f           | other         | t
+-- f           | null          | t
+-- t           | gone/redirect | t
+-- t           | other         | f
+-- t           | null          | f
+
+-- Query for which docs are in the content store as docs in their own right
+select count(*)
+from editions_latest
+left join unpublishings on unpublishings.edition_id = editions_latest.id
+where true
+and content_store = 'live'
+and state <> 'superseded'
+and coalesce(unpublishings.type <> 'vanish', true)
+and (
+  left(schema_name, 11) <> 'placeholder'
+  or (
+    left(schema_name, 11) = 'placeholder'
+    and coalesce(unpublishings.type in ('gone', 'redirect'), false)
+  )
+)
+and base_path is not null
+;
+
+-- I currently believe that if you switch has_base_path to has_not_base_path,
+-- then those are 'contact', 'role' and other documents that are in the content
+-- store as expanded links, but not as pages in their own right.
 
 -- In the content store, unpublishings of type 'redirect' and 'gone' are
 -- present, but without a content_id.
