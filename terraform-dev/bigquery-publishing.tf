@@ -69,6 +69,22 @@ resource "google_bigquery_table" "publishing_editions" {
   schema        = file("schemas/publishing/editions.json")
 }
 
+resource "google_bigquery_table" "publishing_editions_current" {
+  dataset_id    = google_bigquery_dataset.publishing.dataset_id
+  table_id      = "editions_current"
+  friendly_name = "Editions (current)"
+  description   = "The most recent edition per document, from the GOV.UK Publishing API PostgreSQL database"
+  schema        = file("schemas/publishing/editions.json")
+}
+
+resource "google_bigquery_table" "publishing_editions_online" {
+  dataset_id    = google_bigquery_dataset.publishing.dataset_id
+  table_id      = "editions_online"
+  friendly_name = "Editions (online)"
+  description   = "Editions that are in use by the website now, from the GOV.UK Publishing API PostgreSQL database"
+  schema        = file("schemas/publishing/editions.json")
+}
+
 resource "google_bigquery_table" "publishing_events" {
   dataset_id    = google_bigquery_dataset.publishing.dataset_id
   table_id      = "events"

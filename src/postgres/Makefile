@@ -27,7 +27,7 @@ BIGQUERY = $(patsubst bigquery/%.sql, temp/%.bigquery, $(BIGQUERY.SQL))
 
 # Names of tables in the postgres database to export to Cloud Storage
 # and BigQuery
-EXPORT = actions change_notes documents editions events expanded_links link_changes link_sets links path_reservations role_appointments roles unpublishings
+EXPORT = actions change_notes documents editions events expanded_links link_changes link_sets links path_reservations role_appointments roles unpublishings editions_current editions_online
 
 # A step to create all the targets described in the CSV.GZ and BIGQUERY
 # variables, which means that all the .sh and .sql scripts in the SH and
@@ -263,3 +263,21 @@ roles:
 
 unpublishings:
 	source functions.sh; export_to_bigquery table_name=$@
+
+editions_current: data/editions_current.csv.gz
+	source functions.sh; export_to_bigquery table_name=$@
+
+editions_online: data/editions_online.csv.gz
+	source functions.sh; export_to_bigquery table_name=$@
+
+# Create a table of the current edition of each document.
+data/editions_current.csv.gz:
+	source functions.sh; source sh/editions_current.sh
+	touch $@
+
+# Export editions that are being used by the website, either in the content
+# store as documents in their own right, or as expanded links, or as search
+# results.
+data/editions_online.csv.gz: data/editions_current.csv.gz
+	source functions.sh; source sh/editions_online.sh
+	touch $@
