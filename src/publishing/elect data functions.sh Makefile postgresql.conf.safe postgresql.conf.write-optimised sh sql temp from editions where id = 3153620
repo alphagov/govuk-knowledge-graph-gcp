@@ -1,0 +1,7 @@
+          origin_content_id           | origin_locale | origin_edition_id | link_type | origin_type |          target_content_id           | target_locale | target_edition_id 
+--------------------------------------+---------------+-------------------+-----------+-------------+--------------------------------------+---------------+-------------------
+ fa5dcdee-a185-4a07-8c67-8cfcfa99089a | en            |           3153620 | person    | link set    | 852e9078-c0f1-11e4-8223-005056011aef | en            |           3730152
+ 0faebb5d-9e1f-4335-8e07-6df14cc6f4f5 | en            |           3729965 | person    | link set    | 852e9078-c0f1-11e4-8223-005056011aef | en            |           3730152
+ 767ad5b3-5fbc-454f-bf7c-d3cc80425a3a | en            |           3728688 | person    | link set    | 852e9078-c0f1-11e4-8223-005056011aef | en            |           3730152
+(3 rows)
+
