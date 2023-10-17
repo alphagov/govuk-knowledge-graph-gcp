@@ -66,3 +66,9 @@ editions_online: data/editions_online.csv.gz
 # Create a table of links that are being used by the website.
 links_online: data/editions_online.csv.gz
 	source functions.sh; export_to_bigquery table_name=$@
+
+# Create a table of the govspeak content of parts of 'guide' and 'travel_advice'
+# documents, where each part is rendered as a page on its own URL.
+data/parts_govspeak.csv.gz: data/editions_current.csv.gz
+	source functions.sh; source sh/parts_govspeak.sh
+	touch $@
