@@ -14,6 +14,8 @@ mongoexport \
   "gs://${PROJECT_ID}-data-processed/content-store/content_items.json.gz" \
   --quiet
 
+bq query --use_legacy_sql=false "TRUNCATE TABLE content.content_items"
+
 bq load \
   --nosynchronous_mode \
   --noreplace \
