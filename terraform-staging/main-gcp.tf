@@ -230,6 +230,13 @@ data "google_iam_policy" "project" {
   }
 
   binding {
+    role = "roles/artifactregistry.admin"
+    members = [
+      google_service_account.govgraphsearch_deploy.member,
+    ]
+  }
+
+  binding {
     role = "roles/artifactregistry.serviceAgent"
     members = [
       "serviceAccount:service-${var.project_number}@gcp-sa-artifactregistry.iam.gserviceaccount.com",
@@ -275,6 +282,13 @@ data "google_iam_policy" "project" {
     role = "roles/cloudbuild.builds.builder"
     members = [
       "serviceAccount:${var.project_number}@cloudbuild.gserviceaccount.com",
+    ]
+  }
+
+  binding {
+    role = "roles/cloudbuild.builds.editor"
+    members = [
+      google_service_account.govgraphsearch_deploy.member,
     ]
   }
 
@@ -375,9 +389,30 @@ data "google_iam_policy" "project" {
   }
 
   binding {
+    role = "roles/run.admin"
+    members = [
+      google_service_account.govgraphsearch_deploy.member,
+    ]
+  }
+
+  binding {
     role = "roles/run.serviceAgent"
     members = [
       "serviceAccount:service-${var.project_number}@serverless-robot-prod.iam.gserviceaccount.com",
+    ]
+  }
+
+  binding {
+    role = "roles/serviceusage.serviceUsageConsumer"
+    members = [
+      google_service_account.govgraphsearch_deploy.member,
+    ]
+  }
+
+  binding {
+    role = "roles/storage.admin"
+    members = [
+      google_service_account.govgraphsearch_deploy.member,
     ]
   }
 

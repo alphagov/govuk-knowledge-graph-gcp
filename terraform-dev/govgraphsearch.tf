@@ -5,6 +5,27 @@ resource "google_service_account" "govgraphsearch" {
   description  = "Service account for the GovGraph search Cloud Run app"
 }
 
+# Service account for deploying the app
+resource "google_service_account" "govgraphsearch_deploy" {
+  account_id   = "service-acc-govsearch-ci-cd"
+  display_name = "GovGraph Search CI/CD"
+  description  = "Service account used by the GovSearch application's Continuous Integration/Continuous Deployment pipeline"
+}
+
+data "google_iam_policy" "govgraphsearch_service_account" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+    members = [
+      google_service_account.govgraphsearch_deploy.member,
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "govgraphsearch" {
+  service_account_id = google_service_account.govgraphsearch.name
+  policy_data        = data.google_iam_policy.govgraphsearch_service_account.policy_data
+}
+
 # Create this first, on its own: The IAP OAuth consent screen (Identity-Aware
 # Proxy)
 resource "google_iap_brand" "project_brand" {
@@ -55,6 +76,19 @@ resource "google_secret_manager_secret" "cookie-session-signature" {
   secret_id = "cookie-session-signature"
   replication {
     automatic = true
+  }
+}
+
+# Create a secret for GitHub Actions
+resource "google_secret_manager_secret" "github_action_secret" {
+  secret_id = "github-action-service-account-deploy-key"
+
+  replication {
+    user_managed {
+      replicas {
+        location = var.region
+      }
+    }
   }
 }
 
@@ -109,6 +143,22 @@ resource "google_artifact_registry_repository" "cloud_run_source_deploy" {
   format        = "DOCKER"
   location      = var.region
   repository_id = "cloud-run-source-deploy"
+}
+
+data "google_iam_policy" "artifact_registry_cloud_run_source_deploy" {
+  binding {
+    role = "roles/artifactregistry.writer"
+    members = [
+      google_service_account.govgraphsearch_deploy.member,
+    ]
+  }
+}
+
+resource "google_artifact_registry_repository_iam_policy" "cloud_run_source_deploy" {
+  project     = google_artifact_registry_repository.cloud_run_source_deploy.project
+  location    = google_artifact_registry_repository.cloud_run_source_deploy.location
+  repository  = google_artifact_registry_repository.cloud_run_source_deploy.name
+  policy_data = data.google_iam_policy.artifact_registry_cloud_run_source_deploy.policy_data
 }
 
 # Then push a docker image to that place.
