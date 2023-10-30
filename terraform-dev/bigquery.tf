@@ -37,7 +37,7 @@ data "google_iam_policy" "bigquery_dataset_test" {
     role = "roles/bigquery.dataEditor"
     members = [
       "projectWriters",
-      "serviceAccount:${google_service_account.bigquery_scheduled_queries_search.email}",
+      google_service_account.bigquery_scheduled_queries_search.member,
     ]
   }
   binding {
