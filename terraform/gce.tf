@@ -15,7 +15,7 @@ data "google_iam_policy" "service_account-gce_mongodb" {
   binding {
     role = "roles/iam.serviceAccountUser"
     members = [
-      "serviceAccount:${google_service_account.workflow_govuk_integration_database_backups.email}",
+      google_service_account.workflow_govuk_integration_database_backups.member,
     ]
   }
 }
@@ -30,7 +30,7 @@ data "google_iam_policy" "service_account-gce_postgres" {
   binding {
     role = "roles/iam.serviceAccountUser"
     members = [
-      "serviceAccount:${google_service_account.workflow_govuk_integration_database_backups.email}",
+      google_service_account.workflow_govuk_integration_database_backups.member,
     ]
   }
 }

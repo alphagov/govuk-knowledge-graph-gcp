@@ -239,12 +239,12 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/bigquery.jobUser"
     members = [
-      "serviceAccount:${google_service_account.gce_mongodb.email}",
-      "serviceAccount:${google_service_account.gce_postgres.email}",
-      "serviceAccount:${google_service_account.bigquery_page_transitions.email}",
-      "serviceAccount:${google_service_account.bigquery_scheduled_queries_search.email}",
-      "serviceAccount:${google_service_account.workflow_bank_holidays.email}",
-      "serviceAccount:${google_service_account.govgraphsearch.email}",
+      google_service_account.gce_mongodb.member,
+      google_service_account.gce_postgres.member,
+      google_service_account.bigquery_page_transitions.member,
+      google_service_account.bigquery_scheduled_queries_search.member,
+      google_service_account.workflow_bank_holidays.member,
+      google_service_account.govgraphsearch.member,
       "group:govsearch-data-viewers@digital.cabinet-office.gov.uk"
     ]
   }
@@ -295,9 +295,9 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/compute.instanceAdmin.v1"
     members = [
-      "serviceAccount:${google_service_account.gce_mongodb.email}",
-      "serviceAccount:${google_service_account.gce_postgres.email}",
-      "serviceAccount:${google_service_account.workflow_govuk_integration_database_backups.email}"
+      google_service_account.gce_mongodb.member,
+      google_service_account.gce_postgres.member,
+      google_service_account.workflow_govuk_integration_database_backups.member
     ]
   }
 
@@ -346,8 +346,8 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/logging.logWriter"
     members = [
-      "serviceAccount:${google_service_account.workflow_govuk_integration_database_backups.email}",
-      "serviceAccount:${google_service_account.workflow_bank_holidays.email}",
+      google_service_account.workflow_govuk_integration_database_backups.member,
+      google_service_account.workflow_bank_holidays.member
     ]
   }
 
@@ -368,9 +368,9 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/workflows.invoker"
     members = [
-      "serviceAccount:${google_service_account.eventarc.email}",
-      "serviceAccount:${google_service_account.scheduler_bank_holidays.email}",
-      "serviceAccount:${google_service_account.scheduler_page_views.email}",
+      google_service_account.eventarc.member,
+      google_service_account.scheduler_bank_holidays.member,
+      google_service_account.scheduler_page_views.member
     ]
   }
 

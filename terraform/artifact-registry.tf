@@ -40,15 +40,15 @@ data "google_iam_policy" "artifact_registry_docker" {
   binding {
     role = "roles/artifactregistry.reader"
     members = [
-      "serviceAccount:${google_service_account.gce_mongodb.email}",
-      "serviceAccount:${google_service_account.gce_postgres.email}"
+      google_service_account.gce_mongodb.member,
+      google_service_account.gce_postgres.member
     ]
   }
 
   binding {
     role = "roles/artifactregistry.writer"
     members = [
-      "serviceAccount:${google_service_account.artifact_registry_docker.email}",
+      google_service_account.artifact_registry_docker.member,
     ]
   }
 }

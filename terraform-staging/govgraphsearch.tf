@@ -63,7 +63,7 @@ data "google_iam_policy" "sso_oauth_client_id" {
   binding {
     role = "roles/secretmanager.secretAccessor"
     members = [
-      "serviceAccount:${google_service_account.govgraphsearch.email}",
+      google_service_account.govgraphsearch.member,
     ]
   }
 }
@@ -77,7 +77,7 @@ data "google_iam_policy" "sso_oauth_client_secret" {
   binding {
     role = "roles/secretmanager.secretAccessor"
     members = [
-      "serviceAccount:${google_service_account.govgraphsearch.email}",
+      google_service_account.govgraphsearch.member,
     ]
   }
 }
@@ -91,7 +91,7 @@ data "google_iam_policy" "cookie-session-signature" {
   binding {
     role = "roles/secretmanager.secretAccessor"
     members = [
-      "serviceAccount:${google_service_account.govgraphsearch.email}",
+      google_service_account.govgraphsearch.member,
     ]
   }
 }

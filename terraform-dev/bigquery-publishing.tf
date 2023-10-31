@@ -13,7 +13,7 @@ data "google_iam_policy" "bigquery_dataset_publishing" {
     role = "roles/bigquery.dataEditor"
     members = [
       "projectWriters",
-      "serviceAccount:${google_service_account.gce_postgres.email}",
+      google_service_account.gce_postgres.member,
     ]
   }
   binding {
@@ -27,7 +27,7 @@ data "google_iam_policy" "bigquery_dataset_publishing" {
     members = [
       "projectReaders",
       "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
-      "serviceAccount:${google_service_account.bigquery_scheduled_queries_search.email}",
+      google_service_account.bigquery_scheduled_queries_search.member,
     ]
   }
 }

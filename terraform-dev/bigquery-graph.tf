@@ -13,10 +13,10 @@ data "google_iam_policy" "bigquery_dataset_graph" {
     role = "roles/bigquery.dataEditor"
     members = [
       "projectWriters",
-      "serviceAccount:${google_service_account.gce_mongodb.email}",
-      "serviceAccount:${google_service_account.gce_postgres.email}",
-      "serviceAccount:${google_service_account.workflow_bank_holidays.email}",
-      "serviceAccount:${google_service_account.bigquery_scheduled_queries_search.email}",
+      google_service_account.gce_mongodb.member,
+      google_service_account.gce_postgres.member,
+      google_service_account.workflow_bank_holidays.member,
+      google_service_account.bigquery_scheduled_queries_search.member,
     ]
   }
   binding {
@@ -29,11 +29,11 @@ data "google_iam_policy" "bigquery_dataset_graph" {
     role = "roles/bigquery.dataViewer"
     members = [
       "projectReaders",
-      "serviceAccount:${google_service_account.govgraphsearch.email}",
+      google_service_account.govgraphsearch.member,
       "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
       "serviceAccount:ner-bulk-inference@cpto-content-metadata.iam.gserviceaccount.com",
       "serviceAccount:wif-ner-new-content-inference@cpto-content-metadata.iam.gserviceaccount.com",
-      "serviceAccount:${google_service_account.bigquery_scheduled_queries_search.email}",
+      google_service_account.bigquery_scheduled_queries_search.member,
       "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
     ]
   }

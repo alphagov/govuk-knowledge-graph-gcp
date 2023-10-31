@@ -14,7 +14,7 @@ data "google_iam_policy" "source_repositories_alphagov_govuk_knowledge_graph_gcp
   binding {
     role = "roles/writer"
     members = [
-      "serviceAccount:${google_service_account.source_repositories_github.email}",
+      google_service_account.source_repositories_github.member,
     ]
   }
 }
