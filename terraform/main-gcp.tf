@@ -248,6 +248,7 @@ data "google_iam_policy" "project" {
     members = [
       google_service_account.gce_mongodb.member,
       google_service_account.gce_postgres.member,
+      google_service_account.gce_content.member,
       google_service_account.bigquery_page_transitions.member,
       google_service_account.bigquery_scheduled_queries_search.member,
       google_service_account.workflow_bank_holidays.member,
@@ -311,6 +312,7 @@ data "google_iam_policy" "project" {
     members = [
       google_service_account.gce_mongodb.member,
       google_service_account.gce_postgres.member,
+      google_service_account.gce_content.member,
       google_service_account.workflow_govuk_integration_database_backups.member
     ]
   }

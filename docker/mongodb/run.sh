@@ -11,21 +11,19 @@ mongod --nojournal &
 # Wait for mongo to start
 sleep 5
 
-# Restore the content_store from its backup .bson file in GCP Storage
-
-# Construct the file's URL
-OBJECT=$(
-gcloud compute instances describe mongodb \
-  --project $PROJECT_ID \
-  --zone $ZONE \
-  --format="value[separator=\"/\"](metadata.items.object_bucket, metadata.items.object_name)"
-)
-OBJECT_URL="gs://$OBJECT"
-
-# https://stackoverflow.com/questions/6575221
-gcloud storage cat "$OBJECT_URL" \
-  | tar xzvO content_store_production/content_items.bson \
-  | mongorestore -v --db=content_store --collection=content_items -
+# Load the content_store data from the JSON file in GCP Storage, which is put
+# there by the 'content' virtual machine that exports it from the Postgres
+# version of the content store.
+#
+# The reason why we don't query the postgres version of the content store
+# directly, is because it didn't exist when we wrote all these queries.  Then in
+# October 2023 GOV.UK ported the content store from MongoDB to postgres.
+# Instead of rewriting all the queries as SQL, we export the whole table from
+# postgres, as JSON, then load it into MongoDB, where we can use the original
+# queries.
+gcloud storage cat gs://govuk-knowledge-graph-dev-data-processed/content-store/content_items.json.gz \
+  | gunzip -c \
+  | mongoimport --db=content_store --collection=content_items --quiet
 
 # Obtain the latest state of the repository
 gcloud storage cp -r gs://$PROJECT_ID-repository/\* .
@@ -39,7 +37,3 @@ make
 # Stop this instance
 # https://stackoverflow.com/a/41232669
 gcloud compute instances delete mongodb --quiet --zone=$ZONE
-
-# In case the instance is still running, bring the background process back into
-# the foreground and leave it there
-fg %1

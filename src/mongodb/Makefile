@@ -339,9 +339,6 @@ temp/taxon_levels.mongodb: temp/define_url.mongodb temp/index.mongodb
 data/taxon_levels.csv.gz: temp/taxon_levels.mongodb
 	source functions.sh; source sh/taxon_levels.sh
 
-data/content_items.csv.gz: temp/define_url.mongodb
-	source functions.sh; source sh/content_items.sh
-
 # Status of a government organisation
 temp/organisation_govuk_status.mongodb: temp/define_url.mongodb
 	mongo content_store js/organisation_govuk_status.js
