@@ -1,5 +1,5 @@
 -- Create a table of page nodes
-DELETE graph.page WHERE TRUE;
+TRUNCATE TABLE graph.page;
 INSERT INTO graph.page
 SELECT
   u.url,
@@ -47,7 +47,7 @@ LEFT JOIN content.page_views USING (url)
 ;
 
 -- Derive a table of parts nodes from their parent page nodes
-DELETE graph.part WHERE TRUE;
+TRUNCATE TABLE graph.part;
 INSERT INTO graph.part
 SELECT
   page.*

@@ -1,4 +1,4 @@
-DELETE search.page WHERE TRUE;
+TRUNCATE TABLE search.page;
 INSERT INTO search.page
 WITH
 tagged_taxons AS (

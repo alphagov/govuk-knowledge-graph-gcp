@@ -1,4 +1,4 @@
-DELETE graph.taxon WHERE TRUE;
+TRUNCATE TABLE graph.taxon;
 INSERT INTO graph.taxon
 SELECT
   taxon_levels.url,

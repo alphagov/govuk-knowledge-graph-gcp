@@ -1,4 +1,4 @@
-DELETE graph.person WHERE TRUE;
+TRUNCATE TABLE graph.person;
 INSERT INTO graph.person
 SELECT
   'https://www.gov.uk/' || content_id AS url,

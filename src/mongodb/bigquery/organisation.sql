@@ -1,5 +1,5 @@
 -- Derive organisations, persons, and taxons
-DELETE graph.organisation WHERE TRUE;
+TRUNCATE TABLE graph.organisation;
 INSERT INTO graph.organisation
 SELECT
   'https://www.gov.uk/' || content_id AS url,

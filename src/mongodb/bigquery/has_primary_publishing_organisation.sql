@@ -1,5 +1,5 @@
 -- Reuse `primary_publishing_organisation` links as `HAS_PRIMARY_PUBLISHING_ORGANISATION`
-DELETE graph.has_primary_publishing_organisation WHERE TRUE;
+TRUNCATE TABLE graph.has_primary_publishing_organisation;
 INSERT INTO graph.has_primary_publishing_organisation
 SELECT
   "https://www.gov.uk/" || from_content_id AS url,

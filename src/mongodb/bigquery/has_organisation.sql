@@ -1,5 +1,5 @@
 -- Reuse `organisations` links as `HAS_ORGANISATION`
-DELETE graph.has_organisation WHERE TRUE;
+TRUNCATE TABLE graph.has_organisation;
 INSERT INTO graph.has_organisation
 SELECT
   "https://www.gov.uk/" || from_content_id AS url,

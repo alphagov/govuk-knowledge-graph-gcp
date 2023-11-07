@@ -1,5 +1,5 @@
 -- Reuse `taxons` links as `IS_TAGGED_TO`
-DELETE graph.is_tagged_to WHERE TRUE;
+TRUNCATE TABLE graph.is_tagged_to;
 INSERT INTO graph.is_tagged_to
 SELECT
   "https://www.gov.uk/" || from_content_id AS url,

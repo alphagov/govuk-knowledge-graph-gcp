@@ -1,5 +1,5 @@
 -- Reuse `parent_taxons` links as `HAS_PARENT`.
-DELETE graph.has_parent WHERE TRUE;
+TRUNCATE TABLE graph.has_parent;
 INSERT INTO graph.has_parent
 SELECT
   "https://www.gov.uk/" || from_content_id AS url,
