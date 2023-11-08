@@ -150,6 +150,62 @@ data "google_iam_policy" "bucket_data_processed" {
   }
 }
 
+# Bucket for building Cloud Run apps
+resource "google_storage_bucket" "cloudbuild" {
+  name                        = "${var.project_id}_cloudbuild" # Must be globally unique
+  force_destroy               = false                          # terraform won't delete the bucket unless it is empty
+  location                    = var.location
+  storage_class               = "STANDARD" # https://cloud.google.com/storage/docs/storage-classes
+  uniform_bucket_level_access = true
+  versioning {
+    enabled = false
+  }
+}
+
+resource "google_storage_bucket_iam_policy" "cloudbuild" {
+  bucket      = google_storage_bucket.cloudbuild.name
+  policy_data = data.google_iam_policy.bucket_cloudbuild.policy_data
+}
+
+data "google_iam_policy" "bucket_cloudbuild" {
+  binding {
+    role = "roles/storage.objectAdmin"
+    members = [
+      google_service_account.govgraphsearch_deploy.member,
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketOwner"
+    members = [
+      "projectEditor:${var.project_id}",
+      "projectOwner:${var.project_id}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketReader"
+    members = [
+      "projectViewer:${var.project_id}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectOwner"
+    members = [
+      "projectEditor:${var.project_id}",
+      "projectOwner:${var.project_id}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectReader"
+    members = [
+      "projectViewer:${var.project_id}",
+    ]
+  }
+}
+
 // Header files of CSV files, for concatenation.
 // BigQuery exports a single, large table as many separate files, which then
 // must be concatenated.  They are exported without headers, so that they can be
