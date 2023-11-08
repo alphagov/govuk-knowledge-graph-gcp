@@ -1,5 +1,5 @@
 -- Derive a table of one row per line of text, per page
-DELETE content.lines WHERE TRUE;
+TRUNCATE TABLE content.lines;
 INSERT INTO content.lines
 SELECT
   url,

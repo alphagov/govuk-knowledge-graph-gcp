@@ -1,5 +1,5 @@
 -- Reuse `ordered_child_organisations` links as `HAS_CHILD_ORGANISATION`.
-DELETE graph.has_child_organisation WHERE TRUE;
+TRUNCATE TABLE graph.has_child_organisation;
 INSERT INTO graph.has_child_organisation
 SELECT
   from_organisation.url,

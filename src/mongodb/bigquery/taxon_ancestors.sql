@@ -1,5 +1,5 @@
 -- Derive a table, one row per taxon, per ancestor of that taxon.
-DELETE graph.taxon_ancestors WHERE TRUE;
+TRUNCATE TABLE graph.taxon_ancestors;
 INSERT INTO graph.taxon_ancestors
 WITH RECURSIVE
   -- We could use the name 'taxon' instead of 'T1', but because there is already

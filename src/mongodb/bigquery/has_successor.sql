@@ -1,4 +1,4 @@
-DELETE graph.has_successor WHERE TRUE;
+TRUNCATE TABLE graph.has_successor;
 INSERT INTO graph.has_successor
 SELECT
   "https://www.gov.uk/" || from_content_id AS url,

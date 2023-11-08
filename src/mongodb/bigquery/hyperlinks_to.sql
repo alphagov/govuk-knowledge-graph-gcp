@@ -5,7 +5,7 @@
 -- 2. Create destination Page nodes that don't yet exist.
 -- 3. Derive HYPERLINKS_TO relationships from expanded links
 
-DELETE graph.hyperlinks_to WHERE TRUE;
+TRUNCATE TABLE graph.hyperlinks_to;
 
 -- 1. Create table of relationships
 INSERT INTO graph.hyperlinks_to

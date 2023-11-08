@@ -1,5 +1,5 @@
 -- Derive external page nodes
-DELETE graph.external_page WHERE TRUE;
+TRUNCATE TABLE graph.external_page;
 INSERT INTO graph.external_page
 SELECT url
 FROM graph.page
