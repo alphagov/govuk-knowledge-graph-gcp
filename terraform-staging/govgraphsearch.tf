@@ -79,19 +79,6 @@ resource "google_secret_manager_secret" "cookie-session-signature" {
   }
 }
 
-# Create a secret for GitHub Actions
-resource "google_secret_manager_secret" "github_action_secret" {
-  secret_id = "github-action-service-account-deploy-key"
-
-  replication {
-    user_managed {
-      replicas {
-        location = var.region
-      }
-    }
-  }
-}
-
 # Allow the Cloud Run service to access the GOV.UK Signon secrets
 data "google_iam_policy" "sso_oauth_client_id" {
   binding {
