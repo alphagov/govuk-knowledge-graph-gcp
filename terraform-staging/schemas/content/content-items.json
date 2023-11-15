@@ -1,8 +1,218 @@
 [
   {
+    "name": "id",
     "mode": "REQUIRED",
-    "name": "item",
+    "type": "STRING",
+    "description": "UUID"
+  },
+  {
+    "name": "base_path",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "The part of the URL after https://www.gov.uk/"
+  },
+  {
+    "name": "content_id",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "ID of the piece of content, of which this is an edition in a certain locale"
+  },
+  {
+    "name": "title",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "Title of the edition"
+  },
+  {
+    "name": "description",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "Description of the edition"
+  },
+  {
+    "name": "document_type",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "The kind of thing that the content is about"
+  },
+  {
+    "name": "content_purpose_document_supertype",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "Used in topic pages for navigation"
+  },
+  {
+    "name": "content_purpose_subgroup",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "Used in topic pages for navigation"
+  },
+  {
+    "name": "content_purpose_supergroup",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "Used in topic pages for navigation"
+  },
+  {
+    "name": "emaiL_document_supertype",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "Used by email subscriptions to identify publications and announcements"
+  },
+  {
+    "name": "government_document_supertype",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "Used in topic pages for navigation"
+  },
+  {
+    "name": "navigation_document_supertype",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "Used in topic pages for navigation"
+  },
+  {
+    "name": "search_user_need_document_supertype",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "Used in topic pages for navigation"
+  },
+  {
+    "name": "user_journey_document_supertype",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "Used in topic pages for navigation"
+  },
+  {
+    "name": "schema_name",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "The JSON schema of the 'details' field. See https://docs.publishing.service.gov.uk/content-schemas.html"
+  },
+  {
+    "name": "locale",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "The ISO 639-1 two-letter code of the language of the document, of which this is an edition"
+  },
+  {
+    "name": "first_published_at",
+    "mode": "NULLABLE",
+    "type": "TIMESTAMP",
+    "description": "The timestamp of the first edition of this document to have been published.  Automatically determined by the publishing-api, unless overridden by the publishing application."
+  },
+  {
+    "name": "public_updated_at",
+    "mode": "NULLABLE",
+    "type": "TIMESTAMP",
+    "description": "The timestamp of publication of the last edition to have been so significantly different from its predecessor that the publisher chose to inform users"
+  },
+  {
+    "name": "publishing_scheduled_at",
+    "mode": "NULLABLE",
+    "type": "TIMESTAMP",
+    "description": "When an edition is/was to be made public"
+  },
+  {
+    "name": "details",
+    "mode": "NULLABLE",
     "type": "JSON",
-    "description": "JSON representation of a content item"
+    "description": "The content of an edition, and other information that varies by schema"
+  },
+  {
+    "name": "publishing_app",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "The application where a document is composed and submitted for publication"
+  },
+  {
+    "name": "rendering_app",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "The application that renders the given edition as HTML"
+  },
+  {
+    "name": "routes",
+    "mode": "NULLABLE",
+    "type": "JSON",
+    "description": "URLs that will be served with the given edition"
+  },
+  {
+    "name": "redirects",
+    "mode": "NULLABLE",
+    "type": "JSON",
+    "description": "Redirects for the base path and any paths under the base path"
+  },
+  {
+    "name": "expanded_links",
+    "mode": "NULLABLE",
+    "type": "JSON",
+    "description": "Metadata about content items that are associated with the given content item"
+  },
+  {
+    "name": "access_limited",
+    "mode": "NULLABLE",
+    "type": "JSON",
+    "description": "List of authorised users (only used in the draft stack)"
+  },
+  {
+    "name": "auth_bypass_ids",
+    "mode": "NULLABLE",
+    "type": "JSON",
+    "description": "A way to allow unauthenticated users to bypass access limitations by using a URL that includes a JSON Web Token (only used in the draft stack)"
+  },
+  {
+    "name": "phase",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "One of 'alpha', 'beta', or 'live', describing how finished the content is"
+  },
+  {
+    "name": "analytics_identifier",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "An identifier to track the content item in analytics software"
+  },
+  {
+    "name": "payload_version",
+    "mode": "NULLABLE",
+    "type": "INTEGER",
+    "description": "To mitigate race conditions when publishing content"
+  },
+  {
+    "name": "withdrawn_notice",
+    "mode": "NULLABLE",
+    "type": "JSON",
+    "description": "When the content was withdrawn, and an explanation"
+  },
+  {
+    "name": "publishing_request_id",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "ID of a record of an app submitting the content to be published"
+  },
+  {
+    "name": "created_at",
+    "mode": "NULLABLE",
+    "type": "TIMESTAMP",
+    "description": "When the document was first created."
+  },
+  {
+    "name": "updated_at",
+    "mode": "NULLABLE",
+    "type": "TIMESTAMP",
+    "description": "When an edition was created, however trivial the change from any previous edition"
+  },
+  {
+    "name": "_id",
+    "mode": "NULLABLE",
+    "type": "STRING",
+    "description": "For compatibility with a previous implementation of the content store"
+  },
+  {
+    "name": "scheduled_publishing_delay_seconds",
+    "mode": "NULLABLE",
+    "type": "INTEGER",
+    "description": "When an edition is/was to be made public"
   }
 ]

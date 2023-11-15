@@ -15,6 +15,7 @@ data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
       "projectWriters",
       google_service_account.gce_mongodb.member,
       google_service_account.gce_postgres.member,
+      google_service_account.gce_content.member,
       google_service_account.workflow_bank_holidays.member,
       google_service_account.bigquery_page_transitions.member,
     ]
@@ -672,7 +673,7 @@ resource "google_bigquery_table" "content_items" {
   dataset_id    = google_bigquery_dataset.content.dataset_id
   table_id      = "content_items"
   friendly_name = "Content items"
-  description   = "The raw JSON from the MongoDB Content Store database"
+  description   = "Content items table from the GOV.UK Content Store PostgreSQL database"
   schema        = file("schemas/content/content-items.json")
 }
 

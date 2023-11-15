@@ -23,6 +23,7 @@ resource "google_workflows_workflow" "govuk_integration_database_backups" {
       postgres_startup_script = jsonencode(var.postgres-startup-script),
       mongodb_metadata_value  = jsonencode(module.mongodb-container.metadata_value),
       postgres_metadata_value = jsonencode(module.postgres-container.metadata_value)
+      content_metadata_value  = jsonencode(module.content-container.metadata_value)
     }
   )
 }
