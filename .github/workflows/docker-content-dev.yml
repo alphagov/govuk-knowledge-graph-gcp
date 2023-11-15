@@ -6,6 +6,7 @@ on:
       - dev
     paths:
       - 'docker/content/Dockerfile'
+      - 'docker/content/entrypoint.sh'
       - '.github/workflows/docker-content-dev.yml'
 
 defaults:

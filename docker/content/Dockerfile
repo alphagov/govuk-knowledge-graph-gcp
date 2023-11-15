@@ -27,14 +27,5 @@ RUN ARCH=`cat /tmp/arch` && apk --no-cache add \
 # Reset the postgres entrypoint to the docker default, so that we can run our
 # own CMD
 ENTRYPOINT []
-
-# Run a script from a copy of the HEAD of the repository
-# If this fails with
-#
-# > ERROR: (gcloud.storage.cat) You do not currently have an active account selected.
-#
-# then wait a few minutes and try again.  Newly-built containers don't seem to
-# work immediately.
-CMD \
-  gcloud storage cat "gs://${PROJECT_ID}-repository/docker/content/run.sh" \
-  | bash
+COPY entrypoint.sh .
+CMD bash entrypoint.sh

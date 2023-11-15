@@ -6,6 +6,7 @@ on:
       - staging
     paths:
       - 'docker/content/Dockerfile'
+      - 'docker/content/entrypoint.sh'
       - '.github/workflows/docker-content-staging.yml'
 
 defaults:
