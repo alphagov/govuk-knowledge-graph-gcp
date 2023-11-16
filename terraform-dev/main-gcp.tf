@@ -308,6 +308,13 @@ data "google_iam_policy" "project" {
   }
 
   binding {
+    role = "roles/cloudfunctions.serviceAgent"
+    members = [
+      "serviceAccount:service-${var.project_number}@gcf-admin-robot.iam.gserviceaccount.com",
+    ]
+  }
+
+  binding {
     role = "roles/compute.instanceAdmin.v1"
     members = [
       google_service_account.gce_mongodb.member,
