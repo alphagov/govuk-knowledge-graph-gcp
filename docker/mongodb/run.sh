@@ -21,7 +21,7 @@ sleep 5
 # Instead of rewriting all the queries as SQL, we export the whole table from
 # postgres, as JSON, then load it into MongoDB, where we can use the original
 # queries.
-gcloud storage cat gs://govuk-knowledge-graph-dev-data-processed/content-store/content_items.json.gz \
+gcloud storage cat gs://$PROJECT_ID-data-processed/content-store/content_items.json.gz \
   | gunzip -c \
   | mongoimport --db=content_store --collection=content_items --quiet
 
