@@ -33,7 +33,7 @@ main:
       - object_name: $${message_json.name}
   - maybe_start_an_instance:
       switch:
-        - condition: $${text.match_regex(object_name, "^publishing-api-postgres/\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}-publishing_api_production\\.gz$")}
+        - condition: $${text.match_regex(object_name, "^publishing-api-postgres/\\d{4}-\\d{2}-\\d{2}T\\d{6}Z-publishing_api_production\\.gz$")}
           steps:
           - log_starting_postgres_instance:
               call: sys.log
