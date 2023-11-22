@@ -3,6 +3,8 @@ require "functions_framework"
 require 'json'
 require 'govspeak'
 
+TIMEOUT_SECONDS = 10 # How long to wait for each govspeak string to render
+
 # https://cloud.google.com/functions/docs/create-deploy-http-ruby
 FunctionsFramework.http "govspeak_to_html" do |request|
   # The request parameter is a Rack::Request object.
@@ -18,16 +20,26 @@ FunctionsFramework.http "govspeak_to_html" do |request|
   end
 end
 
+# Render a single govspeak string to HTML.
+#
+# Time out if rendering freezes, as it does in the following example.
+#
+# govspeak = <<-END_GOVSPEAK
+# $LegislativeList
+# * Item
+#   $EndLegislativeList
+# END_GOVSPEAK
+# Govspeak::Document.new(govspeak).to_html
 def render(govspeak)
+  html = nil
   begin
-    return {
-      "html" => Govspeak::Document.new(govspeak).to_html(),
-      "error" => nil
-    }
+    Timeout::timeout(TIMEOUT_SECONDS) do
+      html = Govspeak::Document.new(govspeak).to_html
+    end
+  rescue Timeout::Error => e
+    error_message = "Conversion from govspeak to HTML timed out after #{TIMEOUT_SECONDS} seconds"
   rescue => e
-    return {
-      "html" => nil,
-      "error" => e.message
-    }
+    error_message = e
   end
+  return { "html" => html, "error" => error_message }
 end
