@@ -13,25 +13,25 @@ tagged_taxons AS (
 ),
 primary_publishing_organisation AS (
   SELECT
-    expanded_links.from_url AS url,
-    organisation.title AS organisation
-  FROM content.expanded_links AS expanded_links
-  INNER JOIN content.title AS organisation ON (organisation.url = expanded_links.to_url)
+    link.from_content_id AS content_id,
+    organisation.title
+  FROM content.expanded_links_content_ids AS link
+  INNER JOIN graph.organisation AS organisation ON (organisation.content_id = link.to_content_id)
   WHERE link_type = 'primary_publishing_organisation'
 ),
 organisations AS (
   SELECT
-    expanded_links.from_url AS url,
-    ARRAY_AGG(organisation.title) AS organisations
-  FROM content.expanded_links AS expanded_links
-  INNER JOIN content.title AS organisation ON (organisation.url = expanded_links.to_url)
+    link.from_content_id AS content_id,
+    ARRAY_AGG(organisation.title) AS titles
+  FROM content.expanded_links_content_ids AS link
+  INNER JOIN graph.organisation AS organisation ON (organisation.content_id = link.to_content_id)
   WHERE link_type = 'organisations'
-  GROUP BY expanded_links.from_url
+  GROUP BY link.from_content_id
 ),
 all_links AS (
   SELECT DISTINCT
     link_type,
-    from_url as url, 
+    from_url as url,
     to_url as link_url
   FROM
     content.expanded_links
@@ -52,14 +52,14 @@ all_links AS (
 ),
 links AS (
   SELECT
-    url, 
+    url,
     ARRAY_AGG(
       STRUCT(
-        link_url, 
+        link_url,
         link_type
       )
     ) AS hyperlink
-  FROM 
+  FROM
     all_links
   GROUP BY
     url
@@ -103,13 +103,13 @@ SELECT
   description,
   text,
   tagged_taxons.ancestor_titles AS taxons,
-  primary_publishing_organisation.organisation AS primary_organisation,
-  organisations.organisations,
+  primary_publishing_organisation.title AS primary_organisation,
+  organisations.titles AS organisations,
   links.hyperlink AS hyperlinks,
   entities.entities
 FROM graph.page
-LEFT JOIN primary_publishing_organisation USING (url)
-LEFT JOIN organisations USING (url)
+LEFT JOIN primary_publishing_organisation USING (content_id)
+LEFT JOIN organisations USING (content_id)
 LEFT JOIN links USING (url)
 LEFT JOIN entities USING (url)
 LEFT JOIN tagged_taxons ON (tagged_taxons.url = 'https://www.gov.uk/' || content_id)
