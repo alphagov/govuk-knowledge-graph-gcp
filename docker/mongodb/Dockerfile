@@ -33,5 +33,5 @@ ENV GITHUB_REF=${GITHUB_REF}
 
 # Run a script from a copy of the HEAD of the repository
 CMD \
-  gcloud storage cat "gs://${PROJECT_ID}-repository/docker/mongodb/run.sh" \
+  gcloud storage cat "gs://${PROJECT_ID}-repository/src/mongodb/run.sh" \
   | bash
