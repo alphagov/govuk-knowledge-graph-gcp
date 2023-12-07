@@ -174,6 +174,10 @@ resource "google_workflows_workflow" "redis_cli" {
   region          = var.region
   description     = "Create a virtual machine for accessing the Memorystore Redis instance"
   service_account = google_service_account.workflow_redis_cli.id
+
+  # Enable / Disable
+  count = var.enable_redis_session_store_instance ? 1 : 0
+
   source_contents = templatefile(
     "workflows/redis-cli.yaml",
     {
@@ -181,7 +185,7 @@ resource "google_workflows_workflow" "redis_cli" {
       zone           = var.zone,
       network_name   = google_redis_instance.session_store[0].authorized_network,
       subnetwork_id  = google_compute_subnetwork.cloudrun.id,
-      metadata_value = jsonencode(module.redis-cli-container.metadata_value)
+      metadata_value = jsonencode(module.redis-cli-container[0].metadata_value)
     }
   )
 }
