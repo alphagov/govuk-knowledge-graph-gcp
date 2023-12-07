@@ -290,6 +290,9 @@ module "redis-cli-container" {
   source  = "terraform-google-modules/container-vm/google"
   version = "~> 2.0"
 
+  # Enable / Disable
+  count = var.enable_redis_session_store_instance ? 1 : 0
+
   container = {
     image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/redis-cli:latest"
     tty : true
@@ -442,16 +445,19 @@ resource "google_compute_instance_template" "redis_cli" {
   name         = "redis-cli"
   machine_type = "e2-medium"
 
+  # Enable / Disable
+  count = var.enable_redis_session_store_instance ? 1 : 0
+
   disk {
     boot         = true
-    source_image = module.redis-cli-container.source_image
+    source_image = module.redis-cli-container[0].source_image
     disk_size_gb = 10
   }
 
   metadata = {
     google-logging-enabled     = true
     serial-port-logging-enable = true
-    gce-container-declaration  = module.redis-cli-container.metadata_value
+    gce-container-declaration  = module.redis-cli-container[0].metadata_value
   }
 
   network_interface {
