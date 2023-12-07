@@ -480,7 +480,68 @@ resource "google_compute_project_metadata" "default" {
     serial-port-logging-enable = true
   }
 }
-#
+
+resource "google_compute_firewall" "default_allow_ssh" {
+  name    = "default-allow-ssh"
+  description = "Allow SSH from anywhere"
+  network = google_compute_network.default.name
+  priority = 65534
+
+  source_ranges = ["0.0.0.0/0"]
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+}
+
+resource "google_compute_firewall" "default_allow_rdp" {
+  name    = "default-allow-rdp"
+  description = "Allow RDP from anywhere"
+  network = google_compute_network.default.name
+  priority = 65534
+
+  source_ranges = ["0.0.0.0/0"]
+
+  allow {
+    protocol = "tcp"
+    ports    = ["3389"]
+  }
+}
+
+
+resource "google_compute_firewall" "default_allow_icmp" {
+  name    = "default-allow-icmp"
+  description = "Allow ICMP from anywhere"
+  network = google_compute_network.default.name
+  priority = 65534
+
+  source_ranges = ["0.0.0.0/0"]
+
+  allow {
+    protocol = "icmp"
+  }
+}
+
+
+resource "google_compute_firewall" "default_allow_internal" {
+  name    = "default-allow-internal"
+  description = "Allow internal traffic on the default network"
+  network = google_compute_network.default.name
+  priority = 65534
+
+  source_ranges = ["10.128.0.0/9"]
+
+  allow {
+    protocol = "tcp"
+    ports = ["0-65535"]
+  }
+
+  allow {
+    protocol = "udp"
+    ports = ["0-65535"]
+  }
+}
 
 resource "google_compute_firewall" "custom_vpc_for_cloud_run_allow_iap_ssh" {
   name        = "custom-vpc-for-cloud-run-allow-iap-ssh"
