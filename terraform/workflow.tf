@@ -161,3 +161,27 @@ resource "google_cloud_scheduler_job" "page_views" {
     }
   }
 }
+
+# A service account for the redis-cli workflow
+resource "google_service_account" "workflow_redis_cli" {
+  account_id   = "workflow-redis-cli"
+  display_name = "Service account for the redis-cli workflow"
+}
+
+# A workflow to start a virtual machine to access the Memorystore Redis instance
+resource "google_workflows_workflow" "redis_cli" {
+  name            = "redis-cli"
+  region          = var.region
+  description     = "Create a virtual machine for accessing the Memorystore Redis instance"
+  service_account = google_service_account.workflow_redis_cli.id
+  source_contents = templatefile(
+    "workflows/redis-cli.yaml",
+    {
+      project_id     = var.project_id,
+      zone           = var.zone,
+      network_name   = google_redis_instance.session_store[0].authorized_network,
+      subnetwork_id  = google_compute_subnetwork.cloudrun.id,
+      metadata_value = jsonencode(module.redis-cli-container.metadata_value)
+    }
+  )
+}
