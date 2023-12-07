@@ -53,7 +53,6 @@ SELECT
   page.*
   REPLACE(
     parts.url AS url,
-    page.document_type || "_part" AS document_type,
     parts.part_title AS title,
     c.text AS text,
     parts.part_index AS part_index,
