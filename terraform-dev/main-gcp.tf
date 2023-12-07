@@ -313,7 +313,8 @@ data "google_iam_policy" "project" {
       google_service_account.gce_mongodb.member,
       google_service_account.gce_postgres.member,
       google_service_account.gce_content.member,
-      google_service_account.workflow_govuk_integration_database_backups.member
+      google_service_account.workflow_govuk_integration_database_backups.member,
+      google_service_account.workflow_redis_cli.member
     ]
   }
 
@@ -363,7 +364,8 @@ data "google_iam_policy" "project" {
     role = "roles/logging.logWriter"
     members = [
       google_service_account.workflow_govuk_integration_database_backups.member,
-      google_service_account.workflow_bank_holidays.member
+      google_service_account.workflow_bank_holidays.member,
+      google_service_account.workflow_redis_cli.member
     ]
   }
 
@@ -429,6 +431,13 @@ data "google_iam_policy" "project" {
     role = "roles/workflows.serviceAgent"
     members = [
       "serviceAccount:service-${var.project_number}@gcp-sa-workflows.iam.gserviceaccount.com",
+    ]
+  }
+
+  binding {
+    role = "roles/redis.admin"
+    members = [
+      google_service_account.gce_redis_cli.member,
     ]
   }
 

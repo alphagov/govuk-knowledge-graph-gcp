@@ -11,7 +11,7 @@
 MAX_RETRIES=10
 RETRY_INTERVAL_SECONDS=60
 COUNTER=0
-CMD="gcloud storage cat gs://${PROJECT_ID}-repository/docker/content/run.sh"
+CMD="gcloud storage cat gs://${PROJECT_ID}-repository/src/content/run.sh"
 
 while [ $COUNTER -lt $MAX_RETRIES ]; do
   $CMD

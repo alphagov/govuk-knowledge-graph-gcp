@@ -16,6 +16,12 @@ resource "google_service_account" "gce_content" {
   description  = "Service Account for the Content Store postgres instance on GCE"
 }
 
+resource "google_service_account" "gce_redis_cli" {
+  account_id   = "gce-redis-cli"
+  display_name = "Service Account for the Redis CLI instance"
+  description  = "Service Account for the Redis CLI instance on GCE"
+}
+
 # Allow a workflow to attach the mongodb service account to an instance.
 data "google_iam_policy" "service_account-gce_mongodb" {
   binding {
@@ -62,6 +68,21 @@ resource "google_service_account_iam_policy" "gce_content" {
   policy_data        = data.google_iam_policy.service_account-gce_content.policy_data
 }
 
+# Allow a workflow to attach the redis-cli service account to an instance.
+data "google_iam_policy" "service_account-gce_redis_cli" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+    members = [
+      google_service_account.workflow_redis_cli.member,
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "gce_redis_cli" {
+  service_account_id = google_service_account.gce_redis_cli.name
+  policy_data        = data.google_iam_policy.service_account-gce_redis_cli.policy_data
+}
+
 # terraform import google_compute_network.default default
 resource "google_compute_network" "default" {
   name        = "default"
@@ -84,7 +105,7 @@ resource "google_compute_subnetwork" "cloudrun" {
   name                       = "cloudrun-subnet"
   ip_cidr_range              = "10.8.0.0/28"
   network                    = google_compute_network.cloudrun.id
-  private_ip_google_access   = false
+  private_ip_google_access   = true # otherwise containers won't start
   private_ipv6_google_access = "DISABLE_GOOGLE_ACCESS"
   project                    = var.project_id
   purpose                    = "PRIVATE"
@@ -264,6 +285,43 @@ module "content-container" {
   restart_policy = "Never"
 }
 
+# https://github.com/terraform-google-modules/terraform-google-container-vm
+module "redis-cli-container" {
+  source  = "terraform-google-modules/container-vm/google"
+  version = "~> 2.0"
+
+  container = {
+    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/redis-cli:latest"
+    tty : true
+    stdin : true
+    env = [
+      {
+        name  = "PROJECT_ID"
+        value = var.project_id
+      },
+      {
+        name  = "REGION"
+        value = var.region
+      },
+      {
+        name  = "ZONE"
+        value = var.zone
+      },
+      {
+        name  = "REDIS_HOST"
+        value = google_redis_instance.session_store[0].host
+      },
+      {
+        name  = "REDIS_PORT"
+        value = google_redis_instance.session_store[0].port
+      }
+    ]
+  }
+
+
+  restart_policy = "Never"
+}
+
 resource "google_compute_instance_template" "mongodb" {
   name         = "mongodb"
   machine_type = "e2-highcpu-32"
@@ -379,6 +437,36 @@ resource "google_compute_instance_template" "content" {
   }
 }
 
+# Template for occasional use, such as debugging
+resource "google_compute_instance_template" "redis_cli" {
+  name         = "redis-cli"
+  machine_type = "e2-medium"
+
+  disk {
+    boot         = true
+    source_image = module.redis-cli-container.source_image
+    disk_size_gb = 10
+  }
+
+  metadata = {
+    google-logging-enabled     = true
+    serial-port-logging-enable = true
+    gce-container-declaration  = module.redis-cli-container.metadata_value
+  }
+
+  network_interface {
+    network = "default"
+    access_config {
+      network_tier = "STANDARD"
+    }
+  }
+
+  service_account {
+    email  = google_service_account.gce_redis_cli.email
+    scopes = ["cloud-platform"]
+  }
+}
+
 # Project-level metadata, on all machines
 resource "google_compute_project_metadata" "default" {
   metadata = {
@@ -387,3 +475,21 @@ resource "google_compute_project_metadata" "default" {
   }
 }
 #
+
+resource "google_compute_firewall" "custom_vpc_for_cloud_run_allow_iap_ssh" {
+  name        = "custom-vpc-for-cloud-run-allow-iap-ssh"
+  description = "Allow ingress via IAP"
+  network     = google_compute_network.cloudrun.name
+  priority    = 65534
+
+  source_ranges = ["35.235.240.0/20"]
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  target_service_accounts = [
+    google_service_account.gce_redis_cli.email
+  ]
+}
