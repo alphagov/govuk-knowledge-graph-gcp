@@ -46,7 +46,7 @@ restore_postgres: docker_up
 			--jobs=2 \
 			--dbname postgres \
 			--port=$$PGPORT \
-			./backups/publishing-api-postgres_2023-10-05T05_00_01-publishing_api_production.gz
+			./backups/publishing-api-postgres_2023-12-07T072953Z-publishing_api_production.gz
 	echo $$(date) Finished restoring the publishing database backup file
 
 .PHONY: restore_content_postgres
