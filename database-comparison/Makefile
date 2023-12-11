@@ -67,11 +67,9 @@ restore_content_postgres: docker_up
 .PHONY: restore_content_mongo
 restore_content_mongo: docker_up
 	echo $$(date) Starting to restore the content mongo database backup file
-	source ./environments/content-mongo.env; \
-		tar xzvO  \
-			-f ./backups/mongo-api_2023-10-05T00_16_01-content_store_production.gz \
-			content_store_production/content_items.bson \
-		| mongorestore -v --db=content_store --collection=content_items -
+	cat ./backups/content-store_content_items.json.gz \
+		| gunzip -c \
+		| mongoimport --db=content_store --collection=content_items
 	echo $$(date) Finished restoring the content mongo database backup file
 
 data/all-urls-publishing.csv:
