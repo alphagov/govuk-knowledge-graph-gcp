@@ -26,6 +26,7 @@ data "google_iam_policy" "bigquery_dataset_functions" {
     members = [
       "projectReaders",
       "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
+      google_service_account.gce_mongodb.member,
     ]
   }
 }

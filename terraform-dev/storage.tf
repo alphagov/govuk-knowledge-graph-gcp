@@ -230,6 +230,7 @@ data "google_iam_policy" "bucket_lib" {
   binding {
     role = "roles/storage.objectViewer"
     members = [
+      google_service_account.gce_mongodb.member,
       # It isn't documented whether anyone needs any role for a BigQuery UDF to
       # be able to fetch a Javascript library from this bucket, but my guess is
       # that any user of the function, or any service account that runs a
