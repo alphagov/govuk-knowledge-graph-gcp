@@ -64,6 +64,14 @@ links AS (
   GROUP BY
     url
 ),
+phone_numbers AS (
+  SELECT
+    url,
+    ARRAY_AGG(standardised_number) as phone_numbers
+  FROM
+    graph.phone_number
+  GROUP BY url
+),
 entities AS (
   WITH page_type_count AS (
     SELECT
@@ -106,11 +114,13 @@ SELECT
   primary_publishing_organisation.title AS primary_organisation,
   organisations.titles AS organisations,
   links.hyperlink AS hyperlinks,
+  phone_numbers.phone_numbers,
   entities.entities
 FROM graph.page
 LEFT JOIN primary_publishing_organisation USING (content_id)
 LEFT JOIN organisations USING (content_id)
 LEFT JOIN links USING (url)
+LEFT JOIN phone_numbers USING (url)
 LEFT JOIN entities USING (url)
 LEFT JOIN tagged_taxons ON (tagged_taxons.url = 'https://www.gov.uk/' || content_id)
 WHERE
