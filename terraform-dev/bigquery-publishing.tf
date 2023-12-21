@@ -177,3 +177,29 @@ resource "google_bigquery_table" "publishing_unpublishings" {
     }
   }
 }
+
+// Tables derived from others
+
+resource "google_bigquery_table" "publishing_editions_current" {
+  dataset_id    = google_bigquery_dataset.publishing.dataset_id
+  table_id      = "editions_current"
+  friendly_name = "Editions current"
+  description   = "The most-recent edition of each document of each content item"
+  schema        = file("schemas/publishing/editions-current.json")
+}
+
+resource "google_bigquery_table" "publishing_editions_new" {
+  dataset_id    = google_bigquery_dataset.publishing.dataset_id
+  table_id      = "editions_new"
+  friendly_name = "Editions new"
+  description   = "Editions of the latest batch"
+  schema        = file("schemas/publishing/editions-new.json")
+}
+
+resource "google_bigquery_table" "publishing_editions_new_current" {
+  dataset_id    = google_bigquery_dataset.publishing.dataset_id
+  table_id      = "editions_new_current"
+  friendly_name = "Editions new current"
+  description   = "Current editions of the latest batch"
+  schema        = file("schemas/publishing/editions-new-current.json")
+}
