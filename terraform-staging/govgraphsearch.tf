@@ -46,28 +46,28 @@ resource "google_iap_brand" "project_brand" {
 resource "google_secret_manager_secret" "iap_oauth_client_id" {
   secret_id = "iap-oauth-client-id"
   replication {
-    automatic = true
+    auto {}
   }
 }
 
 resource "google_secret_manager_secret" "iap_oauth_client_secret" {
   secret_id = "iap-oauth-client-secret"
   replication {
-    automatic = true
+    auto {}
   }
 }
 
 resource "google_secret_manager_secret" "sso_oauth_client_id" {
   secret_id = "OAUTH_ID"
   replication {
-    automatic = true
+    auto {}
   }
 }
 
 resource "google_secret_manager_secret" "sso_oauth_client_secret" {
   secret_id = "OAUTH_SECRET"
   replication {
-    automatic = true
+    auto {}
   }
 }
 
@@ -75,7 +75,7 @@ resource "google_secret_manager_secret" "sso_oauth_client_secret" {
 resource "google_secret_manager_secret" "cookie-session-signature" {
   secret_id = "cookie-session-signature"
   replication {
-    automatic = true
+    auto {}
   }
 }
 
