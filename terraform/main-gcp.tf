@@ -123,10 +123,10 @@ variable "gtm_auth" {
 terraform {
   required_providers {
     google = {
-      version = "4.46.0"
+      version = "5.10.0"
     }
     google-beta = {
-      version = "4.46.0"
+      version = "5.10.0"
     }
   }
 }
