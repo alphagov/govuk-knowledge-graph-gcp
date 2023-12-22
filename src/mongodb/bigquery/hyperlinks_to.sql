@@ -21,7 +21,7 @@ FROM content.embedded_links
 
 -- 2. Create destination Page nodes that don't yet exist.
 INSERT INTO graph.page (url)
-SELECT link_url AS url
+SELECT DISTINCT link_url AS url
 FROM graph.hyperlinks_to
 LEFT JOIN graph.page ON page.url = hyperlinks_to.link_url
 WHERE page.url IS NULL
