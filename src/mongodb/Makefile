@@ -363,12 +363,18 @@ temp/page.bigquery: \
 	data/withdrawn_at.csv.gz \
 	data/withdrawn_explanation.csv.gz \
 	data/title.csv.gz \
+  data/internal_name.csv.gz \
 	data/description.csv.gz \
 	data/department_analytics_profile.csv.gz \
 	data/parts.csv.gz \
 	temp/content.bigquery \
+	data/expanded_links.csv.gz \
+	data/expanded_links_content_ids.csv.gz \
+	data/transaction_start_link.csv.gz \
+	temp/embedded_links.bigquery \
 	temp/is_tagged_to.bigquery \
-	temp/taxon_levels.mongodb
+	temp/organisation.bigquery \
+  temp/taxon_ancestors.bigquery
 	source functions.sh; query_bigquery file_name=bigquery/page.sql
 	touch $@
 
