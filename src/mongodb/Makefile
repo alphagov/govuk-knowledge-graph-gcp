@@ -239,6 +239,14 @@ data/place_abbreviations.csv.gz: temp/place_content.mongodb
 	source functions.sh; source sh/place_abbreviations.sh
 	touch data/place_abbreviations.csv.gz
 
+temp/phone_number.mongodb: temp/define_url.mongodb
+	mongo content_store js/phone_number.js
+	touch $@
+
+data/phone_number.csv.gz: temp/phone_number.mongodb
+	source functions.sh; source sh/phone_number.sh
+	touch $@
+
 # Some document types have the body text in the 'body' field (not 'body.content')
 temp/body.mongodb: temp/define_url.mongodb temp/index.mongodb
 	mongo content_store js/body.js
@@ -432,3 +440,7 @@ temp/taxon_ancestors.bigquery: \
 	temp/has_parent.bigquery \
 	temp/taxon.bigquery
 	source functions.sh; query_bigquery file_name=bigquery/taxon_ancestors.sql
+
+temp/phone_number.bigquery: \
+	data/phone_number.csv.gz
+	source functions.sh; query_bigquery file_name=bigquery/phone_number.sql

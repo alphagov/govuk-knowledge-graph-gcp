@@ -692,3 +692,11 @@ resource "google_bigquery_table" "abbreviations" {
   description   = "Abbreviations defined on GOV.UK pages"
   schema        = file("schemas/content/abbreviations.json")
 }
+
+resource "google_bigquery_table" "phone_number" {
+  dataset_id    = "content"
+  table_id      = "phone_number"
+  friendly_name = "Phone number"
+  description   = "Phone numbers. One row per number, per page that it appears on. These are phone numbers that are part of 'contact' documents."
+  schema        = file("schemas/content/phone_number.json")
+}

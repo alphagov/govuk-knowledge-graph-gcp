@@ -208,6 +208,68 @@ data "google_iam_policy" "bucket_cloudbuild" {
   }
 }
 
+# Bucket for static copies of libaries, such as for BigQuery user-defined
+# functions
+resource "google_storage_bucket" "lib" {
+  name                        = "${var.project_id}-lib" # Must be globally unique
+  force_destroy               = false                   # terraform won't delete the bucket unless it is empty
+  location                    = var.location
+  storage_class               = "STANDARD" # https://cloud.google.com/storage/docs/storage-classes
+  uniform_bucket_level_access = true
+  versioning {
+    enabled = false
+  }
+}
+
+resource "google_storage_bucket_iam_policy" "lib" {
+  bucket      = google_storage_bucket.lib.name
+  policy_data = data.google_iam_policy.bucket_lib.policy_data
+}
+
+data "google_iam_policy" "bucket_lib" {
+  binding {
+    role = "roles/storage.objectViewer"
+    members = [
+      google_service_account.gce_mongodb.member,
+      # It isn't documented whether anyone needs any role for a BigQuery UDF to
+      # be able to fetch a Javascript library from this bucket, but my guess is
+      # that any user of the function, or any service account that runs a
+      # scheduled query that uses the function, must have
+      # roles/storage.objectViewer.
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketOwner"
+    members = [
+      "projectEditor:${var.project_id}",
+      "projectOwner:${var.project_id}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketReader"
+    members = [
+      "projectViewer:${var.project_id}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectOwner"
+    members = [
+      "projectEditor:${var.project_id}",
+      "projectOwner:${var.project_id}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectReader"
+    members = [
+      "projectViewer:${var.project_id}",
+    ]
+  }
+}
+
 // Header files of CSV files, for concatenation.
 // BigQuery exports a single, large table as many separate files, which then
 // must be concatenated.  They are exported without headers, so that they can be
@@ -232,4 +294,12 @@ resource "google_storage_bucket_object" "page_to_page_transitions" {
   name   = "ga4/page_to_page_transitions_header.csv.gz"
   source = "govuk-knowledge-graph-data-processed/ga4/page_to_page_transitions_header.csv.gz"
   bucket = "${var.project_id}-data-processed"
+}
+
+# Javascript library for detecting phone numbers in plain text and standardising
+# them.
+resource "google_storage_bucket_object" "libphonenumber" {
+  name   = "libphonenumber-max.js"
+  source = "lib/libphonenumber-max.js"
+  bucket = "${var.project_id}-lib"
 }

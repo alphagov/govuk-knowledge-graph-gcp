@@ -187,3 +187,11 @@ resource "google_bigquery_table" "has_successor" {
   description   = "Relationships between an organisation and its successor"
   schema        = file("schemas/graph/has-successor.json")
 }
+
+resource "google_bigquery_table" "graph_phone_number" {
+  dataset_id    = google_bigquery_dataset.graph.dataset_id
+  table_id      = "phone_number"
+  friendly_name = "Phone number"
+  description   = "Phone numbers from 'contact' documents or detected in page content by GovNER and libphonenumber"
+  schema        = file("schemas/graph/phone-number.json")
+}

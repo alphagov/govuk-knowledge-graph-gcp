@@ -115,6 +115,12 @@
   },
   {
     "mode": "REPEATED",
+    "name": "phone_numbers",
+    "type": "STRING",
+    "description": "Array of phone numbers from the body and metadata of the page"
+  },
+  {
+    "mode": "REPEATED",
     "name": "entities",
     "type": "RECORD",
     "description": "Array of entity types and their frequency in the page",
