@@ -480,7 +480,20 @@ resource "google_compute_project_metadata" "default" {
     serial-port-logging-enable = true
   }
 }
-#
+
+resource "google_compute_firewall" "default_allow_iap_ssh" {
+  name        = "default-allow-iap-ssh"
+  description = "Allow ingress via IAP"
+  network     = google_compute_network.default.name
+  priority    = 65534
+
+  source_ranges = ["35.235.240.0/20"]
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+}
 
 resource "google_compute_firewall" "custom_vpc_for_cloud_run_allow_iap_ssh" {
   name        = "custom-vpc-for-cloud-run-allow-iap-ssh"
