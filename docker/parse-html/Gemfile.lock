@@ -1,0 +1,31 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    cloud_events (0.7.1)
+    functions_framework (1.4.1)
+      cloud_events (>= 0.7.0, < 2.a)
+      puma (>= 4.3.0, < 7.a)
+      rack (>= 2.1, < 4.a)
+    json (2.7.1)
+    nio4r (2.7.0)
+    puma (6.4.1)
+      nio4r (~> 2.0)
+    rack (3.0.8)
+    rexml (3.2.6)
+    rubyzip (2.3.2)
+    selenium-webdriver (4.16.0)
+      rexml (~> 3.2, >= 3.2.5)
+      rubyzip (>= 1.2.2, < 3.0)
+      websocket (~> 1.0)
+    websocket (1.2.10)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  functions_framework
+  json
+  selenium-webdriver
+
+BUNDLED WITH
+   2.4.10
