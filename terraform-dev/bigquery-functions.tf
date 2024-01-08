@@ -49,7 +49,7 @@ resource "google_bigquery_routine" "libphonenumber_find_phone_numbers_in_text" {
   )
   imported_libraries = [
     // From https://github.com/catamphetamine/libphonenumber-js
-    "gs://govuk-knowledge-graph-dev-lib/libphonenumber-max.js",
+    "gs://${google_storage_bucket_object.libphonenumber.bucket}/${google_storage_bucket_object.libphonenumber.output_name}",
   ]
   return_type = jsonencode(
     {
