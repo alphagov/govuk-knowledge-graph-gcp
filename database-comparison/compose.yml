@@ -27,3 +27,13 @@ services:
       - ./databases/content_mongo:/data/db
     ports:
       - 27017:27017
+  email_alert_api:
+    container_name: email_alert_api
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./databases/email_alert_api:/var/lib/postgresql/data
+    ports:
+      - 7654:5432
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust

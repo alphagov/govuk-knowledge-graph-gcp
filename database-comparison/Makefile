@@ -18,7 +18,11 @@ export_all_urls: \
 	data/all-urls-content-postgres.csv
 
 .PHONY: restore_all
-restore_all:  restore_postgres restore_content_postgres restore_content_mongo ;
+restore_all: \
+	restore_publishing \
+  restore_content_postgres \
+  restore_content_mongo \
+  restore_email_alert_api;
 
 .PHONY: docker_up
 docker_up:
@@ -34,8 +38,8 @@ docker_down:
 docker_stop:
 	docker-compose stop
 
-.PHONY: restore_postgres
-restore_postgres: docker_up
+.PHONY: restore_publishing
+restore_publishing: docker_up
 	echo $$(date) Starting to restore the publishing database backup file
 	source ./environments/publishing.env; \
 		pg_restore \
@@ -71,6 +75,21 @@ restore_content_mongo: docker_up
 		| gunzip -c \
 		| mongoimport --db=content_store --collection=content_items
 	echo $$(date) Finished restoring the content mongo database backup file
+
+.PHONY: restore_email_alert_api
+restore_email_alert_api: docker_up
+	echo $$(date) Starting to restore the email alert api database backup file
+	source ./environments/email-alert-api.env; \
+		pg_restore \
+			--verbose \
+			--create \
+			--clean \
+			--no-owner \
+			--jobs=2 \
+			--dbname postgres \
+			--port=$$PGPORT \
+			./backups/2024-01-08T041007Z-email-alert-api_production.gz
+	echo $$(date) Finished restoring the email alert api database backup file
 
 data/all-urls-publishing.csv:
 	source ./environments/publishing.env; \
