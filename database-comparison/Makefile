@@ -61,7 +61,7 @@ restore_content_postgres: docker_up
 			--jobs=2 \
 			--dbname postgres \
 			--port=$$PGPORT \
-			./backups/2023-10-05T000705Z-content_store_test_deleteme.gz
+			./backups/content-store-postgres_2024-01-09T231401Z-content_store_production.gz
 	echo $$(date) Finished restoring the publishing database backup file
 
 .PHONY: restore_content_mongo
