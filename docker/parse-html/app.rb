@@ -2,6 +2,7 @@
 require "functions_framework"
 require 'json'
 require 'selenium-webdriver'
+require 'uri'
 
 
 TIMEOUT_SECONDS = 10 # How long to wait for each govspeak string to render
@@ -26,7 +27,7 @@ FunctionsFramework.http "parse_html" do |request|
     # You return a string, a Rack::Response object, a Rack response array, or
     # a hash which will be JSON-encoded into a response.
     return { "replies" => JSON.parse(request.body.read)["calls"].map {
-      |row| parse_html(row[0])
+      |row| parse_html(row[0], row[1])
     } }
   rescue => e
     return [500, { 'Content-Type' => 'application/text' }, [ e.message ]]
@@ -34,8 +35,13 @@ FunctionsFramework.http "parse_html" do |request|
 end
 
 # Function to extract plain text from HTML with selenium
-def parse_html(html)
+#
+# @param html [String] HTML to parse
+# @param url [String] URL of the HTML, so that links to sections within the HTML
+#                     can be fully qualified
+def parse_html(html, url)
   text = nil
+  hyperlinks = []
 
   begin
 
@@ -58,6 +64,54 @@ def parse_html(html)
       # on their own line, etc.
       text = $driver.find_element(:css, "*").text
 
+      # Extract each hyperlink
+
+      # Selenium decided to return the property (the resolved URL) instead of
+      # the attribute (whatever the href is), even though the method is
+      # get_attribute.
+      # https://github.com/seleniumhq/selenium-google-code-issue-archive/issues/1824
+      #
+      # Because we load the HTML from a file, Selenium prepends "file://" to
+      # relative links.
+      #
+      # We could do a string replacement of "file://", but what if a link really
+      # does start with "file://"?
+      #
+      # A workaround is to use javascript instead.
+      script = <<~SQUIGGLY_HEREDOC
+        var elems = document.querySelectorAll(':any-link'); // Select all anchor elements
+        var URLs = [];
+
+        [].forEach.call(elems, function (elem) {
+            URLs.push({
+                href: elem.getAttribute("href"), // Get the unaltered href attribute
+                text: elem.textContent // Get the text content of the link
+            });
+        });
+        return URLs
+      SQUIGGLY_HEREDOC
+
+      links = $driver.execute_script(script)
+
+      links.each do |link|
+        # Clean and qualify
+        link_href = clean_hyperlink(link["href"], url)
+
+        # Remove URL parameters and anchors
+        bare_href = URI.parse(link_href)
+        bare_href.query = nil
+        bare_href.fragment = nil
+        bare_href = bare_href.to_s
+
+        hyperlinks.push({
+          "link_url" => link_href,
+          "link_url_bare" => bare_href,
+          "link_text" => link["text"],
+        })
+      end
+        })
+      end
+
       # TODO: extract other things from the HTML
     rescue Timeout::Error => e
       error_message = "HTML parsing timed out after #{TIMEOUT_SECONDS} seconds"
@@ -69,5 +123,30 @@ def parse_html(html)
     error_message = e
   end
 
-  return { "text" => text, "error" => error_message }
+  return { "text" => text, "hyperlinks" => hyperlinks, "error" => error_message }
+
+# Function to clean and fully qualify relative links and anchor links
+#
+# @param href [String] URL to qualify
+# @param from_url [String] URL of page where the href is
+def clean_hyperlink(href, from_url)
+  # Remove newlines from within a URL, such as in the page
+  # https://www.gov.uk/guidance/2016-key-stage-2-assessment-and-reporting-arrangements-ara/section-13-legal-requirements-and-responsibilities
+  # Which ontainins a link that is split over two lines:
+  #   https://www.gov.uk/government/publications/teacher-assessment-
+  #   moderation-requirements-for-key-stage-2\
+  href = href.gsub("\r", "").gsub("\n", "")
+
+  # If the link is relative, make it absolute in the GOV.UK domain.
+  if href[0] == "/"
+    return "https://www.gov.uk" + href
+  end
+
+  # If the link is to an anchor within the page, make it absolute.
+  # domain.
+  if href[0] == "#"
+    return from_url + href
+  end
+
+  return href
 end
