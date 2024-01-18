@@ -5,6 +5,8 @@ gem "json"
 gem "selenium-webdriver"
 
 group :development, :test do
-  gem 'rspec'
   gem "byebug", require: true
+  gem "rspec"
+  gem "rubocop"
+  gem "rubocop-govuk", require: false
 end

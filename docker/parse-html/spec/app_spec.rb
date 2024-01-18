@@ -1,7 +1,6 @@
 require "rspec"
 require "functions_framework/testing"
 
-
 # Submit an http request, return an http response, with the body parsed into an
 # array of JSON objects.
 #
@@ -9,14 +8,14 @@ require "functions_framework/testing"
 # array has elements corresponding to the arguments of the function
 # parse_html().
 def request(calls)
-  body = {"calls" => calls}
+  body = { "calls" => calls }
   url = ""
   headers = ["Content-Type: application/json"]
   body = body.to_json.to_s
   request = make_post_request url, body, headers
   response = call_http "parse_html", request
   response.body = JSON.parse(response.body[0])["replies"]
-  return response
+  response
 end
 
 describe "parse_html() function" do
@@ -86,7 +85,7 @@ describe "parse_html() function" do
     load_temporary "app.rb" do
       response = request([[
         "<a href=\"https://www.gov.uk/foo?param=bar\">link text</a>",
-        "https://www.gov.uk"
+        "https://www.gov.uk",
       ]])
       expect(response.body[0]["hyperlinks"][0]).to eq({
         "link_text" => "link text",
@@ -100,7 +99,7 @@ describe "parse_html() function" do
     load_temporary "app.rb" do
       response = request([[
         "<a href=\"https://www.gov.uk#foo\">link text</a>",
-        "https://www.gov.uk"
+        "https://www.gov.uk",
       ]])
       expect(response.body[0]["hyperlinks"][0]).to eq({
         "link_text" => "link text",
@@ -114,7 +113,7 @@ describe "parse_html() function" do
     load_temporary "app.rb" do
       response = request([[
         "<a href=\"/foo\">link text</a>",
-        "https://www.gov.uk"
+        "https://www.gov.uk",
       ]])
       expect(response.body[0]["hyperlinks"][0]).to eq({
         "link_text" => "link text",
@@ -128,7 +127,7 @@ describe "parse_html() function" do
     load_temporary "app.rb" do
       response = request([[
         "<a href=\"#foo\">link text</a>",
-        "https://www.gov.uk"
+        "https://www.gov.uk",
       ]])
       expect(response.body[0]["hyperlinks"][0]).to eq({
         "link_text" => "link text",
@@ -142,7 +141,7 @@ describe "parse_html() function" do
     load_temporary "app.rb" do
       response = request([[
         "<a href=\"https://www.example.co.uk\">link text</a>",
-        "https://www.gov.uk"
+        "https://www.gov.uk",
       ]])
       expect(response.body[0]["hyperlinks"][0]).to eq({
         "link_text" => "link text",
@@ -156,7 +155,7 @@ describe "parse_html() function" do
     load_temporary "app.rb" do
       response = request([[
         "<abbr title=\"Government Digital Service\">GDS</abbr>",
-        ""
+        "",
       ]])
       expect(response.body[0]["abbreviations"][0]).to eq({
         "text" => "GDS",
