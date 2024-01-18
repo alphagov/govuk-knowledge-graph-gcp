@@ -109,19 +109,6 @@ New output columns:
             maxInt = int(maxInt / 10)
     csv.field_size_limit(maxInt)
 
-    # Allow the largest field size possible.
-    # https://stackoverflow.com/a/15063941
-    maxInt = sys.maxsize
-    while True:
-        # decrease the maxInt value by factor 10
-        # as long as the OverflowError occurs.
-        try:
-            csv.field_size_limit(maxInt)
-            break
-        except OverflowError:
-            maxInt = int(maxInt / 10)
-    csv.field_size_limit(maxInt)
-
     writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames)
 
     for line in sys.stdin:
