@@ -1,7 +1,9 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    byebug (11.1.3)
     cloud_events (0.7.1)
+    diff-lcs (1.5.0)
     functions_framework (1.4.1)
       cloud_events (>= 0.7.0, < 2.a)
       puma (>= 4.3.0, < 7.a)
@@ -12,6 +14,19 @@ GEM
       nio4r (~> 2.0)
     rack (3.0.8)
     rexml (3.2.6)
+    rspec (3.12.0)
+      rspec-core (~> 3.12.0)
+      rspec-expectations (~> 3.12.0)
+      rspec-mocks (~> 3.12.0)
+    rspec-core (3.12.2)
+      rspec-support (~> 3.12.0)
+    rspec-expectations (3.12.3)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.12.0)
+    rspec-mocks (3.12.6)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.12.0)
+    rspec-support (3.12.1)
     rubyzip (2.3.2)
     selenium-webdriver (4.16.0)
       rexml (~> 3.2, >= 3.2.5)
@@ -23,8 +38,10 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  byebug
   functions_framework
   json
+  rspec
   selenium-webdriver
 
 BUNDLED WITH
