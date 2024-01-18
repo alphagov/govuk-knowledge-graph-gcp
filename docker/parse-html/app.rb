@@ -42,6 +42,7 @@ end
 def parse_html(html, url)
   text = nil
   hyperlinks = []
+  abbreviations = []
 
   begin
 
@@ -109,6 +110,16 @@ def parse_html(html, url)
           "link_text" => link["text"],
         })
       end
+
+      # Extract abbreviations
+      elems = $driver.find_elements(:css, "abbr")
+      elems.each do |elem|
+        abbreviation_title = elem.attribute("title") # Expansion
+        abbreviation_text = elem.text # Abbreviation
+
+        abbreviations.push({
+          "title" => abbreviation_title,
+          "text" => abbreviation_text,
         })
       end
 
@@ -123,7 +134,13 @@ def parse_html(html, url)
     error_message = e
   end
 
-  return { "text" => text, "hyperlinks" => hyperlinks, "error" => error_message }
+  return {
+    "text" => text,
+    "hyperlinks" => hyperlinks,
+    "abbreviations" => abbreviations,
+    "error" => error_message
+  }
+end
 
 # Function to clean and fully qualify relative links and anchor links
 #
