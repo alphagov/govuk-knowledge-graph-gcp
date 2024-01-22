@@ -1,6 +1,7 @@
 name: Docker-mongodb
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main

@@ -1,6 +1,7 @@
 name: Docker-parse-html-staging
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - staging

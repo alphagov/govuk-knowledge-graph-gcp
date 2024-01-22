@@ -1,6 +1,7 @@
 name: Ruby Lint and Test
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - 'docker/parse-html/**'

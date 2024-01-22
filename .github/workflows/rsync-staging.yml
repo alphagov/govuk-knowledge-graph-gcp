@@ -1,6 +1,7 @@
 name: Sync to Google Cloud Storage - staging
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - staging

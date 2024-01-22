@@ -1,6 +1,7 @@
 name: Docker-parse-html-dev
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - dev

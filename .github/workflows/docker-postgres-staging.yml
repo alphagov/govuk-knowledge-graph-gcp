@@ -1,6 +1,7 @@
 name: Docker-postgres-staging
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - staging
