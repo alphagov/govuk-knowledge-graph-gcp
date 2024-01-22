@@ -134,14 +134,14 @@ resource "google_bigquery_connection" "govspeak_to_html" {
 }
 
 # generate a random string suffix for a bigquery job to deploy the function
-resource "random_string" "random" {
+resource "random_string" "deploy_govspeak_to_html" {
   length  = 20
   special = false
 }
 
 ## Run a bigquery job to deploy the remote function
 resource "google_bigquery_job" "deploy_govspeak_to_html" {
-  job_id   = "d_job_${random_string.random.result}"
+  job_id   = "d_job_${random_string.deploy_govspeak_to_html.result}"
   location = var.region
 
   query {
