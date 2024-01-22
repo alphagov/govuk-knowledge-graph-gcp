@@ -1,6 +1,7 @@
 name: Docker-redis-cli-staging
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - staging

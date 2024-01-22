@@ -1,6 +1,7 @@
 name: Format and validate terraform
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'terraform*/**'

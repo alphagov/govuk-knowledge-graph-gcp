@@ -1,6 +1,7 @@
 name: Sync to Google Cloud Storage
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main

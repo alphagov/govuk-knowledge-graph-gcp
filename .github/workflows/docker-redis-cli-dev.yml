@@ -1,6 +1,7 @@
 name: Docker-redis-cli-dev
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - dev

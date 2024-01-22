@@ -4,6 +4,7 @@
 name: diff-terraform
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'terraform*/**'
