@@ -407,6 +407,16 @@ data "google_iam_policy" "project" {
   }
 
   binding {
+    role = "roles/run.developer"
+    members = [
+      # To deploy to Cloud Run from GitHub Actions, which use the
+      # artifact_registr_docker account to build and push the image that is then
+      # deployed to Cloud Run.
+      google_service_account.artifact_registry_docker.member,
+    ]
+  }
+
+  binding {
     role = "roles/run.serviceAgent"
     members = [
       "serviceAccount:service-${var.project_number}@serverless-robot-prod.iam.gserviceaccount.com",

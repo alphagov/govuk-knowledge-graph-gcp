@@ -52,3 +52,24 @@ resource "google_bigquery_job" "deploy_parse_html" {
     ]
   }
 }
+
+# Allow a workflow to attach the
+# default ${project_number}-compute@developer.gserviceaccount.com  service account to a
+# Cloud Run Service.
+data "google_compute_default_service_account" "default" {
+}
+
+data "google_iam_policy" "compute_default_service_account" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+
+    members = [
+      google_service_account.artifact_registry_docker.member,
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "compute_default_service_account" {
+  service_account_id = data.google_compute_default_service_account.default.name
+  policy_data        = data.google_iam_policy.compute_default_service_account.policy_data
+}
