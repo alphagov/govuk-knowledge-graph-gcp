@@ -27,9 +27,15 @@ resource "google_cloud_run_v2_service_iam_policy" "parse_html" {
   policy_data = data.google_iam_policy.cloud_run_parse_html.policy_data
 }
 
+# generate a random string suffix for a bigquery job to deploy the function
+resource "random_string" "deploy_parse_html" {
+  length  = 20
+  special = false
+}
+
 ## Run a bigquery job to deploy the remote function
 resource "google_bigquery_job" "deploy_parse_html" {
-  job_id   = "d_job_${random_string.random.result}"
+  job_id   = "d_job_${random_string.deploy_parse_html.result}"
   location = var.region
 
   query {
