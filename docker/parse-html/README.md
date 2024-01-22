@@ -45,7 +45,7 @@ rspec
 
 More things can be extracted from HTML by adding code to the `app.rb` script in
 the function `parse_html()` beneath the comment `# TODO: extract other things
-from the HTML`. That function should be refactored, of course.
+from the HTML`.
 
 ## Alternatives
 
