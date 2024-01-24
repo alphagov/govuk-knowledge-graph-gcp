@@ -50,7 +50,9 @@ data easily accessible in bulk.
 ## Access and permissions
 
 People are granted access by membership of Google Groups.  Other Google Cloud
-Platform projects are granted access via service accounts.
+Platform projects are granted access via service accounts.  Access is granted by
+editing each environment's tfvars file, such as
+`terraform-dev/environment.auto.tfvars`.
 
 ### Google Groups
 
