@@ -53,8 +53,6 @@ data "google_iam_policy" "bucket_cloud_functions" {
   }
 }
 
-# service-628722085506@gcf-admin-robot.iam.gserviceaccount.com
-
 data "archive_file" "govspeak_to_html" {
   type        = "zip"
   output_path = "/tmp/govspeak-to-html.zip"
