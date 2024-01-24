@@ -30,12 +30,14 @@ data "google_iam_policy" "bigquery_dataset_search" {
   }
   binding {
     role = "roles/bigquery.dataViewer"
-    members = [
-      "projectReaders",
-      "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
-      google_service_account.govgraphsearch.member,
-      google_service_account.bigquery_scheduled_queries_search.member,
-    ]
+    members = concat(
+      [
+        "projectReaders",
+        google_service_account.govgraphsearch.member,
+        google_service_account.bigquery_scheduled_queries_search.member,
+      ],
+      var.bigquery_publishing_data_viewer_members,
+    )
   }
 }
 

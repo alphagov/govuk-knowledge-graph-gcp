@@ -42,10 +42,12 @@ data "google_iam_policy" "bigquery_dataset_test" {
   }
   binding {
     role = "roles/bigquery.dataViewer"
-    members = [
-      "projectReaders",
-      "group:govsearch-data-viewers@digital.cabinet-office.gov.uk"
-    ]
+    members = concat(
+      [
+        "projectReaders",
+      ],
+      var.bigquery_test_data_viewer_members,
+    )
   }
 }
 

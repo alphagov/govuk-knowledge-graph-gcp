@@ -27,15 +27,14 @@ data "google_iam_policy" "bigquery_dataset_graph" {
   }
   binding {
     role = "roles/bigquery.dataViewer"
-    members = [
-      "projectReaders",
-      google_service_account.govgraphsearch.member,
-      "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
-      "serviceAccount:ner-bulk-inference@cpto-content-metadata.iam.gserviceaccount.com",
-      "serviceAccount:wif-ner-new-content-inference@cpto-content-metadata.iam.gserviceaccount.com",
-      google_service_account.bigquery_scheduled_queries_search.member,
-      "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
-    ]
+    members = concat(
+      [
+        "projectReaders",
+        google_service_account.govgraphsearch.member,
+        google_service_account.bigquery_scheduled_queries_search.member,
+      ],
+      var.bigquery_graph_data_viewer_members,
+    )
   }
 }
 

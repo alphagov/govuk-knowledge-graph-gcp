@@ -13,8 +13,52 @@ oauth_callback_url                  = "https://govgraphsearch.dev/auth/gds/callb
 enable_redis_session_store_instance = false
 gtm_auth                            = "PLACEHOLDER"
 gtm_id                              = "PLACEHOLDER"
-govgraphsearch_iap_members = [
-  "group:data-products@digital.cabinet-office.gov.uk",
+
+# Google Groups and external service accounts that are to have roles given to
+# them.
+#
+# Users shouldn't be given access directly, only via their membership of a
+# Google Group.
+#
+# Service accounts that are internal to this Google Cloud Project shouldn't be
+# included here. They should be given directly in the .tf files, because they
+# should be the same in every environment.
+
+project_owner_members = [
+  "group:govsearch-developers@digital.cabinet-office.gov.uk",
+]
+
+iap_govgraphsearch_members = [
   "user:govsearchtest@gmail.com",
   "user:govsearchtestdac@gmail.com",
+]
+
+bigquery_job_user_members = [
+]
+
+# Bucket: {project_id}-data-processed
+storage_data_processed_object_viewer_members = [
+]
+
+bigquery_content_data_viewer_members = [
+]
+
+# BigQuery dataset: functions
+bigquery_functions_data_viewer_members = [
+]
+
+# BigQuery dataset: graph
+bigquery_graph_data_viewer_members = [
+]
+
+# BigQuery dataset: publishing
+bigquery_publishing_data_viewer_members = [
+]
+
+# BigQuery dataset: search
+bigquery_search_data_viewer_members = [
+]
+
+# BigQuery dataset: test
+bigquery_test_data_viewer_members = [
 ]

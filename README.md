@@ -47,6 +47,23 @@ data easily accessible in bulk.
 
 [GOV.UK Data Community Technical Documentation](https://gds-data-docs-bkbishsofa-nw.a.run.app/engineering/knowledge-graph-pipeline-v2/#advantages-of-the-new-pipeline)
 
+## Access and permissions
+
+People are granted access by membership of Google Groups.  Other Google Cloud
+Platform projects are granted access via service accounts.  Access is granted by
+editing each environment's tfvars file, such as
+`terraform-dev/environment.auto.tfvars`.
+
+### Google Groups
+
+* [govsearch-data-viewers](https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govsearch-data-viewers/about)
+  has `roles/bigquery.dataViewer` in relation to each BigQuery dataset, and
+  `roles/bigquery.jobUser` to be able to run queries that are billed to the
+  billing account of the `govuk-knowledge-graph*` projects.
+* [govsearch-developers](https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govsearch-developers/members)
+  has the `roles/owner` role in relation to each `govuk-knowledge-graph*`
+  project.
+
 ## Maintainers
 
 This project is maintained by the Data Products team in the Data Services group

@@ -8,7 +8,7 @@ resource "google_bigquery_dataset" "content" {
   max_time_travel_hours = "48"
 }
 
-data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
+data "google_iam_policy" "bigquery_dataset_content" {
   binding {
     role = "roles/bigquery.dataEditor"
     members = [
@@ -28,21 +28,19 @@ data "google_iam_policy" "bigquery_dataset_content_dataEditor" {
   }
   binding {
     role = "roles/bigquery.dataViewer"
-    members = [
+    members = concat([
       "projectReaders",
-      "serviceAccount:ner-bulk-inference@cpto-content-metadata.iam.gserviceaccount.com",
-      "serviceAccount:wif-ner-new-content-inference@cpto-content-metadata.iam.gserviceaccount.com",
-      "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
       google_service_account.bigquery_scheduled_queries_search.member,
       google_service_account.govgraphsearch.member,
-      "group:govsearch-data-viewers@digital.cabinet-office.gov.uk"
-    ]
+      ],
+      var.bigquery_content_data_viewer_members,
+    )
   }
 }
 
 resource "google_bigquery_dataset_iam_policy" "content" {
   dataset_id  = google_bigquery_dataset.content.dataset_id
-  policy_data = data.google_iam_policy.bigquery_dataset_content_dataEditor.policy_data
+  policy_data = data.google_iam_policy.bigquery_dataset_content.policy_data
 }
 
 resource "google_bigquery_table" "url" {

@@ -203,7 +203,7 @@ resource "google_vpc_access_connector" "cloudrun_connector" {
 data "google_iam_policy" "govgraphsearch_iap" {
   binding {
     role    = "roles/iap.httpsResourceAccessor"
-    members = var.govgraphsearch_iap_members
+    members = var.iap_govgraphsearch_members
   }
 }
 

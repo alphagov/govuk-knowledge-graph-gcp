@@ -88,7 +88,7 @@ variable "oauth_callback_url" {
   type = string
 }
 
-variable "govgraphsearch_iap_members" {
+variable "iap_govgraphsearch_members" {
   type = set(string)
 }
 
@@ -118,6 +118,42 @@ variable "gtm_id" {
 
 variable "gtm_auth" {
   type = string
+}
+
+variable "project_owner_members" {
+  type = list(string)
+}
+
+variable "bigquery_job_user_members" {
+  type = list(string)
+}
+
+variable "storage_data_processed_object_viewer_members" {
+  type = list(string)
+}
+
+variable "bigquery_content_data_viewer_members" {
+  type = list(string)
+}
+
+variable "bigquery_functions_data_viewer_members" {
+  type = list(string)
+}
+
+variable "bigquery_graph_data_viewer_members" {
+  type = list(string)
+}
+
+variable "bigquery_publishing_data_viewer_members" {
+  type = list(string)
+}
+
+variable "bigquery_search_data_viewer_members" {
+  type = list(string)
+}
+
+variable "bigquery_test_data_viewer_members" {
+  type = list(string)
 }
 
 terraform {
@@ -209,9 +245,11 @@ resource "google_project_iam_policy" "project" {
 data "google_iam_policy" "project" {
   binding {
     role = "roles/owner"
-    members = [
-      "group:govsearch-developers@digital.cabinet-office.gov.uk",
-    ]
+    members = concat(
+      [
+      ],
+      var.project_owner_members,
+    )
   }
 
   binding {
@@ -245,16 +283,18 @@ data "google_iam_policy" "project" {
 
   binding {
     role = "roles/bigquery.jobUser"
-    members = [
-      google_service_account.gce_mongodb.member,
-      google_service_account.gce_postgres.member,
-      google_service_account.gce_content.member,
-      google_service_account.bigquery_page_transitions.member,
-      google_service_account.bigquery_scheduled_queries_search.member,
-      google_service_account.workflow_bank_holidays.member,
-      google_service_account.govgraphsearch.member,
-      "group:govsearch-data-viewers@digital.cabinet-office.gov.uk"
-    ]
+    members = concat(
+      [
+        google_service_account.gce_mongodb.member,
+        google_service_account.gce_postgres.member,
+        google_service_account.gce_content.member,
+        google_service_account.bigquery_page_transitions.member,
+        google_service_account.bigquery_scheduled_queries_search.member,
+        google_service_account.workflow_bank_holidays.member,
+        google_service_account.govgraphsearch.member,
+      ],
+      var.bigquery_job_user_members
+    )
   }
 
   binding {
