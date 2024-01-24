@@ -115,10 +115,10 @@ data "google_iam_policy" "bucket_data_processed" {
 
   binding {
     role = "roles/storage.objectViewer"
-    members = [
-      "group:data-engineering@digital.cabinet-office.gov.uk",
-      "group:data-products@digital.cabinet-office.gov.uk",
-    ]
+    members = concat([
+      ],
+      var.storage_data_processed_object_viewer_members,
+    )
   }
 
   binding {

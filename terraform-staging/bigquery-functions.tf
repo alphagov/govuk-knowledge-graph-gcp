@@ -23,11 +23,13 @@ data "google_iam_policy" "bigquery_dataset_functions" {
   }
   binding {
     role = "roles/bigquery.dataViewer"
-    members = [
-      "projectReaders",
-      "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
-      google_service_account.gce_mongodb.member,
-    ]
+    members = concat(
+      [
+        "projectReaders",
+        google_service_account.gce_mongodb.member,
+      ],
+      var.bigquery_functions_data_viewer_members,
+    )
   }
 }
 
