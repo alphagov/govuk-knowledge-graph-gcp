@@ -33,46 +33,31 @@ iap_govgraphsearch_members = [
 ]
 
 bigquery_job_user_members = [
-  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk"
 ]
 
 # Bucket: {project_id}-data-processed
 storage_data_processed_object_viewer_members = [
-  "group:data-engineering@digital.cabinet-office.gov.uk",
-  "group:data-products@digital.cabinet-office.gov.uk",
 ]
 
 bigquery_content_data_viewer_members = [
-  "serviceAccount:ner-bulk-inference@cpto-content-metadata.iam.gserviceaccount.com",
-  "serviceAccount:wif-ner-new-content-inference@cpto-content-metadata.iam.gserviceaccount.com",
-  "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
-  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
 ]
 
 # BigQuery dataset: functions
 bigquery_functions_data_viewer_members = [
-  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
 ]
 
 # BigQuery dataset: graph
 bigquery_graph_data_viewer_members = [
-  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
-  "serviceAccount:ner-bulk-inference@cpto-content-metadata.iam.gserviceaccount.com",
-  "serviceAccount:wif-ner-new-content-inference@cpto-content-metadata.iam.gserviceaccount.com",
-  "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
 ]
 
 # BigQuery dataset: publishing
 bigquery_publishing_data_viewer_members = [
-  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
 ]
 
 # BigQuery dataset: search
 bigquery_search_data_viewer_members = [
-  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
 ]
 
 # BigQuery dataset: test
 bigquery_test_data_viewer_members = [
-  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
 ]
