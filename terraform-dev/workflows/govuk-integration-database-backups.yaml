@@ -91,6 +91,35 @@ main:
                           value: ${content_metadata_value}
           - return_started_content:
               return: $${"Started content instance"}
+        - condition: $${text.match_regex(object_name, "^shared-documentdb/\\d{4}-\\d{2}-\\d{2}T\\d{6}Z-govuk_content_production\\.gz$")}
+          steps:
+          - log_starting_publisher_instance:
+              call: sys.log
+              args:
+                  text: "Starting publisher instance"
+                  severity: INFO
+          - start_mongodb:
+              call: googleapis.compute.v1.instances.insert
+              args:
+                  project: ${project_id}
+                  zone: ${zone}
+                  sourceInstanceTemplate: https://www.googleapis.com/compute/v1/projects/${project_id}/global/instanceTemplates/publisher
+                  body:
+                      name: publisher
+                      metadata:
+                        items:
+                        - key: object_bucket
+                          value: $${object_bucket}
+                        - key: object_name
+                          value: $${object_name}
+                        - key: google-logging-enabled
+                          value: true
+                        - key: serial-port-logging-enable
+                          value: true
+                        - key: gce-container-declaration
+                          value: ${publisher_metadata_value}
+          - return_started_publisher:
+              return: $${"Started publisher instance"}
   - log_not_starting_instance:
       call: sys.log
       args:

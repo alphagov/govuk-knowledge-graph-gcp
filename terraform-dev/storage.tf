@@ -47,9 +47,10 @@ data "google_iam_policy" "bucket_repository" {
   binding {
     role = "roles/storage.objectViewer"
     members = [
+      google_service_account.gce_content.member,
       google_service_account.gce_mongodb.member,
       google_service_account.gce_postgres.member,
-      google_service_account.gce_content.member,
+      google_service_account.gce_publisher.member,
     ]
   }
 
@@ -105,9 +106,10 @@ data "google_iam_policy" "bucket_data_processed" {
   binding {
     role = "roles/storage.objectAdmin"
     members = [
+      google_service_account.gce_content.member,
       google_service_account.gce_mongodb.member,
       google_service_account.gce_postgres.member,
-      google_service_account.gce_content.member,
+      google_service_account.gce_publisher.member,
       google_service_account.bigquery_page_transitions.member,
       google_service_account.workflow_bank_holidays.member,
     ]

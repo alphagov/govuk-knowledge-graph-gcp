@@ -145,7 +145,10 @@ gcloud --project "${PROJECT_ID}" compute instances create mongodb \
     --zone="${ZONE}"
 
 date
-# Export the content_items table as CSV, to be loaded into BigQuery
+# Export the content_items table as CSV, to be loaded into BigQuery.
+#
+# Compression can cause trouble with big files or big columns. See
+# /src/postgres/functions.sh. But this file is small, with small columns.
 QUERY="\copy content_items TO STDOUT WITH (FORMAT CSV, HEADER TRUE, DELIMITER ',');"
 DEST="gs://${PROJECT_ID}-data-processed/content-store/content_items.csv.gz"
 psql \
