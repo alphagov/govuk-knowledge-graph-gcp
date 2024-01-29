@@ -1,0 +1,32 @@
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a document. Not broken down into chapters of guide or travel_advice documents."
+  },
+  {
+    "name": "updated_at",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "Almost but not quite the same time as the updated_at of the corresponding edition in the Publishing API"
+  },
+  {
+    "name": "version_number",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Sometimes in a different sequence from updated_at, e.g. /1619-bursary-fund"
+  },
+  {
+    "name": "state",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "'published', or 'archived' if supserseded"
+  },
+  {
+    "name": "major_change",
+    "type": "BOOLEAN",
+    "mode": "REQUIRED",
+    "description": "Whether the edition was a major change to the previous edition. Rarely 'true'"
+  }
+]

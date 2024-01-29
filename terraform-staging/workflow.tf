@@ -13,17 +13,18 @@ resource "google_service_account" "eventarc" {
 resource "google_workflows_workflow" "govuk_integration_database_backups" {
   name            = "govuk-integration-database-backups"
   region          = var.region
-  description     = "Run a databases instances from their templates"
+  description     = "Run database instances from their templates"
   service_account = google_service_account.workflow_govuk_integration_database_backups.id
   source_contents = templatefile(
     "workflows/govuk-integration-database-backups.yaml",
     {
-      project_id              = var.project_id,
-      zone                    = var.zone,
-      postgres_startup_script = jsonencode(var.postgres-startup-script),
-      mongodb_metadata_value  = jsonencode(module.mongodb-container.metadata_value),
-      postgres_metadata_value = jsonencode(module.postgres-container.metadata_value)
-      content_metadata_value  = jsonencode(module.content-container.metadata_value)
+      project_id               = var.project_id
+      zone                     = var.zone
+      postgres_startup_script  = jsonencode(var.postgres-startup-script)
+      content_metadata_value   = jsonencode(module.content-container.metadata_value)
+      mongodb_metadata_value   = jsonencode(module.mongodb-container.metadata_value)
+      postgres_metadata_value  = jsonencode(module.postgres-container.metadata_value)
+      publisher_metadata_value = jsonencode(module.publisher-container.metadata_value)
     }
   )
 }
