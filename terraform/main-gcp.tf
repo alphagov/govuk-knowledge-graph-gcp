@@ -136,6 +136,10 @@ variable "bigquery_content_data_viewer_members" {
   type = list(string)
 }
 
+variable "bigquery_publisher_data_viewer_members" {
+  type = list(string)
+}
+
 variable "bigquery_functions_data_viewer_members" {
   type = list(string)
 }
@@ -285,13 +289,14 @@ data "google_iam_policy" "project" {
     role = "roles/bigquery.jobUser"
     members = concat(
       [
-        google_service_account.gce_mongodb.member,
-        google_service_account.gce_postgres.member,
-        google_service_account.gce_content.member,
         google_service_account.bigquery_page_transitions.member,
         google_service_account.bigquery_scheduled_queries_search.member,
-        google_service_account.workflow_bank_holidays.member,
+        google_service_account.gce_content.member,
+        google_service_account.gce_mongodb.member,
+        google_service_account.gce_postgres.member,
+        google_service_account.gce_publisher.member,
         google_service_account.govgraphsearch.member,
+        google_service_account.workflow_bank_holidays.member,
       ],
       var.bigquery_job_user_members
     )
@@ -357,9 +362,10 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/compute.instanceAdmin.v1"
     members = [
+      google_service_account.gce_content.member,
       google_service_account.gce_mongodb.member,
       google_service_account.gce_postgres.member,
-      google_service_account.gce_content.member,
+      google_service_account.gce_publisher.member,
       google_service_account.workflow_govuk_integration_database_backups.member,
       google_service_account.workflow_redis_cli.member
     ]

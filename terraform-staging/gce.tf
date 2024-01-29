@@ -16,6 +16,12 @@ resource "google_service_account" "gce_content" {
   description  = "Service Account for the Content Store postgres instance on GCE"
 }
 
+resource "google_service_account" "gce_publisher" {
+  account_id   = "gce-publisher"
+  display_name = "Service Account for the Publisher mongobd instance"
+  description  = "Service Account for the Publisher mongodb instance on GCE"
+}
+
 resource "google_service_account" "gce_redis_cli" {
   account_id   = "gce-redis-cli"
   display_name = "Service Account for the Redis CLI instance"
@@ -67,6 +73,22 @@ resource "google_service_account_iam_policy" "gce_content" {
   service_account_id = google_service_account.gce_content.name
   policy_data        = data.google_iam_policy.service_account-gce_content.policy_data
 }
+
+# Allow a workflow to attach the publisher service account to an instance.
+data "google_iam_policy" "service_account-gce_publisher" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+    members = [
+      google_service_account.workflow_govuk_integration_database_backups.member,
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "gce_publisher" {
+  service_account_id = google_service_account.gce_publisher.name
+  policy_data        = data.google_iam_policy.service_account-gce_publisher.policy_data
+}
+
 
 # Allow a workflow to attach the redis-cli service account to an instance.
 data "google_iam_policy" "service_account-gce_redis_cli" {
@@ -286,6 +308,60 @@ module "content-container" {
 }
 
 # https://github.com/terraform-google-modules/terraform-google-container-vm
+module "publisher-container" {
+  source  = "terraform-google-modules/container-vm/google"
+  version = "~> 2.0"
+
+  container = {
+    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/publisher:latest"
+    tty : true
+    stdin : true
+    volumeMounts = [
+      {
+        mountPath = "/data/db"
+        name      = "tempfs-0"
+        readOnly  = false
+      },
+      {
+        mountPath = "/data/configdb"
+        name      = "tempfs-1"
+        readOnly  = false
+      },
+    ]
+    env = [
+      {
+        name  = "PROJECT_ID"
+        value = var.project_id
+      },
+      {
+        name  = "ZONE"
+        value = var.zone
+      }
+    ]
+  }
+
+  # Declare the Volumes which will be used for mounting.
+  volumes = [
+    {
+      name = "tempfs-0"
+
+      emptyDir = {
+        medium = "Memory"
+      }
+    },
+    {
+      name = "tempfs-1"
+
+      emptyDir = {
+        medium = "Memory"
+      }
+    },
+  ]
+
+  restart_policy = "Never"
+}
+
+# https://github.com/terraform-google-modules/terraform-google-container-vm
 module "redis-cli-container" {
   source  = "terraform-google-modules/container-vm/google"
   version = "~> 2.0"
@@ -436,6 +512,35 @@ resource "google_compute_instance_template" "content" {
 
   service_account {
     email  = google_service_account.gce_content.email
+    scopes = ["cloud-platform"]
+  }
+}
+
+resource "google_compute_instance_template" "publisher" {
+  name         = "publisher"
+  machine_type = "e2-highcpu-32"
+
+  disk {
+    boot         = true
+    source_image = module.publisher-container.source_image
+    disk_size_gb = 10
+  }
+
+  metadata = {
+    google-logging-enabled     = true
+    serial-port-logging-enable = true
+    gce-container-declaration  = module.publisher-container.metadata_value
+  }
+
+  network_interface {
+    network = "default"
+    access_config {
+      network_tier = "STANDARD"
+    }
+  }
+
+  service_account {
+    email  = google_service_account.gce_publisher.email
     scopes = ["cloud-platform"]
   }
 }

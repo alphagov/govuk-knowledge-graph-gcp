@@ -49,6 +49,10 @@ bigquery_content_data_viewer_members = [
   "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
 ]
 
+# BigQuery dataset: publisher
+bigquery_publisher_data_viewer_members = [
+]
+
 # BigQuery dataset: functions
 bigquery_functions_data_viewer_members = [
   "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",

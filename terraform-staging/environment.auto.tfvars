@@ -43,6 +43,9 @@ storage_data_processed_object_viewer_members = [
 bigquery_content_data_viewer_members = [
 ]
 
+bigquery_publisher_data_viewer_members = [
+]
+
 # BigQuery dataset: functions
 bigquery_functions_data_viewer_members = [
 ]
