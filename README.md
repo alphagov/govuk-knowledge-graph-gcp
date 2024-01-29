@@ -72,6 +72,11 @@ Contact them by email on data-products@digital.cabinet-office.gov.uk or via
 their GDS slack channel `#data-products`.  The developers can be contacted more
 directly by email on govsearch-developers@digital.cabinet-office.gov.uk.
 
+## How to add new data sources
+
+Look at https://github.com/alphagov/govuk-knowledge-graph-gcp/pull/594, which
+derives data from the Publisher app database and puts it into BigQuery.
+
 ## Contributing
 
 You are welcome to:
