@@ -22,10 +22,9 @@ gcloud compute instances describe publisher \
 )
 OBJECT_URL="gs://$OBJECT"
 
-# https://stackoverflow.com/questions/6575221
 gcloud storage cat "${OBJECT_URL}" \
   | gunzip -c \
-  | mongorestore --archive
+  | mongorestore --archive --nsInclude=govuk_content_production.editions
 
 # Obtain the latest state of the repository
 gcloud storage cp -r gs://$PROJECT_ID-repository/\* .
@@ -34,6 +33,7 @@ gcloud storage cp -r gs://$PROJECT_ID-repository/\* .
 cd src/publisher
 
 DATABASE=govuk_content_production
+QUERY=query.js
 OUTPUT_COLLECTION=output
 FILE=editions
 OBJECT="gs://${PROJECT_ID}-data-processed/publisher/${FILE}.csv.gz"
@@ -42,7 +42,7 @@ TABLE="${DATASET}.${FILE}"
 
 # Create a dataset in mongodb of relevant metadata about relevant editions of
 # documents.
-mongo ${DATABASE} js/${FILE}.js
+mongo ${DATABASE} ${QUERY}
 
 # 1. Export that dataset
 # 2. Upload it to a cloud bucket
