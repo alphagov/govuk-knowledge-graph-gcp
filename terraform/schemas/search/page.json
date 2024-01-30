@@ -43,6 +43,12 @@
   },
   {
     "mode": "NULLABLE",
+    "name": "publisher_updated_at",
+    "type": "TIMESTAMP",
+    "description": "When a page was last changed in the Publisher app.  More meaningful than 'updated_at' in the Publishing API and Content API, which is polluted by editions that are created for techy reasons rather than editing reasons, and editors of mainstream pages tend not to use 'public_updated_at'."
+  },
+  {
+    "mode": "NULLABLE",
     "name": "withdrawn_at",
     "type": "TIMESTAMP",
     "description": "The date the page was withdrawn."
@@ -99,16 +105,16 @@
     "mode": "REPEATED",
     "name": "hyperlinks",
     "type": "RECORD",
-    "description": "Array of hyperlinks from the body of the page", 
+    "description": "Array of hyperlinks from the body of the page",
     "fields": [
       {
-        "name": "link_url", 
-        "type": "STRING", 
+        "name": "link_url",
+        "type": "STRING",
         "description": "Link URL"
-      }, 
+      },
       {
-        "name": "link_type", 
-        "type": "STRING", 
+        "name": "link_type",
+        "type": "STRING",
         "description": "Type of link"
       }
     ]
