@@ -17,5 +17,5 @@ db.editions.aggregate([
     state: true, // 'published', or 'archived' if superseded
     major_change: true, // not often true
   } },
-  { $out: "editions"},
+  { $out: "output"},
 ])
