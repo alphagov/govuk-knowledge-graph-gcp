@@ -1,6 +1,19 @@
 TRUNCATE TABLE search.page;
 INSERT INTO search.page
 WITH
+-- Latest updated_at date per base path in the Publisher app database.
+-- For mainstream content, this is more meaningful than the Publishing
+-- API or Content API 'updated_at' or 'public_updated_at fields.'  Mainstream
+-- editors don't tend to use 'public_updated_at', and 'updated_at' is polluted
+-- by creation of new editions for techy reasons rather than editing reasons.
+publisher_updated_at AS (
+  SELECT
+    url,
+    MAX(updated_at) AS publisher_updated_at,
+  FROM publisher.editions
+  WHERE state='published'
+  GROUP BY url
+),
 tagged_taxons AS (
   SELECT
     is_tagged_to.url AS url,
@@ -97,6 +110,7 @@ SELECT
   publishing_app,
   first_published_at,
   public_updated_at,
+  publisher_updated_at.publisher_updated_at,
   withdrawn_at,
   withdrawn_explanation,
   page_views,
@@ -123,6 +137,7 @@ LEFT JOIN links USING (url)
 LEFT JOIN phone_numbers USING (url)
 LEFT JOIN entities USING (url)
 LEFT JOIN tagged_taxons ON (tagged_taxons.url = 'https://www.gov.uk/' || content_id)
+LEFT JOIN publisher_updated_at ON (STARTS_WITH(page.url, publisher_updated_at.url))
 WHERE
   page.document_type IS NULL
   OR NOT page.document_type IN ('gone', 'redirect', 'placeholder', 'placeholder_person')
