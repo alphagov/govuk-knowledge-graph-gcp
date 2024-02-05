@@ -12,11 +12,18 @@ resource "google_cloud_run_v2_service" "parse_html" {
   }
 }
 
+resource "google_bigquery_connection" "parse_html" {
+  connection_id = "parse-html"
+  description   = "Remote function parse_html"
+  location      = var.region
+  cloud_resource {}
+}
+
 data "google_iam_policy" "cloud_run_parse_html" {
   binding {
     role = "roles/run.invoker"
     members = [
-      "serviceAccount:${google_bigquery_connection.govspeak_to_html.cloud_resource[0].service_account_id}",
+      "serviceAccount:${google_bigquery_connection.parse_html.cloud_resource[0].service_account_id}",
     ]
   }
 }
