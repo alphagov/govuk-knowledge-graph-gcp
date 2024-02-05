@@ -3,6 +3,13 @@
 A function to parse a string of HTML passed in by BigQuery, and return things
 extracted from the HTML, in the form that BigQuery expects (JSON).
 
+* `text`: plain text extracted from the HTML, as though rendered by a browser.
+* `lines`: the plain text as an array of individual lines of text.
+* `hyperlinks`: an array of objects that describe hyperlinks (their URL, a
+  cleaned-up version of their URL, and the text that they display).
+* `abbreviations`: an array of objects that describe abbreviations (the
+  abbreviation, and the thing that is abbreviated).
+
 ## BigQuery Remote Functions
 
 BigQuery supports various kinds of custom function, depending on whether it can
