@@ -84,6 +84,7 @@ resource "google_cloudfunctions2_function" "govspeak_to_html" {
       GOVUK_APP_DOMAIN   = "www.gov.uk"
       GOVUK_WEBSITE_ROOT = "https://www.gov.uk"
     }
+    docker_repository = "projects/${var.project_id}/locations/${var.region}/repositories/gcf-artifacts"
   }
 
   service_config {
