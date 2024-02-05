@@ -108,20 +108,33 @@ resource "google_cloudfunctions2_function" "govspeak_to_html" {
   }
 }
 
-resource "google_cloudfunctions2_function_iam_member" "cloud_functions_invoker" {
-  project        = google_cloudfunctions2_function.govspeak_to_html.project
-  location       = google_cloudfunctions2_function.govspeak_to_html.location
-  cloud_function = google_cloudfunctions2_function.govspeak_to_html.name
-  role           = "roles/cloudfunctions.invoker"
-  member         = "serviceAccount:${google_bigquery_connection.govspeak_to_html.cloud_resource[0].service_account_id}"
+data "google_iam_policy" "cloud_function_govspeak_to_html" {
+  binding {
+    role = "roles/cloudfunctions.invoker"
+    members = [
+      "serviceAccount:${google_bigquery_connection.govspeak_to_html.cloud_resource[0].service_account_id}",
+    ]
+  }
 }
 
-resource "google_cloud_run_service_iam_member" "cloud_run_invoker" {
-  project  = google_cloudfunctions2_function.govspeak_to_html.project
-  location = google_cloudfunctions2_function.govspeak_to_html.location
-  service  = google_cloudfunctions2_function.govspeak_to_html.name
-  role     = "roles/run.invoker"
-  member   = "serviceAccount:${google_bigquery_connection.govspeak_to_html.cloud_resource[0].service_account_id}"
+resource "google_cloudfunctions2_function_iam_policy" "govspeak_to_html" {
+  cloud_function = google_cloudfunctions2_function.govspeak_to_html.name
+  policy_data    = data.google_iam_policy.cloud_function_govspeak_to_html.policy_data
+}
+
+data "google_iam_policy" "cloud_run_govspeak_to_html" {
+  binding {
+    role = "roles/run.invoker"
+    members = [
+      "serviceAccount:${google_bigquery_connection.govspeak_to_html.cloud_resource[0].service_account_id}",
+    ]
+  }
+}
+
+resource "google_cloud_run_v2_service_iam_policy" "govspeak_to_html" {
+  location    = var.region
+  name        = google_cloudfunctions2_function.govspeak_to_html.name
+  policy_data = data.google_iam_policy.cloud_run_govspeak_to_html.policy_data
 }
 
 resource "google_bigquery_connection" "govspeak_to_html" {
