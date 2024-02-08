@@ -148,7 +148,7 @@ variable "bigquery_graph_data_viewer_members" {
   type = list(string)
 }
 
-variable "bigquery_publishing_data_viewer_members" {
+variable "bigquery_publishing_api_data_viewer_members" {
   type = list(string)
 }
 
@@ -293,7 +293,7 @@ data "google_iam_policy" "project" {
         google_service_account.bigquery_scheduled_queries_search.member,
         google_service_account.gce_content.member,
         google_service_account.gce_mongodb.member,
-        google_service_account.gce_postgres.member,
+        google_service_account.gce_publishing_api.member,
         google_service_account.gce_publisher.member,
         google_service_account.govgraphsearch.member,
         google_service_account.workflow_bank_holidays.member,
@@ -364,7 +364,7 @@ data "google_iam_policy" "project" {
     members = [
       google_service_account.gce_content.member,
       google_service_account.gce_mongodb.member,
-      google_service_account.gce_postgres.member,
+      google_service_account.gce_publishing_api.member,
       google_service_account.gce_publisher.member,
       google_service_account.workflow_govuk_integration_database_backups.member,
       google_service_account.workflow_redis_cli.member

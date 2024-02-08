@@ -35,19 +35,19 @@ main:
       switch:
         - condition: $${text.match_regex(object_name, "^publishing-api-postgres/\\d{4}-\\d{2}-\\d{2}T\\d{6}Z-publishing_api_production\\.gz$")}
           steps:
-          - log_starting_postgres_instance:
+          - log_starting_publishing_api_instance:
               call: sys.log
               args:
-                  text: "Starting postgres instance"
+                  text: "Starting publishing-api instance"
                   severity: INFO
-          - start_postgres:
+          - start_publishing_api:
               call: googleapis.compute.v1.instances.insert
               args:
                   project: ${project_id}
                   zone: ${zone}
-                  sourceInstanceTemplate: https://www.googleapis.com/compute/v1/projects/${project_id}/global/instanceTemplates/postgres
+                  sourceInstanceTemplate: https://www.googleapis.com/compute/v1/projects/${project_id}/global/instanceTemplates/publishing-api
                   body:
-                      name: postgres
+                      name: publishing-api
                       metadata:
                         items:
                         - key: object_bucket
@@ -59,9 +59,9 @@ main:
                         - key: google-logging-enabled
                           value: true
                         - key: gce-container-declaration
-                          value: ${postgres_metadata_value}
-          - return_started_postgres:
-              return: $${"Started postgres instance"}
+                          value: ${publishing_api_metadata_value}
+          - return_started_publishing_api:
+              return: $${"Started publishing-api instance"}
         - condition: $${text.match_regex(object_name, "^content-store-postgres/\\d{4}-\\d{2}-\\d{2}T\\d{6}Z-content_store_production\\.gz$")}
           steps:
           - log_starting_content_instance:

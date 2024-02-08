@@ -14,7 +14,7 @@ data "google_iam_policy" "bigquery_dataset_content" {
     members = [
       "projectWriters",
       google_service_account.gce_mongodb.member,
-      google_service_account.gce_postgres.member,
+      google_service_account.gce_publishing_api.member,
       google_service_account.gce_content.member,
       google_service_account.workflow_bank_holidays.member,
       google_service_account.bigquery_page_transitions.member,

@@ -43,5 +43,5 @@ ENTRYPOINT []
 
 # Run a script from a copy of the HEAD of the repository
 CMD \
-  gcloud storage cat "gs://${PROJECT_ID}-repository/src/postgres/run.sh" \
+  gcloud storage cat "gs://${PROJECT_ID}-repository/src/publishing-api/run.sh" \
   | bash

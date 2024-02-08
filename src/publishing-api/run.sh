@@ -17,8 +17,8 @@ set -m
 # Start postgres in the background.  The docker-entrypoint.sh script is on the
 # path, and handles users and permissions
 # https://stackoverflow.com/a/48880635/937932
-cp src/postgres/postgresql.conf.write-optimised src/postgres/postgresql.conf
-docker-entrypoint.sh postgres -c config_file=src/postgres/postgresql.conf &
+cp src/publishing-api/postgresql.conf.write-optimised src/publishing-api/postgresql.conf
+docker-entrypoint.sh postgres -c config_file=src/publishing-api/postgresql.conf &
 
 # Wait for postgres to start
 sleep 5
@@ -27,13 +27,13 @@ sleep 5
 
 # Construct the file's URL
 BUCKET=$(
-  gcloud compute instances describe postgres \
+  gcloud compute instances describe publishing-api \
     --project $PROJECT_ID \
     --zone $ZONE \
     --format="value(metadata.items.object_bucket)"
 )
 OBJECT=$(
-gcloud compute instances describe postgres \
+gcloud compute instances describe publishing-api \
   --project $PROJECT_ID \
   --zone $ZONE \
   --format="value(metadata.items.object_name)"
@@ -54,7 +54,7 @@ actualsize=$(wc -c <"$FILE_PATH")
 if [ $actualsize -le $minimumsize ]; then
   # Turn this instance off and exit.  The data that is currrently in BigQuery
   # will remain there.
-  gcloud compute instances delete postgres --quiet --zone=$ZONE
+  gcloud compute instances delete publishing-api --quiet --zone=$ZONE
   exit 1
 fi
 
@@ -72,18 +72,18 @@ date
 rm "$FILE_PATH"
 
 # Restart postgres with a less-crashable configuration
-cp src/postgres/postgresql.conf.safe src/postgres/postgresql.conf
+cp src/publishing-api/postgresql.conf.safe src/publishing-api/postgresql.conf
 psql -U postgres -c "SELECT pg_reload_conf();"
 
 # 1. Query the content store into intermediate datasets
 # 2. Download from the content store and intermediate datasets
 # 3. Upload to storage
-cd src/postgres
+cd src/publishing-api
 make
 
 # Stop this instance
 # https://stackoverflow.com/a/41232669
-gcloud compute instances delete postgres --quiet --zone=$ZONE
+gcloud compute instances delete publishing-api --quiet --zone=$ZONE
 
 # In case the instance is still running, bring the background process back into
 # the foreground and leave it there

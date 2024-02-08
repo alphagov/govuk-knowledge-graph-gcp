@@ -49,7 +49,7 @@ data "google_iam_policy" "bucket_repository" {
     members = [
       google_service_account.gce_content.member,
       google_service_account.gce_mongodb.member,
-      google_service_account.gce_postgres.member,
+      google_service_account.gce_publishing_api.member,
       google_service_account.gce_publisher.member,
     ]
   }
@@ -85,7 +85,7 @@ data "google_iam_policy" "bucket_repository" {
   }
 }
 
-# Bucket for dataset extracted from MongoDB and Postgres for upload into BigQuery
+# Bucket for dataset extracted from databases for upload into BigQuery
 resource "google_storage_bucket" "data_processed" {
   name                        = "${var.project_id}-data-processed" # Must be globally unique
   force_destroy               = false                              # terraform won't delete the bucket unless it is empty
@@ -108,7 +108,7 @@ data "google_iam_policy" "bucket_data_processed" {
     members = [
       google_service_account.gce_content.member,
       google_service_account.gce_mongodb.member,
-      google_service_account.gce_postgres.member,
+      google_service_account.gce_publishing_api.member,
       google_service_account.gce_publisher.member,
       google_service_account.bigquery_page_transitions.member,
       google_service_account.workflow_bank_holidays.member,

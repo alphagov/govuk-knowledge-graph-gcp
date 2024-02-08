@@ -42,7 +42,7 @@ data "google_iam_policy" "artifact_registry_docker" {
     members = [
       google_service_account.gce_content.member,
       google_service_account.gce_mongodb.member,
-      google_service_account.gce_postgres.member,
+      google_service_account.gce_publishing_api.member,
       google_service_account.gce_publisher.member,
       google_service_account.gce_redis_cli.member,
     ]

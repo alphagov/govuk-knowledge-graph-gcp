@@ -4,10 +4,10 @@ resource "google_service_account" "gce_mongodb" {
   description  = "Service account for the MongoDB instance on GCE"
 }
 
-resource "google_service_account" "gce_postgres" {
-  account_id   = "gce-postgres"
-  display_name = "Service Account for postgres Instance"
-  description  = "Service account for the postgres instance on GCE"
+resource "google_service_account" "gce_publishing_api" {
+  account_id   = "gce-publishing-api"
+  display_name = "Service Account for the publishing-api instance"
+  description  = "Service account for the publishing-api instance on GCE"
 }
 
 resource "google_service_account" "gce_content" {
@@ -44,8 +44,8 @@ resource "google_service_account_iam_policy" "gce_mongodb" {
   policy_data        = data.google_iam_policy.service_account-gce_mongodb.policy_data
 }
 
-# Allow a workflow to attach the postgres service account to an instance.
-data "google_iam_policy" "service_account-gce_postgres" {
+# Allow a workflow to attach the publishing-api service account to an instance.
+data "google_iam_policy" "service_account-gce_publishing_api" {
   binding {
     role = "roles/iam.serviceAccountUser"
     members = [
@@ -54,9 +54,9 @@ data "google_iam_policy" "service_account-gce_postgres" {
   }
 }
 
-resource "google_service_account_iam_policy" "gce_postgres" {
-  service_account_id = google_service_account.gce_postgres.name
-  policy_data        = data.google_iam_policy.service_account-gce_postgres.policy_data
+resource "google_service_account_iam_policy" "gce_publishing_api" {
+  service_account_id = google_service_account.gce_publishing_api.name
+  policy_data        = data.google_iam_policy.service_account-gce_publishing_api.policy_data
 }
 
 # Allow a workflow to attach the content service account to an instance.
@@ -190,12 +190,12 @@ module "mongodb-container" {
 }
 
 # https://github.com/terraform-google-modules/terraform-google-container-vm
-module "postgres-container" {
+module "publishing-api-container" {
   source  = "terraform-google-modules/container-vm/google"
   version = "~> 2.0"
 
   container = {
-    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/postgres:latest"
+    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/publishing-api:latest"
     tty : true
     stdin : true
     securityContext = {
@@ -430,8 +430,8 @@ resource "google_compute_instance_template" "mongodb" {
   }
 }
 
-resource "google_compute_instance_template" "postgres" {
-  name = "postgres"
+resource "google_compute_instance_template" "publishing_api" {
+  name = "publishing-api"
   # 2 CPUs are enough that, while the largest table is being restored, all the
   # other tables will also be restored, even if some of them are done in series
   # rather than parallel.  Not much memory is required.  See postgresql.conf for
@@ -440,7 +440,7 @@ resource "google_compute_instance_template" "postgres" {
 
   disk {
     boot         = true
-    source_image = module.postgres-container.source_image
+    source_image = module.publishing-api-container.source_image
     disk_size_gb = 10
   }
 
@@ -457,7 +457,7 @@ resource "google_compute_instance_template" "postgres" {
     user-data                  = var.postgres-startup-script
     google-logging-enabled     = true
     serial-port-logging-enable = true
-    gce-container-declaration  = module.postgres-container.metadata_value
+    gce-container-declaration  = module.publishing-api-container.metadata_value
   }
 
   network_interface {
@@ -468,7 +468,7 @@ resource "google_compute_instance_template" "postgres" {
   }
 
   service_account {
-    email  = google_service_account.gce_postgres.email
+    email  = google_service_account.gce_publishing_api.email
     scopes = ["cloud-platform"]
   }
 }
@@ -483,7 +483,7 @@ resource "google_compute_instance_template" "content" {
 
   disk {
     boot         = true
-    source_image = module.postgres-container.source_image
+    source_image = module.publishing-api-container.source_image
     disk_size_gb = 10
   }
 
@@ -500,7 +500,7 @@ resource "google_compute_instance_template" "content" {
     user-data                  = var.postgres-startup-script
     google-logging-enabled     = true
     serial-port-logging-enable = true
-    gce-container-declaration  = module.postgres-container.metadata_value
+    gce-container-declaration  = module.publishing-api-container.metadata_value
   }
 
   network_interface {
