@@ -102,14 +102,6 @@ resource "google_bigquery_table" "search_transaction" {
   schema        = file("schemas/search/transaction.json")
 }
 
-resource "google_bigquery_table" "search_bank_holiday" {
-  dataset_id    = google_bigquery_dataset.search.dataset_id
-  table_id      = "bank_holiday"
-  friendly_name = "Bank holiday"
-  description   = "Bank holiday table for the govsearch app"
-  schema        = file("schemas/search/bank-holiday.json")
-}
-
 resource "google_bigquery_table" "search_thing" {
   dataset_id    = google_bigquery_dataset.search.dataset_id
   table_id      = "thing"
@@ -193,17 +185,6 @@ resource "google_bigquery_data_transfer_config" "search_entity_type" {
   schedule       = "every day 06:00"
   params = {
     query = file("bigquery/entity-type.sql")
-  }
-  service_account_name = google_service_account.bigquery_scheduled_queries_search.email
-}
-
-resource "google_bigquery_data_transfer_config" "search_bank_holiday" {
-  data_source_id = "scheduled_query" # This is a magic word
-  display_name   = "Bank holiday"
-  location       = var.region
-  schedule       = "every day 06:00"
-  params = {
-    query = file("bigquery/bank-holiday.sql")
   }
   service_account_name = google_service_account.bigquery_scheduled_queries_search.email
 }

@@ -296,7 +296,6 @@ data "google_iam_policy" "project" {
         google_service_account.gce_publishing_api.member,
         google_service_account.gce_publisher.member,
         google_service_account.govgraphsearch.member,
-        google_service_account.workflow_bank_holidays.member,
       ],
       var.bigquery_job_user_members
     )
@@ -417,7 +416,6 @@ data "google_iam_policy" "project" {
     role = "roles/logging.logWriter"
     members = [
       google_service_account.workflow_govuk_integration_database_backups.member,
-      google_service_account.workflow_bank_holidays.member,
       google_service_account.workflow_redis_cli.member
     ]
   }
@@ -440,7 +438,6 @@ data "google_iam_policy" "project" {
     role = "roles/workflows.invoker"
     members = [
       google_service_account.eventarc.member,
-      google_service_account.scheduler_bank_holidays.member,
       google_service_account.scheduler_page_views.member
     ]
   }
