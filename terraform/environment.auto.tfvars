@@ -68,7 +68,7 @@ bigquery_graph_data_viewer_members = [
 ]
 
 # BigQuery dataset: publishing
-bigquery_publishing_data_viewer_members = [
+bigquery_publishing_api_data_viewer_members = [
   "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
 ]
 
