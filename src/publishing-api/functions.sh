@@ -216,7 +216,7 @@ export_to_bigquery () {
   local "${@}"
 
   file_name="table_${table_name}"
-  dataset_name="publishing"
+  dataset_name="publishing_api"
 
   # We have to use uncompressed CSV for the largest table, so we might as well
   # use it for the others too.
