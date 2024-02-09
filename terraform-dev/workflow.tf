@@ -53,7 +53,7 @@ resource "google_workflows_workflow" "page_views" {
   name            = "page-views"
   region          = var.region
   description     = "Fetch page view counts from GA4 into BigQuery and export to a bucket"
-  service_account = google_service_account.bigquery_page_transitions.id
+  service_account = google_service_account.bigquery_page_views.id
   source_contents = file("workflows/workflow-page-views.yaml")
 }
 

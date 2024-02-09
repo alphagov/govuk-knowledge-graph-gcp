@@ -112,7 +112,7 @@ data "google_iam_policy" "bucket_data_processed" {
       google_service_account.gce_mongodb.member,
       google_service_account.gce_publishing_api.member,
       google_service_account.gce_publisher.member,
-      google_service_account.bigquery_page_transitions.member,
+      google_service_account.bigquery_page_views.member,
     ]
   }
 
@@ -291,11 +291,6 @@ resource "google_storage_bucket_object" "lines" {
 resource "google_storage_bucket_object" "embedded_links" {
   name   = "bigquery/embedded_links_header.csv.gz"
   source = "govuk-knowledge-graph-data-processed/bigquery/embedded_links_header.csv.gz"
-  bucket = "${var.project_id}-data-processed"
-}
-resource "google_storage_bucket_object" "page_to_page_transitions" {
-  name   = "ga4/page_to_page_transitions_header.csv.gz"
-  source = "govuk-knowledge-graph-data-processed/ga4/page_to_page_transitions_header.csv.gz"
   bucket = "${var.project_id}-data-processed"
 }
 

@@ -16,7 +16,7 @@ data "google_iam_policy" "bigquery_dataset_content" {
       google_service_account.gce_mongodb.member,
       google_service_account.gce_publishing_api.member,
       google_service_account.gce_content.member,
-      google_service_account.bigquery_page_transitions.member,
+      google_service_account.bigquery_page_views.member,
     ]
   }
   binding {
