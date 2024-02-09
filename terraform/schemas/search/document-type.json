@@ -1,0 +1,7 @@
+[
+    {
+        "name": "document_type",
+        "type": "STRING",
+        "description": "Internal name of a taxon"
+    }
+]
