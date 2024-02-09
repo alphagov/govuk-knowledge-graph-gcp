@@ -1,11 +1,9 @@
 resource "google_iam_workload_identity_pool" "main" {
-  provider                  = google-beta
   project                   = var.project_id
   workload_identity_pool_id = "github-pool"
 }
 
 resource "google_iam_workload_identity_pool_provider" "main" {
-  provider                           = google-beta
   project                            = var.project_id
   workload_identity_pool_id          = google_iam_workload_identity_pool.main.workload_identity_pool_id
   workload_identity_pool_provider_id = "github-pool-provider"

@@ -163,10 +163,7 @@ variable "bigquery_test_data_viewer_members" {
 terraform {
   required_providers {
     google = {
-      version = "5.10.0"
-    }
-    google-beta = {
-      version = "5.10.0"
+      version = "5.15.0"
     }
   }
 }
@@ -177,15 +174,6 @@ provider "google" {
   zone    = var.zone
 
   # Ref: https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#user_project_override
-  user_project_override = true
-}
-
-provider "google-beta" {
-  project = var.project_id
-  region  = var.region
-  zone    = var.zone
-
-  # Ref: https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_versions
   user_project_override = true
 }
 
