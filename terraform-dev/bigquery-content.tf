@@ -16,7 +16,6 @@ data "google_iam_policy" "bigquery_dataset_content" {
       google_service_account.gce_mongodb.member,
       google_service_account.gce_publishing_api.member,
       google_service_account.gce_content.member,
-      google_service_account.workflow_bank_holidays.member,
       google_service_account.bigquery_page_transitions.member,
     ]
   }
@@ -625,38 +624,6 @@ resource "google_bigquery_table" "role_whip_organisation" {
   friendly_name = "Role whip organisation"
   description   = "Whip organisation of roles"
   schema        = file("schemas/content/role-whip-organisation.json")
-}
-
-resource "google_bigquery_table" "bank_holiday_raw" {
-  dataset_id    = google_bigquery_dataset.content.dataset_id
-  table_id      = "bank_holiday_raw"
-  friendly_name = "UK Bank Holiday raw JSON data"
-  description   = "UK Bank Holiday raw JSON data"
-  schema        = file("schemas/content/bank-holiday-raw.json")
-}
-
-resource "google_bigquery_table" "bank_holiday_occurrence" {
-  dataset_id    = google_bigquery_dataset.content.dataset_id
-  table_id      = "bank_holiday_occurrence"
-  friendly_name = "UK Bank Holiday occurrences"
-  description   = "UK Bank Holiday occurrences"
-  schema        = file("schemas/content/bank-holiday-occurrence.json")
-}
-
-resource "google_bigquery_table" "bank_holiday_url" {
-  dataset_id    = google_bigquery_dataset.content.dataset_id
-  table_id      = "bank_holiday_url"
-  friendly_name = "Bank holiday URL"
-  description   = "Unique URLs of UK bank holidays"
-  schema        = file("schemas/content/bank-holiday-url.json")
-}
-
-resource "google_bigquery_table" "bank_holiday_title" {
-  dataset_id    = google_bigquery_dataset.content.dataset_id
-  table_id      = "bank_holiday_title"
-  friendly_name = "Bank holiday title"
-  description   = "Titles of UK bank holidays"
-  schema        = file("schemas/content/bank-holiday-title.json")
 }
 
 resource "google_bigquery_table" "page_views" {

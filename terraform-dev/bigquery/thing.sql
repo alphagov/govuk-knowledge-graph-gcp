@@ -10,9 +10,6 @@ UNION ALL
 SELECT 'Role' AS type, title AS name
 FROM graph.role
 UNION ALL
-SELECT 'BankHoliday' AS type, title AS name
-FROM content.bank_holiday_title
-UNION ALL
 SELECT
     'Taxon' AS type,
     /*
