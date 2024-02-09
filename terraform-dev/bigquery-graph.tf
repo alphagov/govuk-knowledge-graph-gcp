@@ -29,7 +29,6 @@ data "google_iam_policy" "bigquery_dataset_graph" {
     members = concat(
       [
         "projectReaders",
-        google_service_account.govgraphsearch.member,
         google_service_account.bigquery_scheduled_queries_search.member,
       ],
       var.bigquery_graph_data_viewer_members,
