@@ -2,7 +2,6 @@
 # See also: ./workload-identity-fededocker build.tf
 
 resource "google_artifact_registry_repository" "docker" {
-  provider      = google-beta
   location      = lower(var.location)
   repository_id = "docker"
   description   = "Docker repository"
