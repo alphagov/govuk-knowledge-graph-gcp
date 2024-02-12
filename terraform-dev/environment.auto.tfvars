@@ -39,9 +39,19 @@ bigquery_job_user_members = [
 storage_data_processed_object_viewer_members = [
 ]
 
+# BigQuery dataset: private
+bigquery_private_data_viewer_members = [
+]
+
+# BigQuery dataset: public
+bigquery_public_data_viewer_members = [
+]
+
+# BigQuery dataset: content
 bigquery_content_data_viewer_members = [
 ]
 
+# BigQuery dataset: publisher
 bigquery_publisher_data_viewer_members = [
 ]
 

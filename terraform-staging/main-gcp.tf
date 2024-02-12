@@ -148,6 +148,14 @@ variable "bigquery_graph_data_viewer_members" {
   type = list(string)
 }
 
+variable "bigquery_private_data_viewer_members" {
+  type = list(string)
+}
+
+variable "bigquery_public_data_viewer_members" {
+  type = list(string)
+}
+
 variable "bigquery_publishing_api_data_viewer_members" {
   type = list(string)
 }
