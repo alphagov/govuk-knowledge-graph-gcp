@@ -48,38 +48,6 @@ resource "google_eventarc_trigger" "govuk_integration_database_backups" {
   }
 }
 
-# A workflow to fetch page views from GA4 and export them to a file in a bucket
-resource "google_workflows_workflow" "page_views" {
-  name            = "page-views"
-  region          = var.region
-  description     = "Fetch page view counts from GA4 into BigQuery and export to a bucket"
-  service_account = google_service_account.bigquery_page_views.id
-  source_contents = file("workflows/workflow-page-views.yaml")
-}
-
-# A service account for Cloud Scheduler to run the page_views workflow
-resource "google_service_account" "scheduler_page_views" {
-  account_id   = "scheduler-page-views"
-  display_name = "Service Account for scheduling the page-views workflow"
-  description  = "Service Account for scheduling the page-views workflow"
-}
-
-# A schedule to fetch page view statistics
-resource "google_cloud_scheduler_job" "page_views" {
-  name        = "page-views"
-  description = "Fetch page-view statistics"
-  schedule    = "0 3 * * *"
-  time_zone   = "Europe/London"
-
-  http_target {
-    http_method = "POST"
-    uri         = "https://workflowexecutions.googleapis.com/v1/${google_workflows_workflow.page_views.id}/executions"
-    oauth_token {
-      service_account_email = google_service_account.scheduler_page_views.email
-    }
-  }
-}
-
 # A service account for the redis-cli workflow
 resource "google_service_account" "workflow_redis_cli" {
   account_id   = "workflow-redis-cli"

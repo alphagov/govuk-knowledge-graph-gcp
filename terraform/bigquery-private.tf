@@ -14,6 +14,7 @@ data "google_iam_policy" "bigquery_dataset_private" {
     role = "roles/bigquery.dataEditor"
     members = [
       "projectWriters",
+      google_service_account.bigquery_page_views.member,
     ]
   }
   binding {
@@ -27,6 +28,7 @@ data "google_iam_policy" "bigquery_dataset_private" {
     members = concat(
       [
         "projectReaders",
+        google_service_account.gce_mongodb.member,
       ],
       var.bigquery_private_data_viewer_members,
     )
@@ -36,4 +38,12 @@ data "google_iam_policy" "bigquery_dataset_private" {
 resource "google_bigquery_dataset_iam_policy" "private" {
   dataset_id  = google_bigquery_dataset.private.dataset_id
   policy_data = data.google_iam_policy.bigquery_dataset_private.policy_data
+}
+
+resource "google_bigquery_table" "page_views" {
+  dataset_id    = google_bigquery_dataset.private.dataset_id
+  table_id      = "page_views"
+  friendly_name = "Page views"
+  description   = "Number of views of GOV.UK pages over 7 days"
+  schema        = file("schemas/private/page-views.json")
 }
