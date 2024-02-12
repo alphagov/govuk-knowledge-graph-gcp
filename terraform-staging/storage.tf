@@ -48,6 +48,7 @@ data "google_iam_policy" "bucket_repository" {
     role = "roles/storage.objectViewer"
     members = [
       google_service_account.gce_content.member,
+      google_service_account.gce_content_api.member,
       google_service_account.gce_mongodb.member,
       google_service_account.gce_publishing_api.member,
       google_service_account.gce_publisher.member,
@@ -107,6 +108,7 @@ data "google_iam_policy" "bucket_data_processed" {
     role = "roles/storage.objectAdmin"
     members = [
       google_service_account.gce_content.member,
+      google_service_account.gce_content_api.member,
       google_service_account.gce_mongodb.member,
       google_service_account.gce_publishing_api.member,
       google_service_account.gce_publisher.member,
