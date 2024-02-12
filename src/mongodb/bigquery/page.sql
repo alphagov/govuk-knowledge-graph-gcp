@@ -22,8 +22,7 @@ SELECT
   department_analytics_profile.department_analytics_profile,
   c.text,
   CAST(NULL AS INT64) AS part_index,
-  CAST(NULL AS STRING) AS slug,
-  page_views.number_of_views AS page_views
+  CAST(NULL AS STRING) AS slug
 FROM content.url AS u
 LEFT JOIN content.document_type USING (url)
 LEFT JOIN content.schema_name USING (url)
@@ -43,7 +42,6 @@ LEFT JOIN content.title USING (url)
 LEFT JOIN content.description USING (url)
 LEFT JOIN content.department_analytics_profile USING (url)
 LEFT JOIN content.content AS c USING (url)
-LEFT JOIN private.page_views USING (url)
 ;
 
 -- Derive a table of parts nodes from their parent page nodes
@@ -56,12 +54,10 @@ SELECT
     parts.part_title AS title,
     c.text AS text,
     parts.part_index AS part_index,
-    parts.slug AS slug,
-    page_views.number_of_views AS page_views
+    parts.slug AS slug
   )
 FROM graph.page
 INNER JOIN content.parts ON page.url = parts.base_path
 LEFT JOIN content.content AS c ON c.url = parts.url
-LEFT JOIN private.page_views on (page_views.url = parts.url)
 ;
 INSERT INTO graph.page SELECT * FROM graph.part;

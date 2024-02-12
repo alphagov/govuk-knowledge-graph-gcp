@@ -113,7 +113,7 @@ SELECT
   publisher_updated_at.publisher_updated_at,
   withdrawn_at,
   withdrawn_explanation,
-  page_views,
+  page_views.number_of_views AS page_views,
   /*
   Title is preferred to internal name because it is typically of better quality;
   internal name should be used if title is not unique / repeated.
@@ -136,6 +136,7 @@ LEFT JOIN organisations USING (content_id)
 LEFT JOIN links USING (url)
 LEFT JOIN phone_numbers USING (url)
 LEFT JOIN entities USING (url)
+LEFT JOIN private.page_views USING (url)
 LEFT JOIN tagged_taxons ON (tagged_taxons.url = 'https://www.gov.uk/' || content_id)
 LEFT JOIN publisher_updated_at ON (STARTS_WITH(page.url, publisher_updated_at.url))
 WHERE
