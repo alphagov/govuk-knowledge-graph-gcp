@@ -42,6 +42,14 @@ storage_data_processed_object_viewer_members = [
   "group:data-products@digital.cabinet-office.gov.uk",
 ]
 
+# BigQuery dataset: private
+bigquery_private_data_viewer_members = [
+]
+
+# BigQuery dataset: public
+bigquery_public_data_viewer_members = [
+]
+
 bigquery_content_data_viewer_members = [
   "serviceAccount:ner-bulk-inference@cpto-content-metadata.iam.gserviceaccount.com",
   "serviceAccount:wif-ner-new-content-inference@cpto-content-metadata.iam.gserviceaccount.com",
