@@ -1,8 +1,6 @@
 -- Fail with an error message when certain conditions in the
 -- `test.tables-metadata` view are met.
 -- Errors will be picked up in the logs, generating an alert.
-TRUNCATE TABLE `test.tables-metadata-check-results`;
-INSERT INTO `test.tables-metadata-check-results`
 SELECT
   *,
   CASE

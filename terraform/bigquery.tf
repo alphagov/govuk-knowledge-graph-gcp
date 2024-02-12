@@ -63,36 +63,8 @@ resource "google_bigquery_table" "tables_metadata" {
   description   = "Table modified date and row count, sorted ascending"
   view {
     use_legacy_sql = false
-    query          = <<EOF
-WITH tables AS (
-  SELECT * FROM content.__TABLES__
-  UNION ALL
-  SELECT * FROM graph.__TABLES__
-  UNION ALL
-  SELECT * FROM publishing_api.__TABLES__
-  UNION ALL
-  SELECT * FROM search.__TABLES__
-)
-SELECT
-  dataset_id,
-  table_id,
-  TIMESTAMP_MILLIS(last_modified_time) AS last_modified,
-  row_count
-FROM tables
-ORDER BY
-  last_modified,
-  row_count
-;
-EOF
+    query          = file("bigquery/tables-metadata.sql")
   }
-}
-
-resource "google_bigquery_table" "tables_metadata_check_results" {
-  dataset_id    = google_bigquery_dataset.test.dataset_id
-  table_id      = "tables-metadata-check-results"
-  friendly_name = "Tables metadata check results"
-  description   = "Results of the previous run of the check-tables-metatdata scheduled query"
-  schema        = file("schemas/test/tables-metadata-check-results.json")
 }
 
 resource "google_bigquery_data_transfer_config" "check_tables_metadata" {
