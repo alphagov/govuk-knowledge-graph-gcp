@@ -16,7 +16,6 @@ data "google_iam_policy" "bigquery_dataset_content" {
       google_service_account.gce_mongodb.member,
       google_service_account.gce_publishing_api.member,
       google_service_account.gce_content.member,
-      google_service_account.bigquery_page_views.member,
     ]
   }
   binding {
@@ -29,6 +28,7 @@ data "google_iam_policy" "bigquery_dataset_content" {
     role = "roles/bigquery.dataViewer"
     members = concat([
       "projectReaders",
+      google_service_account.bigquery_page_views.member,
       google_service_account.bigquery_scheduled_queries_search.member,
       ],
       var.bigquery_content_data_viewer_members,
@@ -623,14 +623,6 @@ resource "google_bigquery_table" "role_whip_organisation" {
   friendly_name = "Role whip organisation"
   description   = "Whip organisation of roles"
   schema        = file("schemas/content/role-whip-organisation.json")
-}
-
-resource "google_bigquery_table" "page_views" {
-  dataset_id    = google_bigquery_dataset.content.dataset_id
-  table_id      = "page_views"
-  friendly_name = "Page views"
-  description   = "Number of views of GOV.UK pages over 7 days"
-  schema        = file("schemas/content/page-views.json")
 }
 
 resource "google_bigquery_table" "content_items" {

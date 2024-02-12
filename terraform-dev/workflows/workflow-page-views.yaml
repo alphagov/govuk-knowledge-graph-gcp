@@ -1,6 +1,6 @@
 # Google Workflow
 #
-# (1) Refresh the content.page_views table
+# (1) Refresh the private.page_views table
 # (2) Delete any files that were left after last time
 # (3) Export the table to a bucket as a single, compressed CSV file
 # (4) Delete the incremental files
@@ -25,10 +25,10 @@ main:
               nextPageToken: ''
           - fileList:
               - ''
-          - datasetId: content
+          - datasetId: private
           - tableId: page_views
           - run_date: '${text.substring(time.format(sys.now()), 0, 10)}'
-          - query: "CALL content.page_views();"
+          - query: "CALL private.page_views();"
     - refresh-table:
         call: googleapis.bigquery.v2.jobs.insert
         args:

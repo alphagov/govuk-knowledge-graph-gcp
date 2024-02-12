@@ -98,7 +98,7 @@ resource "google_monitoring_alert_policy" "tables_metadata" {
 }
 
 resource "google_bigquery_routine" "page_views" {
-  dataset_id      = google_bigquery_dataset.content.dataset_id
+  dataset_id      = google_bigquery_dataset.private.dataset_id
   routine_id      = "page_views"
   routine_type    = "PROCEDURE"
   language        = "SQL"
