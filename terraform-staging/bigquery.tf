@@ -97,10 +97,17 @@ resource "google_monitoring_alert_policy" "tables_metadata" {
   }
 }
 
-resource "google_bigquery_routine" "page_views" {
-  dataset_id      = google_bigquery_dataset.content.dataset_id
-  routine_id      = "page_views"
-  routine_type    = "PROCEDURE"
-  language        = "SQL"
-  definition_body = file("bigquery/page-views.sql")
+# Because these queries are scheduled, without any way to manage their
+# dependencies on source tables, they musn't use each other as a source.
+
+# Fetch page view statistics from GA4
+resource "google_bigquery_data_transfer_config" "page_views" {
+  data_source_id = "scheduled_query" # This is a magic word
+  display_name   = "Page views"
+  location       = var.region
+  schedule       = "every day 03:00"
+  params = {
+    query = file("bigquery/page-views.sql")
+  }
+  service_account_name = google_service_account.bigquery_page_views.email
 }

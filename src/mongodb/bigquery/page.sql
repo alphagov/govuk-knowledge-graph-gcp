@@ -43,7 +43,7 @@ LEFT JOIN content.title USING (url)
 LEFT JOIN content.description USING (url)
 LEFT JOIN content.department_analytics_profile USING (url)
 LEFT JOIN content.content AS c USING (url)
-LEFT JOIN content.page_views USING (url)
+LEFT JOIN private.page_views USING (url)
 ;
 
 -- Derive a table of parts nodes from their parent page nodes
@@ -62,6 +62,6 @@ SELECT
 FROM graph.page
 INNER JOIN content.parts ON page.url = parts.base_path
 LEFT JOIN content.content AS c ON c.url = parts.url
-LEFT JOIN content.page_views on (page_views.url = parts.url)
+LEFT JOIN private.page_views on (page_views.url = parts.url)
 ;
 INSERT INTO graph.page SELECT * FROM graph.part;

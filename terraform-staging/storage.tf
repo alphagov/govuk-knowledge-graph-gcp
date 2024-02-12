@@ -112,7 +112,6 @@ data "google_iam_policy" "bucket_data_processed" {
       google_service_account.gce_mongodb.member,
       google_service_account.gce_publishing_api.member,
       google_service_account.gce_publisher.member,
-      google_service_account.bigquery_page_views.member,
     ]
   }
 
