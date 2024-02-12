@@ -28,8 +28,8 @@ data "google_iam_policy" "bigquery_dataset_content" {
     role = "roles/bigquery.dataViewer"
     members = concat([
       "projectReaders",
-      google_service_account.bigquery_page_views.member,
       google_service_account.bigquery_scheduled_queries_search.member,
+      google_service_account.bigquery_page_views.member,
       ],
       var.bigquery_content_data_viewer_members,
     )

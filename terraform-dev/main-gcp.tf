@@ -440,7 +440,6 @@ data "google_iam_policy" "project" {
     role = "roles/workflows.invoker"
     members = [
       google_service_account.eventarc.member,
-      google_service_account.scheduler_page_views.member
     ]
   }
 
