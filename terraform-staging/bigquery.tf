@@ -1,21 +1,7 @@
-resource "google_service_account" "bigquery_page_transitions" {
-  account_id   = "bigquery-page-transitions"
-  display_name = "Service account for page transitions query"
-  description  = "Service account for a scheduled BigQuery query of page-to-page transition counts"
-}
-
-resource "google_bigquery_data_transfer_config" "page_to_page_transitions" {
-  display_name   = "Page-to-page transitions"
-  data_source_id = "scheduled_query" # This is a magic word
-  location       = var.region
-  schedule       = "every day 03:00"
-  params = {
-    query = templatefile(
-      "bigquery/page-to-page-transitions.sql",
-      { project_id = var.project_id }
-    )
-  }
-  service_account_name = google_service_account.bigquery_page_transitions.email
+resource "google_service_account" "bigquery_page_views" {
+  account_id   = "bigquery-page-views"
+  display_name = "Service account for page views query"
+  description  = "Service account for a scheduled query of page views"
 }
 
 resource "google_bigquery_dataset" "test" {
