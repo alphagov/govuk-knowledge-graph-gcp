@@ -119,7 +119,7 @@ resource "google_bigquery_table" "publishing_api_path_reservations" {
   schema        = file("schemas/publishing-api/path-reservations.json")
 }
 
-resource "google_bigquery_table" "publishing__apirole_appointments" {
+resource "google_bigquery_table" "publishing_api_role_appointments" {
   dataset_id    = google_bigquery_dataset.publishing_api.dataset_id
   table_id      = "role_appointments"
   friendly_name = "Role appointments"
