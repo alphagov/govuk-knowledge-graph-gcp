@@ -29,6 +29,7 @@ project_owner_members = [
 ]
 
 iap_govgraphsearch_members = [
+  "group:govsearch-developers@digital.cabinet-office.gov.uk",
   "user:govsearchtest@gmail.com",
   "user:govsearchtestdac@gmail.com",
 ]
