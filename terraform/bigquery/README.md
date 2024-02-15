@@ -9,3 +9,10 @@ Maintains a table of one record per document that currently appears on the
 website.
 
 See [`README-publishing-api-editions-current.sql`](README-publishing-api-editions-current.sql).
+
+## `extract-markup-from-editions.sql`
+
+Maintains a table of one record per document that currently appears on the
+website.
+
+See [`README-extract-markup-from-editions.sql`](README-extract-markup-from-editions.sql).

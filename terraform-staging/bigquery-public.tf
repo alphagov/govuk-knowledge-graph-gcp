@@ -54,3 +54,19 @@ resource "google_bigquery_table" "public_publishing_api_editions_current" {
   description   = "The most-recent edition of each document of each content item"
   schema        = file("schemas/public/publishing-api-editions-current.json")
 }
+
+resource "google_bigquery_table" "public_markup_new" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "markup_new"
+  friendly_name = "Markup (new records)"
+  description   = "Markeup extracted from editions in the latest batch"
+  schema        = file("schemas/public/markup-new.json")
+}
+
+resource "google_bigquery_table" "public_markup" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "markup"
+  friendly_name = "Markup"
+  description   = "Markeup extracted from editions in the latest batch"
+  schema        = file("schemas/public/markup.json")
+}
