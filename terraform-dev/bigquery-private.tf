@@ -15,6 +15,7 @@ data "google_iam_policy" "bigquery_dataset_private" {
     members = [
       "projectWriters",
       google_service_account.bigquery_page_views.member,
+      google_service_account.bigquery_scheduled_queries.member,
     ]
   }
   binding {
@@ -47,4 +48,12 @@ resource "google_bigquery_table" "page_views" {
   friendly_name = "Page views"
   description   = "Number of views of GOV.UK pages over 7 days"
   schema        = file("schemas/private/page-views.json")
+}
+
+resource "google_bigquery_table" "private_publishing_api_editions_new" {
+  dataset_id    = google_bigquery_dataset.private.dataset_id
+  table_id      = "publishing_api_editions_new"
+  friendly_name = "Publishing API editions (new)"
+  description   = "Publishing API editions from the latest batch update"
+  schema        = file("schemas/private/publishing-api-editions-new.json")
 }
