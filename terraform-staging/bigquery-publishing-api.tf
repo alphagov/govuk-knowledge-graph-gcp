@@ -13,6 +13,7 @@ data "google_iam_policy" "bigquery_dataset_publishing_api" {
     role = "roles/bigquery.dataEditor"
     members = [
       "projectWriters",
+      google_service_account.bigquery_scheduled_queries.member,
       google_service_account.gce_publishing_api.member,
     ]
   }

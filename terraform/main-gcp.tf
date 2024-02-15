@@ -290,6 +290,7 @@ data "google_iam_policy" "project" {
     members = concat(
       [
         google_service_account.bigquery_page_views.member,
+        google_service_account.bigquery_scheduled_queries.member,
         google_service_account.bigquery_scheduled_queries_search.member,
         google_service_account.gce_content.member,
         google_service_account.gce_content_api.member,
