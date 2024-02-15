@@ -53,6 +53,14 @@ resource "google_bigquery_table" "publishing_api_change_notes" {
   friendly_name = "Change notes"
   description   = "Change notes table from the GOV.UK Publishing API PostgreSQL database"
   schema        = file("schemas/publishing-api/change-notes.json")
+  range_partitioning {
+    field = "edition_id"
+    range {
+      start    = 0
+      end      = 100000000 # 10 times the maximum edition_id at the end of 2023, which was about 10000000
+      interval = 25000     # 4k partitions, which is the limit
+    }
+  }
 }
 
 resource "google_bigquery_table" "publishing_api_documents" {
@@ -61,6 +69,14 @@ resource "google_bigquery_table" "publishing_api_documents" {
   friendly_name = "Documents"
   description   = "Documents table from the GOV.UK Publishing API PostgreSQL database"
   schema        = file("schemas/publishing-api/documents.json")
+  range_partitioning {
+    field = "id"
+    range {
+      start    = 0
+      end      = 15000000 # 10 times the maximum at the end of 2023, which was about 1500000
+      interval = 3750     # 4k partitions, which is the limit
+    }
+  }
 }
 
 resource "google_bigquery_table" "publishing_editions" {
@@ -69,6 +85,10 @@ resource "google_bigquery_table" "publishing_editions" {
   friendly_name = "Editions"
   description   = "Editions table from the GOV.UK Publishing API PostgreSQL database"
   schema        = file("schemas/publishing-api/editions.json")
+  time_partitioning {
+    type  = "MONTH" # DAY would exceed of 4k partitions (max allowable)
+    field = "updated_at"
+  }
 }
 
 resource "google_bigquery_table" "publishing_api_events" {
@@ -101,6 +121,7 @@ resource "google_bigquery_table" "publishing_api_link_sets" {
   friendly_name = "Link sets"
   description   = "Link sets table from the GOV.UK Publishing API PostgreSQL database"
   schema        = file("schemas/publishing-api/link-sets.json")
+  # No partition, because joins are by content_id, a string, which isn't supported
 }
 
 resource "google_bigquery_table" "publishing_api_links" {
@@ -109,6 +130,14 @@ resource "google_bigquery_table" "publishing_api_links" {
   friendly_name = "Links"
   description   = "Links table from the GOV.UK Publishing API PostgreSQL database"
   schema        = file("schemas/publishing-api/links.json")
+  range_partitioning {
+    field = "link_set_id"
+    range {
+      start    = 0
+      end      = 10000000 # 10 times the maximum at the end of 2023, which was about 1000000
+      interval = 2500     # 4k partitions, which is the limit
+    }
+  }
 }
 
 resource "google_bigquery_table" "publishing_api_path_reservations" {
@@ -141,4 +170,12 @@ resource "google_bigquery_table" "publishing_api_unpublishings" {
   friendly_name = "Unpublishings"
   description   = "Unpublishings table from the GOV.UK Publishing API PostgreSQL database"
   schema        = file("schemas/publishing-api/unpublishings.json")
+  range_partitioning {
+    field = "edition_id"
+    range {
+      start    = 0
+      end      = 100000000 # 10 times the maximum edition_id at the end of 2023, which was about 10000000
+      interval = 25000     # 4k partitions, which is the limit
+    }
+  }
 }
