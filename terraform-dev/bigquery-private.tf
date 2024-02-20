@@ -57,3 +57,11 @@ resource "google_bigquery_table" "private_publishing_api_editions_new" {
   description   = "Publishing API editions from the latest batch update"
   schema        = file("schemas/private/publishing-api-editions-new.json")
 }
+
+resource "google_bigquery_table" "private_publishing_api_editions_new_current" {
+  dataset_id    = google_bigquery_dataset.private.dataset_id
+  table_id      = "publishing_api_editions_new_current"
+  friendly_name = "Publishing API editions (new and current)"
+  description   = "Publishing API editions from the latest batch update, that are also current"
+  schema        = file("schemas/private/publishing-api-editions-new-current.json")
+}

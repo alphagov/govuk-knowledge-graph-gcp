@@ -155,6 +155,11 @@
     "type": "JSON"
   },
   {
+    "mode": "NULLABLE",
+    "name": "unpublishing_type",
+    "type": "STRING"
+  },
+  {
     "mode": "REQUIRED",
     "name": "is_online",
     "type": "BOOLEAN"
