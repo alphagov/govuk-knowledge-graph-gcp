@@ -51,11 +51,6 @@
   },
   {
     "mode": "NULLABLE",
-    "name": "created_at",
-    "type": "TIMESTAMP"
-  },
-  {
-    "mode": "NULLABLE",
     "name": "updated_at",
     "type": "TIMESTAMP"
   },
@@ -76,33 +71,8 @@
   },
   {
     "mode": "NULLABLE",
-    "name": "last_edited_at",
-    "type": "TIMESTAMP"
-  },
-  {
-    "mode": "NULLABLE",
-    "name": "state",
-    "type": "STRING"
-  },
-  {
-    "mode": "NULLABLE",
-    "name": "user_facing_version",
-    "type": "INTEGER"
-  },
-  {
-    "mode": "NULLABLE",
     "name": "base_path",
     "type": "STRING"
-  },
-  {
-    "mode": "NULLABLE",
-    "name": "content_store",
-    "type": "STRING"
-  },
-  {
-    "mode": "NULLABLE",
-    "name": "document_id",
-    "type": "INTEGER"
   },
   {
     "mode": "NULLABLE",
@@ -111,33 +81,8 @@
   },
   {
     "mode": "NULLABLE",
-    "name": "publishing_request_id",
-    "type": "STRING"
-  },
-  {
-    "mode": "NULLABLE",
-    "name": "major_published_at",
-    "type": "TIMESTAMP"
-  },
-  {
-    "mode": "NULLABLE",
     "name": "published_at",
     "type": "TIMESTAMP"
-  },
-  {
-    "mode": "NULLABLE",
-    "name": "publishing_api_first_published_at",
-    "type": "TIMESTAMP"
-  },
-  {
-    "mode": "NULLABLE",
-    "name": "publishing_api_last_edited_at",
-    "type": "TIMESTAMP"
-  },
-  {
-    "mode": "NULLABLE",
-    "name": "auth_bypass_ids",
-    "type": "STRING"
   },
   {
     "mode": "NULLABLE",
@@ -155,8 +100,8 @@
     "type": "JSON"
   },
   {
-    "mode": "REQUIRED",
-    "name": "is_online",
-    "type": "BOOLEAN"
+    "mode": "NULLABLE",
+    "name": "unpublishing_type",
+    "type": "STRING"
   }
 ]

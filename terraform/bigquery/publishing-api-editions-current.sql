@@ -33,13 +33,14 @@ INSERT INTO private.publishing_api_editions_new
 
 -- Derive from the new editions a table of the latest edition per document, and
 -- a flag indicating whether it has a presence online (whether a redirect,
-  -- or embedded in other pages, or a page in its own right).
-TRUNCATE TABLE public.publishing_api_editions_new_current;
-INSERT INTO public.publishing_api_editions_new_current
+-- or embedded in other pages, or a page in its own right).
+TRUNCATE TABLE private.publishing_api_editions_new_current;
+INSERT INTO private.publishing_api_editions_new_current
   SELECT
     documents.content_id,
     documents.locale,
     publishing_api_editions_new.*,
+    unpublishings.type AS unpublishing_type,
     -- TODO: derive other values here
     (
       coalesce(content_store = 'live', false) -- Includes items that are only embedded in others.
@@ -66,14 +67,44 @@ INSERT INTO public.publishing_api_editions_new_current
 -- document is now available.
 MERGE INTO
 public.publishing_api_editions_current AS target
-USING public.publishing_api_editions_new_current AS source
+USING private.publishing_api_editions_new_current AS source
 ON source.content_id = target.content_id AND source.locale = target.locale
 WHEN matched THEN DELETE
 ;
 
--- Insert the new editions into the editions_current table
+-- Insert new editions into the editions_current table, if they are also
+-- 'online', which means that they are publicly available via the website or the
+-- Content API. Scrub certain columns of editions that are redirected or
+-- 'gone', and omit columns that aren't in the Content API at all.
+-- https://github.com/alphagov/publishing-api/tree/d041ae94a48fec9bd623bbb36ae6e87820ea0b06/app/presenters
 INSERT INTO public.publishing_api_editions_current
-SELECT * FROM public.publishing_api_editions_new_current
+SELECT *
+    EXCEPT (
+      created_at,
+      last_edited_at,
+      state,
+      user_facing_version,
+      content_store,
+      document_id,
+      publishing_request_id,
+      major_published_at,
+      publishing_api_first_published_at,
+      publishing_api_last_edited_at,
+      auth_bypass_ids,
+      is_online
+    )
+    REPLACE (
+      IF (unpublishing_type IN ('redirect', 'gone'), unpublishing_type, document_type) AS document_type,
+      IF (unpublishing_type IN ('redirect', 'gone'), unpublishing_type, schema_name) AS schema_name,
+      IF (unpublishing_type IN ('redirect', 'gone'), NULL, title) AS title,
+      IF (unpublishing_type IN ('redirect', 'gone'), NULL, rendering_app) AS rendering_app,
+      IF (unpublishing_type IN ('redirect', 'gone'), NULL, analytics_identifier) AS analytics_identifier,
+      IF (unpublishing_type IN ('redirect', 'gone'), NULL, first_published_at) AS first_published_at,
+      IF (unpublishing_type IN ('redirect', 'gone'), NULL, description) AS description,
+      IF (unpublishing_type IN ('redirect', 'gone'), NULL, details) AS details
+    )
+FROM private.publishing_api_editions_new_current
+WHERE is_online
 ;
 
 END
