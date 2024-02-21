@@ -113,7 +113,6 @@ SELECT *
       state,
       user_facing_version,
       content_store,
-      document_id,
       publishing_request_id,
       major_published_at,
       publishing_api_first_published_at,
@@ -141,7 +140,7 @@ WHERE is_online
 MERGE INTO
 public.publishing_api_editions_current AS target
 USING private.publishing_api_editions_new_current AS source
-ON source.content_id = target.content_id AND source.locale = target.locale
+ON source.document_id = target.document_id
 WHEN matched THEN DELETE
 ;
 
