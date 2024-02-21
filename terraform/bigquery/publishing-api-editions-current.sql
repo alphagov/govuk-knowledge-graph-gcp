@@ -2,15 +2,10 @@
 -- document as it currently appears on the GOV.UK website and in the Content
 -- API.
 --
--- 1. Filter editions for ones since max(editions_current.updated_at).
--- 2. Query those editions for the current editions of those documents.
--- 3. Delete corresponding editions from editions_current and editions_online.
--- 4. Insert the new current editions into editions_current.
--- 5. Insert the new online editions into editions_online.
-
--- All documents of schema_name='redirect' define a redirect in the 'redirect'
--- column.  None do that aren't, so schema_name='redirect' is necessary and sufficient to
--- identify redirects.
+-- 1. Filter editions for ones since max(public.publishing_api_editions_current.updated_at).
+-- 2. Filter those editions for the latest one per document.
+-- 3. Delete corresponding editions from public.publishing_api_editions_current.
+-- 4. Insert the new current editions into public.publishing_api_editions_current.
 
 BEGIN
 
@@ -63,45 +58,13 @@ INSERT INTO private.publishing_api_editions_new_current
   QUALIFY ROW_NUMBER() OVER (PARTITION BY content_id, locale ORDER BY updated_at DESC) = 1
 ;
 
--- Derive from the new editions a table of the latest edition per document, and
--- a flag indicating whether it has a presence online (whether a redirect,
--- or embedded in other pages, or a page in its own right).
-TRUNCATE TABLE private.publishing_api_editions_new_current;
-INSERT INTO private.publishing_api_editions_new_current
-  SELECT
-    documents.content_id,
-    documents.locale,
-    publishing_api_editions_new.*,
-    unpublishings.type AS unpublishing_type,
-    -- TODO: derive other values here
-    (
-      coalesce(content_store = 'live', false) -- Includes items that are only embedded in others.
-      AND state <> 'superseded' -- Exclude this rare and illogical case
-      AND coalesce(unpublishings.type <> 'vanish', true)
-      AND (
-        coalesce(left(schema_name, 11) <> 'placeholder', true)
-        OR (
-          -- schema_name must be checked again because short-circuit evaluation
-          -- isn't available in this clause.
-          coalesce(left(schema_name, 11) = 'placeholder', false)
-          AND coalesce(unpublishings.type IN ('gone', 'redirect'), false)
-        )
-      )
-    ) AS is_online
-  FROM private.publishing_api_editions_new
-  INNER JOIN publishing_api.documents ON documents.id = publishing_api_editions_new.document_id
-  LEFT JOIN publishing_api.unpublishings ON unpublishings.edition_id = publishing_api_editions_new.id
-  WHERE state <> 'draft'
-  QUALIFY ROW_NUMBER() OVER (PARTITION BY content_id, locale ORDER BY updated_at DESC) = 1
-;
-
 -- Insert new editions into the public.editions_new_current table, if they are
 -- also 'online', which means that they are publicly available via the website
 -- or the Content API. Scrub certain columns of editions that are redirected or
 -- 'gone', and omit columns that aren't in the Content API at all.
 -- https://github.com/alphagov/publishing-api/tree/d041ae94a48fec9bd623bbb36ae6e87820ea0b06/app/presenters
 --
--- These could go straigt into public.publishing_api_editions_current, but it's
+-- These could go straight into public.publishing_api_editions_current, but it's
 -- more efficient to put them here, so that we can do downstream processing of
 -- only the new editions, without querying all the existing editions.
 TRUNCATE TABLE public.publishing_api_editions_new_current;
@@ -113,7 +76,6 @@ SELECT *
       state,
       user_facing_version,
       content_store,
-      document_id,
       publishing_request_id,
       major_published_at,
       publishing_api_first_published_at,
@@ -135,13 +97,13 @@ FROM private.publishing_api_editions_new_current
 WHERE is_online
 ;
 
--- Delete rows from the editions_current table where a newer edition of the same
--- document is now available.  The newer edition might be private, so use the
--- private editions as the source of the merge.
+-- Delete rows from the public.publishing_api_editions_current table where a
+-- newer edition of the same document is now available.  The newer edition might
+-- be private, so use the private editions as the source of the merge.
 MERGE INTO
 public.publishing_api_editions_current AS target
 USING private.publishing_api_editions_new_current AS source
-ON source.content_id = target.content_id AND source.locale = target.locale
+ON source.document_id = target.document_id
 WHEN matched THEN DELETE
 ;
 
