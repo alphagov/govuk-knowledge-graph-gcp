@@ -39,6 +39,14 @@ resource "google_bigquery_dataset_iam_policy" "public" {
   policy_data = data.google_iam_policy.bigquery_dataset_public.policy_data
 }
 
+resource "google_bigquery_table" "public_publishing_api_editions_new_current" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "publishing_api_editions_new_current"
+  friendly_name = "Publishing API editions (new and current)"
+  description   = "Publishing API editions from the latest batch update, that are also current and public"
+  schema        = file("schemas/public/publishing-api-editions-new-current.json")
+}
+
 resource "google_bigquery_table" "public_publishing_api_editions_current" {
   dataset_id    = google_bigquery_dataset.public.dataset_id
   table_id      = "publishing_api_editions_current"
