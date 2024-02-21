@@ -76,6 +76,11 @@
   },
   {
     "mode": "NULLABLE",
+    "name": "document_id",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
     "name": "description",
     "type": "STRING"
   },
