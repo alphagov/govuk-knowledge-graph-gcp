@@ -27,6 +27,7 @@ data "google_iam_policy" "bigquery_dataset_functions" {
       [
         "projectReaders",
         google_service_account.gce_mongodb.member,
+        google_service_account.bigquery_scheduled_queries.member,
       ],
       var.bigquery_functions_data_viewer_members,
     )
@@ -86,4 +87,23 @@ resource "google_bigquery_routine" "extract_phone_numbers" {
     )
     name = "text"
   }
+}
+
+resource "google_bigquery_routine" "publishing_api_editions_current" {
+  dataset_id      = google_bigquery_dataset.functions.dataset_id
+  routine_id      = "publishing_api_editions_current"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/publishing-api-editions-current.sql")
+}
+
+resource "google_bigquery_routine" "extract_markup" {
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "extract_markup"
+  routine_type = "PROCEDURE"
+  language     = "SQL"
+  definition_body = templatefile(
+    "bigquery/extract-markup-from-editions.sql",
+    { project_id = var.project_id }
+  )
 }

@@ -145,6 +145,20 @@ resource "google_bigquery_connection" "govspeak_to_html" {
   cloud_resource {}
 }
 
+data "google_iam_policy" "bigquery_connection_govspeak_to_html" {
+  binding {
+    role = "roles/bigquery.connectionUser"
+    members = [
+      google_service_account.bigquery_scheduled_queries.member,
+    ]
+  }
+}
+
+resource "google_bigquery_connection_iam_policy" "govspeak_to_html" {
+  connection_id = google_bigquery_connection.govspeak_to_html.connection_id
+  policy_data   = data.google_iam_policy.bigquery_connection_govspeak_to_html.policy_data
+}
+
 # generate a random string suffix for a bigquery job to deploy the function
 resource "random_string" "deploy_govspeak_to_html" {
   length  = 20
