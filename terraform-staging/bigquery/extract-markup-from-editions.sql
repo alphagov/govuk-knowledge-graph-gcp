@@ -284,7 +284,7 @@ combined AS (
 
 rendered AS (
   SELECT * REPLACE(
-    COALESCE(html, JSON_VALUE(functions.govspeak_to_html(govspeak), '$.html')) AS html
+    COALESCE(html, JSON_VALUE(`${project_id}.functions.govspeak_to_html`(govspeak), '$.html')) AS html
   )
   FROM combined
 )
