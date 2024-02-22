@@ -7,24 +7,13 @@ resource "google_service_account" "bigquery_scheduled_queries" {
   description  = "Service account for scheduled BigQuery queries"
 }
 
-resource "google_bigquery_data_transfer_config" "publishing_api_editions_current" {
+resource "google_bigquery_data_transfer_config" "publishing_api_batch" {
   data_source_id = "scheduled_query" # This is a magic word
-  display_name   = "Publishing API editions current"
+  display_name   = "Publishing API batch"
   location       = var.region
   schedule       = "every day 00:00"
   params = {
-    query = file("bigquery/publishing-api-editions-current.sql")
-  }
-  service_account_name = google_service_account.bigquery_scheduled_queries.email
-}
-
-resource "google_bigquery_data_transfer_config" "extract_markup" {
-  data_source_id = "scheduled_query" # This is a magic word
-  display_name   = "Extract markup"
-  location       = var.region
-  schedule       = "every day 01:00"
-  params = {
-    query = file("bigquery/extract-markup-from-editions.sql")
+    query = file("bigquery/publishing-api-batch.sql")
   }
   service_account_name = google_service_account.bigquery_scheduled_queries.email
 }
