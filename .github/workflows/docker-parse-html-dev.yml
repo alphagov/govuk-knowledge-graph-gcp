@@ -77,4 +77,5 @@ jobs:
       uses: 'google-github-actions/deploy-cloudrun@v2'
       with:
         service: 'parse-html'
+        region: 'europe-west2'
         image: 'europe-west2-docker.pkg.dev/govuk-knowledge-graph-dev/docker/parse-html:latest'

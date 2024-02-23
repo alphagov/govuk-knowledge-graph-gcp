@@ -71,3 +71,12 @@ jobs:
         docker push "$REGISTRY_HOSTNAME"/"$IMAGE":"$TAG"
         docker tag "$REGISTRY_HOSTNAME"/"$IMAGE":"$TAG" "$REGISTRY_HOSTNAME"/"$IMAGE":latest
         docker push "$REGISTRY_HOSTNAME"/"$IMAGE":latest
+
+    # Create a new revision of the Cloud Run service using the new image
+    - name: 'Cloud Run deploy'
+      id: 'deploy'
+      uses: 'google-github-actions/deploy-cloudrun@v2'
+      with:
+        service: 'parse-html'
+        region: 'europe-west2'
+        image: 'europe-west2-docker.pkg.dev/govuk-knowledge-graph/docker/parse-html:latest'
