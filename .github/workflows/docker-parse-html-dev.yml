@@ -6,8 +6,7 @@ on:
     branches:
       - dev
     paths:
-      - 'docker/parse-html/Dockerfile'
-      - 'docker/parse-html/entrypoint.sh'
+      - 'docker/parse-html/*'
       - '.github/workflows/docker-parse-html-dev.yml'
 
 defaults:
