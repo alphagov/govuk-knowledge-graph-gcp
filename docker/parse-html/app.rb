@@ -4,7 +4,7 @@ require "json"
 require "selenium-webdriver"
 require "uri"
 
-TIMEOUT_SECONDS = 10 # How long to wait for each govspeak string to render
+TIMEOUT_SECONDS = 10 # How long to wait for each HTML string to render
 
 # Start a global instance of Selenium and Chrome
 options = Selenium::WebDriver::Chrome::Options.new
@@ -20,18 +20,55 @@ options.add_argument("--window-size=1920,1080")
 # parse_html(), which will be much more performant.
 $driver = Selenium::WebDriver.for(:chrome, options:)
 
+$lock_file_path = Tempfile.new(["lock", ".lock"])
+
 # https://cloud.google.com/functions/docs/create-deploy-http-ruby
 FunctionsFramework.http "parse_html" do |request|
   # The request parameter is a Rack::Request object.
   # See https://www.rubydoc.info/gems/rack/Rack/Request
 
-  # You return a string, a Rack::Response object, a Rack response array, or
-  # a hash which will be JSON-encoded into a response.
+  # The Functions Framework is multithreaded, but we must ensure that the
+  # webdriver is used by only a single invocation of this function at a time.
+  # We do this be attempting to acquire an exclusive lock on a file in the
+  # filesystem.
+  #
+  # An alternative would be to declare the webdriver instance locally rather
+  # than globally, but that would hinder performance, because we would have to
+  # restart the webdriver with each invocation of this function, and it takes
+  # about a second to do so.
+  # begin
+  retries = 10
+  interval_in_seconds = 0.1
+  # Acquire an exclusive lock on the file
+  # Open a file in the filesystem for use in controlling concurrency.
+  lock_file = File.open($lock_file_path, File::RDWR | File::CREAT)
+  until lock_file.flock(File::LOCK_EX | File::LOCK_NB)
+    # If the lock cannot be acquired, wait and try again, for a while
+    if retries <= 0
+      # By raising errors, we encourage BigQuery to create more virtual machines
+      # to host this function.
+      raise "Function already in progress (max retries exceeded)"
+    end
+
+    sleep interval_in_seconds
+    retries -= 1
+  end
+
+  # Return a string, a Rack::Response object, a Rack response array, or a hash
+  # which will be JSON-encoded into a response.
   return { "replies" => JSON.parse(request.body.read)["calls"].map do |row|
-    parse_html(row[0], row[1])
+    html, url = row
+    t = Tempfile.new(["html", ".html"])
+    t.write(html)
+    t.close
+    $driver.get("file:///#{t.path}")
+    parse_html(url)
   end }
 rescue StandardError => e
   return [500, { "Content-Type" => "application/text" }, [e.message]]
+ensure
+  # Release the lock, even if an exception occurs
+  lock_file.flock(File::LOCK_UN)
 end
 
 # Function to extract plain text from HTML with selenium
@@ -39,17 +76,13 @@ end
 # @param html [String] HTML to parse
 # @param url [String] URL of the HTML, so that links to sections within the HTML
 #                     can be fully qualified
-def parse_html(html, url)
+def parse_html(url)
   text = nil
   hyperlinks = []
   abbreviations = []
 
   begin
     Timeout.timeout(TIMEOUT_SECONDS) do
-      # Render the HTML in the chromedriver browser, which is in the global
-      # environment
-      parse_html_string(html)
-
       # Extract things from the rendered HTML
       text = extract_plain_text
       hyperlinks = extract_hyperlinks(url)
