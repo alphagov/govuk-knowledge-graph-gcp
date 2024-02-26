@@ -1,0 +1,27 @@
+[
+  {
+    "mode": "REQUIRED",
+    "name": "edition_id",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "document_id",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "text",
+    "type": "STRING"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "hyperlinks",
+    "type": "JSON"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "abbreviations",
+    "type": "JSON"
+  }
+]

@@ -15,13 +15,13 @@ WITH extracts AS (
     edition_id,
     document_id,
     part_index,
-    functions.parse_html(html, 'https://www.gov.uk' || base_path) AS extracted_content
+    `${project_id}.functions.parse_html`(html, 'https://www.gov.uk' || base_path) AS extracted_content
   FROM public.markup_new
 )
 SELECT
   edition_id,
   document_id,
-  extracted_content.text,
+  STRING(extracted_content.text),
   extracted_content.hyperlinks,
   extracted_content.abbreviations
 FROM extracts
