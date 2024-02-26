@@ -252,6 +252,7 @@ first_parts AS (
     govspeak,
     html
   FROM parts
+  WHERE part_index = 0
 ),
 -- Make parts like pages in their own right (concatenating the base_path and slug),
 -- but leave enough metadata to be able to deconstruct them back to a true part.
