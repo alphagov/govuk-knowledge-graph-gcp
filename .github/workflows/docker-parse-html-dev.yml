@@ -6,8 +6,7 @@ on:
     branches:
       - dev
     paths:
-      - 'docker/parse-html/Dockerfile'
-      - 'docker/parse-html/entrypoint.sh'
+      - 'docker/parse-html/*'
       - '.github/workflows/docker-parse-html-dev.yml'
 
 defaults:
@@ -78,4 +77,5 @@ jobs:
       uses: 'google-github-actions/deploy-cloudrun@v2'
       with:
         service: 'parse-html'
+        region: 'europe-west2'
         image: 'europe-west2-docker.pkg.dev/govuk-knowledge-graph-dev/docker/parse-html:latest'

@@ -9,11 +9,11 @@ ENV CHROMEDRIVER_PATH /usr/bin/chromedriver
 ENV CHROME_BIN /usr/bin/chromium-browser
 
 WORKDIR /usr/src/app
-COPY Gemfile* .
+COPY Gemfile* ./
 
 RUN bundle install
 
-COPY . .
+COPY . ./
 
 # Run the web service on container startup.
 ENTRYPOINT ["bundle", "exec", "functions-framework-ruby", "--target", "parse_html"]

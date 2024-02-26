@@ -8,7 +8,17 @@ resource "google_cloud_run_v2_service" "parse_html" {
   template {
     containers {
       image = "europe-west2-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.docker.repository_id}/parse-html:latest"
+      resources {
+        limits = {
+          cpu    = "1000m"  # If we put "1" or nothing, terraform reapplies it.
+          memory = "2048Mi" # By experiment, necessary and sufficient.
+        }
+      }
     }
+    # The function only handles one request at a time, which it enforces by
+    # using a filesystem lock as a mutex. It might be worth telling GCP
+    # explicitly, so that it might try to create more instances of the function.
+    max_instance_request_concurrency = 1
   }
 }
 

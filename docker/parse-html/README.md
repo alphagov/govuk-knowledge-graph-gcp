@@ -48,6 +48,47 @@ cd docker/parse-html
 rspec
 ```
 
+## Concurrency
+
+The function must allow for simultaneous invocations, which would suggest
+declaring a browser instance locally, and discarding it at the end of each
+invocation.  But that would be incredibly slow, so it is declared globally, and
+a filesystem lock is used as a mutex, to prevent multiple invocations changing
+the browser state at the same time, and interfering with each other.  The
+function is also specified in terraform as having
+`max_instance_request_concurrency = 1`, which ought to prevent an instance being
+sent more than one request at once.
+
+A particular SQL query was found to be useful in debugging this. It is somewhat
+magical, in that it seems to force BigQuery to call the function in such a way
+that any possible interference occurs.  It is correct when the results of the
+`text` column are `"foo"` and `"bar"` every time the query is run.
+
+```sql
+WITH
+  dummy AS (
+  SELECT
+    'foo' AS html
+  UNION ALL
+  SELECT
+    'bar' AS html
+    ),
+  extracted AS (
+  SELECT
+    html,
+    functions.parse_html(html,
+      '') AS extracted_content
+  FROM
+    dummy )
+SELECT
+  html,
+  extracted_content, -- This makes the results chaotic
+  extracted_content.text
+FROM
+  extracted
+;
+```
+
 ## How to add features
 
 More things can be extracted from HTML by adding code to the `app.rb` script in

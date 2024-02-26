@@ -11,7 +11,7 @@ resource "google_cloud_run_v2_service" "embed_text" {
       resources {
         limits = {
           cpu    = "1000m" # If we put "1" or nothing, terraform reapplies it.
-          memory = "2056Mi"
+          memory = "2048Mi"
         }
       }
     }
