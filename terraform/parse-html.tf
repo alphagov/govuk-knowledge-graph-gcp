@@ -10,7 +10,7 @@ resource "google_cloud_run_v2_service" "parse_html" {
       image = "europe-west2-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.docker.repository_id}/parse-html:latest"
       resources {
         limits = {
-          cpu    = "1000m" # If we put "1" or nothing, terraform reapplies it.
+          cpu    = "1000m"  # If we put "1" or nothing, terraform reapplies it.
           memory = "2048Mi" # By experiment, necessary and sufficient.
         }
       }
