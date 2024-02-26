@@ -6,3 +6,6 @@ CALL functions.publishing_api_editions_current();
 
 -- Extract content markup, and render GovSpeak to HTML when necessary.
 CALL functions.extract_markup();
+
+-- Parse HTML with a browser, and extract plain text and certain elements.
+CALL functions.extract_content_from_html();

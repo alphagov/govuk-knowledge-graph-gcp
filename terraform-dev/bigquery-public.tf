@@ -39,6 +39,22 @@ resource "google_bigquery_dataset_iam_policy" "public" {
   policy_data = data.google_iam_policy.bigquery_dataset_public.policy_data
 }
 
+resource "google_bigquery_table" "public_content_new" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "content_new"
+  friendly_name = "Content (new records)"
+  description   = "Content extracted from HTML of editions in the latest batch"
+  schema        = file("schemas/public/content-new.json")
+}
+
+resource "google_bigquery_table" "public_content" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "content"
+  friendly_name = "Content"
+  description   = "Content extracted from HTML of editions"
+  schema        = file("schemas/public/content.json")
+}
+
 resource "google_bigquery_table" "public_publishing_api_editions_new_current" {
   dataset_id    = google_bigquery_dataset.public.dataset_id
   table_id      = "publishing_api_editions_new_current"
@@ -59,7 +75,7 @@ resource "google_bigquery_table" "public_markup_new" {
   dataset_id    = google_bigquery_dataset.public.dataset_id
   table_id      = "markup_new"
   friendly_name = "Markup (new records)"
-  description   = "Markeup extracted from editions in the latest batch"
+  description   = "Markup extracted from editions in the latest batch"
   schema        = file("schemas/public/markup-new.json")
 }
 
@@ -67,6 +83,6 @@ resource "google_bigquery_table" "public_markup" {
   dataset_id    = google_bigquery_dataset.public.dataset_id
   table_id      = "markup"
   friendly_name = "Markup"
-  description   = "Markeup extracted from editions in the latest batch"
+  description   = "Markup extracted from editions"
   schema        = file("schemas/public/markup.json")
 }
