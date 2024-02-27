@@ -15,13 +15,14 @@ WITH extracts AS (
     edition_id,
     document_id,
     part_index,
+    `${project_id}.functions.html_to_text`(html) AS text,
     `${project_id}.functions.parse_html`(html, 'https://www.gov.uk' || base_path) AS extracted_content
   FROM public.markup_new
 )
 SELECT
   edition_id,
   document_id,
-  JSON_EXTRACT_SCALAR(extracted_content, "$.text") AS text,
+  text,
   JSON_EXTRACT_ARRAY(extracted_content, "$.hyperlinks") AS hyperlinks,
   JSON_EXTRACT_ARRAY(extracted_content, "$.abbreviations") AS abbreviations
 FROM extracts

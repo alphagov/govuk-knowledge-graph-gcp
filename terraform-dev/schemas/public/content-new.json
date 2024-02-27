@@ -11,7 +11,7 @@
   },
   {
     "mode": "NULLABLE",
-    "name": "extracted_content_text",
+    "name": "text",
     "type": "STRING"
   },
   {
