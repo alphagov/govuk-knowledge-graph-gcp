@@ -89,6 +89,7 @@ bigquery_publishing_api_data_viewer_members = [
 # BigQuery dataset: search
 bigquery_search_data_viewer_members = [
   "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
+  "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
   "serviceAccount:wif-vectorstore@govuk-llm-question-answering.iam.gserviceaccount.com",
 ]
 
