@@ -36,7 +36,7 @@ data "google_iam_policy" "bigquery_dataset_search" {
         google_service_account.govgraphsearch.member,
         google_service_account.bigquery_scheduled_queries_search.member,
       ],
-      var.bigquery_publishing_api_data_viewer_members,
+      var.bigquery_search_data_viewer_members,
     )
   }
 }
