@@ -58,12 +58,6 @@ resource "google_bigquery_connection_iam_policy" "html_to_text" {
 resource "random_string" "deploy_html_to_text" {
   length  = 20
   special = false
-
-  lifecycle {
-    replace_triggered_by = [
-      google_cloud_run_v2_service.html_to_text
-    ]
-  }
 }
 
 ## Run a bigquery job to deploy the remote function
@@ -83,11 +77,5 @@ resource "google_bigquery_job" "deploy_html_to_text" {
     )
     create_disposition = "" # must be set to "" for scripts
     write_disposition  = "" # must be set to "" for scripts
-  }
-
-  lifecycle {
-    replace_triggered_by = [
-      google_cloud_run_v2_service.html_to_text
-    ]
   }
 }

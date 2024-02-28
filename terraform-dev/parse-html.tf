@@ -35,14 +35,6 @@ resource "google_cloudfunctions2_function" "parse_html" {
     max_instance_count = 100
     # max_instance_request_concurrency = 1
   }
-
-  # Force terraform to redeploy the function when the source code changes
-  # https://github.com/hashicorp/terraform-provider-google/issues/1938#issuecomment-1229042663
-  lifecycle {
-    replace_triggered_by = [
-      google_storage_bucket_object.parse_html
-    ]
-  }
 }
 
 data "google_iam_policy" "cloud_function_parse_html" {
@@ -99,11 +91,6 @@ resource "google_bigquery_connection_iam_policy" "parse_html" {
 resource "random_string" "deploy_parse_html" {
   length  = 20
   special = false
-  lifecycle {
-    replace_triggered_by = [
-      google_storage_bucket_object.parse_html
-    ]
-  }
 }
 
 ## Run a bigquery job to deploy the remote function
@@ -123,11 +110,5 @@ resource "google_bigquery_job" "deploy_parse_html" {
     )
     create_disposition = "" # must be set to "" for scripts
     write_disposition  = "" # must be set to "" for scripts
-  }
-
-  lifecycle {
-    replace_triggered_by = [
-      google_storage_bucket_object.parse_html
-    ]
   }
 }
