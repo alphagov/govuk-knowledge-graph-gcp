@@ -16,6 +16,24 @@
   },
   {
     "mode": "REPEATED",
+    "name": "lines",
+    "type": "RECORD",
+    "description": "Array of single lines of plain text content",
+    "fields": [
+      {
+        "name": "line_number",
+        "type": "INTEGER",
+        "description": "Which line of the content this is, counting from 1"
+      },
+      {
+        "name": "line",
+        "type": "STRING",
+        "description": "A single line of plain text, containing no newline characters"
+      }
+    ]
+  },
+  {
+    "mode": "REPEATED",
     "name": "hyperlinks",
     "type": "JSON"
   },

@@ -23,6 +23,7 @@ SELECT
   edition_id,
   document_id,
   text,
+  ARRAY(SELECT STRUCT(line_number, line) FROM UNNEST(SPLIT(text, "\n")) AS line WITH OFFSET AS line_number) AS lines,
   JSON_EXTRACT_ARRAY(extracted_content, "$.hyperlinks") AS hyperlinks,
   JSON_EXTRACT_ARRAY(extracted_content, "$.abbreviations") AS abbreviations
 FROM extracts
