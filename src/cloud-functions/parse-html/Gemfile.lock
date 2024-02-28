@@ -32,6 +32,8 @@ GEM
     minitest (5.21.2)
     mutex_m (0.2.0)
     nio4r (2.7.0)
+    nokogiri (1.16.2-x86_64-linux)
+      racc (~> 1.4)
     parallel (1.24.0)
     parser (3.3.0.4)
       ast (~> 2.4.1)
@@ -92,15 +94,9 @@ GEM
       rubocop-factory_bot (~> 2.22)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
-    rubyzip (2.3.2)
-    selenium-webdriver (4.16.0)
-      rexml (~> 3.2, >= 3.2.5)
-      rubyzip (>= 1.2.2, < 3.0)
-      websocket (~> 1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
-    websocket (1.2.10)
 
 PLATFORMS
   x86_64-linux
@@ -109,10 +105,10 @@ DEPENDENCIES
   byebug
   functions_framework
   json
+  nokogiri
   rspec
   rubocop
   rubocop-govuk
-  selenium-webdriver
 
 BUNDLED WITH
    2.4.10

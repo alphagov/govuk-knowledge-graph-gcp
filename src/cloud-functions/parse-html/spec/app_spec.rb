@@ -42,37 +42,20 @@ describe "parse_html() function" do
     end
   end
 
-  it "returns plain text from HTML" do
-    load_temporary "app.rb" do
-      response = request([["<p>text</p>", ""]])
-      expect(response.body[0]["text"]).to eq("text")
-    end
-  end
-
-  it "substitutes literal newline characters with a space" do
-    load_temporary "app.rb" do
-      response = request([["line1\n\nline2", ""]])
-      expect(response.body[0]["text"]).to eq("line1 line2")
-    end
-  end
-
-  it "substitutes <div> with a newline" do
-    load_temporary "app.rb" do
-      response = request([["line1<div>line2", ""]])
-      expect(response.body[0]["text"]).to eq("line1\nline2")
-    end
-  end
-
-  it "puts headings into their own line" do
-    load_temporary "app.rb" do
-      response = request([["<h1>heading</h1>content", ""]])
-      expect(response.body[0]["text"]).to eq("heading\ncontent")
-    end
-  end
-
   it "extracts hyperlinks" do
     load_temporary "app.rb" do
       response = request([["<a href=\"https://www.gov.uk\">link text</a>", ""]])
+      expect(response.body[0]["hyperlinks"][0]).to eq({
+        "link_text" => "link text",
+        "link_url" => "https://www.gov.uk",
+        "link_url_bare" => "https://www.gov.uk",
+      })
+    end
+  end
+
+  it "removes newline characters from hyperlinks" do
+    load_temporary "app.rb" do
+      response = request([["<a href=\"https://www.gov\n.uk\">link text</a>", ""]])
       expect(response.body[0]["hyperlinks"][0]).to eq({
         "link_text" => "link text",
         "link_url" => "https://www.gov.uk",
