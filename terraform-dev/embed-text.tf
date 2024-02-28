@@ -44,6 +44,12 @@ resource "google_cloud_run_v2_service_iam_policy" "embed_text" {
 resource "random_string" "deploy_embed_text" {
   length  = 20
   special = false
+
+  lifecycle {
+    replace_triggered_by = [
+      google_cloud_run_v2_service.embed_text
+    ]
+  }
 }
 
 ## Run a bigquery job to deploy the remote function

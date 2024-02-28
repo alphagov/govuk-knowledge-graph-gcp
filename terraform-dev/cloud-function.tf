@@ -163,6 +163,12 @@ resource "google_bigquery_connection_iam_policy" "govspeak_to_html" {
 resource "random_string" "deploy_govspeak_to_html" {
   length  = 20
   special = false
+
+  lifecycle {
+    replace_triggered_by = [
+      google_storage_bucket_object.govspeak_to_html
+    ]
+  }
 }
 
 ## Run a bigquery job to deploy the remote function
