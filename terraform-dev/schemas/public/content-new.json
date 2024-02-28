@@ -11,6 +11,11 @@
   },
   {
     "mode": "NULLABLE",
+    "name": "part_index",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
     "name": "text",
     "type": "STRING"
   },

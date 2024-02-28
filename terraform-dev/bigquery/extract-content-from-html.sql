@@ -22,6 +22,7 @@ WITH extracts AS (
 SELECT
   edition_id,
   document_id,
+  part_index,
   text,
   ARRAY(SELECT STRUCT(line_number, line) FROM UNNEST(SPLIT(text, "\n")) AS line WITH OFFSET AS line_number) AS lines,
   ARRAY(SELECT STRUCT(
