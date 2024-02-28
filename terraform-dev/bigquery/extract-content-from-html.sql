@@ -24,8 +24,15 @@ SELECT
   document_id,
   text,
   ARRAY(SELECT STRUCT(line_number, line) FROM UNNEST(SPLIT(text, "\n")) AS line WITH OFFSET AS line_number) AS lines,
-  JSON_EXTRACT_ARRAY(extracted_content, "$.hyperlinks") AS hyperlinks,
-  JSON_EXTRACT_ARRAY(extracted_content, "$.abbreviations") AS abbreviations
+  ARRAY(SELECT STRUCT(
+    JSON_EXTRACT_SCALAR(link, "$.link_url") AS url,
+    JSON_EXTRACT_SCALAR(link, "$.link_url_bare") AS url_bare,
+    JSON_EXTRACT_SCALAR(link, "$.link_text") AS text
+  ) FROM UNNEST(JSON_EXTRACT_ARRAY(extracted_content, "$.hyperlinks")) AS link) AS hyperlinks,
+    ARRAY(SELECT STRUCT(
+    JSON_EXTRACT_SCALAR(abbreviation, "$.title") AS title, -- expansion
+    JSON_EXTRACT_SCALAR(abbreviation, "$.text") AS text    -- abbreviation
+  ) FROM UNNEST(JSON_EXTRACT_ARRAY(extracted_content, "$.abbreviations")) AS abbreviation) AS abbreviations
 FROM extracts
 ;
 

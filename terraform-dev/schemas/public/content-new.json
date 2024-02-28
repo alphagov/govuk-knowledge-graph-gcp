@@ -16,12 +16,61 @@
   },
   {
     "mode": "REPEATED",
+    "name": "lines",
+    "type": "RECORD",
+    "description": "Array of single lines of plain text content",
+    "fields": [
+      {
+        "name": "line_number",
+        "type": "INTEGER",
+        "description": "Which line of the content this is, counting from 1"
+      },
+      {
+        "name": "line",
+        "type": "STRING",
+        "description": "A single line of plain text, containing no newline characters"
+      }
+    ]
+  },
+  {
+    "mode": "REPEATED",
     "name": "hyperlinks",
-    "type": "JSON"
+    "type": "RECORD",
+    "description": "Array of hyperlinks from the body of the page",
+    "fields": [
+      {
+        "name": "url",
+        "type": "STRING",
+        "description": "Link URL"
+      },
+      {
+        "name": "url_bare",
+        "type": "STRING",
+        "description": "Link URL stripped of parameters and anchors"
+      },
+      {
+        "name": "text",
+        "type": "STRING",
+        "description": "Text that is displayed"
+      }
+    ]
   },
   {
     "mode": "REPEATED",
     "name": "abbreviations",
-    "type": "JSON"
+    "type": "RECORD",
+    "description": "Array of abbreviations from the body of the page, i.e. <abbr> tags",
+    "fields": [
+      {
+        "name": "title",
+        "type": "STRING",
+        "description": "What the abbreviation stands for"
+      },
+      {
+        "name": "text",
+        "type": "STRING",
+        "description": "The abbreviated form"
+      }
+    ]
   }
 ]
