@@ -1,7 +1,7 @@
-# `extract-markup-from-editions.sql`
+# `extract-content-from-editions.sql`
 
 This query extracts the govspeak and/or HTML content of editions, according to their
-[`schema_name`](https://docs.publishing.service.gov.uk/content-schemas.html). If only govspeak is available, then it is rendered into HTML.
+[`schema_name`](https://docs.publishing.service.gov.uk/content-schemas.html). If only govspeak is available, then it is rendered into HTML.  Then plain text and various HTML tags are extracted from the HTML content.
 
 [Not all schemas are supported](https://docs.google.com/spreadsheets/d/16AoHrcp5Wn9gyEhLFf1psPNJYn59VX0WEzNN7u54CZM/edit#gid=190179367).  Ones that aren't supported are usually ones that don't contain anything resembling "content".  Some of the ones that aren't supported contain links to other documents, so it would be good to extract those links one day to support the 'link search' function in the GovSearch app.
 

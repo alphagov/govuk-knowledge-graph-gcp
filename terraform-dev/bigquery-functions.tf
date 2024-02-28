@@ -97,24 +97,13 @@ resource "google_bigquery_routine" "publishing_api_editions_current" {
   definition_body = file("bigquery/publishing-api-editions-current.sql")
 }
 
-resource "google_bigquery_routine" "extract_markup" {
+resource "google_bigquery_routine" "extract_content_from_editions" {
   dataset_id   = google_bigquery_dataset.functions.dataset_id
-  routine_id   = "extract_markup"
+  routine_id   = "extract_content_from_editions"
   routine_type = "PROCEDURE"
   language     = "SQL"
   definition_body = templatefile(
-    "bigquery/extract-markup-from-editions.sql",
-    { project_id = var.project_id }
-  )
-}
-
-resource "google_bigquery_routine" "extract_content_from_html" {
-  dataset_id   = google_bigquery_dataset.functions.dataset_id
-  routine_id   = "extract_content_from_html"
-  routine_type = "PROCEDURE"
-  language     = "SQL"
-  definition_body = templatefile(
-    "bigquery/extract-content-from-html.sql",
+    "bigquery/extract-content-from-editions.sql",
     { project_id = var.project_id, }
   )
 }
