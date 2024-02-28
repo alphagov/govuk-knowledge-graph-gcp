@@ -76,4 +76,18 @@ describe "html_to_text() function" do
       expect(response.body[0]).to eq("heading\ncontent")
     end
   end
+
+  it "doesn't wrap long lines (pandoc defaults to 72 characters)" do
+    load_temporary "app.rb" do
+      response = request([["123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 "]])
+      expect(response.body[0]).to eq("123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789")
+    end
+  end
+
+  it "omits whitespace at the end" do
+    load_temporary "app.rb" do
+      response = request([["a \n"]])
+      expect(response.body[0]).to eq("a")
+    end
+  end
 end

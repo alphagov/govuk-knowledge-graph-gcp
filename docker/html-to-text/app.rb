@@ -15,7 +15,7 @@ FunctionsFramework.http "html_to_text" do |request|
   return { "replies" => JSON.parse(request.body.read)["calls"].map do |row|
     Timeout.timeout(TIMEOUT_SECONDS) do
       html = row[0]
-      PandocRuby.convert(html, from: :html, to: :plain).chomp.gsub(/(\r?\n)+/, "\n")
+      PandocRuby.convert(html, { from: :html, to: :plain }, "--wrap=none").chomp.gsub(/(\r?\n)+/, "\n")
     rescue Timeout::Error
       "HTML parsing timed out after #{TIMEOUT_SECONDS} seconds"
     end
