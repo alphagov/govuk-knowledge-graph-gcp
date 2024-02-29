@@ -1,0 +1,38 @@
+name: Html-to-text lint and test
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'docker/html-to-text/**'
+
+defaults:
+  run:
+    working-directory: docker/html-to-text
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: nikeee/setup-pandoc@v1
+
+    # Set up Ruby
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.2.2' # or the version you need
+
+    # Install dependencies
+    - name: Install dependencies
+      run: |
+        bundle install --jobs 4 --retry 3
+
+    # Run RuboCop
+    - name: Run RuboCop
+      run: bundle exec rubocop
+
+    # Run RSpec
+    - name: Run RSpec tests
+      run: bundle exec rspec

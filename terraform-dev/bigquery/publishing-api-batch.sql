@@ -4,5 +4,6 @@
 -- Fetch new editions
 CALL functions.publishing_api_editions_current();
 
--- Extract content markup, and render GovSpeak to HTML when necessary.
-CALL functions.extract_markup();
+-- Extract content markup, render GovSpeak to HTML when necessary, and then
+-- extract plain text and various tags.
+CALL functions.extract_content_from_editions();

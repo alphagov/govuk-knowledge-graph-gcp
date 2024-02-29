@@ -99,14 +99,6 @@ resource "google_cloudfunctions2_function" "govspeak_to_html" {
       GOVUK_WEBSITE_ROOT = "https://www.gov.uk"
     }
   }
-
-  # Force terraform to redeploy the function when the source code changes
-  # https://github.com/hashicorp/terraform-provider-google/issues/1938#issuecomment-1229042663
-  lifecycle {
-    replace_triggered_by = [
-      google_storage_bucket_object.govspeak_to_html
-    ]
-  }
 }
 
 data "google_iam_policy" "cloud_function_govspeak_to_html" {
@@ -177,16 +169,10 @@ resource "google_bigquery_job" "deploy_govspeak_to_html" {
       {
         project_id = var.project_id
         region     = var.region
-        uri        = google_cloudfunctions2_function.govspeak_to_html.service_config[0].uri
+        uri        = google_cloudfunctions2_function.govspeak_to_html.url
       }
     )
     create_disposition = "" # must be set to "" for scripts
     write_disposition  = "" # must be set to "" for scripts
-  }
-
-  lifecycle {
-    replace_triggered_by = [
-      google_storage_bucket_object.govspeak_to_html
-    ]
   }
 }

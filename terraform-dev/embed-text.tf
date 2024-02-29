@@ -64,10 +64,4 @@ resource "google_bigquery_job" "deploy_embed_text" {
     create_disposition = "" # must be set to "" for scripts
     write_disposition  = "" # must be set to "" for scripts
   }
-
-  lifecycle {
-    replace_triggered_by = [
-      google_cloud_run_v2_service.embed_text
-    ]
-  }
 }

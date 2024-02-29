@@ -1,3 +1,21 @@
+data "google_compute_default_service_account" "default" {
+}
+data "google_iam_policy" "compute_default_service_account" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+
+    members = [
+      google_service_account.artifact_registry_docker.member,
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "compute_default_service_account" {
+  service_account_id = data.google_compute_default_service_account.default.name
+  policy_data        = data.google_iam_policy.compute_default_service_account.policy_data
+}
+
+# Create some service accounts
 resource "google_service_account" "gce_mongodb" {
   account_id   = "gce-mongodb"
   display_name = "Service Account for MongoDB Instance"
