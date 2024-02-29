@@ -1,4 +1,4 @@
--- Maintains a table `public.markup` of
+-- Maintains a table `public.content` of
 -- * one record per document if the document has a single part
 -- * one record per part of multipart documents, whare the ones with schema_name
 --   IN ('guide', 'travel_advice')
@@ -7,8 +7,9 @@
 --    public.publishing_api_editions_new_current.
 -- 2. Extract markup from those editions according to their schema.
 -- 3. Where HTML is null, render the GovSpeak to HTML.
--- 4. Delete outdated editions from public.markup.
--- 4. Insert new markup into public.markup.
+-- 4. Extract plain text and various HTML tags from the HTML.
+-- 5. Delete outdated editions from public.content.
+-- 6. Insert new editions into public.content.
 
 BEGIN
 
@@ -36,8 +37,14 @@ CREATE TEMP FUNCTION markup_from_json_array(array_of_json JSON) AS ((
     )
 ));
 
-TRUNCATE TABLE public.markup_new;
-INSERT INTO public.markup_new
+-- https://stackoverflow.com/a/55778635
+CREATE TEMP FUNCTION dedup(val ANY TYPE) AS ((
+  SELECT ARRAY_AGG(t)
+  FROM (SELECT DISTINCT * FROM UNNEST(val) v) t
+));
+
+TRUNCATE TABLE public.content_new;
+INSERT INTO public.content_new
 -- schema_map ought to be a table, but it would take a lot of configuration.  If
 -- we used DBT or SQLMesh then it would be easier, as a seed, but those tools
 -- also require a lot of configuration.
@@ -288,24 +295,63 @@ rendered AS (
     COALESCE(html, JSON_VALUE(`${project_id}.functions.govspeak_to_html`(govspeak), '$.html')) AS html
   )
   FROM combined
+),
+
+extracts AS (
+  SELECT
+    *,
+    `${project_id}.functions.html_to_text`(html) AS text,
+    `${project_id}.functions.parse_html`(html, 'https://www.gov.uk' || base_path) AS extracted_content
+  FROM rendered
 )
 
-SELECT * FROM rendered
+SELECT
+  * EXCEPT(extracted_content),
+  ARRAY(
+    SELECT
+      STRUCT(
+        line_number + 1 AS line_number,
+        line
+      )
+    FROM UNNEST(SPLIT(text, "\n")) AS line WITH OFFSET AS line_number
+  ) AS lines,
+  dedup(
+    ARRAY(
+      SELECT
+        STRUCT(
+          JSON_EXTRACT_SCALAR(link, "$.link_url") AS url,
+          JSON_EXTRACT_SCALAR(link, "$.link_url_bare") AS url_bare,
+          JSON_EXTRACT_SCALAR(link, "$.link_text")
+        )
+      FROM UNNEST(JSON_EXTRACT_ARRAY(extracted_content, "$.hyperlinks")) AS link
+    )
+  ) AS hyperlinks,
+  dedup(
+    ARRAY(
+      SELECT
+        STRUCT(
+          JSON_EXTRACT_SCALAR(abbreviation, "$.title") AS title, -- expansion
+          JSON_EXTRACT_SCALAR(abbreviation, "$.text") AS text    -- abbreviation
+        )
+      FROM UNNEST(JSON_EXTRACT_ARRAY(extracted_content, "$.abbreviations")) AS abbreviation
+    )
+  ) AS abbreviations
+FROM extracts
 ;
 
--- Delete rows from the public.markup table where a newer edition of the same
+-- Delete rows from the public.content table where a newer edition of the same
 -- document is now available.  The newer edition might be private, so use the
 -- private editions as the source of the merge.
 MERGE INTO
-public.markup AS target
+public.content AS target
 USING private.publishing_api_editions_new_current AS source
 ON source.document_id = target.document_id
 WHEN matched THEN DELETE
 ;
 
--- Insert the markup of new editions into the public.markup table.
-INSERT INTO public.markup
-SELECT * FROM public.markup_new
+-- Insert the content of new editions into the public.content table.
+INSERT INTO public.content
+SELECT * FROM public.content_new
 ;
 
 END
