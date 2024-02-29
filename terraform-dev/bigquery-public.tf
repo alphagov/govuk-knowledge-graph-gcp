@@ -70,3 +70,11 @@ resource "google_bigquery_table" "public_publishing_api_editions_current" {
   description   = "The most-recent edition of each document of each content item"
   schema        = file("schemas/public/publishing-api-editions-current.json")
 }
+
+resource "google_bigquery_table" "public_publishing_api_unpublishings_current" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "publishing_api_unpublishings_current"
+  friendly_name = "Publishing API unpublishings (current)"
+  description   = "The most-recent unpublishing of each unpublished document of each content item"
+  schema        = file("schemas/public/publishing-api-unpublishings-current.json")
+}

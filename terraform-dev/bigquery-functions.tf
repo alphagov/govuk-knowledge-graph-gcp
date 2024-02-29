@@ -97,6 +97,14 @@ resource "google_bigquery_routine" "publishing_api_editions_current" {
   definition_body = file("bigquery/publishing-api-editions-current.sql")
 }
 
+resource "google_bigquery_routine" "publishing_api_unpublishings_current" {
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "publishing_api_unpublishings_current"
+  routine_type = "PROCEDURE"
+  language     = "SQL"
+  definition_body = file("bigquery/publishing-api-unpublishings-current.sql")
+}
+
 resource "google_bigquery_routine" "extract_content_from_editions" {
   dataset_id   = google_bigquery_dataset.functions.dataset_id
   routine_id   = "extract_content_from_editions"
