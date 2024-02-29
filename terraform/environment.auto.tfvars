@@ -1,18 +1,18 @@
-environment                         = "development"
-project_id                          = "govuk-knowledge-graph-dev"
-project_number                      = "628722085506"
-govgraph_domain                     = "govgraphdev.dev"
-govgraphsearch_domain               = "govgraphsearchdev.dev"
-govsearch_domain                    = "gov-search.integration.service.gov.uk"
-application_title                   = "GovGraph Search (development)"
+environment                         = "production"
+project_id                          = "govuk-knowledge-graph"
+project_number                      = "19513753240"
+govgraph_domain                     = "govgraph.dev"
+govgraphsearch_domain               = "govgraphsearch.dev"
+govsearch_domain                    = "gov-search.service.gov.uk"
+application_title                   = "GovGraph Search"
 enable_auth                         = "true"
-signon_url                          = "https://signon.integration.publishing.service.gov.uk"
-oauth_auth_url                      = "https://signon.integration.publishing.service.gov.uk/oauth/authorize"
-oauth_token_url                     = "https://signon.integration.publishing.service.gov.uk/oauth/access_token"
-oauth_callback_url                  = "https://govgraphsearchdev.dev/auth/gds/callback"
-gtm_auth                            = "PLACEHOLDER"
-gtm_id                              = "PLACEHOLDER"
+signon_url                          = "https://signon.publishing.service.gov.uk"
+oauth_auth_url                      = "https://signon.publishing.service.gov.uk/oauth/authorize"
+oauth_token_url                     = "https://signon.publishing.service.gov.uk/oauth/access_token"
+oauth_callback_url                  = "https://gov-search.service.gov.uk/auth/gds/callback"
 enable_redis_session_store_instance = true
+gtm_id                              = "GTM-5LTHPJZ"
+gtm_auth                            = "aWEg5ABBTyIPcsSg1cJWxg"
 
 # Google Groups and external service accounts that are to have roles given to
 # them.
@@ -33,10 +33,13 @@ iap_govgraphsearch_members = [
 ]
 
 bigquery_job_user_members = [
+  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk"
 ]
 
 # Bucket: {project_id}-data-processed
 storage_data_processed_object_viewer_members = [
+  "group:data-engineering@digital.cabinet-office.gov.uk",
+  "group:data-products@digital.cabinet-office.gov.uk",
 ]
 
 # BigQuery dataset: private
@@ -51,30 +54,46 @@ bigquery_public_data_viewer_members = [
 bigquery_content_api_data_viewer_members = [
 ]
 
-# BigQuery dataset: content
 bigquery_content_data_viewer_members = [
+  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
+  "serviceAccount:ner-bulk-inference@cpto-content-metadata.iam.gserviceaccount.com",
+  "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
+  "serviceAccount:wif-ner-new-content-inference@cpto-content-metadata.iam.gserviceaccount.com",
+  "serviceAccount:wif-vectorstore@govuk-llm-question-answering.iam.gserviceaccount.com",
 ]
 
 # BigQuery dataset: publisher
 bigquery_publisher_data_viewer_members = [
+  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
 ]
 
 # BigQuery dataset: functions
 bigquery_functions_data_viewer_members = [
+  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
 ]
 
 # BigQuery dataset: graph
 bigquery_graph_data_viewer_members = [
+  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
+  "serviceAccount:ner-bulk-inference@cpto-content-metadata.iam.gserviceaccount.com",
+  "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
+  "serviceAccount:wif-ner-new-content-inference@cpto-content-metadata.iam.gserviceaccount.com",
+  "serviceAccount:wif-vectorstore@govuk-llm-question-answering.iam.gserviceaccount.com",
 ]
 
-# BigQuery dataset: publishing-api
+# BigQuery dataset: publishing
 bigquery_publishing_api_data_viewer_members = [
+  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
 ]
 
 # BigQuery dataset: search
 bigquery_search_data_viewer_members = [
+  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
+  "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
+  "serviceAccount:wif-vectorstore@govuk-llm-question-answering.iam.gserviceaccount.com",
 ]
 
 # BigQuery dataset: test
 bigquery_test_data_viewer_members = [
+  "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
 ]

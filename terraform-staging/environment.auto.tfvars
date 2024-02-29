@@ -1,18 +1,18 @@
-environment                         = "development"
-project_id                          = "govuk-knowledge-graph-dev"
-project_number                      = "628722085506"
-govgraph_domain                     = "govgraphdev.dev"
-govgraphsearch_domain               = "govgraphsearchdev.dev"
-govsearch_domain                    = "gov-search.integration.service.gov.uk"
-application_title                   = "GovGraph Search (development)"
-enable_auth                         = "true"
-signon_url                          = "https://signon.integration.publishing.service.gov.uk"
-oauth_auth_url                      = "https://signon.integration.publishing.service.gov.uk/oauth/authorize"
-oauth_token_url                     = "https://signon.integration.publishing.service.gov.uk/oauth/access_token"
-oauth_callback_url                  = "https://govgraphsearchdev.dev/auth/gds/callback"
+environment                         = "staging"
+project_id                          = "govuk-knowledge-graph-staging"
+project_number                      = "957740527277"
+govgraph_domain                     = "govgraphstaging.dev"
+govgraphsearch_domain               = "govgraphsearchstaging.dev"
+govsearch_domain                    = "gov-search.staging.service.gov.uk"
+application_title                   = "GovGraph Search (staging)"
+enable_auth                         = "false"
+signon_url                          = "https://signon.publishing.service.gov.uk"
+oauth_auth_url                      = "https://signon.publishing.service.gov.uk/oauth/authorize"
+oauth_token_url                     = "https://signon.publishing.service.gov.uk/oauth/access_token"
+oauth_callback_url                  = "https://govgraphsearch.dev/auth/gds/callback"
+enable_redis_session_store_instance = false
 gtm_auth                            = "PLACEHOLDER"
 gtm_id                              = "PLACEHOLDER"
-enable_redis_session_store_instance = true
 
 # Google Groups and external service accounts that are to have roles given to
 # them.
@@ -29,7 +29,9 @@ project_owner_members = [
 ]
 
 iap_govgraphsearch_members = [
-  "allUsers"
+  "group:govsearch-developers@digital.cabinet-office.gov.uk",
+  "user:govsearchtest@gmail.com",
+  "user:govsearchtestdac@gmail.com",
 ]
 
 bigquery_job_user_members = [
@@ -67,7 +69,7 @@ bigquery_functions_data_viewer_members = [
 bigquery_graph_data_viewer_members = [
 ]
 
-# BigQuery dataset: publishing-api
+# BigQuery dataset: publishing
 bigquery_publishing_api_data_viewer_members = [
 ]
 
