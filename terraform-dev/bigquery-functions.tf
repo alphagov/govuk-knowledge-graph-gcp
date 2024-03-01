@@ -131,3 +131,14 @@ resource "google_bigquery_routine" "taxonomy" {
   language     = "SQL"
   definition_body = file("bigquery/taxonomy.sql")
 }
+
+resource "google_bigquery_routine" "contact_phone_numbers" {
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "contact_phone_numbers"
+  routine_type = "PROCEDURE"
+  language     = "SQL"
+  definition_body = templatefile(
+    "bigquery/contact-phone-numbers.sql",
+    { project_id = var.project_id }
+  )
+}

@@ -55,6 +55,14 @@ resource "google_bigquery_table" "public_content" {
   schema        = file("schemas/public/content.json")
 }
 
+resource "google_bigquery_table" "public_contact_phone_numbers" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "contact_phone_numbers"
+  friendly_name = "Contact phone numbers"
+  description   = "One row per document with schema 'contact', with an array of phone numbers, standardised to their E.164 format"
+  schema        = file("schemas/public/contact-phone-numbers.json")
+}
+
 resource "google_bigquery_table" "public_publishing_api_editions_new_current" {
   dataset_id    = google_bigquery_dataset.public.dataset_id
   table_id      = "publishing_api_editions_new_current"
