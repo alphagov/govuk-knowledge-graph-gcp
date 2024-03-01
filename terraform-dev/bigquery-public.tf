@@ -86,3 +86,11 @@ resource "google_bigquery_table" "public_publishing_api_unpublishings_current" {
   description   = "The most-recent unpublishing of each unpublished document of each content item"
   schema        = file("schemas/public/publishing-api-unpublishings-current.json")
 }
+
+resource "google_bigquery_table" "public_taxonomy" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "taxonomy"
+  friendly_name = "Taxonomy"
+  description   = "One row per taxon, each with an array of its ancestors, which include itself"
+  schema        = file("schemas/public/taxonomy.json")
+}

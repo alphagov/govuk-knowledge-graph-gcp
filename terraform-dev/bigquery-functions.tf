@@ -123,3 +123,11 @@ resource "google_bigquery_routine" "extract_content_from_editions" {
     { project_id = var.project_id, }
   )
 }
+
+resource "google_bigquery_routine" "taxonomy" {
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "taxonomy"
+  routine_type = "PROCEDURE"
+  language     = "SQL"
+  definition_body = file("bigquery/taxonomy.sql")
+}
