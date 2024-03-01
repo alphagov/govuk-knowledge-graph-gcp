@@ -4,6 +4,9 @@
 -- Fetch new editions
 CALL functions.publishing_api_editions_current();
 
+-- Update the public table of links.
+CALL functions.publishing_api_links_current();
+
 -- Update the public table of unpublishings.
 CALL functions.publishing_api_unpublishings_current();
 

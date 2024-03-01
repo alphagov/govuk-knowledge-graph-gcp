@@ -71,6 +71,14 @@ resource "google_bigquery_table" "public_publishing_api_editions_current" {
   schema        = file("schemas/public/publishing-api-editions-current.json")
 }
 
+resource "google_bigquery_table" "public_publishing_api_links_current" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "publishing_api_links_current"
+  friendly_name = "Publishing API links (current)"
+  description   = "Links between current editions of each content item"
+  schema        = file("schemas/public/publishing-api-links-current.json")
+}
+
 resource "google_bigquery_table" "public_publishing_api_unpublishings_current" {
   dataset_id    = google_bigquery_dataset.public.dataset_id
   table_id      = "publishing_api_unpublishings_current"
