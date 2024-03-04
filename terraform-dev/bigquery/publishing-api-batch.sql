@@ -14,5 +14,11 @@ CALL functions.publishing_api_unpublishings_current();
 -- extract plain text and various tags.
 CALL functions.extract_content_from_editions();
 
+-- Update the public table of phone numbers extracted from 'contact' documents.
+CALL functions.contact_phone_numbers();
+
+-- Update the public table of phone numbers extracted from content.
+CALL functions.phone_numbers();
+
 -- Update the public table of the taxonomy.
 CALL functions.taxonomy();

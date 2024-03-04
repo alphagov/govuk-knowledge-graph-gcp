@@ -63,6 +63,14 @@ resource "google_bigquery_table" "public_contact_phone_numbers" {
   schema        = file("schemas/public/contact-phone-numbers.json")
 }
 
+resource "google_bigquery_table" "public_phone_numbers" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "phone_numbers"
+  friendly_name = "Phone numbers"
+  description   = "One row per document (per part, for multipart documents), with an array of phone numbers detected in the document's body or metadata, standardised to the E.164 format"
+  schema        = file("schemas/public/phone-numbers.json")
+}
+
 resource "google_bigquery_table" "public_publishing_api_editions_new_current" {
   dataset_id    = google_bigquery_dataset.public.dataset_id
   table_id      = "publishing_api_editions_new_current"
