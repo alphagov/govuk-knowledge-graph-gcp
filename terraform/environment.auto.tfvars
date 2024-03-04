@@ -84,11 +84,13 @@ bigquery_graph_data_viewer_members = [
 # BigQuery dataset: publishing
 bigquery_publishing_api_data_viewer_members = [
   "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
+  "serviceAccount:service-419945323196@gcp-sa-dataform.iam.gserviceaccount.com",
 ]
 
 # BigQuery dataset: search
 bigquery_search_data_viewer_members = [
   "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
+  "serviceAccount:service-419945323196@gcp-sa-dataform.iam.gserviceaccount.com",
   "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
   "serviceAccount:wif-vectorstore@govuk-llm-question-answering.iam.gserviceaccount.com",
 ]
