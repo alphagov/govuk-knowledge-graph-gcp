@@ -1,6 +1,7 @@
 -- A table for the GovSearch app
 -- TRUNCATE TABLE search.page;
 -- INSERT INTO search.page
+CREATE OR REPLACE TABLE test.page AS
 WITH
   editions AS (
     SELECT editions.*
