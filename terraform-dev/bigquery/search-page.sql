@@ -1,9 +1,6 @@
 -- A table for the GovSearch app
--- One row per 'page' (document, or part of a document that has its own URL, or
--- snippet that is included in other pages)
-
-TRUNCATE TABLE search.page;
-INSERT INTO search.page
+-- TRUNCATE TABLE search.page;
+-- INSERT INTO search.page
 WITH
   editions AS (
     SELECT editions.*
@@ -23,21 +20,12 @@ WITH
     WHERE type = 'withdrawal'
   ),
   primary_publishing_organisation AS (
-    -- DISTINCT because an edition can have both a document link and an edition
-    -- link at once, such as edition_id:12076462
-    -- ANY_VALUE because an edition can be linked to multiple organisations at
-    -- once, such as edition_id:8211887.
-    SELECT DISTINCT
+    SELECT
       links.source_edition_id AS edition_id,
-      ANY_VALUE(editions.title) AS title
+      editions.title
     FROM public.publishing_api_links_current AS links
     INNER JOIN editions ON editions.id = links.target_edition_id
     WHERE links.type = 'primary_publishing_organisation'
-    -- Assume that the organisation has a document in the 'en' locale.
-    -- If we allow every locale, then we will duplicate pages whose
-    -- primary_publishing_organisation has documents in multiple locales.
-    AND editions.locale = 'en'
-    GROUP BY links.source_edition_id
   ),
   organisations AS (
     SELECT
@@ -127,14 +115,6 @@ links AS (
   FROM all_links
   GROUP BY base_path
 ),
-phone_numbers AS (
-  SELECT
-    p.edition_id,
-    ARRAY_AGG(phone_number.standardised_number) as phone_numbers
-  FROM public.phone_numbers as p,
-  UNNEST(phone_numbers) AS phone_number
-  GROUP BY edition_id
-),
 pages AS (
   SELECT
     editions.id AS edition_id,
@@ -170,13 +150,13 @@ INNER JOIN editions ON editions.id = pages.edition_id -- one row per document
 LEFT JOIN withdrawals ON withdrawals.edition_id = pages.edition_id
 LEFT JOIN primary_publishing_organisation ON primary_publishing_organisation.edition_id = pages.edition_id
 LEFT JOIN organisations ON organisations.edition_id = pages.edition_id
-LEFT JOIN phone_numbers ON phone_numbers.edition_id = pages.edition_id
+LEFT JOIN public.phone_numbers ON phone_numbers.edition_id = pages.edition_id
 LEFT JOIN taxons ON taxons.edition_id = pages.edition_id
 LEFT JOIN publisher_updated_at ON publisher_updated_at.url = pages.url
 LEFT JOIN public.content -- one row per document or part
-  ON content.base_path = pages.base_path -- includes the slug of parts
+  ON content.edition_id = pages.edition_id
 LEFT JOIN links
   ON links.base_path = pages.base_path -- includes the slug of parts
 LEFT JOIN private.page_views
-  ON page_views.url = pages.url -- includes the slug of parts
+  ON page_views.url = pages.base_path -- includes the slug of parts
 ;
