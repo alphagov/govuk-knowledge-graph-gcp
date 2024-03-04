@@ -103,6 +103,14 @@ resource "google_bigquery_table" "public_publishing_api_unpublishings_current" {
   schema        = file("schemas/public/publishing-api-unpublishings-current.json")
 }
 
+resource "google_bigquery_table" "public_start_button_links" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "start_button_links"
+  friendly_name = "Start button links"
+  description   = "One row per edition, with the text displayed on its start button, and the URL that it links to"
+  schema        = file("schemas/public/start-button-links.json")
+}
+
 resource "google_bigquery_table" "public_taxonomy" {
   dataset_id    = google_bigquery_dataset.public.dataset_id
   table_id      = "taxonomy"

@@ -153,3 +153,11 @@ resource "google_bigquery_routine" "phone_numbers" {
     { project_id = var.project_id }
   )
 }
+
+resource "google_bigquery_routine" "start_button_links" {
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "start_button_links"
+  routine_type = "PROCEDURE"
+  language     = "SQL"
+  definition_body = file("bigquery/start-button-links.sql")
+}
