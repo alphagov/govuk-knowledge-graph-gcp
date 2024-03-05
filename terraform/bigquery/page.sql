@@ -1,12 +1,59 @@
+-- A table for the GovSearch app
+-- One row per 'page' (document, or part of a document that has its own URL, or
+-- snippet that is included in other pages)
+
 TRUNCATE TABLE search.page;
 INSERT INTO search.page
 WITH
--- Latest updated_at date per base path in the Publisher app database.
--- For mainstream content, this is more meaningful than the Publishing
--- API or Content API 'updated_at' or 'public_updated_at fields.'  Mainstream
--- editors don't tend to use 'public_updated_at', and 'updated_at' is polluted
--- by creation of new editions for techy reasons rather than editing reasons.
-publisher_updated_at AS (
+  editions AS (
+    SELECT editions.*
+    FROM public.publishing_api_editions_current AS editions
+    LEFT JOIN public.publishing_api_unpublishings_current
+      AS unpublishings
+      ON (unpublishings.edition_id = editions.id)
+    WHERE (unpublishings.edition_id IS NULL OR unpublishings.type = 'withdrawal')
+    AND editions.document_type NOT IN ('gone', 'redirect')
+  ),
+  withdrawals AS (
+    SELECT
+      edition_id,
+      unpublished_at AS withdrawn_at,
+      explanation AS withdrawn_explanation
+    FROM public.publishing_api_unpublishings_current
+    WHERE type = 'withdrawal'
+  ),
+  primary_publishing_organisation AS (
+    -- DISTINCT because an edition can have both a document link and an edition
+    -- link at once, such as edition_id:12076462
+    -- ANY_VALUE because an edition can be linked to multiple organisations at
+    -- once, such as edition_id:8211887.
+    SELECT DISTINCT
+      links.source_edition_id AS edition_id,
+      ANY_VALUE(editions.title) AS title
+    FROM public.publishing_api_links_current AS links
+    INNER JOIN editions ON editions.id = links.target_edition_id
+    WHERE links.type = 'primary_publishing_organisation'
+    -- Assume that the organisation has a document in the 'en' locale.
+    -- If we allow every locale, then we will duplicate pages whose
+    -- primary_publishing_organisation has documents in multiple locales.
+    AND editions.locale = 'en'
+    GROUP BY links.source_edition_id
+  ),
+  organisations AS (
+    SELECT
+      links.source_edition_id AS edition_id,
+      ARRAY_AGG(DISTINCT editions.title) AS titles
+    FROM public.publishing_api_links_current AS links
+    INNER JOIN editions ON editions.id = links.target_edition_id
+    WHERE links.type = 'organisations'
+    GROUP BY links.source_edition_id
+  ),
+  publisher_updated_at AS (
+  -- Latest updated_at date per base path in the Publisher app database.
+  -- For mainstream content, this is more meaningful than the Publishing
+  -- API or Content API 'updated_at' or 'public_updated_at fields.'  Mainstream
+  -- editors don't tend to use 'public_updated_at', and 'updated_at' is polluted
+  -- by creation of new editions for techy reasons rather than editing reasons.
   SELECT
     url,
     MAX(updated_at) AS publisher_updated_at,
@@ -14,132 +61,122 @@ publisher_updated_at AS (
   WHERE state='published'
   GROUP BY url
 ),
-tagged_taxons AS (
+taxons AS (
+  -- One row per taxon.
+  -- Its edition_id, and an array of DISTINCT titles of it and its ancestors
+  -- back to the root taxon.
+  --
+  -- This supports filtering by the name of a page's taxon or the ancestors of
+  -- that taxon.
+  --
+  -- Taxonomy titles aren't unique. Most of them can be disambiguated by using
+  -- their internal_name instead, but often the internal_name isn't suitable for
+  -- use elsewhere than a publishing app. Titles seem to be duplicated when they
+  -- relate to a particular country, such as "Help and services around the
+  -- world", the internal name of which is "Help and services around the world
+  -- (Algeria)". The GovSearch app probably shouldn't list every country's
+  -- version of that taxon, so it lists the generic version. Those taxons
+  -- usually have an associated_taxons link to "UK help and services in Algeria"
+  -- (or whichever country) anyway, so if users need to be specific then they
+  -- can filter by that taxon.
   SELECT
-    is_tagged_to.url AS url,
-    -- Use DISTINCT because some pages are tagged to more than one taxon that
-    -- share ancestors.
-    ARRAY_AGG(DISTINCT taxon_ancestors.ancestor_title) AS ancestor_titles,
-  FROM graph.is_tagged_to
-  INNER JOIN graph.taxon_ancestors ON taxon_ancestors.url = is_tagged_to.taxon_url
-  GROUP BY url
-),
-primary_publishing_organisation AS (
-  SELECT
-    link.from_content_id AS content_id,
-    organisation.title
-  FROM content.expanded_links_content_ids AS link
-  INNER JOIN graph.organisation AS organisation ON (organisation.content_id = link.to_content_id)
-  WHERE link_type = 'primary_publishing_organisation'
-),
-organisations AS (
-  SELECT
-    link.from_content_id AS content_id,
-    ARRAY_AGG(organisation.title) AS titles
-  FROM content.expanded_links_content_ids AS link
-  INNER JOIN graph.organisation AS organisation ON (organisation.content_id = link.to_content_id)
-  WHERE link_type = 'organisations'
-  GROUP BY link.from_content_id
+    taxonomy.edition_id,
+    ARRAY_AGG(DISTINCT editions.title) AS titles
+  FROM public.taxonomy,
+  UNNEST(all_ancestors) AS ancestor
+  INNER JOIN editions ON editions.id = ancestor.edition_id
+  GROUP BY taxonomy.edition_id
 ),
 all_links AS (
-  SELECT DISTINCT
-    link_type,
-    from_url as url,
-    to_url as link_url
+  SELECT
+    links.type AS link_type,
+    editions.base_path,
+    "https://www.gov.uk" || editions.base_path as link_url
   FROM
-    content.expanded_links
+    public.publishing_api_links_current AS links
+  INNER JOIN editions ON editions.id = links.source_edition_id
   UNION ALL
-  SELECT DISTINCT
+  SELECT
     "embedded" as link_type,
-    url,
-    link_url
+    base_path, -- the base_path of the document or part
+    hyperlink.url AS link_url
   FROM
-    content.embedded_links
+    public.content,
+    UNNEST(hyperlinks) AS hyperlink
   UNION ALL
-  SELECT DISTINCT
+  SELECT
     "transaction_start_link" AS link_type,
-    url,
-    link_url
+    editions.base_path,
+    url AS link_url
   FROM
-    content.transaction_start_link
+    public.start_button_links
+  INNER JOIN editions ON editions.id = start_button_links.edition_id
+),
+distinct_links AS (
+  SELECT DISTINCT * FROM all_links
 ),
 links AS (
   SELECT
-    url,
+    base_path,
     ARRAY_AGG(
       STRUCT(
         link_url,
         link_type
       )
-    ) AS hyperlink
-  FROM
-    all_links
-  GROUP BY
-    url
+    ) AS hyperlinks
+  FROM all_links
+  GROUP BY base_path
 ),
 phone_numbers AS (
   SELECT
-    url,
-    ARRAY_AGG(standardised_number) as phone_numbers
-  FROM
-    graph.phone_number
-  GROUP BY url
+    p.edition_id,
+    ARRAY_AGG(phone_number.standardised_number) as phone_numbers
+  FROM public.phone_numbers as p,
+  UNNEST(phone_numbers) AS phone_number
+  GROUP BY edition_id
 ),
-entities AS (
-  WITH page_type_count AS (
-    SELECT
-      url,
-      type,
-      sum(total_count) AS total_count
-    FROM `cpto-content-metadata.named_entities.named_entities_counts`
-    GROUP BY
-      url,
-      type
-  )
+pages AS (
   SELECT
-    url,
-    ARRAY_AGG(STRUCT(type, total_count)) AS entities
-  FROM page_type_count
-  GROUP BY url
+    editions.id AS edition_id,
+    COALESCE(content.base_path, editions.base_path) AS base_path,
+    "https://www.gov.uk" || COALESCE(content.base_path, editions.base_path) AS url
+  FROM editions
+  LEFT JOIN public.content ON content.edition_id = editions.id
 )
 SELECT
-  page.url,
-  document_type AS documentType,
-  content_id AS contentId,
-  locale,
-  publishing_app,
-  first_published_at,
-  public_updated_at,
+  pages.url,
+  editions.document_type AS documentType,
+  editions.content_id AS contentId,
+  editions.locale,
+  editions.publishing_app,
+  editions.first_published_at,
+  editions.public_updated_at,
   publisher_updated_at.publisher_updated_at,
-  withdrawn_at,
-  withdrawn_explanation,
+  withdrawals.withdrawn_at,
+  withdrawals.withdrawn_explanation,
   page_views.number_of_views AS page_views,
-  /*
-  Title is preferred to internal name because it is typically of better quality;
-  internal name should be used if title is not unique / repeated.
-  */
-  CASE WHEN
-    COUNT(page.title) OVER (PARTITION BY page.title) = 1 THEN page.title
-    ELSE COALESCE(page.internal_name, page.title)
-  END AS name,
-  description,
-  text,
-  tagged_taxons.ancestor_titles AS taxons,
+  -- content.title is "title: part title" if it is a part of a document, but it
+  -- doesn't include every schema_name, so fall back to editions.title.
+  COALESCE(content.title, editions.title) AS title,
+  editions.description,
+  content.text,
+  taxons.titles AS taxons,
   primary_publishing_organisation.title AS primary_organisation,
-  organisations.titles AS organisations,
-  links.hyperlink AS hyperlinks,
-  phone_numbers.phone_numbers,
-  entities.entities
-FROM graph.page
-LEFT JOIN primary_publishing_organisation USING (content_id)
-LEFT JOIN organisations USING (content_id)
-LEFT JOIN links USING (url)
-LEFT JOIN phone_numbers USING (url)
-LEFT JOIN entities USING (url)
-LEFT JOIN private.page_views USING (url)
-LEFT JOIN tagged_taxons ON (tagged_taxons.url = 'https://www.gov.uk/' || content_id)
-LEFT JOIN publisher_updated_at ON (STARTS_WITH(page.url, publisher_updated_at.url))
-WHERE
-  page.document_type IS NULL
-  OR NOT page.document_type IN ('gone', 'redirect', 'placeholder', 'placeholder_person')
+  COALESCE(organisations.titles, []) AS organisations,
+  links.hyperlinks,
+  phone_numbers.phone_numbers
+FROM pages
+INNER JOIN editions ON editions.id = pages.edition_id -- one row per document
+LEFT JOIN withdrawals ON withdrawals.edition_id = pages.edition_id
+LEFT JOIN primary_publishing_organisation ON primary_publishing_organisation.edition_id = pages.edition_id
+LEFT JOIN organisations ON organisations.edition_id = pages.edition_id
+LEFT JOIN phone_numbers ON phone_numbers.edition_id = pages.edition_id
+LEFT JOIN taxons ON taxons.edition_id = pages.edition_id
+LEFT JOIN publisher_updated_at ON publisher_updated_at.url = pages.url
+LEFT JOIN public.content -- one row per document or part
+  ON content.base_path = pages.base_path -- includes the slug of parts
+LEFT JOIN links
+  ON links.base_path = pages.base_path -- includes the slug of parts
+LEFT JOIN private.page_views
+  ON page_views.url = pages.url -- includes the slug of parts
 ;

@@ -1,30 +1,30 @@
 [
   {
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "name": "url",
     "type": "STRING",
     "description": "URL of a page"
   },
   {
-    "mode": "NULLABLE",
+    "mode": "REQUIRED",
     "name": "documentType",
     "type": "STRING",
     "description": "The kind of thing that a page is about"
   },
   {
-    "mode": "NULLABLE",
+    "mode": "REQUIRED",
     "name": "contentId",
     "type": "STRING",
     "description": "The ID of the content item of a page"
   },
   {
-    "mode": "NULLABLE",
+    "mode": "REQUIRED",
     "name": "locale",
     "type": "STRING",
     "description": "The ISO 639-1 two-letter code of the language of an edition on GOV.UK"
   },
   {
-    "mode": "NULLABLE",
+    "mode": "REQUIRED",
     "name": "publishing_app",
     "type": "STRING",
     "description": "The application that published a content item on GOV.UK"
@@ -124,23 +124,5 @@
     "name": "phone_numbers",
     "type": "STRING",
     "description": "Array of phone numbers from the body and metadata of the page"
-  },
-  {
-    "mode": "REPEATED",
-    "name": "entities",
-    "type": "RECORD",
-    "description": "Array of entity types and their frequency in the page",
-    "fields": [
-      {
-        "name": "type",
-        "type": "STRING",
-        "description": "The type of thing that the entity is"
-      },
-      {
-        "name": "total_count",
-        "type": "INTEGER",
-        "description": "The number of occurrences of entities of that type"
-      }
-    ]
   }
 ]

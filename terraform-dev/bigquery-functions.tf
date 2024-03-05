@@ -98,18 +98,18 @@ resource "google_bigquery_routine" "publishing_api_editions_current" {
 }
 
 resource "google_bigquery_routine" "publishing_api_links_current" {
-  dataset_id   = google_bigquery_dataset.functions.dataset_id
-  routine_id   = "publishing_api_links_current"
-  routine_type = "PROCEDURE"
-  language     = "SQL"
+  dataset_id      = google_bigquery_dataset.functions.dataset_id
+  routine_id      = "publishing_api_links_current"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
   definition_body = file("bigquery/publishing-api-links-current.sql")
 }
 
 resource "google_bigquery_routine" "publishing_api_unpublishings_current" {
-  dataset_id   = google_bigquery_dataset.functions.dataset_id
-  routine_id   = "publishing_api_unpublishings_current"
-  routine_type = "PROCEDURE"
-  language     = "SQL"
+  dataset_id      = google_bigquery_dataset.functions.dataset_id
+  routine_id      = "publishing_api_unpublishings_current"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
   definition_body = file("bigquery/publishing-api-unpublishings-current.sql")
 }
 
@@ -125,10 +125,10 @@ resource "google_bigquery_routine" "extract_content_from_editions" {
 }
 
 resource "google_bigquery_routine" "taxonomy" {
-  dataset_id   = google_bigquery_dataset.functions.dataset_id
-  routine_id   = "taxonomy"
-  routine_type = "PROCEDURE"
-  language     = "SQL"
+  dataset_id      = google_bigquery_dataset.functions.dataset_id
+  routine_id      = "taxonomy"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
   definition_body = file("bigquery/taxonomy.sql")
 }
 
@@ -155,9 +155,9 @@ resource "google_bigquery_routine" "phone_numbers" {
 }
 
 resource "google_bigquery_routine" "start_button_links" {
-  dataset_id   = google_bigquery_dataset.functions.dataset_id
-  routine_id   = "start_button_links"
-  routine_type = "PROCEDURE"
-  language     = "SQL"
+  dataset_id      = google_bigquery_dataset.functions.dataset_id
+  routine_id      = "start_button_links"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
   definition_body = file("bigquery/start-button-links.sql")
 }

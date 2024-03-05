@@ -37,6 +37,7 @@ CREATE TEMP FUNCTION markup_from_json_array(array_of_json JSON) AS ((
     )
 ));
 
+-- A function like DISTINCT but works on an array of any type, including STRUCT
 -- https://stackoverflow.com/a/55778635
 CREATE TEMP FUNCTION dedup(val ANY TYPE) AS ((
   SELECT ARRAY_AGG(t)

@@ -1,0 +1,17 @@
+[
+  {
+    "mode": "REQUIRED",
+    "name": "content_id",
+    "type": "STRING"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "locale",
+    "type": "STRING"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "updated_at",
+    "type": "TIMESTAMP"
+  }
+]
