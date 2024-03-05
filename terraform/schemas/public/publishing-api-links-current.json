@@ -1,0 +1,21 @@
+[
+  {
+    "name": "source_edition_id",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "target_edition_id",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "type",
+    "type": "STRING",
+    "mode": "REQUIRED" },
+  {
+    "name": "position",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  }
+]

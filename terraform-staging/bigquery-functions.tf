@@ -97,6 +97,22 @@ resource "google_bigquery_routine" "publishing_api_editions_current" {
   definition_body = file("bigquery/publishing-api-editions-current.sql")
 }
 
+resource "google_bigquery_routine" "publishing_api_links_current" {
+  dataset_id      = google_bigquery_dataset.functions.dataset_id
+  routine_id      = "publishing_api_links_current"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/publishing-api-links-current.sql")
+}
+
+resource "google_bigquery_routine" "publishing_api_unpublishings_current" {
+  dataset_id      = google_bigquery_dataset.functions.dataset_id
+  routine_id      = "publishing_api_unpublishings_current"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/publishing-api-unpublishings-current.sql")
+}
+
 resource "google_bigquery_routine" "extract_content_from_editions" {
   dataset_id   = google_bigquery_dataset.functions.dataset_id
   routine_id   = "extract_content_from_editions"
@@ -106,4 +122,42 @@ resource "google_bigquery_routine" "extract_content_from_editions" {
     "bigquery/extract-content-from-editions.sql",
     { project_id = var.project_id, }
   )
+}
+
+resource "google_bigquery_routine" "taxonomy" {
+  dataset_id      = google_bigquery_dataset.functions.dataset_id
+  routine_id      = "taxonomy"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/taxonomy.sql")
+}
+
+resource "google_bigquery_routine" "contact_phone_numbers" {
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "contact_phone_numbers"
+  routine_type = "PROCEDURE"
+  language     = "SQL"
+  definition_body = templatefile(
+    "bigquery/contact-phone-numbers.sql",
+    { project_id = var.project_id }
+  )
+}
+
+resource "google_bigquery_routine" "phone_numbers" {
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "phone_numbers"
+  routine_type = "PROCEDURE"
+  language     = "SQL"
+  definition_body = templatefile(
+    "bigquery/phone-numbers.sql",
+    { project_id = var.project_id }
+  )
+}
+
+resource "google_bigquery_routine" "start_button_links" {
+  dataset_id      = google_bigquery_dataset.functions.dataset_id
+  routine_id      = "start_button_links"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/start-button-links.sql")
 }

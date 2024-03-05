@@ -2,60 +2,60 @@
 -- document as it currently appears on the GOV.UK website and in the Content
 -- API.
 --
--- 1. Filter editions for ones since max(public.publishing_api_editions_current.updated_at).
+-- 1. Filter for editions that are new since the last batch.
 -- 2. Filter those editions for the latest one per document.
 -- 3. Delete corresponding editions from public.publishing_api_editions_current.
 -- 4. Insert the new current editions into public.publishing_api_editions_current.
 
 BEGIN
 
--- The timestamp of the most recent edition so far
-DECLARE max_updated_at TIMESTAMP DEFAULT (
-  -- Coalesce for the case when editions_current is empty
-  SELECT coalesce(max(updated_at), '0001-01-01 00:00:00+00')
-  FROM public.publishing_api_editions_current
-);
-
--- In case the same timestamp also exists in a so-far unseen record, delete that
--- record.  Then all records of that timestamp will be treated as though so-far
--- unseen.
-DELETE FROM public.publishing_api_editions_current WHERE updated_at = max_updated_at;
--- A set of so-far unseen editions.
-TRUNCATE TABLE private.publishing_api_editions_new;
-INSERT INTO private.publishing_api_editions_new
-  SELECT * FROM publishing_api.editions WHERE updated_at >= max_updated_at
-;
-
--- Derive from the new editions a table of the latest edition per document, and
--- a flag indicating whether it has a presence online (whether a redirect,
--- or embedded in other pages, or a page in its own right).
+-- Refresh the table of editions that are new since the previous batch.
 TRUNCATE TABLE private.publishing_api_editions_new_current;
 INSERT INTO private.publishing_api_editions_new_current
-  SELECT
-    documents.content_id,
-    documents.locale,
-    publishing_api_editions_new.*,
-    unpublishings.type AS unpublishing_type,
-    -- TODO: derive other values here
-    (
-      coalesce(content_store = 'live', false) -- Includes items that are only embedded in others.
-      AND state <> 'superseded' -- Exclude this rare and illogical case
-      AND coalesce(unpublishings.type <> 'vanish', true)
-      AND (
-        coalesce(left(schema_name, 11) <> 'placeholder', true)
-        OR (
-          -- schema_name must be checked again because short-circuit evaluation
-          -- isn't available in this clause.
-          coalesce(left(schema_name, 11) = 'placeholder', false)
-          AND coalesce(unpublishings.type IN ('gone', 'redirect'), false)
-        )
+SELECT
+  documents.content_id,
+  documents.locale,
+  editions.*,
+  unpublishings.type AS unpublishing_type,
+  -- indicate whether it has a presence online (whether a redirect, or
+  -- embedded in other pages, or a page in its own right).
+  (
+    coalesce(content_store = 'live', false) -- Includes items that are only embedded in others.
+    AND state <> 'superseded' -- Exclude this rare and illogical case
+    AND coalesce(unpublishings.type <> 'vanish', true)
+    AND (
+      coalesce(left(schema_name, 11) <> 'placeholder', true)
+      OR (
+        -- schema_name must be checked again because short-circuit evaluation
+        -- isn't available in this clause.
+        coalesce(left(schema_name, 11) = 'placeholder', false)
+        AND coalesce(unpublishings.type IN ('gone', 'redirect'), false)
       )
-    ) AS is_online
-  FROM private.publishing_api_editions_new
-  INNER JOIN publishing_api.documents ON documents.id = publishing_api_editions_new.document_id
-  LEFT JOIN publishing_api.unpublishings ON unpublishings.edition_id = publishing_api_editions_new.id
-  WHERE state <> 'draft'
-  QUALIFY ROW_NUMBER() OVER (PARTITION BY content_id, locale ORDER BY updated_at DESC) = 1
+    )
+  ) AS is_online
+FROM publishing_api.editions
+INNER JOIN publishing_api.documents ON documents.id = editions.document_id
+LEFT JOIN private.publishing_api_editions_current ON
+  -- same document
+  publishing_api_editions_current.document_id = editions.document_id
+  -- equal/more recent edition
+  AND publishing_api_editions_current.updated_at >= editions.updated_at
+-- if there isn't an equal/more recent edition, then this is a new edition
+LEFT JOIN publishing_api.unpublishings ON unpublishings.edition_id = editions.id
+WHERE publishing_api_editions_current.content_id IS NULL
+AND state <> 'draft'
+QUALIFY ROW_NUMBER() OVER (PARTITION BY content_id, locale ORDER BY updated_at DESC) = 1
+;
+
+-- Refresh the table of the current edition of each document.
+TRUNCATE TABLE private.publishing_api_editions_current;
+INSERT INTO private.publishing_api_editions_current
+SELECT
+  editions.document_id,
+  editions.updated_at
+FROM publishing_api.editions
+WHERE state <> 'draft'
+QUALIFY ROW_NUMBER() OVER (PARTITION BY content_id, locale ORDER BY updated_at DESC) = 1
 ;
 
 -- Insert new editions into the public.editions_new_current table, if they are
@@ -108,7 +108,7 @@ WHEN matched THEN DELETE
 ;
 
 -- Insert new, public editions into the
--- public.publishing_api_editions_new_current table.
+-- public.publishing_api_editions_current table.
 INSERT INTO public.publishing_api_editions_current
 SELECT * FROM public.publishing_api_editions_new_current
 ;

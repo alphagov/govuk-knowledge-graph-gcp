@@ -50,12 +50,12 @@ resource "google_bigquery_table" "page_views" {
   schema        = file("schemas/private/page-views.json")
 }
 
-resource "google_bigquery_table" "private_publishing_api_editions_new" {
+resource "google_bigquery_table" "private_publishing_api_editions_current" {
   dataset_id    = google_bigquery_dataset.private.dataset_id
-  table_id      = "publishing_api_editions_new"
-  friendly_name = "Publishing API editions (new)"
-  description   = "Publishing API editions from the latest batch update"
-  schema        = file("schemas/private/publishing-api-editions-new.json")
+  table_id      = "publishing_api_editions_current"
+  friendly_name = "Publishing API editions (current)"
+  description   = "The most recent Publishing API edition per document"
+  schema        = file("schemas/private/publishing-api-editions-current.json")
 }
 
 resource "google_bigquery_table" "private_publishing_api_editions_new_current" {
