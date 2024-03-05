@@ -4,11 +4,6 @@
 -- Top-level taxons are included.
 -- Assumes each taxon has at most one parent, and at most one associated taxon.
 
--- https://stackoverflow.com/a/55778635
-CREATE TEMP FUNCTION dedup(val ANY TYPE) AS ((
-  SELECT ARRAY_AGG(t)
-  FROM (SELECT DISTINCT * FROM UNNEST(val) v) t
-));
 TRUNCATE TABLE public.taxonomy;
 INSERT INTO public.taxonomy
 WITH RECURSIVE
@@ -154,7 +149,7 @@ SELECT
     [(STRUCT(taxons.edition_id, parentage_tree.level))], -- itself
     association_tree.ancestors -- ancestors of its associated taxon, if any
   ) AS ancestors_via_association, -- includes itself
-  dedup(
+  `${project_id}.functions.dedup`(
     ARRAY_CONCAT(
       parentage_tree.ancestors,
       association_tree.ancestors

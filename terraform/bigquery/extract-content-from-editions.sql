@@ -37,13 +37,6 @@ CREATE TEMP FUNCTION markup_from_json_array(array_of_json JSON) AS ((
     )
 ));
 
--- A function like DISTINCT but works on an array of any type, including STRUCT
--- https://stackoverflow.com/a/55778635
-CREATE TEMP FUNCTION dedup(val ANY TYPE) AS ((
-  SELECT ARRAY_AGG(t)
-  FROM (SELECT DISTINCT * FROM UNNEST(val) v) t
-));
-
 TRUNCATE TABLE public.content_new;
 INSERT INTO public.content_new
 -- schema_map ought to be a table, but it would take a lot of configuration.  If
@@ -316,7 +309,7 @@ SELECT
       )
     FROM UNNEST(SPLIT(text, "\n")) AS line WITH OFFSET AS line_number
   ) AS lines,
-  dedup(
+  `${project_id}.functions.dedup`(
     ARRAY(
       SELECT
         STRUCT(
@@ -327,7 +320,7 @@ SELECT
       FROM UNNEST(JSON_EXTRACT_ARRAY(extracted_content, "$.hyperlinks")) AS link
     )
   ) AS hyperlinks,
-  dedup(
+  `${project_id}.functions.dedup`(
     ARRAY(
       SELECT
         STRUCT(

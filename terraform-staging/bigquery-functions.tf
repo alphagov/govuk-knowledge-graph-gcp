@@ -89,6 +89,21 @@ resource "google_bigquery_routine" "extract_phone_numbers" {
   }
 }
 
+resource "google_bigquery_routine" "dedup" {
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "dedup"
+  routine_type = "SCALAR_FUNCTION"
+  language     = "SQL"
+  definition_body = templatefile(
+    "bigquery/dedup.sql",
+    { project_id = var.project_id }
+  )
+  arguments {
+    name          = "val"
+    argument_kind = "ANY_TYPE"
+  }
+}
+
 resource "google_bigquery_routine" "publishing_api_editions_current" {
   dataset_id      = google_bigquery_dataset.functions.dataset_id
   routine_id      = "publishing_api_editions_current"
@@ -125,11 +140,14 @@ resource "google_bigquery_routine" "extract_content_from_editions" {
 }
 
 resource "google_bigquery_routine" "taxonomy" {
-  dataset_id      = google_bigquery_dataset.functions.dataset_id
-  routine_id      = "taxonomy"
-  routine_type    = "PROCEDURE"
-  language        = "SQL"
-  definition_body = file("bigquery/taxonomy.sql")
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "taxonomy"
+  routine_type = "PROCEDURE"
+  language     = "SQL"
+  definition_body = templatefile(
+    "bigquery/taxonomy.sql",
+    { project_id = var.project_id }
+  )
 }
 
 resource "google_bigquery_routine" "contact_phone_numbers" {
