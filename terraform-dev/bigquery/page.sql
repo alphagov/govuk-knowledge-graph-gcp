@@ -23,13 +23,9 @@ WITH
     WHERE type = 'withdrawal'
   ),
   primary_publishing_organisation AS (
-    -- DISTINCT because an edition can have both a document link and an edition
-    -- link at once, such as edition_id:12076462
-    -- ANY_VALUE because an edition can be linked to multiple organisations at
-    -- once, such as edition_id:8211887.
-    SELECT DISTINCT
+    SELECT
       links.source_edition_id AS edition_id,
-      ANY_VALUE(editions.title) AS title
+      editions.title AS title
     FROM public.publishing_api_links_current AS links
     INNER JOIN editions ON editions.id = links.target_edition_id
     WHERE links.type = 'primary_publishing_organisation'
@@ -37,7 +33,6 @@ WITH
     -- If we allow every locale, then we will duplicate pages whose
     -- primary_publishing_organisation has documents in multiple locales.
     AND editions.locale = 'en'
-    GROUP BY links.source_edition_id
   ),
   organisations AS (
     SELECT

@@ -6,7 +6,7 @@ INSERT INTO public.contact_phone_numbers
 WITH
 contacts AS (
   SELECT
-    contact.id,
+    id,
     JSON_VALUE(phone_number, '$.title') AS title,
     JSON_VALUE(phone_number, '$.description') AS description,
     JSON_VALUE(phone_number, '$.open_hours') AS open_hours,
@@ -16,8 +16,9 @@ contacts AS (
     JSON_VALUE(phone_number, '$.textphone') AS textphone,
     JSON_VALUE(phone_number, '$.international_phone') AS international_phone
   FROM
-    test.contact,
+    public.publishing_api_editions_current,
     UNNEST(JSON_QUERY_ARRAY(details, "$.phone_numbers")) AS phone_number
+  WHERE schema_name = 'contact'
 ),
 numbers AS (
   SELECT

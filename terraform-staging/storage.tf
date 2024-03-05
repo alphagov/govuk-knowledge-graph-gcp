@@ -238,6 +238,7 @@ data "google_iam_policy" "bucket_lib" {
       # that any user of the function, or any service account that runs a
       # scheduled query that uses the function, must have
       # roles/storage.objectViewer.
+      google_service_account.bigquery_scheduled_queries.member,
     ]
   }
 
