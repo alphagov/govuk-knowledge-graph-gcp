@@ -42,9 +42,9 @@ LEFT JOIN private.publishing_api_editions_current ON
   AND publishing_api_editions_current.updated_at >= editions.updated_at
 -- if there isn't an equal/more recent edition, then this is a new edition
 LEFT JOIN publishing_api.unpublishings ON unpublishings.edition_id = editions.id
-WHERE publishing_api_editions_current.content_id IS NULL
+WHERE publishing_api_editions_current.document_id IS NULL
 AND state <> 'draft'
-QUALIFY ROW_NUMBER() OVER (PARTITION BY content_id, locale ORDER BY updated_at DESC) = 1
+QUALIFY ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY updated_at DESC) = 1
 ;
 
 -- Refresh the table of the current edition of each document.
@@ -55,7 +55,7 @@ SELECT
   editions.updated_at
 FROM publishing_api.editions
 WHERE state <> 'draft'
-QUALIFY ROW_NUMBER() OVER (PARTITION BY content_id, locale ORDER BY updated_at DESC) = 1
+QUALIFY ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY updated_at DESC) = 1
 ;
 
 -- Insert new editions into the public.editions_new_current table, if they are
