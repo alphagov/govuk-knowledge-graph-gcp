@@ -127,7 +127,7 @@ resource "google_bigquery_data_transfer_config" "search_page" {
   location       = var.region
   schedule       = "every day 06:00"
   params = {
-    query = file("bigquery/page.sql")
+    query = file("bigquery/search-page.sql")
   }
   service_account_name = google_service_account.bigquery_scheduled_queries_search.email
 }
