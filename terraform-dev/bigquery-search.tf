@@ -86,59 +86,45 @@ resource "google_bigquery_table" "search_taxon" {
   schema        = file("schemas/search/taxon.json")
 }
 
-# Because these queries are scheduled, without any way to manage their
-# dependencies on source tables, they musn't use each other as a source.
-resource "google_bigquery_data_transfer_config" "search_document_type" {
-  data_source_id = "scheduled_query" # This is a magic word
-  display_name   = "Document type"
-  location       = var.region
-  schedule       = "every day 06:00"
-  params = {
-    query = file("bigquery/document-type.sql")
-  }
-  service_account_name = google_service_account.bigquery_scheduled_queries_search.email
+resource "google_bigquery_routine" "search_document_type" {
+  dataset_id      = google_bigquery_dataset.search.dataset_id
+  routine_id      = "document_type"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/search-document-type.sql")
 }
 
-resource "google_bigquery_data_transfer_config" "search_locale" {
-  data_source_id = "scheduled_query" # This is a magic word
-  display_name   = "Locale"
-  location       = var.region
-  schedule       = "every day 06:00"
-  params = {
-    query = file("bigquery/locale.sql")
-  }
-  service_account_name = google_service_account.bigquery_scheduled_queries_search.email
+resource "google_bigquery_routine" "search_locale" {
+  dataset_id      = google_bigquery_dataset.search.dataset_id
+  routine_id      = "locale"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/search-locale.sql")
 }
 
-resource "google_bigquery_data_transfer_config" "search_organisation" {
-  data_source_id = "scheduled_query" # This is a magic word
-  display_name   = "Organisation"
-  location       = var.region
-  schedule       = "every day 06:00"
-  params = {
-    query = file("bigquery/organisation.sql")
-  }
-  service_account_name = google_service_account.bigquery_scheduled_queries_search.email
+resource "google_bigquery_routine" "search_organisation" {
+  dataset_id      = google_bigquery_dataset.search.dataset_id
+  routine_id      = "organisation"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/search-organisation.sql")
 }
 
-resource "google_bigquery_data_transfer_config" "search_page" {
-  data_source_id = "scheduled_query" # This is a magic word
-  display_name   = "Page"
-  location       = var.region
-  schedule       = "every day 06:00"
-  params = {
-    query = file("bigquery/search-page.sql")
-  }
-  service_account_name = google_service_account.bigquery_scheduled_queries_search.email
+resource "google_bigquery_routine" "search_taxon" {
+  dataset_id      = google_bigquery_dataset.search.dataset_id
+  routine_id      = "taxon"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/search-taxon.sql")
 }
 
-resource "google_bigquery_data_transfer_config" "search_taxon" {
+resource "google_bigquery_data_transfer_config" "search_batch" {
   data_source_id = "scheduled_query" # This is a magic word
-  display_name   = "Taxon"
+  display_name   = "Search batch"
   location       = var.region
-  schedule       = "every day 06:00"
+  schedule       = "every day 07:00"
   params = {
-    query = file("bigquery/taxon.sql")
+    query = file("bigquery/search-batch.sql")
   }
   service_account_name = google_service_account.bigquery_scheduled_queries_search.email
 }
