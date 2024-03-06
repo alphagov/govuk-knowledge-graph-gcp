@@ -17,7 +17,8 @@
   {
     "mode": "NULLABLE",
     "name": "base_path",
-    "type": "STRING"
+    "type": "STRING",
+    "description": "Includes the part_slug if is_part=TRUE"
   },
   {
     "mode": "NULLABLE",
@@ -27,7 +28,8 @@
   {
     "mode": "REQUIRED",
     "name": "is_part",
-    "type": "BOOLEAN"
+    "type": "BOOLEAN",
+    "description": "The first part of a multipage document has two records. One record is_part=TRUE and once with is_part = FALSE. This represents the fact that the first part can be reached from a URL with or without the part_slug."
   },
   {
     "mode": "NULLABLE",
