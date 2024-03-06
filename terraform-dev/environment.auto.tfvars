@@ -25,7 +25,7 @@ enable_redis_session_store_instance = true
 # should be the same in every environment.
 
 project_owner_members = [
-  "group:govsearch-developers@digital.cabinet-office.gov.uk",
+  "group:govgraph-developers@digital.cabinet-office.gov.uk",
 ]
 
 iap_govgraphsearch_members = [

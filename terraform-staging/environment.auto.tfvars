@@ -25,11 +25,11 @@ gtm_id                              = "PLACEHOLDER"
 # should be the same in every environment.
 
 project_owner_members = [
-  "group:govsearch-developers@digital.cabinet-office.gov.uk",
+  "group:govgraph-developers@digital.cabinet-office.gov.uk",
 ]
 
 iap_govgraphsearch_members = [
-  "group:govsearch-developers@digital.cabinet-office.gov.uk",
+  "group:govgraph-developers@digital.cabinet-office.gov.uk",
   "user:govsearchtest@gmail.com",
   "user:govsearchtestdac@gmail.com",
 ]
