@@ -137,6 +137,11 @@ pages AS (
     "https://www.gov.uk" || COALESCE(content.base_path, editions.base_path) AS url
   FROM editions
   LEFT JOIN public.content ON content.edition_id = editions.id
+  -- Exclude pages that duplicate the first part of a multipart document.
+  -- Equivalent statements are:
+  -- `content.part_index IS NULL OR content.part_index > 1`
+  -- `(NOT content.is_part) OR content.part_index > 1`
+  WHERE content.is_part OR (content.part_index IS NULL)
 )
 SELECT
   pages.url,
