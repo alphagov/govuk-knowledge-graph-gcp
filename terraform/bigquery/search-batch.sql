@@ -5,3 +5,4 @@ CALL search.document_type();
 CALL search.locale();
 CALL search.organisation();
 CALL search.taxon();
+CALL search.page();

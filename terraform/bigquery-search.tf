@@ -110,6 +110,14 @@ resource "google_bigquery_routine" "search_organisation" {
   definition_body = file("bigquery/search-organisation.sql")
 }
 
+resource "google_bigquery_routine" "search_page" {
+  dataset_id      = google_bigquery_dataset.search.dataset_id
+  routine_id      = "page"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/search-page.sql")
+}
+
 resource "google_bigquery_routine" "search_taxon" {
   dataset_id      = google_bigquery_dataset.search.dataset_id
   routine_id      = "taxon"
