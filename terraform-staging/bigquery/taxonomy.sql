@@ -152,14 +152,14 @@ SELECT
   parentage_tree.ancestors AS ancestors_via_parent, -- includes itself
   ARRAY_CONCAT(
     [(STRUCT(taxons.edition_id, parentage_tree.level))], -- itself
-    association_tree.ancestors -- ancestors of its associated taxon, if any
+    COALESCE(association_tree.ancestors, []) -- ancestors of its associated taxon, if any
   ) AS ancestors_via_association, -- includes itself
   `${project_id}.functions.dedup`(
     ARRAY_CONCAT(
       parentage_tree.ancestors,
-      association_tree.ancestors
+      COALESCE(association_tree.ancestors, [])
     )
-  ) AS all_ancestors
+  ) AS all_ancestors  -- includes itself
 FROM taxons
 LEFT JOIN parentage USING (edition_id)
 INNER JOIN parentage_tree USING (edition_id)
