@@ -60,6 +60,11 @@ taxons AS (
   SELECT
     parent_edition_id AS edition_id,
   FROM parentage
+  UNION DISTINCT
+  SELECT
+    id
+  FROM public.publishing_api_editions_current
+  WHERE schema_name = 'taxon'
 ),
 levels AS (
   -- Recursive.
@@ -120,19 +125,19 @@ parentage_tree AS (
   -- ancestors, which include itself.
   SELECT
     a.edition_id,
-    taxon_levels.level,
+    COALESCE(taxon_levels.level, 1) AS level, -- default orphaned taxons
     ARRAY_AGG(
       STRUCT(
         a.ancestor_edition_id AS edition_id,
-        ancestor_levels.level AS level
+        COALESCE(ancestor_levels.level, 1) AS level -- default orphaned taxons
       )
       ORDER BY ancestor_levels.level DESC
     ) AS ancestors,
   FROM ancestors AS a
-  INNER JOIN levels
+  LEFT JOIN levels
     AS taxon_levels
     ON taxon_levels.edition_id = a.edition_id
-  INNER JOIN levels
+  LEFT JOIN levels
     AS ancestor_levels
     ON ancestor_levels.edition_id = a.ancestor_edition_id
   GROUP BY
@@ -156,7 +161,7 @@ SELECT
     )
   ) AS all_ancestors
 FROM taxons
-INNER JOIN parentage USING (edition_id)
+LEFT JOIN parentage USING (edition_id)
 INNER JOIN parentage_tree USING (edition_id)
 LEFT JOIN association ON association.edition_id = parentage.edition_id
 LEFT JOIN parentage_tree AS association_tree ON association_tree.edition_id = association.associated_edition_id
