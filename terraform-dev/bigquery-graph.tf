@@ -16,6 +16,7 @@ data "google_iam_policy" "bigquery_dataset_graph" {
       google_service_account.gce_mongodb.member,
       google_service_account.gce_publishing_api.member,
       google_service_account.bigquery_scheduled_queries_search.member,
+      google_service_account.bigquery_scheduled_queries.member,
     ]
   }
   binding {
@@ -191,4 +192,24 @@ resource "google_bigquery_table" "graph_phone_number" {
   friendly_name = "Phone number"
   description   = "Phone numbers from 'contact' documents or detected in page content by GovNER and libphonenumber"
   schema        = file("schemas/graph/phone-number.json")
+}
+
+# Refresh legacy tables from data in the 'public' dataset.
+resource "google_bigquery_routine" "graph_page" {
+  dataset_id      = google_bigquery_dataset.graph.dataset_id
+  routine_id      = "page"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/graph-page.sql")
+}
+
+resource "google_bigquery_data_transfer_config" "graph_batch" {
+  data_source_id = "scheduled_query" # This is a magic word
+  display_name   = "Graph batch"
+  location       = var.region
+  schedule       = "every day 07:00"
+  params = {
+    query = file("bigquery/graph-batch.sql")
+  }
+  service_account_name = google_service_account.bigquery_scheduled_queries.email
 }
