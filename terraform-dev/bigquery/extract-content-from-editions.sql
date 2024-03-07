@@ -37,6 +37,38 @@ CREATE TEMP FUNCTION markup_from_json_array(array_of_json JSON) AS ((
     )
 ));
 
+-- Extract the content of a step-by-step, because not all of them are rendered
+-- to the details.body field.
+--
+-- Links are in the JSON as separate "href" and "text" fields, which this
+-- function emits as HTML. Because govspeak is a superset of HTML, you can pass
+-- this into govspeak_to_html() and then extract the links.
+CREATE TEMP FUNCTION extractStepContents(steps JSON)
+RETURNS STRING
+LANGUAGE js
+AS r"""
+return steps.map((step) => {
+  var contents = "";
+  contents += step.title;
+  contents += step.contents.reduce((acc, task) => {
+    switch (task.type) {
+      case "paragraph":
+        return acc + task.text + "\n";
+      case "list":
+        return acc + "- " + task.contents.map((entry) => {
+          var href = `<a href="$${entry.href}">$${entry.text}</a>`
+          if ("context" in entry) {
+            return href + "\n" + entry.context;
+          }
+          return href
+        }).join("\n - ") + "\n";
+      default:
+        return acc; // Ignore unknown types
+    }
+  }, "\n");
+  return contents;
+}).join("\n");
+""";
 TRUNCATE TABLE public.content_new;
 INSERT INTO public.content_new
 -- schema_map ought to be a table, but it would take a lot of configuration.  If
@@ -61,7 +93,6 @@ WITH schema_map AS (
   UNION ALL SELECT 'service_manual_guide', 'body'
   UNION ALL SELECT 'service_manual_service_standard', 'body'
   UNION ALL SELECT 'speech', 'body'
-  UNION ALL SELECT 'step_by_step_nav', 'body'
   UNION ALL SELECT 'statistical_data_set', 'body'
   UNION ALL SELECT 'take_part', 'body'
   UNION ALL SELECT 'topical_event', 'body'
@@ -88,6 +119,9 @@ WITH schema_map AS (
   UNION ALL SELECT 'transaction', 'general'
   UNION ALL SELECT 'statistics_announcement', 'general'
   UNION ALL SELECT 'smart_answer', 'general'
+  UNION ALL SELECT 'world_location_news', 'general'
+
+  UNION ALL SELECT 'step_by_step_nav', 'step_by_step_nav'
 ),
 
 -- HTML content of document types that have it in the "body" field.
@@ -158,7 +192,8 @@ general_content AS (
     markup_from_json_array(JSON_QUERY(editions.details, '$.what_you_need_to_know')) AS what_you_need_to_know,
     markup_from_json_array(JSON_QUERY(editions.details, '$.other_ways_to_apply')) AS other_ways_to_apply,
     markup_from_json_array(JSON_QUERY(editions.details, '$.cancellation_reason')) AS cancellation_reason,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.hidden_search_terms')) AS hidden_search_terms
+    markup_from_json_array(JSON_QUERY(editions.details, '$.hidden_search_terms')) AS hidden_search_terms,
+    markup_from_json_array(JSON_QUERY(editions.details, '$.mission_statement')) AS mission_statement
   FROM public.publishing_api_editions_new_current AS editions
   INNER JOIN schema_map USING (schema_name)
   WHERE schema_map.govspeak_location = 'general'
@@ -177,7 +212,8 @@ general AS (
       what_you_need_to_know,
       other_ways_to_apply,
       cancellation_reason,
-      hidden_search_terms
+      hidden_search_terms,
+      mission_statement
     ),
     ARRAY_TO_STRING([
       introduction.govspeak,
@@ -191,7 +227,8 @@ general AS (
       what_you_need_to_know.govspeak,
       other_ways_to_apply.govspeak,
       cancellation_reason.govspeak,
-      hidden_search_terms.govspeak
+      hidden_search_terms.govspeak,
+      mission_statement.govspeak
     ], '\n\n') AS govspeak,
     ARRAY_TO_STRING([
       introduction.html,
@@ -205,9 +242,38 @@ general AS (
       what_you_need_to_know.html,
       other_ways_to_apply.html,
       cancellation_reason.html,
-      hidden_search_terms.html
+      hidden_search_terms.html,
+      mission_statement.html
     ], '\n\n') AS html,
   FROM general_content
+),
+
+-- step-by-step pages, which aren't necessarily rendered to HTML in the
+-- `details.body` field.
+step_by_step_nav_content AS (
+  SELECT
+    editions.id AS edition_id,
+    editions.document_id,
+    editions.schema_name,
+    editions.base_path,
+    editions.title,
+    FALSE AS is_part,
+    CAST(NULL AS INT64) AS part_index,
+    CAST(NULL AS STRING) AS part_slug,
+    CAST(NULL AS STRING) AS part_title,
+    markup_from_json_array(JSON_QUERY(editions.details, '$.step_by_step_nav.introduction')) AS introduction,
+    COALESCE(JSON_VALUE(editions.details, '$.step_by_step_nav.introduction') || "\n", "")
+      || COALESCE(extractStepContents(JSON_QUERY(details, '$.step_by_step_nav.steps')), "") AS steps_govspeak
+  FROM public.publishing_api_editions_new_current AS editions
+  INNER JOIN schema_map USING (schema_name)
+  WHERE schema_map.govspeak_location = 'general'
+),
+step_by_step_nav AS (
+  SELECT
+    * EXCEPT (introduction, steps_govspeak),
+    COALESCE(introduction.govspeak, introduction.html) || "\n" || steps_govspeak AS govspeak,
+    CAST(NULL AS STRING) AS html,
+  FROM step_by_step_nav_content
 ),
 
 -- govspeak and HTML content of document types that have content in the details.parts array
@@ -277,6 +343,7 @@ combined AS (
   SELECT * FROM body
   UNION ALL SELECT * FROM body_content
   UNION ALL SELECT * FROM general
+  UNION ALL SELECT * FROM step_by_step_nav
 
   -- Only the first part of each guide/travel_advice document, using only the base_path
   UNION ALL SELECT * FROM first_parts
