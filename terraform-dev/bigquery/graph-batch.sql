@@ -2,3 +2,4 @@
 -- dataset.
 
 CALL graph.page();
+CALL graph.taxon();

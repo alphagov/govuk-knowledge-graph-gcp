@@ -203,6 +203,14 @@ resource "google_bigquery_routine" "graph_page" {
   definition_body = file("bigquery/graph-page.sql")
 }
 
+resource "google_bigquery_routine" "graph_taxon" {
+  dataset_id      = google_bigquery_dataset.graph.dataset_id
+  routine_id      = "taxon"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/graph-taxon.sql")
+}
+
 resource "google_bigquery_data_transfer_config" "graph_batch" {
   data_source_id = "scheduled_query" # This is a magic word
   display_name   = "Graph batch"
