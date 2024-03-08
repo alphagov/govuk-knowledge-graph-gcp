@@ -195,6 +195,14 @@ resource "google_bigquery_table" "graph_phone_number" {
 }
 
 # Refresh legacy tables from data in the 'public' dataset.
+resource "google_bigquery_routine" "graph_is_tagged_to" {
+  dataset_id      = google_bigquery_dataset.graph.dataset_id
+  routine_id      = "is_tagged_to"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/graph-is-tagged-to.sql")
+}
+
 resource "google_bigquery_routine" "graph_page" {
   dataset_id      = google_bigquery_dataset.graph.dataset_id
   routine_id      = "page"
