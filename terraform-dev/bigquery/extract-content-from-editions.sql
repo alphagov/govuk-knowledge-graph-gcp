@@ -13,26 +13,30 @@
 
 BEGIN
 
--- Extract the govspeak and/or html versions of content from a JSON array
+-- Extract COALESCE(govspeak, HTML) content from a JSON array that could
+-- include either or both kinds of markup.
+--
+-- Because govspeak is a superset of HTML, which is later rendered to HTML
+-- anyway, we don't need to know which markup this function returns.
 --
 -- Example input:
 -- [
 --  {"content":"# Govspeak Content","content_type":"text/govspeak"},
 --  {"content":"<h1>HTML Content</h1>","content_type":"text/html"}
 -- ]
---
--- Output: STRUCT(govspeak, html)
-CREATE TEMP FUNCTION markup_from_json_array(array_of_json JSON) AS ((
+CREATE TEMP FUNCTION markup_from_json_array(array_of_json JSON)
+RETURNS STRING
+AS ((
     WITH keyvalues AS (
       SELECT
-        STRING(JSON_QUERY(item, '$.content')) AS content,
-        STRING(JSON_QUERY(item, '$.content_type')) AS content_type
+        JSON_VALUE(item, '$.content') AS content,
+        JSON_VALUE(item, '$.content_type') AS content_type
       FROM UNNEST(JSON_QUERY_ARRAY(array_of_json)) AS item
     )
-    SELECT (SELECT AS STRUCT govspeak AS govspeak, html AS html)
+    SELECT COALESCE(govspeak, html)
     FROM keyvalues
     PIVOT(
-      ANY_VALUE(content)
+      CAST(ANY_VALUE(content) AS STRING)
       FOR content_type IN ('text/govspeak' as govspeak, 'text/html' as html)
     )
 ));
@@ -69,188 +73,111 @@ return steps.map((step) => {
   return contents;
 }).join("\n");
 """;
+
 TRUNCATE TABLE public.content_new;
 INSERT INTO public.content_new
 -- schema_map ought to be a table, but it would take a lot of configuration.  If
 -- we used DBT or SQLMesh then it would be easier, as a seed, but those tools
 -- also require a lot of configuration.
-WITH schema_map AS (
-  SELECT 'calendar' AS schema_name, 'body' AS govspeak_location
-  UNION ALL SELECT 'call_for_evidence', 'body'
-  UNION ALL SELECT 'case_study', 'body'
-  UNION ALL SELECT 'consultation', 'body'
-  UNION ALL SELECT 'corporate_information_page', 'body'
-  UNION ALL SELECT 'detailed_guide', 'body'
-  UNION ALL SELECT 'document_collection', 'body'
-  UNION ALL SELECT 'fatality_notice', 'body'
-  UNION ALL SELECT 'historic_appointment', 'body'
-  UNION ALL SELECT 'history', 'body'
-  UNION ALL SELECT 'hmrc_manual_section', 'body'
-  UNION ALL SELECT 'html_publication', 'body'
-  UNION ALL SELECT 'news_article', 'body'
-  UNION ALL SELECT 'organisation', 'body'
-  UNION ALL SELECT 'publication', 'body'
-  UNION ALL SELECT 'service_manual_guide', 'body'
-  UNION ALL SELECT 'service_manual_service_standard', 'body'
-  UNION ALL SELECT 'speech', 'body'
-  UNION ALL SELECT 'statistical_data_set', 'body'
-  UNION ALL SELECT 'take_part', 'body'
-  UNION ALL SELECT 'topical_event', 'body'
-  UNION ALL SELECT 'topical_event_about_page', 'body'
-  UNION ALL SELECT 'working_group', 'body'
-  UNION ALL SELECT 'worldwide_corporate_information_page', 'body'
-  UNION ALL SELECT 'worldwide_organisation', 'body'
+WITH
 
-  UNION ALL SELECT 'answer', 'body_content'
-  UNION ALL SELECT 'help_page', 'body_content'
-  UNION ALL SELECT 'manual', 'body_content'
-  UNION ALL SELECT 'manual_section', 'body_content'
-  UNION ALL SELECT 'person', 'body_content'
-  UNION ALL SELECT 'role', 'body_content'
-  UNION ALL SELECT 'simple_smart_answer', 'body_content'
-  UNION ALL SELECT 'specialist_document', 'body_content'
+editions AS (SELECT * FROM public.publishing_api_editions_new_current),
+
+schema_map AS (
+  SELECT 'answer' AS schema_name, 'general' AS govspeak_location
+  UNION ALL SELECT 'calendar', 'general'
+  UNION ALL SELECT 'call_for_evidence', 'general'
+  UNION ALL SELECT 'case_study', 'general'
+  UNION ALL SELECT 'consultation', 'general'
+  UNION ALL SELECT 'corporate_information_page', 'general'
+  UNION ALL SELECT 'detailed_guide', 'general'
+  UNION ALL SELECT 'document_collection', 'general'
+  UNION ALL SELECT 'fatality_notice', 'general'
+  UNION ALL SELECT 'help_page', 'general'
+  UNION ALL SELECT 'historic_appointment', 'general'
+  UNION ALL SELECT 'history', 'general'
+  UNION ALL SELECT 'hmrc_manual_section', 'general'
+  UNION ALL SELECT 'html_publication', 'general'
+  UNION ALL SELECT 'licence', 'general'
+  UNION ALL SELECT 'local_transaction', 'general'
+  UNION ALL SELECT 'manual', 'general'
+  UNION ALL SELECT 'manual_section', 'general'
+  UNION ALL SELECT 'news_article', 'general'
+  UNION ALL SELECT 'organisation', 'general'
+  UNION ALL SELECT 'person', 'general'
+  UNION ALL SELECT 'place', 'general'
+  UNION ALL SELECT 'publication', 'general'
+  UNION ALL SELECT 'role', 'general'
+  UNION ALL SELECT 'service_manual_guide', 'general'
+  UNION ALL SELECT 'service_manual_service_standard', 'general'
+  UNION ALL SELECT 'simple_smart_answer', 'general'
+  UNION ALL SELECT 'smart_answer', 'general'
+  UNION ALL SELECT 'specialist_document', 'general'
+  UNION ALL SELECT 'speech', 'general'
+  UNION ALL SELECT 'statistical_data_set', 'general'
+  UNION ALL SELECT 'statistics_announcement', 'general'
+  UNION ALL SELECT 'take_part', 'general'
+  UNION ALL SELECT 'topical_event', 'general'
+  UNION ALL SELECT 'topical_event_about_page', 'general'
+  UNION ALL SELECT 'transaction', 'general'
+  UNION ALL SELECT 'working_group', 'general'
+  UNION ALL SELECT 'world_location_news', 'general'
+  UNION ALL SELECT 'worldwide_corporate_information_page', 'general'
+  UNION ALL SELECT 'worldwide_office', 'general'
+  UNION ALL SELECT 'worldwide_organisation', 'general'
 
   UNION ALL SELECT 'guide', 'part'
   UNION ALL SELECT 'travel_advice', 'part'
 
-  UNION ALL SELECT 'place', 'general'
-  UNION ALL SELECT 'licence', 'general'
-  UNION ALL SELECT 'local_transaction', 'general'
-  UNION ALL SELECT 'transaction', 'general'
-  UNION ALL SELECT 'statistics_announcement', 'general'
-  UNION ALL SELECT 'smart_answer', 'general'
-  UNION ALL SELECT 'world_location_news', 'general'
-
   UNION ALL SELECT 'step_by_step_nav', 'step_by_step_nav'
 ),
 
--- HTML content of document types that have it in the "body" field.
-body AS (
-  SELECT
-    editions.id AS edition_id,
-    editions.document_id,
-    editions.schema_name,
-    editions.base_path,
-    editions.title,
-    FALSE AS is_part,
-    CAST(NULL AS INT64) AS part_index,
-    CAST(NULL AS STRING) AS part_slug,
-    CAST(NULL AS STRING) AS part_title,
-    CAST(NULL AS STRING) AS govspeak,
-    STRING(JSON_QUERY(editions.details, '$.body')) AS html,
-  FROM public.publishing_api_editions_new_current AS editions
-  INNER JOIN schema_map USING (schema_name)
-  WHERE schema_map.govspeak_location = 'body'
-  AND JSON_TYPE(JSON_QUERY(details, '$.body')) = 'string'
-),
-
--- govspeak and HTML content of document types that have it in the "body.content[]" array.
-body_content_content AS (
-  SELECT
-    editions.id AS edition_id,
-    editions.document_id,
-    editions.schema_name,
-    editions.base_path,
-    editions.title,
-    FALSE AS is_part,
-    CAST(NULL AS INT64) AS part_index,
-    CAST(NULL AS STRING) AS part_slug,
-    CAST(NULL AS STRING) AS part_title,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.body')) AS content
-  FROM public.publishing_api_editions_new_current AS editions
-  INNER JOIN schema_map USING (schema_name)
-  WHERE schema_map.govspeak_location = 'body_content'
-  AND JSON_TYPE(JSON_QUERY(editions.details, '$.body')) = 'array'
-),
-body_content AS (
-  SELECT
-    * EXCEPT (content),
-    content.govspeak AS govspeak,
-    content.html AS html
-  FROM body_content_content
-),
-
-general_content AS (
-  SELECT
-    editions.id AS edition_id,
-    editions.document_id,
-    editions.schema_name,
-    editions.base_path,
-    editions.title,
-    FALSE AS is_part,
-    CAST(NULL AS INT64) AS part_index,
-    CAST(NULL AS STRING) AS part_slug,
-    CAST(NULL AS STRING) AS part_title,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.introduction')) AS introduction,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.information')) AS information,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.need_to_know')) AS need_to_know,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.introductory_paragraph')) AS introductory_paragraph,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.licence_overview')) AS licence_overview,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.start_button_text')) AS start_button_text,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.will_continue_on')) AS will_continue_on,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.more_information')) AS more_information,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.what_you_need_to_know')) AS what_you_need_to_know,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.other_ways_to_apply')) AS other_ways_to_apply,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.cancellation_reason')) AS cancellation_reason,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.hidden_search_terms')) AS hidden_search_terms,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.mission_statement')) AS mission_statement
-  FROM public.publishing_api_editions_new_current AS editions
-  INNER JOIN schema_map USING (schema_name)
-  WHERE schema_map.govspeak_location = 'general'
-),
 general AS (
   SELECT
-    * EXCEPT (
-      introduction,
-      information,
-      need_to_know,
-      introductory_paragraph,
-      licence_overview,
-      start_button_text,
-      will_continue_on,
-      more_information,
-      what_you_need_to_know,
-      other_ways_to_apply,
-      cancellation_reason,
-      hidden_search_terms,
-      mission_statement
-    ),
+    editions.id AS edition_id,
+    editions.document_id,
+    editions.schema_name,
+    editions.base_path,
+    editions.title,
+    FALSE AS is_part,
+    CAST(NULL AS INT64) AS part_index,
+    CAST(NULL AS STRING) AS part_slug,
+    CAST(NULL AS STRING) AS part_title,
     ARRAY_TO_STRING([
-      introduction.govspeak,
-      information.govspeak,
-      need_to_know.govspeak,
-      introductory_paragraph.govspeak,
-      licence_overview.govspeak,
-      start_button_text.govspeak,
-      will_continue_on.govspeak,
-      more_information.govspeak,
-      what_you_need_to_know.govspeak,
-      other_ways_to_apply.govspeak,
-      cancellation_reason.govspeak,
-      hidden_search_terms.govspeak,
-      mission_statement.govspeak
-    ], '\n\n') AS govspeak,
-    ARRAY_TO_STRING([
-      introduction.html,
-      information.html,
-      need_to_know.html,
-      introductory_paragraph.html,
-      licence_overview.html,
-      start_button_text.html,
-      will_continue_on.html,
-      more_information.html,
-      what_you_need_to_know.html,
-      other_ways_to_apply.html,
-      cancellation_reason.html,
-      hidden_search_terms.html,
-      mission_statement.html
-    ], '\n\n') AS html,
-  FROM general_content
+      CASE
+        WHEN JSON_TYPE(JSON_QUERY(editions.details, '$.body')) = 'array'
+          THEN markup_from_json_array(JSON_QUERY(editions.details, '$.body'))
+        WHEN JSON_TYPE(JSON_QUERY(editions.details, '$.body')) = 'string'
+          THEN JSON_VALUE(editions.details, '$.body')
+        ELSE CAST(NULL AS STRING)
+      END,
+      markup_from_json_array(JSON_QUERY(editions.details, '$.introduction')),
+      markup_from_json_array(JSON_QUERY(editions.details, '$.information')),
+      markup_from_json_array(JSON_QUERY(editions.details, '$.need_to_know')),
+      markup_from_json_array(JSON_QUERY(editions.details, '$.introductory_paragraph')),
+      markup_from_json_array(JSON_QUERY(editions.details, '$.licence_overview')),
+      JSON_VALUE(editions.details, '$.start_button_text'),
+      JSON_VALUE(editions.details, '$.will_continue_on'),
+      markup_from_json_array(JSON_QUERY(editions.details, '$.more_information')),
+      markup_from_json_array(JSON_QUERY(editions.details, '$.what_you_need_to_know')),
+      markup_from_json_array(JSON_QUERY(editions.details, '$.other_ways_to_apply')),
+      JSON_VALUE(editions.details, '$.cancellation_reason'),
+      ARRAY_TO_STRING(json_value_array(editions.details, '$.hidden_search_terms'), "\n"),
+      JSON_VALUE(editions.details, '$.mission_statement'),
+      JSON_VALUE(editions.details, '$.access_and_opening_times'),
+      JSON_VALUE(editions.details, '$.born'),
+      JSON_VALUE(editions.details, '$.died'),
+      JSON_VALUE(editions.details, '$.major_acts'),
+      JSON_VALUE(editions.details, '$.isbn')
+    ], "\n\n") AS govspeak -- it doesn't matter that some of this is already HTML
+  FROM editions
+  INNER JOIN schema_map USING (schema_name)
+  WHERE schema_map.govspeak_location = 'general'
 ),
 
 -- step-by-step pages, which aren't necessarily rendered to HTML in the
 -- `details.body` field.
-step_by_step_nav_content AS (
+step_by_step_nav AS (
   SELECT
     editions.id AS edition_id,
     editions.document_id,
@@ -261,23 +188,18 @@ step_by_step_nav_content AS (
     CAST(NULL AS INT64) AS part_index,
     CAST(NULL AS STRING) AS part_slug,
     CAST(NULL AS STRING) AS part_title,
-    markup_from_json_array(JSON_QUERY(editions.details, '$.step_by_step_nav.introduction')) AS introduction,
-    COALESCE(JSON_VALUE(editions.details, '$.step_by_step_nav.introduction') || "\n", "")
-      || COALESCE(extractStepContents(JSON_QUERY(details, '$.step_by_step_nav.steps')), "") AS steps_govspeak
-  FROM public.publishing_api_editions_new_current AS editions
+    ARRAY_TO_STRING([
+      markup_from_json_array(JSON_QUERY(editions.details, '$.step_by_step_nav.introduction')),
+      JSON_VALUE(editions.details, '$.step_by_step_nav.introduction'),
+      extractStepContents(JSON_QUERY(details, '$.step_by_step_nav.steps'))
+    ], "\n") AS steps
+  FROM editions
   INNER JOIN schema_map USING (schema_name)
-  WHERE schema_map.govspeak_location = 'general'
-),
-step_by_step_nav AS (
-  SELECT
-    * EXCEPT (introduction, steps_govspeak),
-    COALESCE(introduction.govspeak, introduction.html) || "\n" || steps_govspeak AS govspeak,
-    CAST(NULL AS STRING) AS html,
-  FROM step_by_step_nav_content
+  WHERE schema_map.govspeak_location = 'step_by_step_nav'
 ),
 
 -- govspeak and HTML content of document types that have content in the details.parts array
-parts_content AS (
+parts AS (
   SELECT
     editions.id AS edition_id,
     editions.document_id,
@@ -287,20 +209,11 @@ parts_content AS (
     part_index, -- zero-based
     STRING(JSON_QUERY(part, '$.slug')) AS part_slug,
     STRING(JSON_QUERY(part, '$.title')) AS part_title,
-    markup_from_json_array(JSON_QUERY(part, '$.body')) AS content
-  FROM public.publishing_api_editions_new_current AS editions
+    markup_from_json_array(JSON_QUERY(part, '$.body')) AS govspeak
+  FROM editions
   INNER JOIN schema_map USING (schema_name)
   CROSS JOIN UNNEST(JSON_QUERY_ARRAY(editions.details, '$.parts')) AS part WITH OFFSET AS part_index
   WHERE schema_map.govspeak_location = 'part'
-  AND JSON_TYPE(JSON_QUERY(editions.details, '$.parts')) = 'array'
-  AND JSON_TYPE(JSON_QUERY(part, '$.body')) = 'array'
-),
-parts AS (
-  SELECT
-    * EXCEPT (content),
-    content.govspeak AS govspeak,
-    content.html AS html
-  FROM parts_content
 ),
 
 -- The first part of each document is available at two URLs: with and without
@@ -316,8 +229,7 @@ first_parts AS (
     part_index, -- The part that this record is derived from
     CAST(NULL AS STRING) AS part_slug,
     CAST(NULL AS STRING) AS part_title,
-    govspeak,
-    html
+    govspeak
   FROM parts
   WHERE part_index = 0
 ),
@@ -334,15 +246,12 @@ all_parts AS (
     part_index, -- This being non-null isn't sufficient to identify parts
     part_slug, -- This being non-null is sufficient to identify parts
     part_title,
-    govspeak,
-    html
+    govspeak
   FROM parts
 ),
 
 combined AS (
-  SELECT * FROM body
-  UNION ALL SELECT * FROM body_content
-  UNION ALL SELECT * FROM general
+  SELECT * FROM general
   UNION ALL SELECT * FROM step_by_step_nav
 
   -- Only the first part of each guide/travel_advice document, using only the base_path
@@ -352,9 +261,8 @@ combined AS (
 ),
 
 rendered AS (
-  SELECT * REPLACE(
-    COALESCE(html, JSON_VALUE(`${project_id}.functions.govspeak_to_html`(govspeak), '$.html')) AS html
-  )
+  SELECT *,
+    JSON_VALUE(`${project_id}.functions.govspeak_to_html`(govspeak), '$.html') AS html
   FROM combined
 ),
 
