@@ -676,6 +676,14 @@ resource "google_bigquery_routine" "content_description" {
   definition_body = file("bigquery/content-description.sql")
 }
 
+resource "google_bigquery_routine" "content_expanded_links" {
+  dataset_id      = google_bigquery_dataset.content.dataset_id
+  routine_id      = "expanded_links"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/content-expanded-links.sql")
+}
+
 resource "google_bigquery_routine" "content_lines" {
   dataset_id      = google_bigquery_dataset.content.dataset_id
   routine_id      = "lines"

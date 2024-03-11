@@ -3,5 +3,6 @@
 
 CALL content.content();
 CALL content.description();
+CALL content.expanded_links();
 CALL content.lines();
 CALL content.title();
