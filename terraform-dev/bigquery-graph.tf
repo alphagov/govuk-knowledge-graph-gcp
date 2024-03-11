@@ -15,7 +15,6 @@ data "google_iam_policy" "bigquery_dataset_graph" {
       "projectWriters",
       google_service_account.gce_mongodb.member,
       google_service_account.gce_publishing_api.member,
-      google_service_account.bigquery_scheduled_queries_search.member,
       google_service_account.bigquery_scheduled_queries.member,
     ]
   }
