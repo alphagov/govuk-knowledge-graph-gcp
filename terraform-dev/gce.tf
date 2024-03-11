@@ -16,28 +16,11 @@ resource "google_service_account_iam_policy" "compute_default_service_account" {
 }
 
 # Create some service accounts
-resource "google_service_account" "gce_mongodb" {
-  account_id   = "gce-mongodb"
-  display_name = "Service Account for MongoDB Instance"
-  description  = "Service account for the MongoDB instance on GCE"
-}
 
 resource "google_service_account" "gce_publishing_api" {
   account_id   = "gce-publishing-api"
   display_name = "Service Account for the publishing-api instance"
   description  = "Service account for the publishing-api instance on GCE"
-}
-
-resource "google_service_account" "gce_content" {
-  account_id   = "gce-content"
-  display_name = "Service Account for the Content Store postgres instance"
-  description  = "Service Account for the Content Store postgres instance on GCE"
-}
-
-resource "google_service_account" "gce_content_api" {
-  account_id   = "gce-content-api"
-  display_name = "Service account for the content-api instance"
-  description  = "Service account for the content-api instance on GCE"
 }
 
 resource "google_service_account" "gce_publisher" {
@@ -50,22 +33,6 @@ resource "google_service_account" "gce_redis_cli" {
   account_id   = "gce-redis-cli"
   display_name = "Service Account for the Redis CLI instance"
   description  = "Service Account for the Redis CLI instance on GCE"
-}
-
-# Allow a workflow to attach the mongodb service account to an instance.
-data "google_iam_policy" "service_account-gce_mongodb" {
-  binding {
-    role = "roles/iam.serviceAccountUser"
-    members = [
-      google_service_account.workflow_govuk_integration_database_backups.member,
-      google_service_account.gce_content.member,
-    ]
-  }
-}
-
-resource "google_service_account_iam_policy" "gce_mongodb" {
-  service_account_id = google_service_account.gce_mongodb.name
-  policy_data        = data.google_iam_policy.service_account-gce_mongodb.policy_data
 }
 
 # Allow a workflow to attach the publishing-api service account to an instance.
@@ -81,36 +48,6 @@ data "google_iam_policy" "service_account-gce_publishing_api" {
 resource "google_service_account_iam_policy" "gce_publishing_api" {
   service_account_id = google_service_account.gce_publishing_api.name
   policy_data        = data.google_iam_policy.service_account-gce_publishing_api.policy_data
-}
-
-# Allow a workflow to attach the content service account to an instance.
-data "google_iam_policy" "service_account-gce_content" {
-  binding {
-    role = "roles/iam.serviceAccountUser"
-    members = [
-      google_service_account.workflow_govuk_integration_database_backups.member,
-    ]
-  }
-}
-
-resource "google_service_account_iam_policy" "gce_content" {
-  service_account_id = google_service_account.gce_content.name
-  policy_data        = data.google_iam_policy.service_account-gce_content.policy_data
-}
-
-# Allow a workflow to attach the content-api service account to an instance.
-data "google_iam_policy" "service_account-gce_content_api" {
-  binding {
-    role = "roles/iam.serviceAccountUser"
-    members = [
-      google_service_account.workflow_govuk_integration_database_backups.member,
-    ]
-  }
-}
-
-resource "google_service_account_iam_policy" "gce_content_api" {
-  service_account_id = google_service_account.gce_content_api.name
-  policy_data        = data.google_iam_policy.service_account-gce_content_api.policy_data
 }
 
 # Allow a workflow to attach the publisher service account to an instance.
@@ -175,184 +112,12 @@ resource "google_compute_subnetwork" "cloudrun" {
 }
 
 # https://github.com/terraform-google-modules/terraform-google-container-vm
-module "mongodb-container" {
-  source  = "terraform-google-modules/container-vm/google"
-  version = "~> 2.0"
-
-  container = {
-    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/mongodb:latest"
-    tty : true
-    stdin : true
-    volumeMounts = [
-      {
-        mountPath = "/data/db"
-        name      = "tempfs-0"
-        readOnly  = false
-      },
-      {
-        mountPath = "/data/configdb"
-        name      = "tempfs-1"
-        readOnly  = false
-      },
-    ]
-    env = [
-      {
-        name  = "PROJECT_ID"
-        value = var.project_id
-      },
-      {
-        name  = "ZONE"
-        value = var.zone
-      }
-    ]
-  }
-
-  # Declare the Volumes which will be used for mounting.
-  volumes = [
-    {
-      name = "tempfs-0"
-
-      emptyDir = {
-        medium = "Memory"
-      }
-    },
-    {
-      name = "tempfs-1"
-
-      emptyDir = {
-        medium = "Memory"
-      }
-    },
-  ]
-
-  restart_policy = "Never"
-}
-
-# https://github.com/terraform-google-modules/terraform-google-container-vm
-module "content-api-container" {
-  source  = "terraform-google-modules/container-vm/google"
-  version = "~> 2.0"
-
-  container = {
-    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/content-api:latest"
-    tty : true
-    stdin : true
-    securityContext = {
-      privileged : true
-    }
-    env = [
-      {
-        name  = "POSTGRES_HOST_AUTH_METHOD"
-        value = "trust"
-      },
-      {
-        name  = "PROJECT_ID"
-        value = var.project_id
-      },
-      {
-        name  = "ZONE"
-        value = var.zone
-      }
-    ]
-    volumeMounts = [
-      {
-        mountPath = "/var/lib/postgresql/data"
-        name      = "local-ssd-postgresql-data"
-        readOnly  = false
-      },
-      {
-        mountPath = "/data"
-        name      = "local-ssd-data"
-        readOnly  = false
-      }
-    ]
-  }
-
-  volumes = [
-    # https://github.com/terraform-google-modules/terraform-google-container-vm/issues/66
-    {
-      name = "local-ssd-postgresql-data"
-      hostPath = {
-        path = "/mnt/disks/local-ssd/postgresql-data"
-      }
-    },
-    {
-      name = "local-ssd-data"
-      hostPath = {
-        path = "/mnt/disks/local-ssd/data"
-      }
-    }
-  ]
-
-  restart_policy = "Never"
-}
-
-# https://github.com/terraform-google-modules/terraform-google-container-vm
 module "publishing-api-container" {
   source  = "terraform-google-modules/container-vm/google"
   version = "~> 2.0"
 
   container = {
     image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/publishing-api:latest"
-    tty : true
-    stdin : true
-    securityContext = {
-      privileged : true
-    }
-    env = [
-      {
-        name  = "POSTGRES_HOST_AUTH_METHOD"
-        value = "trust"
-      },
-      {
-        name  = "PROJECT_ID"
-        value = var.project_id
-      },
-      {
-        name  = "ZONE"
-        value = var.zone
-      }
-    ]
-    volumeMounts = [
-      {
-        mountPath = "/var/lib/postgresql/data"
-        name      = "local-ssd-postgresql-data"
-        readOnly  = false
-      },
-      {
-        mountPath = "/data"
-        name      = "local-ssd-data"
-        readOnly  = false
-      }
-    ]
-  }
-
-  volumes = [
-    # https://github.com/terraform-google-modules/terraform-google-container-vm/issues/66
-    {
-      name = "local-ssd-postgresql-data"
-      hostPath = {
-        path = "/mnt/disks/local-ssd/postgresql-data"
-      }
-    },
-    {
-      name = "local-ssd-data"
-      hostPath = {
-        path = "/mnt/disks/local-ssd/data"
-      }
-    }
-  ]
-
-  restart_policy = "Never"
-}
-
-# https://github.com/terraform-google-modules/terraform-google-container-vm
-module "content-container" {
-  source  = "terraform-google-modules/container-vm/google"
-  version = "~> 2.0"
-
-  container = {
-    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/content:latest"
     tty : true
     stdin : true
     securityContext = {
@@ -499,35 +264,6 @@ module "redis-cli-container" {
   restart_policy = "Never"
 }
 
-resource "google_compute_instance_template" "mongodb" {
-  name         = "mongodb"
-  machine_type = "e2-highcpu-32"
-
-  disk {
-    boot         = true
-    source_image = module.mongodb-container.source_image
-    disk_size_gb = 20
-  }
-
-  metadata = {
-    google-logging-enabled     = true
-    serial-port-logging-enable = true
-    gce-container-declaration  = module.mongodb-container.metadata_value
-  }
-
-  network_interface {
-    network = "default"
-    access_config {
-      network_tier = "STANDARD"
-    }
-  }
-
-  service_account {
-    email  = google_service_account.gce_mongodb.email
-    scopes = ["cloud-platform"]
-  }
-}
-
 resource "google_compute_instance_template" "publishing_api" {
   name = "publishing-api"
   # 2 CPUs are enough that, while the largest table is being restored, all the
@@ -567,92 +303,6 @@ resource "google_compute_instance_template" "publishing_api" {
 
   service_account {
     email  = google_service_account.gce_publishing_api.email
-    scopes = ["cloud-platform"]
-  }
-}
-
-resource "google_compute_instance_template" "content" {
-  name = "content"
-  # 2 CPUs are enough that, while the largest table is being restored, all the
-  # other tables will also be restored, even if some of them are done in series
-  # rather than parallel.  Not much memory is required.  See postgresql.conf for
-  # the memory allowances.
-  machine_type = "c2d-highmem-2"
-
-  disk {
-    boot         = true
-    source_image = module.publishing-api-container.source_image
-    disk_size_gb = 10
-  }
-
-  disk {
-    device_name  = "local-ssd"
-    interface    = "NVME"
-    disk_type    = "local-ssd"
-    disk_size_gb = "375" # Must be exactly 375GB for a local SSD disk
-    type         = "SCRATCH"
-  }
-
-  metadata = {
-    # https://cloud.google.com/container-optimized-os/docs/concepts/disks-and-filesystem#mounting_and_formatting_disks
-    user-data                  = var.postgres-startup-script
-    google-logging-enabled     = true
-    serial-port-logging-enable = true
-    gce-container-declaration  = module.publishing-api-container.metadata_value
-  }
-
-  network_interface {
-    network = "default"
-    access_config {
-      network_tier = "STANDARD"
-    }
-  }
-
-  service_account {
-    email  = google_service_account.gce_content.email
-    scopes = ["cloud-platform"]
-  }
-}
-
-resource "google_compute_instance_template" "content_api" {
-  name = "content-api"
-  # 2 CPUs are enough that, while the largest table is being restored, all the
-  # other tables will also be restored, even if some of them are done in series
-  # rather than parallel.  Not much memory is required.  See postgresql.conf for
-  # the memory allowances.
-  machine_type = "c2d-highmem-2"
-
-  disk {
-    boot         = true
-    source_image = module.publishing-api-container.source_image
-    disk_size_gb = 10
-  }
-
-  disk {
-    device_name  = "local-ssd"
-    interface    = "NVME"
-    disk_type    = "local-ssd"
-    disk_size_gb = "375" # Must be exactly 375GB for a local SSD disk
-    type         = "SCRATCH"
-  }
-
-  metadata = {
-    # https://cloud.google.com/container-optimized-os/docs/concepts/disks-and-filesystem#mounting_and_formatting_disks
-    user-data                  = var.postgres-startup-script
-    google-logging-enabled     = true
-    serial-port-logging-enable = true
-    gce-container-declaration  = module.publishing-api-container.metadata_value
-  }
-
-  network_interface {
-    network = "default"
-    access_config {
-      network_tier = "STANDARD"
-    }
-  }
-
-  service_account {
-    email  = google_service_account.gce_content_api.email
     scopes = ["cloud-platform"]
   }
 }

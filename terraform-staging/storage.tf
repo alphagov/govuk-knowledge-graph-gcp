@@ -47,9 +47,6 @@ data "google_iam_policy" "bucket_repository" {
   binding {
     role = "roles/storage.objectViewer"
     members = [
-      google_service_account.gce_content.member,
-      google_service_account.gce_content_api.member,
-      google_service_account.gce_mongodb.member,
       google_service_account.gce_publishing_api.member,
       google_service_account.gce_publisher.member,
     ]
@@ -107,9 +104,6 @@ data "google_iam_policy" "bucket_data_processed" {
   binding {
     role = "roles/storage.objectAdmin"
     members = [
-      google_service_account.gce_content.member,
-      google_service_account.gce_content_api.member,
-      google_service_account.gce_mongodb.member,
       google_service_account.gce_publishing_api.member,
       google_service_account.gce_publisher.member,
     ]
@@ -232,7 +226,6 @@ data "google_iam_policy" "bucket_lib" {
   binding {
     role = "roles/storage.objectViewer"
     members = [
-      google_service_account.gce_mongodb.member,
       # It isn't documented whether anyone needs any role for a BigQuery UDF to
       # be able to fetch a Javascript library from this bucket, but my guess is
       # that any user of the function, or any service account that runs a
@@ -271,27 +264,6 @@ data "google_iam_policy" "bucket_lib" {
       "projectViewer:${var.project_id}",
     ]
   }
-}
-
-// Header files of CSV files, for concatenation.
-// BigQuery exports a single, large table as many separate files, which then
-// must be concatenated.  They are exported without headers, so that they can be
-// concatenated without headers, and then they are concatenated onto these
-// header files, which contain only the header row.
-resource "google_storage_bucket_object" "content" {
-  name   = "bigquery/content_header.csv.gz"
-  source = "govuk-knowledge-graph-data-processed/bigquery/content_header.csv.gz"
-  bucket = "${var.project_id}-data-processed"
-}
-resource "google_storage_bucket_object" "lines" {
-  name   = "bigquery/lines_header.csv.gz"
-  source = "govuk-knowledge-graph-data-processed/bigquery/lines_header.csv.gz"
-  bucket = "${var.project_id}-data-processed"
-}
-resource "google_storage_bucket_object" "embedded_links" {
-  name   = "bigquery/embedded_links_header.csv.gz"
-  source = "govuk-knowledge-graph-data-processed/bigquery/embedded_links_header.csv.gz"
-  bucket = "${var.project_id}-data-processed"
 }
 
 # Javascript library for detecting phone numbers in plain text and standardising

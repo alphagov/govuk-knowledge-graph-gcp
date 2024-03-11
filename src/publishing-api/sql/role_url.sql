@@ -1,4 +1,0 @@
-SELECT
-  url
-FROM roles
-;

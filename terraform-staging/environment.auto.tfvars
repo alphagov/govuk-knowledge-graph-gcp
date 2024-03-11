@@ -49,10 +49,6 @@ bigquery_private_data_viewer_members = [
 bigquery_public_data_viewer_members = [
 ]
 
-# BigQuery dataset: content_api
-bigquery_content_api_data_viewer_members = [
-]
-
 # BigQuery dataset: content
 bigquery_content_data_viewer_members = [
 ]
