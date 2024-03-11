@@ -668,6 +668,14 @@ resource "google_bigquery_routine" "content_lines" {
   definition_body = file("bigquery/content-lines.sql")
 }
 
+resource "google_bigquery_routine" "content_title" {
+  dataset_id      = google_bigquery_dataset.content.dataset_id
+  routine_id      = "title"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/content-title.sql")
+}
+
 resource "google_bigquery_data_transfer_config" "content_batch" {
   data_source_id = "scheduled_query" # This is a magic word
   display_name   = "content batch"
