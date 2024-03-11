@@ -16,6 +16,7 @@ data "google_iam_policy" "bigquery_dataset_content" {
       google_service_account.gce_mongodb.member,
       google_service_account.gce_publishing_api.member,
       google_service_account.gce_content.member,
+      google_service_account.bigquery_scheduled_queries.member,
     ]
   }
   binding {
@@ -655,4 +656,57 @@ resource "google_bigquery_table" "phone_number" {
   friendly_name = "Phone number"
   description   = "Phone numbers. One row per number, per page that it appears on. These are phone numbers that are part of 'contact' documents."
   schema        = file("schemas/content/phone_number.json")
+}
+
+# Refresh legacy tables from data in the 'public' dataset.
+
+resource "google_bigquery_routine" "content_content" {
+  dataset_id      = google_bigquery_dataset.content.dataset_id
+  routine_id      = "content"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/content-content.sql")
+}
+
+resource "google_bigquery_routine" "content_description" {
+  dataset_id      = google_bigquery_dataset.content.dataset_id
+  routine_id      = "description"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/content-description.sql")
+}
+
+resource "google_bigquery_routine" "content_expanded_links" {
+  dataset_id      = google_bigquery_dataset.content.dataset_id
+  routine_id      = "expanded_links"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/content-expanded-links.sql")
+}
+
+resource "google_bigquery_routine" "content_lines" {
+  dataset_id      = google_bigquery_dataset.content.dataset_id
+  routine_id      = "lines"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/content-lines.sql")
+}
+
+resource "google_bigquery_routine" "content_title" {
+  dataset_id      = google_bigquery_dataset.content.dataset_id
+  routine_id      = "title"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/content-title.sql")
+}
+
+resource "google_bigquery_data_transfer_config" "content_batch" {
+  data_source_id = "scheduled_query" # This is a magic word
+  display_name   = "content batch"
+  location       = var.region
+  schedule       = "every day 07:00"
+  params = {
+    query = file("bigquery/content-batch.sql")
+  }
+  service_account_name = google_service_account.bigquery_scheduled_queries.email
 }
