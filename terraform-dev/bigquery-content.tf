@@ -660,6 +660,14 @@ resource "google_bigquery_table" "phone_number" {
 
 # Refresh legacy tables from data in the 'public' dataset.
 
+resource "google_bigquery_routine" "content_content" {
+  dataset_id      = google_bigquery_dataset.content.dataset_id
+  routine_id      = "content"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/content-content.sql")
+}
+
 resource "google_bigquery_routine" "content_description" {
   dataset_id      = google_bigquery_dataset.content.dataset_id
   routine_id      = "description"
