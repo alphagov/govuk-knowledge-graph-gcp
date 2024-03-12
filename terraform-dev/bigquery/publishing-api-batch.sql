@@ -20,5 +20,8 @@ CALL functions.contact_phone_numbers();
 -- Update the public table of phone numbers extracted from content.
 CALL functions.phone_numbers();
 
+-- Update the public table of phone numbers extracted from content.
+CALL functions.start_button_links();
+
 -- Update the public table of the taxonomy.
 CALL functions.taxonomy();
