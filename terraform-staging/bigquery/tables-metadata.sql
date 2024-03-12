@@ -7,6 +7,10 @@ WITH tables AS (
   UNION ALL
   SELECT * FROM graph.__TABLES__
   UNION ALL
+  SELECT * FROM private.__TABLES__
+  UNION ALL
+  SELECT * FROM public.__TABLES__
+  UNION ALL
   SELECT * FROM publishing_api.__TABLES__
   UNION ALL
   SELECT * FROM search.__TABLES__

@@ -10,14 +10,6 @@ SELECT
       -- Annoyingly, it isn't possible to TRUNCATE in the same transaction, so
       -- tables will briefly be empty until they are repopulated.
       AND last_modified < TIMESTAMP_ADD(CURRENT_TIMESTAMP(), INTERVAL - 10 MINUTE)
-      -- Ignore tables that are expected to have zero rows
-      AND CONCAT(dataset_id, ".", table_id) NOT IN
-      (
-        'content.place_abbreviations',
-        'content.transaction_abbreviations',
-        'content.step_by_step_abbreviations',
-        'content.parts_abbreviations'
-      )
       THEN ERROR(CONCAT('${alerts_error_message_no_data} `', dataset_id, ".",
           table_id, "` last updated at ", last_modified, "."))
     -- Raise an alert for tables that haven't been updated for more than a day
