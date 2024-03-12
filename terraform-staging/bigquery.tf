@@ -45,7 +45,7 @@ resource "google_bigquery_dataset_iam_policy" "test" {
 
 resource "google_bigquery_table" "tables_metadata" {
   dataset_id    = google_bigquery_dataset.test.dataset_id
-  table_id      = "tables-metadata"
+  table_id      = "tables_metadata"
   friendly_name = "Tables metadata"
   description   = "Table modified date and row count, sorted ascending"
   view {
@@ -54,12 +54,21 @@ resource "google_bigquery_table" "tables_metadata" {
   }
 }
 
+resource "google_bigquery_table" "tables_metadata_check_results" {
+  dataset_id    = google_bigquery_dataset.test.dataset_id
+  table_id      = "tables_metadata_check_results"
+  friendly_name = "Tables metadata check results"
+  description   = "Results of the previous run of the check_tables_metatdata scheduled query"
+  schema        = file("schemas/test/tables-metadata-check-results.json")
+}
 resource "google_bigquery_data_transfer_config" "check_tables_metadata" {
   display_name   = "Check tables metadata"
   data_source_id = "scheduled_query" # This is a magic word
   location       = var.region
   schedule       = "every hour"
   params = {
+    destination_table_name_template = "tables_metadata_check_results"
+    write_disposition               = "WRITE_TRUNCATE"
     query = templatefile(
       "bigquery/check-tables-metadata.sql",
       {
