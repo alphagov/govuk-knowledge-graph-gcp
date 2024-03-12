@@ -1,4 +1,5 @@
 resource "google_service_account" "bigquery_page_views" {
+
   account_id   = "bigquery-page-views"
   display_name = "Service account for page views query"
   description  = "Service account for a scheduled query of page views"
@@ -23,7 +24,6 @@ data "google_iam_policy" "bigquery_dataset_test" {
     role = "roles/bigquery.dataEditor"
     members = [
       "projectWriters",
-      google_service_account.bigquery_scheduled_queries_search.member,
     ]
   }
   binding {
@@ -31,6 +31,7 @@ data "google_iam_policy" "bigquery_dataset_test" {
     members = concat(
       [
         "projectReaders",
+        google_service_account.bigquery_scheduled_queries.member,
       ],
       var.bigquery_test_data_viewer_members,
     )
@@ -67,7 +68,7 @@ resource "google_bigquery_data_transfer_config" "check_tables_metadata" {
       }
     )
   }
-  service_account_name = google_service_account.bigquery_scheduled_queries_search.email
+  service_account_name = google_service_account.bigquery_scheduled_queries.email
 }
 
 resource "google_monitoring_notification_channel" "govsearch_developers" {

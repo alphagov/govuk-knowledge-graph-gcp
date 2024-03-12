@@ -34,6 +34,7 @@ data "google_iam_policy" "bigquery_dataset_search" {
       [
         "projectReaders",
         google_service_account.govgraphsearch.member,
+        google_service_account.bigquery_scheduled_queries.member,
         google_service_account.bigquery_scheduled_queries_search.member,
       ],
       var.bigquery_search_data_viewer_members,
