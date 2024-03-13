@@ -104,7 +104,6 @@ data "google_iam_policy" "bucket_data_processed" {
   binding {
     role = "roles/storage.objectAdmin"
     members = [
-      google_service_account.gce_publishing_api.member,
       google_service_account.gce_publisher.member,
     ]
   }
