@@ -6,7 +6,7 @@ MAKEFLAGS += -j$(NPROCS)
 
 # Names of tables in the postgres database to export to Cloud Storage
 # and BigQuery
-EXPORT = actions change_notes documents editions events expanded_links link_changes link_sets links path_reservations role_appointments roles unpublishings
+EXPORT = actions change_notes documents editions events expanded_links link_changes link_sets links path_reservations unpublishings
 
 # A step to create all the targets described in the CSV.GZ and BIGQUERY
 # variables, which means that all the .sh and .sql scripts in the SH and
@@ -42,12 +42,6 @@ links:
 	source functions.sh; export_to_bigquery table_name=$@
 
 path_reservations:
-	source functions.sh; export_to_bigquery table_name=$@
-
-role_appointments:
-	source functions.sh; export_to_bigquery table_name=$@
-
-roles:
 	source functions.sh; export_to_bigquery table_name=$@
 
 unpublishings:
