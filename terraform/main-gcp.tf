@@ -132,10 +132,6 @@ variable "storage_data_processed_object_viewer_members" {
   type = list(string)
 }
 
-variable "bigquery_content_api_data_viewer_members" {
-  type = list(string)
-}
-
 variable "bigquery_content_data_viewer_members" {
   type = list(string)
 }
@@ -292,9 +288,6 @@ data "google_iam_policy" "project" {
         google_service_account.bigquery_page_views.member,
         google_service_account.bigquery_scheduled_queries.member,
         google_service_account.bigquery_scheduled_queries_search.member,
-        google_service_account.gce_content.member,
-        google_service_account.gce_content_api.member,
-        google_service_account.gce_mongodb.member,
         google_service_account.gce_publishing_api.member,
         google_service_account.gce_publisher.member,
         google_service_account.govgraphsearch.member,
@@ -363,9 +356,6 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/compute.instanceAdmin.v1"
     members = [
-      google_service_account.gce_content.member,
-      google_service_account.gce_content_api.member,
-      google_service_account.gce_mongodb.member,
       google_service_account.gce_publishing_api.member,
       google_service_account.gce_publisher.member,
       google_service_account.workflow_govuk_integration_database_backups.member,

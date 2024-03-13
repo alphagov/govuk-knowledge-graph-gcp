@@ -29,7 +29,6 @@ data "google_iam_policy" "bigquery_dataset_private" {
     members = concat(
       [
         "projectReaders",
-        google_service_account.gce_mongodb.member,
         google_service_account.bigquery_scheduled_queries_search.member,
       ],
       var.bigquery_private_data_viewer_members,

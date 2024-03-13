@@ -50,10 +50,6 @@ bigquery_private_data_viewer_members = [
 bigquery_public_data_viewer_members = [
 ]
 
-# BigQuery dataset: content_api
-bigquery_content_api_data_viewer_members = [
-]
-
 bigquery_content_data_viewer_members = [
   "group:govsearch-data-viewers@digital.cabinet-office.gov.uk",
   "serviceAccount:ner-bulk-inference@cpto-content-metadata.iam.gserviceaccount.com",

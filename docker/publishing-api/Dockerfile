@@ -1,47 +1,33 @@
-FROM postgres:13-bullseye
+FROM postgres:16.0-alpine3.18
 
-ENV DEBIAN_FRONTEND noninteractive
-# Prepare to install things
-RUN apt-get update -y
-RUN \
-# Install gcloud and python with BeautifulSoup
-# https://cloud.google.com/sdk/docs/install#deb
-  apt-get install -y \
-  apt-transport-https \
-  ca-certificates \
-  make \
-  parallel \
-  gnupg \
-  curl \
-  w3m \
-  python3-bs4 \
-  && echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" \
-  | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
-  && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
-  | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - \
-  && apt-get update -y \
-  && apt-get install google-cloud-cli -y \
-  # Install govspeak
-  && apt-get install -y \
-  gcc \
-  ruby-full \
-  && gem install govspeak -v 7.0.0 \
-  # Clean up
-  && apt-get remove -y gcc \
-  && apt-get autoremove -y \
-  && rm -rf /var/lib/apt/lists/*
-
-ARG GITHUB_SHA=missing
-ENV GITHUB_SHA=${GITHUB_SHA}
-
-ARG GITHUB_REF=missing
-ENV GITHUB_REF=${GITHUB_REF}
+# Install the gcloud CLI, a specific version from a long-term archive
+# Adapted from https://github.com/GoogleCloudPlatform/cloud-sdk-docker/blob/master/alpine/Dockerfile
+# Also install make
+ENV CLOUD_SDK_VERSION=452.0.1
+ENV PATH /google-cloud-sdk/bin:$PATH
+RUN addgroup -g 1000 -S cloudsdk && \
+    adduser -u 1000 -S cloudsdk -G cloudsdk
+RUN if [ `uname -m` = 'x86_64' ]; then echo -n "x86_64" > /tmp/arch; else echo -n "arm" > /tmp/arch; fi;
+RUN ARCH=`cat /tmp/arch` && apk --no-cache add \
+        curl \
+        python3 \
+        py3-crcmod \
+        py3-openssl \
+        bash \
+        libc6-compat \
+        openssh-client \
+        gnupg \
+        make \
+    && curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${CLOUD_SDK_VERSION}-linux-${ARCH}.tar.gz && \
+    tar xzf google-cloud-cli-${CLOUD_SDK_VERSION}-linux-${ARCH}.tar.gz && \
+    rm google-cloud-cli-${CLOUD_SDK_VERSION}-linux-${ARCH}.tar.gz && \
+    gcloud config set core/disable_usage_reporting true && \
+    gcloud config set component_manager/disable_update_check true && \
+    gcloud config set metrics/environment github_docker_image && \
+    gcloud --version
 
 # Reset the postgres entrypoint to the docker default, so that we can run our
 # own CMD
 ENTRYPOINT []
-
-# Run a script from a copy of the HEAD of the repository
-CMD \
-  gcloud storage cat "gs://${PROJECT_ID}-repository/src/publishing-api/run.sh" \
-  | bash
+COPY entrypoint.sh .
+CMD bash entrypoint.sh
