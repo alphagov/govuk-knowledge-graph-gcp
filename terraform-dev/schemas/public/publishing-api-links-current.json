@@ -5,9 +5,29 @@
     "mode": "REQUIRED"
   },
   {
+    "name": "source_content_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "source_base_path",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
     "name": "target_edition_id",
     "type": "INTEGER",
     "mode": "REQUIRED"
+  },
+  {
+    "name": "target_content_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "target_base_path",
+    "type": "STRING",
+    "mode": "NULLABLE"
   },
   {
     "name": "type",
