@@ -7,7 +7,11 @@ WITH
 edition_links AS (
   SELECT
     sources.id AS source_edition_id,
+    sources.content_id AS source_content_id,
+    sources.base_path AS source_base_path,
     targets.id AS target_edition_id,
+    targets.content_id AS target_content_id,
+    targets.base_path AS target_base_path,
     links.link_type AS type,
     links.position
   FROM publishing_api.links
@@ -19,7 +23,11 @@ edition_links AS (
 link_set_links AS (
   SELECT
     sources.id AS source_edition_id,
+    sources.content_id AS source_content_id,
+    sources.base_path AS source_base_path,
     targets.id AS target_edition_id,
+    targets.content_id AS target_content_id,
+    targets.base_path AS target_base_path,
     links.link_type AS type,
     links.position
   FROM publishing_api.link_sets
