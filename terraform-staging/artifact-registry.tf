@@ -2,10 +2,27 @@
 # See also: ./workload-identity-fededocker build.tf
 
 resource "google_artifact_registry_repository" "docker" {
-  location      = lower(var.location)
-  repository_id = "docker"
-  description   = "Docker repository"
-  format        = "DOCKER"
+  location               = lower(var.location)
+  repository_id          = "docker"
+  description            = "Docker repository"
+  format                 = "DOCKER"
+  cleanup_policy_dry_run = false
+  cleanup_policies {
+    # Is overridden by a KEEP policy
+    id     = "delete-old-versions"
+    action = "DELETE"
+    condition {
+      older_than = "2678400s" # 31 days
+    }
+  }
+  cleanup_policies {
+    # Overrides a DELETE policy
+    id     = "keep-a-number-of-recent-versions"
+    action = "KEEP"
+    most_recent_versions {
+      keep_count = 1
+    }
+  }
 }
 
 resource "google_service_account" "artifact_registry_docker" {

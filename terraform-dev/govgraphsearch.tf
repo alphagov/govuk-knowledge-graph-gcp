@@ -126,10 +126,27 @@ resource "google_secret_manager_secret_iam_policy" "cookie-session-signature" {
 
 # Then create a place to put the app images
 resource "google_artifact_registry_repository" "cloud_run_source_deploy" {
-  description   = "Cloud Run Source Deployments"
-  format        = "DOCKER"
-  location      = var.region
-  repository_id = "cloud-run-source-deploy"
+  description            = "Cloud Run Source Deployments"
+  format                 = "DOCKER"
+  location               = var.region
+  repository_id          = "cloud-run-source-deploy"
+  cleanup_policy_dry_run = false
+  cleanup_policies {
+    # Is overridden by a KEEP policy
+    id     = "delete-old-versions"
+    action = "DELETE"
+    condition {
+      older_than = "2678400s" # 31 days
+    }
+  }
+  cleanup_policies {
+    # Overrides a DELETE policy
+    id     = "keep-a-number-of-recent-versions"
+    action = "KEEP"
+    most_recent_versions {
+      keep_count = 1
+    }
+  }
 }
 
 data "google_iam_policy" "artifact_registry_cloud_run_source_deploy" {
