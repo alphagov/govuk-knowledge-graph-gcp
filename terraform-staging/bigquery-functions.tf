@@ -138,6 +138,20 @@ resource "google_bigquery_routine" "extract_content_from_editions" {
   )
 }
 
+# Must only be executed after
+# google_bigquery_routine.extract_content_from_editions, which refreshes a table
+# that this depends on.
+resource "google_bigquery_routine" "base_path_lookup" {
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "base_path_lookup"
+  routine_type = "PROCEDURE"
+  language     = "SQL"
+  definition_body = templatefile(
+    "bigquery/base-path-lookup.sql",
+    { project_id = var.project_id, }
+  )
+}
+
 resource "google_bigquery_routine" "taxonomy" {
   dataset_id   = google_bigquery_dataset.functions.dataset_id
   routine_id   = "taxonomy"
