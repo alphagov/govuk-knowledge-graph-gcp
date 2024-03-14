@@ -41,6 +41,14 @@ resource "google_bigquery_dataset_iam_policy" "public" {
   policy_data = data.google_iam_policy.bigquery_dataset_public.policy_data
 }
 
+resource "google_bigquery_table" "base_path_lookup" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "base_path_lookup"
+  friendly_name = "Base path lookup"
+  description   = "Maps base paths that the GOV.UK website serves, to base paths in the Publishing API. For example, /towing-with-car/weight-and-width-limits is a base path that the website serves with content from an edition in the Publishing API that has the (shorter) base path /towing-with-car."
+  schema        = file("schemas/public/base-path-lookup.json")
+}
+
 resource "google_bigquery_table" "public_content_new" {
   dataset_id    = google_bigquery_dataset.public.dataset_id
   table_id      = "content_new"
