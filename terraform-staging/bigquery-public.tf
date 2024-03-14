@@ -73,6 +73,14 @@ resource "google_bigquery_table" "public_contact_phone_numbers" {
   schema        = file("schemas/public/contact-phone-numbers.json")
 }
 
+resource "google_bigquery_table" "department_analytics_profile" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "department_analytics_profile"
+  friendly_name = "Department analytics profile (org ID)"
+  description   = "The ID of an organisation, which is also its Google Analytics ID"
+  schema        = file("schemas/public/department-analytics-profile.json")
+}
+
 resource "google_bigquery_table" "public_phone_numbers" {
   dataset_id    = google_bigquery_dataset.public.dataset_id
   table_id      = "phone_numbers"
