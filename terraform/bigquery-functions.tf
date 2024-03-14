@@ -152,6 +152,17 @@ resource "google_bigquery_routine" "base_path_lookup" {
   )
 }
 
+resource "google_bigquery_routine" "department_analytics_profile" {
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "department_analytics_profile"
+  routine_type = "PROCEDURE"
+  language     = "SQL"
+  definition_body = templatefile(
+    "bigquery/department-analytics-profile.sql",
+    { project_id = var.project_id, }
+  )
+}
+
 resource "google_bigquery_routine" "taxonomy" {
   dataset_id   = google_bigquery_dataset.functions.dataset_id
   routine_id   = "taxonomy"
