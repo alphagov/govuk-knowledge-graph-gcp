@@ -149,22 +149,6 @@ resource "google_bigquery_table" "publishing_api_path_reservations" {
   schema        = file("schemas/publishing-api/path-reservations.json")
 }
 
-resource "google_bigquery_table" "publishing_api_role_appointments" {
-  dataset_id    = google_bigquery_dataset.publishing_api.dataset_id
-  table_id      = "role_appointments"
-  friendly_name = "Role appointments"
-  description   = "Role appointments table from the GOV.UK Publishing API PostgreSQL database"
-  schema        = file("schemas/publishing-api/role-appointments.json")
-}
-
-resource "google_bigquery_table" "publishing_api_roles" {
-  dataset_id    = google_bigquery_dataset.publishing_api.dataset_id
-  table_id      = "roles"
-  friendly_name = "Roles"
-  description   = "Roles table from the GOV.UK Publishing API PostgreSQL database"
-  schema        = file("schemas/publishing-api/roles.json")
-}
-
 resource "google_bigquery_table" "publishing_api_unpublishings" {
   dataset_id    = google_bigquery_dataset.publishing_api.dataset_id
   table_id      = "unpublishings"
