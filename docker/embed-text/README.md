@@ -5,6 +5,11 @@ embedding, in the form that BigQuery expects (JSON).
 
 Strings up to a paragraph in length are suitable.
 
+This isn't currently used for anything.  It could be used for semantic search if
+we ever get embeddings of all GOV.UK content into BigQuery.  This function is
+technically able to create the initial set of embeddings in bulk, and then
+incrementally create them for new content.
+
 ## BigQuery Remote Functions
 
 BigQuery supports various kinds of custom function, depending on whether it can
