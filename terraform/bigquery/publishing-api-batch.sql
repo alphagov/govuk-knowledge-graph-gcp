@@ -19,7 +19,7 @@ CALL functions.extract_content_from_editions();
 CALL functions.department_analytics_profile();
 
 -- Depends on results of functions.extract_content_from_editions();
-CALL content.base_path_lookup();
+CALL functions.base_path_lookup();
 
 -- Update the public table of phone numbers extracted from 'contact' documents.
 CALL functions.contact_phone_numbers();
