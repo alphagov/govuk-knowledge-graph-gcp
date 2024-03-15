@@ -13,8 +13,8 @@ People are granted access by membership of Google Groups.  Other Google Cloud Pl
 
 ### Google Groups
 
-* [govsearch-data-viewers][govsearch-data-viewers] has `roles/bigquery.dataViewer` in relation to each BigQuery dataset, and `roles/bigquery.jobUser` to be able to run queries that are billed to the billing account of the `govuk-knowledge-graph*` projects.
-* [govsearch-developers][govsearch-developers] has the `roles/owner` role in relation to each `govuk-knowledge-graph*` project.
+* [govgraph-private-data-viewers](https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govsearch-data-viewers/about) has `roles/bigquery.dataViewer` in relation to each BigQuery dataset except 'test', and `roles/bigquery.jobUser` to be able to run queries that are billed to the billing account of the `govuk-knowledge-graph*` projects.
+* [govgraph-developers](https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govsearch-developers/members) has the `roles/owner` role in relation to each `govuk-knowledge-graph*` project.
 
 ## Tests
 
