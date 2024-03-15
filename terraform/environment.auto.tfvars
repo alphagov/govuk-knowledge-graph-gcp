@@ -51,7 +51,7 @@ bigquery_public_data_viewer_members = [
 ]
 
 bigquery_content_data_viewer_members = [
-  "group:govgraph-private-data-readers@digital.cabinet-office.gov.uk"
+  "group:govgraph-private-data-readers@digital.cabinet-office.gov.uk",
   "serviceAccount:ner-bulk-inference@cpto-content-metadata.iam.gserviceaccount.com",
   "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
   "serviceAccount:wif-ner-new-content-inference@cpto-content-metadata.iam.gserviceaccount.com",
