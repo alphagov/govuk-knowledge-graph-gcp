@@ -7,6 +7,12 @@
 
 Most documentation is in `README.md` files and [`docs`][docs] directory in this repository.  There is also [GOV.UK Data Community Technical Documentation][data-community-docs].
 
+## Data pipeline overview
+
+1. A workflow subscribes to notifications from the GOV.UK S3 Mirror that a new database backup of the Publishing API is available.  The workflow creates an instance of a virtual machine.
+2. The virtual machine fetches the database backup file, extracts its data, and uploads that into BigQuery.
+3. Some SQL queries are scheduled to run daily, which call other SQL routines to refresh various tables from the newly uploaded data.
+
 ## Access and permissions
 
 People are granted access by membership of Google Groups.  Other Google Cloud Platform projects are granted access via service accounts.  Access is granted by editing each environment's tfvars file, such as `terraform-dev/environment.auto.tfvars`.
@@ -41,6 +47,18 @@ This project is maintained by the GOV.UK team, which is part of the Government D
 ### Import data from somewhere new
 
 Look at https://github.com/alphagov/govuk-knowledge-graph-gcp/pull/594, which derives data from the Publisher app database and puts it into BigQuery.
+
+## Troubleshooting
+
+### Outdated or empty BigQuery tables
+
+If GovSearch gives unexpected results, then the tables in BigQuery might not have been updated correctly.  Usually that means a table either hasn't been updated at all within the last 24 hours, or it has been updated and is now empty.  You can quickly check every table by querying a view called `test.tables-metadata` by writing a query like `SELECT * FROM test.tables-metadata;`. The table is checked automatically every hour, and if it finds old or empty tables then an 'incident' is created, and an email is sent to govgraph-developers@digital.cabinet-office.gov.uk.
+
+### Source data glitch
+
+Check that the database backup files in the [govuk-s3-mirror][govuk-s3-mirror] are the expected size (many gigabytes) by looking in the [bucket](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups?project=govuk-s3-mirror).
+
+Check that the Publishing API hasn't changed its schemas.
 
 ## Other representations of GOV.UK content
 
@@ -87,3 +105,4 @@ The documentation is [© Crown copyright][copyright] and available under the ter
 [govsearch-data-viewers]: https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govsearch-data-viewers/about
 [govsearch-developers]: https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govsearch-developers/members
 [data-community-docs]: https://gds-data-docs-bkbishsofa-nw.a.run.app/engineering/knowledge-graph-pipeline-v2/#advantages-of-the-new-pipeline
+[govuk-s3-mirror]: https://github.com/alphagov/govuk-s3-mirror
