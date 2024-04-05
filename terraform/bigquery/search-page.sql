@@ -57,7 +57,7 @@ WITH
   GROUP BY url
 ),
 taxons AS (
-  -- One row per taxon.
+  -- One row per taxon, per edition.
   -- Its edition_id, and an array of DISTINCT titles of it and its ancestors
   -- back to the root taxon.
   --
@@ -75,12 +75,14 @@ taxons AS (
   -- (or whichever country) anyway, so if users need to be specific then they
   -- can filter by that taxon.
   SELECT
-    taxonomy.edition_id,
+    links.source_edition_id AS edition_id,
     ARRAY_AGG(DISTINCT editions.title) AS titles
-  FROM public.taxonomy,
-  UNNEST(all_ancestors) AS ancestor
+  FROM public.publishing_api_links_current AS links
+  INNER JOIN public.taxonomy ON taxonomy.edition_id = links.target_edition_id
+  CROSS JOIN UNNEST(all_ancestors) AS ancestor
   INNER JOIN editions ON editions.id = ancestor.edition_id
-  GROUP BY taxonomy.edition_id
+  WHERE links.type = 'taxons'
+  GROUP BY links.source_edition_id
 ),
 all_links AS (
   SELECT
