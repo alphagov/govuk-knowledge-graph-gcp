@@ -142,11 +142,27 @@ pages AS (
   LEFT JOIN public.content ON content.edition_id = editions.id
   WHERE TRUE
   AND editions.base_path IS NOT NULL
-  -- Exclude pages that duplicate the first part of a multipart document.
-  -- Equivalent statements are:
-  -- `content.part_index IS NULL OR content.part_index > 1`
-  -- `(NOT content.is_part) OR content.part_index > 1`
-  AND content.is_part OR (content.part_index IS NULL)
+  -- Omit the first 'part' of multi-part documents, which duplicates (and is
+  -- currently redirected to) the main document that has no slug. For example,
+  -- include the following:
+  --
+  --   /main-page
+  --   /main-page/second-part
+  --   /main-page/third-part
+  --
+  -- Omit the following:
+  --
+  --   /main-page/first-part
+  --
+  -- The reason to include /main-page instead of /main-page/first-part is that
+  -- no page views are recorded for /main-page/first-part.
+  --
+  AND (
+    content.is_part IS NULL   -- Include documents that aren't multipart
+    OR (NOT content.is_part)  -- Include the main page of a multipart document
+    OR content.part_index > 0 -- Include parts of a multipart document, other
+                              -- than the part that duplicates the main page
+ )
 )
 SELECT
   pages.url,
