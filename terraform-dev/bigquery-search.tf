@@ -55,6 +55,14 @@ resource "google_bigquery_table" "search_document_type" {
   schema        = file("schemas/search/document-type.json")
 }
 
+resource "google_bigquery_table" "search_government" {
+  dataset_id    = google_bigquery_dataset.search.dataset_id
+  table_id      = "government"
+  friendly_name = "Distinct governments"
+  description   = "Distinct governments for dropdown menus in the govsearch app"
+  schema        = file("schemas/search/government.json")
+}
+
 resource "google_bigquery_table" "search_locale" {
   dataset_id    = google_bigquery_dataset.search.dataset_id
   table_id      = "locale"
@@ -93,6 +101,14 @@ resource "google_bigquery_routine" "search_document_type" {
   routine_type    = "PROCEDURE"
   language        = "SQL"
   definition_body = file("bigquery/search-document-type.sql")
+}
+
+resource "google_bigquery_routine" "search_government" {
+  dataset_id      = google_bigquery_dataset.search.dataset_id
+  routine_id      = "government"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/search-government.sql")
 }
 
 resource "google_bigquery_routine" "search_locale" {

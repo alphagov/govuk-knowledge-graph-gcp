@@ -14,6 +14,10 @@ WITH
     WHERE (unpublishings.edition_id IS NULL OR unpublishings.type = 'withdrawal')
     AND editions.document_type NOT IN ('gone', 'redirect')
   ),
+  links AS (
+    SELECT *
+    FROM `public.publishing_api_links_current`
+  ),
   withdrawals AS (
     SELECT
       edition_id,
@@ -26,7 +30,7 @@ WITH
     SELECT
       links.source_edition_id AS edition_id,
       editions.title AS title
-    FROM public.publishing_api_links_current AS links
+    FROM links
     INNER JOIN editions ON editions.id = links.target_edition_id
     WHERE links.type = 'primary_publishing_organisation'
     -- Assume that the organisation has a document in the 'en' locale.
@@ -38,7 +42,7 @@ WITH
     SELECT
       links.source_edition_id AS edition_id,
       ARRAY_AGG(DISTINCT editions.title) AS titles
-    FROM public.publishing_api_links_current AS links
+    FROM links
     INNER JOIN editions ON editions.id = links.target_edition_id
     WHERE links.type = 'organisations'
     GROUP BY links.source_edition_id
@@ -77,7 +81,7 @@ taxons AS (
   SELECT
     links.source_edition_id AS edition_id,
     ARRAY_AGG(DISTINCT editions.title) AS titles
-  FROM public.publishing_api_links_current AS links
+  FROM links
   INNER JOIN public.taxonomy ON taxonomy.edition_id = links.target_edition_id
   CROSS JOIN UNNEST(all_ancestors) AS ancestor
   INNER JOIN editions ON editions.id = ancestor.edition_id
@@ -89,8 +93,7 @@ all_links AS (
     links.type AS link_type,
     editions.base_path,
     "https://www.gov.uk" || editions.base_path as link_url
-  FROM
-    public.publishing_api_links_current AS links
+  FROM links
   INNER JOIN editions ON editions.id = links.source_edition_id
   WHERE editions.base_path IS NOT NULL
   UNION ALL
@@ -113,7 +116,7 @@ all_links AS (
 distinct_links AS (
   SELECT DISTINCT * FROM all_links
 ),
-links AS (
+interpage_links AS (
   SELECT
     base_path,
     ARRAY_AGG(
@@ -132,6 +135,17 @@ phone_numbers AS (
   FROM public.phone_numbers as p,
   UNNEST(phone_numbers) AS phone_number
   GROUP BY edition_id
+),
+government AS (
+  SELECT
+    editions.id AS edition_id,
+    government.title AS government
+  FROM editions
+  INNER JOIN links ON links.source_edition_id = editions.id
+  INNER JOIN editions AS government ON government.id = links.target_edition_id
+  WHERE
+    links.type = 'government'
+    AND JSON_VALUE(editions.details, "$.political") = 'true'
 ),
 pages AS (
   SELECT
@@ -184,8 +198,10 @@ SELECT
   taxons.titles AS taxons,
   primary_publishing_organisation.title AS primary_organisation,
   COALESCE(organisations.titles, []) AS organisations,
-  links.hyperlinks,
-  phone_numbers.phone_numbers
+  interpage_links.hyperlinks,
+  phone_numbers.phone_numbers,
+  JSON_VALUE(editions.details, "$.political") = 'true' AS is_political,
+  government.government
 FROM pages
 INNER JOIN editions ON editions.id = pages.edition_id -- one row per document
 LEFT JOIN withdrawals ON withdrawals.edition_id = pages.edition_id
@@ -197,8 +213,9 @@ LEFT JOIN taxons ON taxons.edition_id = pages.edition_id
 LEFT JOIN publisher_updated_at ON STARTS_WITH(pages.url, publisher_updated_at.url)
 LEFT JOIN public.content -- one row per document or part
   ON content.base_path = pages.base_path -- includes the slug of parts
-LEFT JOIN links
-  ON links.base_path = pages.base_path -- includes the slug of parts
+LEFT JOIN interpage_links
+  ON interpage_links.base_path = pages.base_path -- includes the slug of parts
 LEFT JOIN private.page_views
   ON page_views.url = pages.url -- includes the slug of parts
+LEFT JOIN government ON government.edition_id = pages.edition_id
 ;
