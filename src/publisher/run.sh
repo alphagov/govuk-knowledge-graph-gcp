@@ -51,7 +51,7 @@ mongoexport \
   --db=govuk_content_production \
   --type=csv \
   --collection="${OUTPUT_COLLECTION}" \
-  --fields=url,updated_at,version_number,state,major_change \
+  --fields=base_path,updated_at,version_number,state,major_change \
   | gcloud storage cp - "${OBJECT}" --quiet --gzip-in-flight-all
 
 # Upload the dataset from the cloud bucket to a BigQuery table

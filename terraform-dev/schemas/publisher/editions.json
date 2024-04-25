@@ -1,9 +1,9 @@
 [
   {
-    "name": "url",
+    "name": "base_path",
     "type": "STRING",
     "mode": "REQUIRED",
-    "description": "URL of a document. Not broken down into chapters of guide or travel_advice documents."
+    "description": "URL of a document, omitting the protocol and domain https://www.gov.uk. Not broken down into chapters of guide or travel_advice documents. Equivalent to the Publishing API's base_path."
   },
   {
     "name": "updated_at",
