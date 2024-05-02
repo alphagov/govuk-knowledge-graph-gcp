@@ -87,6 +87,14 @@ resource "google_bigquery_table" "search_page" {
   schema        = file("schemas/search/page.json")
 }
 
+resource "google_bigquery_table" "search_person" {
+  dataset_id    = google_bigquery_dataset.search.dataset_id
+  table_id      = "person"
+  friendly_name = "Distinct persons"
+  description   = "Distinct persons for dropdown menus in the govsearch app"
+  schema        = file("schemas/search/person.json")
+}
+
 resource "google_bigquery_table" "search_taxon" {
   dataset_id    = google_bigquery_dataset.search.dataset_id
   table_id      = "taxon"
@@ -133,6 +141,14 @@ resource "google_bigquery_routine" "search_page" {
   routine_type    = "PROCEDURE"
   language        = "SQL"
   definition_body = file("bigquery/search-page.sql")
+}
+
+resource "google_bigquery_routine" "search_person" {
+  dataset_id      = google_bigquery_dataset.search.dataset_id
+  routine_id      = "person"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/search-person.sql")
 }
 
 resource "google_bigquery_routine" "search_taxon" {
