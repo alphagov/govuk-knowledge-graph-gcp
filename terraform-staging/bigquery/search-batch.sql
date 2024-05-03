@@ -2,6 +2,7 @@
 -- the GovSearch app.
 
 CALL search.document_type();
+CALL search.government();
 CALL search.locale();
 CALL search.organisation();
 CALL search.taxon();

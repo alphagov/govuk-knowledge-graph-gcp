@@ -124,5 +124,17 @@
     "name": "phone_numbers",
     "type": "STRING",
     "description": "Array of phone numbers from the body and metadata of the page"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "is_political",
+    "type": "BOOLEAN",
+    "description": "Indicator of whether the page is political. Pages where this is true, and that were published by a previous government, are displayed in 'history mode' with a prominent message drawing attention to the fact."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "government",
+    "type": "STRING",
+    "description": "Title of the government that published the page, if the page is political."
   }
 ]
