@@ -34,6 +34,20 @@ pages AS (
     "https://www.gov.uk" || COALESCE(content.base_path, editions.base_path) AS url
   FROM editions
   LEFT JOIN public.content ON content.edition_id = editions.id
+  WHERE TRUE
+  -- Omit the main page of multi-part documents, in favour of its duplicate that
+  -- has a slug. For example, include the following:
+  --
+  --   /main-page/first-part
+  --   /main-page/second-part
+  --
+  -- Omit the following:
+  --
+  --   /main-page
+  AND (
+    content.is_part IS NULL   -- Include documents that aren't multipart
+    OR content.is_part        -- Omit the main page that doesn't have a slug
+ )
 )
 SELECT
   pages.url,
@@ -50,7 +64,9 @@ SELECT
   editions.public_updated_at,
   withdrawals.withdrawn_at,
   withdrawals.withdrawn_explanation,
-  editions.title,
+  -- content.title is "title: part title" if it is a part of a document, but it
+  -- doesn't include every schema_name, so fall back to editions.title.
+  COALESCE(content.title, editions.title) AS title,
   JSON_value(editions.details, "$.internal_name") AS internal_name,
   editions.description,
   JSON_value(editions.details, "$.department_analytics_profile") AS department_analytics_profile,
