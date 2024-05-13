@@ -145,7 +145,6 @@ government AS (
   INNER JOIN editions AS government ON government.id = links.target_edition_id
   WHERE
     links.type = 'government'
-    AND JSON_VALUE(editions.details, "$.political") = 'true'
 ),
 pages AS (
   SELECT
