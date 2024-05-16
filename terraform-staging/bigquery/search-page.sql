@@ -12,7 +12,7 @@ WITH
       AS unpublishings
       ON (unpublishings.edition_id = editions.id)
     WHERE (unpublishings.edition_id IS NULL OR unpublishings.type = 'withdrawal')
-    AND editions.document_type NOT IN ('gone', 'redirect')
+    AND editions.schema_name NOT IN ('gone', 'redirect')
   ),
   links AS (
     SELECT *
