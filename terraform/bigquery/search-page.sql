@@ -47,6 +47,17 @@ WITH
     WHERE links.type = 'organisations'
     GROUP BY links.source_edition_id
   ),
+  organisations_ancestry AS (
+    SELECT
+      links.source_edition_id AS edition_id,
+      ARRAY_AGG(DISTINCT editions.title) AS titles
+    FROM links
+    INNER JOIN public.organisations ON organisations.edition_id = links.target_edition_id
+    CROSS JOIN UNNEST(ancestors) AS ancestor
+    INNER JOIN editions ON editions.id = ancestor
+    WHERE links.type = 'organisations'
+    GROUP BY links.source_edition_id
+  ),
   publisher_updated_at AS (
   -- Latest updated_at date per base path in the Publisher app database.
   -- For mainstream content, this is more meaningful than the Publishing
@@ -210,6 +221,7 @@ SELECT
   primary_publishing_organisation.title AS primary_organisation,
   COALESCE(organisations.titles, []) AS organisations,
   COALESCE(people.people, []) AS people,
+  COALESCE(organisations_ancestry.titles, []) AS organisations_ancestry,
   interpage_links.hyperlinks,
   phone_numbers.phone_numbers,
   JSON_VALUE(editions.details, "$.political") = 'true' AS is_political,
@@ -219,6 +231,7 @@ INNER JOIN editions ON editions.id = pages.edition_id -- one row per document
 LEFT JOIN withdrawals ON withdrawals.edition_id = pages.edition_id
 LEFT JOIN primary_publishing_organisation ON primary_publishing_organisation.edition_id = pages.edition_id
 LEFT JOIN organisations ON organisations.edition_id = pages.edition_id
+LEFT JOIN organisations_ancestry ON organisations_ancestry.edition_id = pages.edition_id
 LEFT JOIN phone_numbers ON phone_numbers.edition_id = pages.edition_id
 LEFT JOIN taxons ON taxons.edition_id = pages.edition_id
 LEFT JOIN people ON people.edition_id = pages.edition_id -- includes the slug of parts

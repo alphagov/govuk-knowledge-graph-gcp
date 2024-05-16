@@ -32,3 +32,6 @@ CALL functions.start_button_links();
 
 -- Update the public table of the taxonomy.
 CALL functions.taxonomy();
+
+-- Update the public table of organisations
+CALL functions.organisations();
