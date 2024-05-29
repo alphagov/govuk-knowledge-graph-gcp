@@ -103,6 +103,12 @@
   },
   {
     "mode": "REPEATED",
+    "name": "people",
+    "type": "STRING",
+    "description": "Array of names of people who are associated with the page"
+  },
+  {
+    "mode": "REPEATED",
     "name": "hyperlinks",
     "type": "RECORD",
     "description": "Array of hyperlinks from the body of the page",

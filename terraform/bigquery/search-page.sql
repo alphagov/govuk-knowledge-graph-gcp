@@ -146,6 +146,18 @@ government AS (
   WHERE
     links.type = 'government'
 ),
+people AS (
+  SELECT
+    editions.id AS edition_id,
+    ARRAY_AGG(DISTINCT persons.title) AS people
+  FROM editions
+  INNER JOIN public.publishing_api_links_current AS link_edition_to_person ON link_edition_to_person.source_edition_id = editions.id
+  INNER JOIN public.publishing_api_editions_current AS persons ON persons.id = link_edition_to_person.target_edition_id
+  WHERE TRUE
+  AND link_edition_to_person.type = "people"
+  AND persons.locale = 'en'
+  GROUP BY editions.id
+),
 pages AS (
   SELECT
     editions.id AS edition_id,
@@ -197,6 +209,7 @@ SELECT
   taxons.titles AS taxons,
   primary_publishing_organisation.title AS primary_organisation,
   COALESCE(organisations.titles, []) AS organisations,
+  COALESCE(people.people, []) AS people,
   interpage_links.hyperlinks,
   phone_numbers.phone_numbers,
   JSON_VALUE(editions.details, "$.political") = 'true' AS is_political,
@@ -208,6 +221,7 @@ LEFT JOIN primary_publishing_organisation ON primary_publishing_organisation.edi
 LEFT JOIN organisations ON organisations.edition_id = pages.edition_id
 LEFT JOIN phone_numbers ON phone_numbers.edition_id = pages.edition_id
 LEFT JOIN taxons ON taxons.edition_id = pages.edition_id
+LEFT JOIN people ON people.edition_id = pages.edition_id -- includes the slug of parts
 -- one publisher_updated_at per multipart document
 LEFT JOIN publisher_updated_at ON STARTS_WITH(pages.url, publisher_updated_at.url)
 LEFT JOIN public.content -- one row per document or part

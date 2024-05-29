@@ -5,5 +5,6 @@ CALL search.document_type();
 CALL search.government();
 CALL search.locale();
 CALL search.organisation();
+CALL search.person();
 CALL search.taxon();
 CALL search.page();
