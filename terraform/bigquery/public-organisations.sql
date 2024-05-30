@@ -14,14 +14,14 @@ organisations AS (
     JSON_VALUE(details, "$.organisation_govuk_status.status") AS organisation_status,
     CAST(JSON_VALUE(details, "$.organisation_govuk_status.updated_at") AS TIMESTAMP) AS organisation_status_updated_at,
     JSON_VALUE(details, "$.organisation_govuk_status.url") AS organisation_status_url
-  FROM `govuk-knowledge-graph.public.publishing_api_editions_current`
+  FROM `public.publishing_api_editions_current`
   WHERE schema_name = "organisation"
   AND locale = 'en'
 ),
 links AS (
   -- Non-recursive
   SELECT links.*
-  FROM `govuk-knowledge-graph.public.publishing_api_links_current` AS links
+  FROM `public.publishing_api_links_current` AS links
   INNER JOIN organisations AS source_organisation ON source_organisation.edition_id = links.source_edition_id
   INNER JOIN organisations AS target_organisation ON target_organisation.edition_id = links.target_edition_id
   WHERE links.type IN (
