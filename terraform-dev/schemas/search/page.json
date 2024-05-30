@@ -109,6 +109,12 @@
   },
   {
     "mode": "REPEATED",
+    "name": "organisations_ancestry",
+    "type": "STRING",
+    "description": "Array of titles of organisations (and any parent organisations) that published the page"
+  },
+  {
+    "mode": "REPEATED",
     "name": "hyperlinks",
     "type": "RECORD",
     "description": "Array of hyperlinks from the body of the page",

@@ -136,3 +136,11 @@ resource "google_bigquery_table" "public_taxonomy" {
   description   = "One row per taxon, each with an array of its ancestors, which include itself"
   schema        = file("schemas/public/taxonomy.json")
 }
+
+resource "google_bigquery_table" "public_organisations" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "organisations"
+  friendly_name = "organisations"
+  description   = "One row per organisation, each with arrays of parents, children, predecessors and successors."
+  schema        = file("schemas/public/organisations.json")
+}

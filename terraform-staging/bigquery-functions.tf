@@ -174,6 +174,17 @@ resource "google_bigquery_routine" "taxonomy" {
   )
 }
 
+resource "google_bigquery_routine" "organisations" {
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "organisations"
+  routine_type = "PROCEDURE"
+  language     = "SQL"
+  definition_body = templatefile(
+    "bigquery/public-organisations.sql",
+    { project_id = var.project_id }
+  )
+}
+
 resource "google_bigquery_routine" "contact_phone_numbers" {
   dataset_id   = google_bigquery_dataset.functions.dataset_id
   routine_id   = "contact_phone_numbers"
