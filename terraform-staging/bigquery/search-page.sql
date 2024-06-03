@@ -99,6 +99,18 @@ taxons AS (
   WHERE links.type = 'taxons'
   GROUP BY links.source_edition_id
 ),
+mainstream_browse_topics AS (
+  -- One row per edition that belongs to the mainstream browse taxonomy.
+  -- Its edition_id, and an array of DISTINCT titles of itself and its
+  -- ancestors in the mainstream browse taxonomy, back to the root.
+  SELECT
+    mainstream_browse.edition_id,
+    ARRAY_AGG(DISTINCT ancestor_edition.title) AS titles
+  FROM public.mainstream_browse
+  CROSS JOIN UNNEST(ancestors) AS ancestor
+  INNER JOIN editions AS ancestor_edition ON ancestor_edition.id = ancestor.edition_id
+  GROUP BY mainstream_browse.edition_id
+),
 all_links AS (
   SELECT
     links.type AS link_type,
@@ -218,6 +230,7 @@ SELECT
   editions.description,
   content.text,
   taxons.titles AS taxons,
+  COALESCE(mainstream_browse_topics.titles, []) AS mainstream_browse_topics,
   primary_publishing_organisation.title AS primary_organisation,
   COALESCE(organisations.titles, []) AS organisations,
   COALESCE(people.people, []) AS people,
@@ -235,6 +248,7 @@ LEFT JOIN organisations_ancestry ON organisations_ancestry.edition_id = pages.ed
 LEFT JOIN phone_numbers ON phone_numbers.edition_id = pages.edition_id
 LEFT JOIN taxons ON taxons.edition_id = pages.edition_id
 LEFT JOIN people ON people.edition_id = pages.edition_id -- includes the slug of parts
+LEFT JOIN mainstream_browse_topics ON mainstream_browse_topics.edition_id = pages.edition_id
 -- one publisher_updated_at per multipart document
 LEFT JOIN publisher_updated_at ON STARTS_WITH(pages.url, publisher_updated_at.url)
 LEFT JOIN public.content -- one row per document or part

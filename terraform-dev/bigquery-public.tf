@@ -129,6 +129,14 @@ resource "google_bigquery_table" "public_start_button_links" {
   schema        = file("schemas/public/start-button-links.json")
 }
 
+resource "google_bigquery_table" "public_mainstream_browse" {
+  dataset_id    = google_bigquery_dataset.public.dataset_id
+  table_id      = "mainstream_browse"
+  friendly_name = "Mainstream browse"
+  description   = "One row per page, per parent that it has in the mainstream browse taxonomy (because pages can be linked to from more than one mainstream browse page). Each has an array of its ancestors. If the page is itself a mainstream browse page, then it is included among its own ancestors."
+  schema        = file("schemas/public/mainstream-browse.json")
+}
+
 resource "google_bigquery_table" "public_taxonomy" {
   dataset_id    = google_bigquery_dataset.public.dataset_id
   table_id      = "taxonomy"
