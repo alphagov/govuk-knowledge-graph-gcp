@@ -71,6 +71,14 @@ resource "google_bigquery_table" "search_locale" {
   schema        = file("schemas/search/locale.json")
 }
 
+resource "google_bigquery_table" "search_publishing_app" {
+  dataset_id    = google_bigquery_dataset.search.dataset_id
+  table_id      = "publishing_app"
+  friendly_name = "Distinct Publishing Applications"
+  description   = "Distinct publishing apps for dropdown menus in the govsearch app"
+  schema        = file("schemas/search/publishing_app.json")
+}
+
 resource "google_bigquery_table" "search_organisation" {
   dataset_id    = google_bigquery_dataset.search.dataset_id
   table_id      = "organisation"
@@ -125,6 +133,14 @@ resource "google_bigquery_routine" "search_locale" {
   routine_type    = "PROCEDURE"
   language        = "SQL"
   definition_body = file("bigquery/search-locale.sql")
+}
+
+resource "google_bigquery_routine" "search_publishing_app" {
+  dataset_id      = google_bigquery_dataset.search.dataset_id
+  routine_id      = "publishing_app"
+  routine_type    = "PROCEDURE"
+  language        = "SQL"
+  definition_body = file("bigquery/search-publishing-app.sql")
 }
 
 resource "google_bigquery_routine" "search_organisation" {
