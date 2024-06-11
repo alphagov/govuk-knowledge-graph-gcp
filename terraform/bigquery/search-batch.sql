@@ -8,3 +8,4 @@ CALL search.organisation();
 CALL search.person();
 CALL search.taxon();
 CALL search.page();
+CALL search.publishing_app();
