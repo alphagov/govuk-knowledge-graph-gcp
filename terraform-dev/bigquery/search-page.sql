@@ -102,8 +102,8 @@ taxons AS (
 all_links AS (
   SELECT
     links.type AS link_type,
-    editions.base_path,
-    "https://www.gov.uk" || editions.base_path as link_url
+    links.source_base_path AS base_path,
+    "https://www.gov.uk" || links.target_base_path as link_url
   FROM links
   INNER JOIN editions ON editions.id = links.source_edition_id
   WHERE editions.base_path IS NOT NULL
