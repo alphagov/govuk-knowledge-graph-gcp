@@ -75,6 +75,7 @@ bigquery_graph_data_viewer_members = [
   "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
   "serviceAccount:wif-ner-new-content-inference@cpto-content-metadata.iam.gserviceaccount.com",
   "serviceAccount:wif-vectorstore@govuk-llm-question-answering.iam.gserviceaccount.com",
+  "serviceAccount:govuk-looker-poc@govuk-looker-poc.iam.gserviceaccount.com",
 ]
 
 # BigQuery dataset: publishing
