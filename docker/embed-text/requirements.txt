@@ -39,7 +39,7 @@ pillow==10.2.0
 PySocks==1.7.1
 PyYAML==6.0.1
 regex==2023.12.25
-requests==2.31.0
+requests==2.32.2
 safetensors==0.4.2
 scikit-learn==1.5.0
 scipy==1.12.0
