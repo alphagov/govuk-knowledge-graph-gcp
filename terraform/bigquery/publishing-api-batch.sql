@@ -35,3 +35,6 @@ CALL functions.taxonomy();
 
 -- Update the public table of organisations
 CALL functions.organisations();
+
+-- Update the public table of the mainstream browse taxonomy.
+CALL functions.mainstream_browse();

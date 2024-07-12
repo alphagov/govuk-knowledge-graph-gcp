@@ -1,0 +1,60 @@
+[
+  {
+    "name": "edition_id",
+    "type": "INTEGER",
+    "description": "ID of an edition that is a mainstream browse page, or ls linked to from  a mainstream browse page."
+  },
+  {
+    "name": "base_path",
+    "type": "STRING"
+  },
+  {
+    "name": "parent_edition_id",
+    "type": "INTEGER",
+    "description": "ID of an edition that links to this edition"
+  },
+  {
+    "name": "parent_base_path",
+    "type": "STRING"
+  },
+  {
+    "name": "level",
+    "type": "INTEGER",
+    "description": "Level 1 is the root of the mainstream browse taxonomy, which is /browse"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "ancestors",
+    "type": "RECORD",
+    "description": "Parents of parents back to the root /browse. If this edition is itself a mainstream browse page, then it is included among its ancestors.",
+    "fields": [
+      {
+        "name": "edition_id",
+        "type": "INTEGER"
+      },
+      {
+        "name": "base_path",
+        "type": "STRING"
+      },
+      {
+        "name": "level",
+        "type": "INTEGER"
+      }
+    ]
+  },
+  {
+    "name": "group_index",
+    "type": "INTEGER",
+    "description": "If the links in the parent page are grouped, then first group is at index 1."
+  },
+  {
+    "name": "group_name",
+    "type": "STRING",
+    "description": "If the links in the parent page are grouped, the heading of the group that includes this page."
+  },
+  {
+    "name": "page_index",
+    "type": "INTEGER",
+    "description": "If the links in the parent page are grouped, the position of this page in its group, starting from 1."
+  }
+]
