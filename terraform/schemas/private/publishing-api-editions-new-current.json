@@ -156,6 +156,11 @@
   },
   {
     "mode": "NULLABLE",
+    "name": "last_edited_by_editor_id",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
     "name": "unpublishing_type",
     "type": "STRING"
   },
