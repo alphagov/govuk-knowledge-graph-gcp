@@ -143,5 +143,10 @@
     "mode": "NULLABLE",
     "name": "redirects",
     "type": "JSON"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "last_edited_by_editor_id",
+    "type": "STRING"
   }
 ]

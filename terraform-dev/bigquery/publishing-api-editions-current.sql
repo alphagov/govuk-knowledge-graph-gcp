@@ -81,7 +81,8 @@ SELECT *
       publishing_api_first_published_at,
       publishing_api_last_edited_at,
       auth_bypass_ids,
-      is_online
+      is_online,
+      last_edited_by_editor_id
     )
     REPLACE (
       IF(unpublishing_type IN ('redirect', 'gone'), unpublishing_type, document_type) AS document_type,
