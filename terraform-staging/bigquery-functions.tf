@@ -185,6 +185,17 @@ resource "google_bigquery_routine" "organisations" {
   )
 }
 
+resource "google_bigquery_routine" "mainstream_browse" {
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "mainstream_browse"
+  routine_type = "PROCEDURE"
+  language     = "SQL"
+  definition_body = templatefile(
+    "bigquery/public-mainstream-browse.sql",
+    { project_id = var.project_id }
+  )
+}
+
 resource "google_bigquery_routine" "contact_phone_numbers" {
   dataset_id   = google_bigquery_dataset.functions.dataset_id
   routine_id   = "contact_phone_numbers"

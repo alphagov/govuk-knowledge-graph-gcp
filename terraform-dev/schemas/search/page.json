@@ -90,6 +90,12 @@
     "description": "Array of titles of taxons that the page is tagged to, and their ancestors"
   },
   {
+    "mode": "REPEATED",
+    "name": "mainstream_browse_topics",
+    "type": "STRING",
+    "description": "Array of titles of mainstream browse topics that the page is tagged to, and their ancestors"
+  },
+  {
     "mode": "NULLABLE",
     "name": "primary_organisation",
     "type": "STRING",
