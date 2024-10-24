@@ -93,7 +93,7 @@ GEM
       rack (>= 2.1, < 4.a)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    google-protobuf (3.25.1-x86_64-linux)
+    google-protobuf (3.25.5-x86_64-linux)
     googleapis-common-protos-types (1.10.0)
       google-protobuf (~> 3.18)
     govspeak (8.3.1)
