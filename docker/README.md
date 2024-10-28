@@ -1,11 +1,5 @@
 # Docker images
 
-# [`embed-text`][embed-text]
-
-For a BigQuery remote function implemented in Cloud Run.  This isn't currently
-used by anything.  It has to be a docker image in Cloud run, rather than merely
-source code in Cloud Functions, because it needs certain system dependencies.
-
 # [`html-to-text`][html-to-text]
 
 For a BigQuery remote function implemented in Cloud Run.  This isn't currently
@@ -30,7 +24,6 @@ for debugging. It has the Redis CLI available and is configured to easily access
 the Redis instance that the GovSearch app uses to manage GOV.UK Signon user
 state.
 
-[embed-text]: ./embed-text
 [html-to-text]: ./html-to-text
 [publisher]: ./publisher
 [publishing-api]: ./publisher-api
