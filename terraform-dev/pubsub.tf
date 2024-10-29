@@ -1,5 +1,5 @@
 resource "google_pubsub_topic" "govuk_integration_database_backups" {
-  name                       = "govuk-integration-database-backups"
+  name                       = "govuk-database-backups"
   message_retention_duration = "604800s" # 604800 seconds is 7 days
   message_storage_policy {
     allowed_persistence_regions = [
@@ -25,7 +25,7 @@ resource "google_pubsub_topic_iam_policy" "govuk_integration_database_backups" {
 
 # Subscribe to the topic
 resource "google_pubsub_subscription" "govuk_integration_database_backups" {
-  name  = "govuk-integration-database-backups"
+  name  = "govuk-database-backups"
   topic = google_pubsub_topic.govuk_integration_database_backups.name
 
   message_retention_duration = "604800s" # 604800 seconds is 7 days
