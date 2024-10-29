@@ -40,7 +40,7 @@ data "google_iam_policy" "service_account-gce_publishing_api" {
   binding {
     role = "roles/iam.serviceAccountUser"
     members = [
-      google_service_account.workflow_govuk_integration_database_backups.member,
+      google_service_account.workflow_govuk_database_backups.member,
     ]
   }
 }
@@ -55,7 +55,7 @@ data "google_iam_policy" "service_account-gce_publisher" {
   binding {
     role = "roles/iam.serviceAccountUser"
     members = [
-      google_service_account.workflow_govuk_integration_database_backups.member,
+      google_service_account.workflow_govuk_database_backups.member,
     ]
   }
 }
