@@ -56,7 +56,7 @@ If GovSearch gives unexpected results, then the tables in BigQuery might not hav
 
 ### Source data glitch
 
-Check that the database backup files in the [govuk-s3-mirror][govuk-s3-mirror] are the expected size (many gigabytes) by looking in the [bucket](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups?project=govuk-s3-mirror).
+Check that the database backup files in the [govuk-s3-mirror][govuk-s3-mirror] are the expected size (many gigabytes) by looking in the [bucket](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-database-backups?project=govuk-s3-mirror).
 
 Check that the Publishing API hasn't changed its schemas.
 

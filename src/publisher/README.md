@@ -57,5 +57,5 @@ See the [pull request][publisher-pull-request] that introduced this data into Go
 [docker]: ../../docker/publisher
 [docker-readme]: ../../docker/publisher/README.md
 [run.sh]: ./run.sh
-[workflow-terraform]: ../../terraform/workflows/govuk-integration-database-backups.yaml
+[workflow-terraform]: ../../terraform/workflows/govuk-database-backups.yaml
 [publisher-pull-request]: https://github.com/alphagov/govuk-knowledge-graph-gcp/pull/594

@@ -27,8 +27,8 @@ Open a recent, successful [workflow-run][workflow-runs].  Its state will be `ret
 If the most recent successful workflow run was a few days ago, then the Publisher database backup file that it responded to might have been deleted.  In this case, make a new copy of any of the Publisher database backup files that do exist in the [bucket][bucket].  Doing so will create a new message in Pub/Sub, which will soon trigger the workflow to start the VM.
 
 [govuk-s3-mirror]: https://github.com/alphagov/govuk-s3-mirror
-[bucket]: https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups/publisher
-[workflow-terraform]: ../../terraform/workflows/govuk-integration-database-backups.yaml
-[workflow-runs]: https://console.cloud.google.com/workflows/workflow/europe-west2/govuk-integration-database-backups/executions?project=govuk-knowledge-graph&pli=1
+[bucket]: https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-database-backups/publisher
+[workflow-terraform]: ../../terraform/workflows/govuk-database-backups.yaml
+[workflow-runs]: https://console.cloud.google.com/workflows/workflow/europe-west2/govuk-database-backups/executions?project=govuk-knowledge-graph&pli=1
 [src]: ../../src/publisher
 [github-action]: ../../.github/workflows/docker-publisher.yml
