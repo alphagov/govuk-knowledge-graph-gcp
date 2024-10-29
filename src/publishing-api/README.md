@@ -55,4 +55,4 @@ gcloud compute ssh --zone "europe-west2-b" "publishing-api" --project "govuk-kno
 [docker]: ../../docker/publishing-api
 [docker-readme]: ../../docker/publishing-api/README.md
 [run.sh]: ./run.sh
-[workflow-terraform]: ../../terraform/workflows/govuk-integration-database-backups.yaml
+[workflow-terraform]: ../../terraform/workflows/govuk-database-backups.yaml
