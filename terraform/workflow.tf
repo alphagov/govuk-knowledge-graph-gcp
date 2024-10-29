@@ -1,9 +1,5 @@
 # A workflow to create an instance from a template, triggered by PubSub
 
-moved {
-  from = google_service_account.workflow_integration_govuk_database_backups
-  to   = google_service_account.workflow_govuk_database_backups
-}
 resource "google_service_account" "workflow_govuk_database_backups" {
   account_id   = "workflow-database-backups"
   display_name = "Service account for the govuk-database-backups workflow"
@@ -14,10 +10,6 @@ resource "google_service_account" "eventarc" {
   display_name = "Service account for EventArc to trigger workflows"
 }
 
-moved {
-  from = google_workflows_workflow.govuk_integration_database_backups
-  to   = google_workflows_workflow.govuk_database_backups
-}
 resource "google_workflows_workflow" "govuk_database_backups" {
   name            = "govuk-database-backups"
   region          = var.region
@@ -35,10 +27,6 @@ resource "google_workflows_workflow" "govuk_database_backups" {
   )
 }
 
-moved {
-  from = google_eventarc_trigger.govuk_integration_database_backups
-  to   = google_eventarc_trigger.govuk_database_backups
-}
 resource "google_eventarc_trigger" "govuk_database_backups" {
   name            = "govuk-database-backups"
   location        = var.region
