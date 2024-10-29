@@ -24,7 +24,7 @@ resource "google_workflows_workflow" "govuk_database_backups" {
   description     = "Run database instances from their templates"
   service_account = google_service_account.workflow_govuk_database_backups.id
   source_contents = templatefile(
-    "workflows/govuk-integration-database-backups.yaml",
+    "workflows/govuk-database-backups.yaml",
     {
       project_id                    = var.project_id
       zone                          = var.zone
