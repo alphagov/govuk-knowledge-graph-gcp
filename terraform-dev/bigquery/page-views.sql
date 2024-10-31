@@ -6,19 +6,15 @@ INSERT INTO private.page_views
 WITH
 page_views AS (
   SELECT
-  (
-    SELECT REGEXP_REPLACE(value.string_value, r'[?#].*', '')
-    FROM UNNEST(event_params)
-    WHERE key = 'page_location'
-  ) AS url,
-  FROM `ga4-analytics-352613.analytics_330577055.events_*`
+  REGEXP_REPLACE(page_location, r'[?#].*', '') AS url,
+  FROM `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
   WHERE
     event_name = 'page_view'
     -- A seven-day window. GA4 data is often very incomplete until a couple of
     -- days after the given date, so this window is offset from the current date
     -- by a couple of days.
-    AND _TABLE_SUFFIX >= FORMAT_DATE('%Y%m%d', DATE_ADD(CURRENT_DATE(), INTERVAL - 8 DAY))
-    AND _TABLE_SUFFIX <= FORMAT_DATE('%Y%m%d', DATE_ADD(CURRENT_DATE(), INTERVAL - 2 DAY))
+    AND event_date >= DATE_ADD(CURRENT_DATE(), INTERVAL - 8 DAY)
+    AND event_date <= DATE_ADD(CURRENT_DATE(), INTERVAL - 2 DAY)
 ),
 all_urls AS (
   -- The editions table includes every base_path except for parts of 'guide' and
