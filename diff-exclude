@@ -2,4 +2,3 @@ environment.auto.tfvars
 backend.tf
 .terraform
 .terraform.lock.hcl
-pubsub.tf
