@@ -1,8 +1,12 @@
 # A workflow to create an instance from a template, triggered by PubSub
 
-resource "google_service_account" "workflow_govuk_integration_database_backups" {
+moved {
+  from = google_service_account.workflow_integration_govuk_database_backups
+  to   = google_service_account.workflow_govuk_database_backups
+}
+resource "google_service_account" "workflow_govuk_database_backups" {
   account_id   = "workflow-database-backups"
-  display_name = "Service account for the govuk-integration-database-backups workflow"
+  display_name = "Service account for the govuk-database-backups workflow"
 }
 
 resource "google_service_account" "eventarc" {
@@ -10,13 +14,17 @@ resource "google_service_account" "eventarc" {
   display_name = "Service account for EventArc to trigger workflows"
 }
 
-resource "google_workflows_workflow" "govuk_integration_database_backups" {
-  name            = "govuk-integration-database-backups"
+moved {
+  from = google_workflows_workflow.govuk_integration_database_backups
+  to   = google_workflows_workflow.govuk_database_backups
+}
+resource "google_workflows_workflow" "govuk_database_backups" {
+  name            = "govuk-database-backups"
   region          = var.region
   description     = "Run database instances from their templates"
-  service_account = google_service_account.workflow_govuk_integration_database_backups.id
+  service_account = google_service_account.workflow_govuk_database_backups.id
   source_contents = templatefile(
-    "workflows/govuk-integration-database-backups.yaml",
+    "workflows/govuk-database-backups.yaml",
     {
       project_id                    = var.project_id
       zone                          = var.zone
@@ -27,8 +35,12 @@ resource "google_workflows_workflow" "govuk_integration_database_backups" {
   )
 }
 
-resource "google_eventarc_trigger" "govuk_integration_database_backups" {
-  name            = "govuk-integration-database-backups"
+moved {
+  from = google_eventarc_trigger.govuk_integration_database_backups
+  to   = google_eventarc_trigger.govuk_database_backups
+}
+resource "google_eventarc_trigger" "govuk_database_backups" {
+  name            = "govuk-database-backups"
   location        = var.region
   service_account = google_service_account.eventarc.email
   matching_criteria {
@@ -36,11 +48,11 @@ resource "google_eventarc_trigger" "govuk_integration_database_backups" {
     value     = "google.cloud.pubsub.topic.v1.messagePublished"
   }
   destination {
-    workflow = google_workflows_workflow.govuk_integration_database_backups.id
+    workflow = google_workflows_workflow.govuk_database_backups.id
   }
   transport {
     pubsub {
-      topic = google_pubsub_topic.govuk_integration_database_backups.id
+      topic = google_pubsub_topic.govuk_database_backups.id
     }
   }
 }
