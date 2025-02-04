@@ -358,7 +358,7 @@ data "google_iam_policy" "project" {
     members = [
       google_service_account.gce_publishing_api.member,
       google_service_account.gce_publisher.member,
-      google_service_account.workflow_govuk_integration_database_backups.member,
+      google_service_account.workflow_govuk_database_backups.member,
       google_service_account.workflow_redis_cli.member
     ]
   }
@@ -408,7 +408,7 @@ data "google_iam_policy" "project" {
   binding {
     role = "roles/logging.logWriter"
     members = [
-      google_service_account.workflow_govuk_integration_database_backups.member,
+      google_service_account.workflow_govuk_database_backups.member,
       google_service_account.workflow_redis_cli.member
     ]
   }
