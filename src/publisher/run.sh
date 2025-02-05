@@ -6,7 +6,7 @@
 set -m
 
 # Start mongo and put it in the background
-mongod --nojournal &
+mongod --fork --syslog
 
 # Wait for mongo to start
 sleep 5
@@ -42,7 +42,7 @@ TABLE="${DATASET}.${FILE}"
 
 # Create a dataset in mongodb of relevant metadata about relevant editions of
 # documents.
-mongo ${DATABASE} ${QUERY}
+mongosh ${DATABASE} ${QUERY}
 
 # 1. Export that dataset
 # 2. Upload it to a cloud bucket
