@@ -1,4 +1,4 @@
-FROM mongo:4.4.16
+FROM mongo:8.0.4
 
 # Install gcloud
 # https://cloud.google.com/sdk/docs/install#deb

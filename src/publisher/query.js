@@ -10,7 +10,7 @@ db.editions.aggregate([
   { $match: { "state": { $in: [ "published", "archived" ] } } },
   { $project: {
     _id: false,
-    "url": { "$concat": [ "https://www.gov.uk/", "$slug" ] },
+    "url": { "$concat": [ "https://www.gov.uk/", { "$ifNull": [ "$slug", "" ] } ] },
     // created_at: true, // when the edition was first drafted
     updated_at: true, // almost but not quite the same time as the updated_at of the corresponding edition in the Publishing API.
     version_number: true, // sequence, sometimes in a different order from updated_at e.g. /1619-bursary-fund
