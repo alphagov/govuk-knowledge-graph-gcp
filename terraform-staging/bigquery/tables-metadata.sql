@@ -13,6 +13,8 @@ WITH tables AS (
   UNION ALL
   SELECT * FROM publishing_api.__TABLES__
   UNION ALL
+  SELECT * FROM support_api.__TABLES__
+  UNION ALL
   SELECT * FROM search.__TABLES__
 )
 SELECT

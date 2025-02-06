@@ -62,6 +62,35 @@ main:
                           value: ${publishing_api_metadata_value}
           - return_started_publishing_api:
               return: $${"Started publishing-api instance"}
+        - condition: $${text.match_regex(object_name, "^support-api-postgres/\\d{4}-\\d{2}-\\d{2}T\\d{6}Z-support_contacts_production\\.gz$")}
+          steps:
+          - log_starting_support_api_instance:
+              call: sys.log
+              args:
+                  text: "Starting support-api instance"
+                  severity: INFO
+          - start_support_api:
+              call: googleapis.compute.v1.instances.insert
+              args:
+                  project: ${project_id}
+                  zone: ${zone}
+                  sourceInstanceTemplate: https://www.googleapis.com/compute/v1/projects/${project_id}/global/instanceTemplates/support-api
+                  body:
+                      name: support-api
+                      metadata:
+                        items:
+                        - key: object_bucket
+                          value: $${object_bucket}
+                        - key: object_name
+                          value: $${object_name}
+                        - key: user-data
+                          value: ${postgres_startup_script}
+                        - key: google-logging-enabled
+                          value: true
+                        - key: gce-container-declaration
+                          value: ${support_api_metadata_value}
+          - return_started_support_api:
+              return: $${"Started support-api instance"}
         - condition: $${text.match_regex(object_name, "^shared-documentdb/\\d{4}-\\d{2}-\\d{2}T\\d{6}Z-govuk_content_production\\.gz$")}
           steps:
           - log_starting_publisher_instance:

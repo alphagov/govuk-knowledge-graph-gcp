@@ -22,6 +22,7 @@ resource "google_workflows_workflow" "govuk_database_backups" {
       zone                          = var.zone
       postgres_startup_script       = jsonencode(var.postgres-startup-script)
       publishing_api_metadata_value = jsonencode(module.publishing-api-container.metadata_value)
+      support_api_metadata_value    = jsonencode(module.support-api-container.metadata_value)
       publisher_metadata_value      = jsonencode(module.publisher-container.metadata_value)
     }
   )

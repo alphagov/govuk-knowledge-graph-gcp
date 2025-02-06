@@ -67,6 +67,10 @@ bigquery_graph_data_viewer_members = [
 bigquery_publishing_api_data_viewer_members = [
 ]
 
+# BigQuery dataset: support-api
+bigquery_support_api_data_viewer_members = [
+]
+
 # BigQuery dataset: search
 bigquery_search_data_viewer_members = [
 ]
