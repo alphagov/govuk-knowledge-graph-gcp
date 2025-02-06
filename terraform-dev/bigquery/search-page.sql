@@ -65,7 +65,7 @@ WITH
   -- editors don't tend to use 'public_updated_at', and 'updated_at' is polluted
   -- by creation of new editions for techy reasons rather than editing reasons.
   SELECT
-    url,
+    base_path,
     MAX(updated_at) AS publisher_updated_at,
   FROM publisher.editions
   WHERE state='published'
@@ -236,7 +236,8 @@ LEFT JOIN phone_numbers ON phone_numbers.edition_id = pages.edition_id
 LEFT JOIN taxons ON taxons.edition_id = pages.edition_id
 LEFT JOIN people ON people.edition_id = pages.edition_id -- includes the slug of parts
 -- one publisher_updated_at per multipart document
-LEFT JOIN publisher_updated_at ON STARTS_WITH(pages.url, publisher_updated_at.url)
+LEFT JOIN publisher_updated_at
+  ON publisher_updated_at.base_path = pages.base_path
 LEFT JOIN public.content -- one row per document or part
   ON content.base_path = pages.base_path -- includes the slug of parts
 LEFT JOIN interpage_links
