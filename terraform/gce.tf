@@ -23,6 +23,12 @@ resource "google_service_account" "gce_publishing_api" {
   description  = "Service account for the publishing-api instance on GCE"
 }
 
+resource "google_service_account" "gce_support_api" {
+  account_id   = "gce-support-api"
+  display_name = "Service Account for the support-api instance"
+  description  = "Service account for the support-api instance on GCE"
+}
+
 resource "google_service_account" "gce_publisher" {
   account_id   = "gce-publisher"
   display_name = "Service Account for the Publisher mongobd instance"
@@ -48,6 +54,21 @@ data "google_iam_policy" "service_account-gce_publishing_api" {
 resource "google_service_account_iam_policy" "gce_publishing_api" {
   service_account_id = google_service_account.gce_publishing_api.name
   policy_data        = data.google_iam_policy.service_account-gce_publishing_api.policy_data
+}
+
+# Allow a workflow to attach the support-api service account to an instance.
+data "google_iam_policy" "service_account-gce_support_api" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+    members = [
+      google_service_account.workflow_govuk_database_backups.member,
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "gce_support_api" {
+  service_account_id = google_service_account.gce_support_api.name
+  policy_data        = data.google_iam_policy.service_account-gce_support_api.policy_data
 }
 
 # Allow a workflow to attach the publisher service account to an instance.
@@ -118,6 +139,65 @@ module "publishing-api-container" {
 
   container = {
     image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/publishing-api:latest"
+    tty : true
+    stdin : true
+    securityContext = {
+      privileged : true
+    }
+    env = [
+      {
+        name  = "POSTGRES_HOST_AUTH_METHOD"
+        value = "trust"
+      },
+      {
+        name  = "PROJECT_ID"
+        value = var.project_id
+      },
+      {
+        name  = "ZONE"
+        value = var.zone
+      }
+    ]
+    volumeMounts = [
+      {
+        mountPath = "/var/lib/postgresql/data"
+        name      = "local-ssd-postgresql-data"
+        readOnly  = false
+      },
+      {
+        mountPath = "/data"
+        name      = "local-ssd-data"
+        readOnly  = false
+      }
+    ]
+  }
+
+  volumes = [
+    # https://github.com/terraform-google-modules/terraform-google-container-vm/issues/66
+    {
+      name = "local-ssd-postgresql-data"
+      hostPath = {
+        path = "/mnt/disks/local-ssd/postgresql-data"
+      }
+    },
+    {
+      name = "local-ssd-data"
+      hostPath = {
+        path = "/mnt/disks/local-ssd/data"
+      }
+    }
+  ]
+
+  restart_policy = "Never"
+}
+
+# https://github.com/terraform-google-modules/terraform-google-container-vm
+module "support-api-container" {
+  source  = "terraform-google-modules/container-vm/google"
+  version = "~> 2.0"
+
+  container = {
+    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/support-api:latest"
     tty : true
     stdin : true
     securityContext = {
@@ -303,6 +383,49 @@ resource "google_compute_instance_template" "publishing_api" {
 
   service_account {
     email  = google_service_account.gce_publishing_api.email
+    scopes = ["cloud-platform"]
+  }
+}
+
+resource "google_compute_instance_template" "support_api" {
+  name = "support-api"
+  # 2 CPUs are enough that, while the largest table is being restored, all the
+  # other tables will also be restored, even if some of them are done in series
+  # rather than parallel.  Not much memory is required.  See postgresql.conf for
+  # the memory allowances.
+  machine_type = "c2d-highmem-2"
+
+  disk {
+    boot         = true
+    source_image = module.support-api-container.source_image
+    disk_size_gb = 10
+  }
+
+  disk {
+    device_name  = "local-ssd"
+    interface    = "NVME"
+    disk_type    = "local-ssd"
+    disk_size_gb = "375" # Must be exactly 375GB for a local SSD disk
+    type         = "SCRATCH"
+  }
+
+  metadata = {
+    # https://cloud.google.com/container-optimized-os/docs/concepts/disks-and-filesystem#mounting_and_formatting_disks
+    user-data                  = var.postgres-startup-script
+    google-logging-enabled     = true
+    serial-port-logging-enable = true
+    gce-container-declaration  = module.support-api-container.metadata_value
+  }
+
+  network_interface {
+    network = "default"
+    access_config {
+      network_tier = "STANDARD"
+    }
+  }
+
+  service_account {
+    email  = google_service_account.gce_support_api.email
     scopes = ["cloud-platform"]
   }
 }

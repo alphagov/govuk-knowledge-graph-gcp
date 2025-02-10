@@ -78,10 +78,14 @@ bigquery_graph_data_viewer_members = [
   "serviceAccount:govuk-looker-poc@govuk-looker-poc.iam.gserviceaccount.com",
 ]
 
-# BigQuery dataset: publishing
+# BigQuery dataset: publishing-api
 bigquery_publishing_api_data_viewer_members = [
   "group:govgraph-private-data-readers@digital.cabinet-office.gov.uk",
   "serviceAccount:service-419945323196@gcp-sa-dataform.iam.gserviceaccount.com",
+]
+
+# BigQuery dataset: support-api
+bigquery_support_api_data_viewer_members = [
 ]
 
 # BigQuery dataset: search

@@ -160,6 +160,10 @@ variable "bigquery_publishing_api_data_viewer_members" {
   type = list(string)
 }
 
+variable "bigquery_support_api_data_viewer_members" {
+  type = list(string)
+}
+
 variable "bigquery_search_data_viewer_members" {
   type = list(string)
 }
@@ -289,6 +293,7 @@ data "google_iam_policy" "project" {
         google_service_account.bigquery_scheduled_queries.member,
         google_service_account.bigquery_scheduled_queries_search.member,
         google_service_account.gce_publishing_api.member,
+        google_service_account.gce_support_api.member,
         google_service_account.gce_publisher.member,
         google_service_account.govgraphsearch.member,
       ],
@@ -357,6 +362,7 @@ data "google_iam_policy" "project" {
     role = "roles/compute.instanceAdmin.v1"
     members = [
       google_service_account.gce_publishing_api.member,
+      google_service_account.gce_support_api.member,
       google_service_account.gce_publisher.member,
       google_service_account.workflow_govuk_database_backups.member,
       google_service_account.workflow_redis_cli.member

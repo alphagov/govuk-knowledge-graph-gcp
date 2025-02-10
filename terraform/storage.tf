@@ -48,6 +48,7 @@ data "google_iam_policy" "bucket_repository" {
     role = "roles/storage.objectViewer"
     members = [
       google_service_account.gce_publishing_api.member,
+      google_service_account.gce_support_api.member,
       google_service_account.gce_publisher.member,
     ]
   }
