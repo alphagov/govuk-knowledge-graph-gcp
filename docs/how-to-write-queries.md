@@ -141,7 +141,7 @@ WITH
     editions.description IS NULL
     AND editions.base_path IS NOT NULL
     AND (unpublishings.edition_id IS NULL)
-    AND editions.document_type NOT IN ( 'gone',
+    AND editions.schema_name NOT IN ( 'gone',
       'redirect',
       'contact' ) -- for example
     ),
@@ -349,7 +349,61 @@ Results typically differ from the Search API because the Search API excludes rat
 
 ### Mainstream browse
 
-The "mainstream browse taxonomy" (not to be confused with the "taxonomy") is a tree structure for navigating GOV.UK content.  The root of the tree the page /browse. Below /browse are "top-level browse pages", and below those are "second-level browse pages".  The leaves of the tree are normal pages, linked to second-level browse pages.  Each page can have more than one parent.  For example, https://www.gov.uk/api/content/benefit-overpayments is a child of both /browse/benefits/entitlement and /browse/benefits/manage-your-benefit. Only one parent is chosen to be displayed in the breadcrumb links at the top of the page.
+The "mainstream browse taxonomy" (not to be confused with the "taxonomy") is a tree structure for navigating GOV.UK content.  The root of the tree the page /browse. Below /browse are "top-level browse pages", and below those are "second-level browse pages".  The leaves of the tree are normal pages, linked to second-level browse pages.  Each page can have more than one parent.  For example, https://www.gov.uk/vat-charities is a child of both https://www.gov.uk/browse/tax/vat and https://www.gov.uk/browse/citizenship/charities-honours. Only one parent is chosen to be displayed in the breadcrumb links at the top of the page.
+
+#### Use the table `public.mainstream_browse`
+
+The table `public.mainstream_browse` can be used to find
+
+* the immediate parent of a page (it might have more than one immediate parent)
+* pages that are descendants of a given browse page
+* where a page appears in the list of links given by its parent, and under which heading
+
+```sql
+-- The immediate parents of pages that have more than one parent
+SELECT
+  base_path,
+  COUNT(*) AS n_parents,
+  ARRAY_AGG(parent_base_path)
+FROM
+  public.mainstream_browse
+GROUP BY
+  edition_id,
+  base_path
+HAVING
+  n_parents > 1
+```
+
+```sql
+-- Every descendant of the browse page /browse/tax, which has
+-- another level of browse pages below it in the hierarchy.
+SELECT
+  mainstream_browse.base_path,
+  mainstream_browse.ancestors
+FROM
+  public.mainstream_browse
+CROSS JOIN
+  UNNEST(ancestors) AS ancestor
+WHERE
+  ancestor.base_path = '/browse/tax'
+```
+
+```sql
+-- Every descendant of the browse page /browse/tax. This is more
+-- pages than are linked to from the /browse/tax page itself, because
+-- there is -- another level of browse pages below it in the hierarchy.
+SELECT
+  mainstream_browse.base_path,
+  mainstream_browse.ancestors
+FROM
+  public.mainstream_browse
+CROSS JOIN
+  UNNEST(ancestors) AS ancestor
+WHERE
+  ancestor.base_path = '/browse/tax'
+```
+
+#### Derive the mainstream browse hierarchy yourself
 
 The hierarchy (ignoring groups) can be derived as follows.
 * /browse is the root, emit a path: /browse, set `level=1`.
@@ -368,7 +422,7 @@ graph TB
     D -- mainstream_browse_pages --> C
 ```
 
-The following query returns one row per page, per parent.  If a page has more than one parent, then it has a row for each parent.  Each row includes the full ancestory of the page, all the way up to /browse, via the given parent.  If the page belongs to a named group of its parent, then the name of the group, the index of the group (zero-based), and the index of the page within the group (zero-based) are given.
+The following query returns one row per page, per parent.  If a page has more than one parent, then it has a row for each parent.  Each row includes the full ancestory of the page, all the way up to /browse, via the given parent.  Uness the page is a leaf (not a mainstream browse page in its own right), it includes itself among its ancestors.  If the page belongs to a named group of its parent, then the name of the group, the index of the group (zero-based), and the index of the page within the group (zero-based) are given.  If a browse topic includes links to a redirected page, the link is omitted, because the website omits such links too.
 
 ```sql
 WITH
@@ -382,11 +436,19 @@ links AS (
   FROM `public.publishing_api_links_current`
   WHERE type IN ('top_level_browse_pages', 'second_level_browse_pages', 'mainstream_browse_pages')
 ),
+editions AS (
+  SELECT
+    id,
+    content_id
+  FROM public.publishing_api_editions_current
+  WHERE schema_name NOT IN ('gone', 'redirect')
+),
 root AS (
   SELECT
     id AS edition_id,
-    id AS parent_edition_id,
     '/browse' AS base_path,
+    id AS parent_edition_id,
+    '/browse' AS parent_base_path,
     1 AS level,
     [STRUCT(id AS edition_id, '/browse' AS base_path, 1 AS level)] AS ancestors
   FROM browse_pages
@@ -395,8 +457,9 @@ root AS (
 top_level_browse_pages AS (
   SELECT
     links.target_edition_id AS edition_id,
-    root.edition_id AS parent_edition_id,
     links.target_base_path AS base_path,
+    root.edition_id AS parent_edition_id,
+    root.base_path AS parent_base_path,
     2 AS level,
     ARRAY_CONCAT(
       root.ancestors,
@@ -408,13 +471,15 @@ top_level_browse_pages AS (
     ) AS ancestors
   FROM links
   INNER JOIN root ON root.edition_id = links.source_edition_id
+  INNER JOIN editions ON editions.id = links.target_edition_id
   WHERE links.type = 'top_level_browse_pages'
 ),
 second_level_browse_pages AS (
   SELECT
     links.target_edition_id AS edition_id,
-    top_level_browse_pages.edition_id AS parent_edition_id,
     links.target_base_path AS base_path,
+    top_level_browse_pages.edition_id AS parent_edition_id,
+    top_level_browse_pages.base_path AS parent_base_path,
     3 AS level,
     ARRAY_CONCAT(
       top_level_browse_pages.ancestors,
@@ -426,23 +491,19 @@ second_level_browse_pages AS (
     ) AS ancestors
   FROM links
   INNER JOIN top_level_browse_pages ON top_level_browse_pages.edition_id = links.source_edition_id
+  INNER JOIN editions ON editions.id = links.target_edition_id
   WHERE links.type = 'second_level_browse_pages'
 ),
 leaves AS (
   SELECT
     links.source_edition_id AS edition_id,
-    second_level_browse_pages.edition_id AS parent_edition_id,
     links.source_base_path AS base_path,
+    second_level_browse_pages.edition_id AS parent_edition_id,
+    second_level_browse_pages.base_path AS parent_base_path,
     4 AS level,
-    ARRAY_CONCAT(
-      second_level_browse_pages.ancestors,
-      [STRUCT(
-        links.source_edition_id AS edition_id,
-        links.source_base_path AS target_base_path,
-        4 AS level
-      )]
-    ) AS ancestors
+    second_level_browse_pages.ancestors
   FROM links
+  INNER JOIN editions ON editions.id = links.source_edition_id
   INNER JOIN second_level_browse_pages ON second_level_browse_pages.edition_id = links.target_edition_id
   WHERE links.type = 'mainstream_browse_pages'
 ),
@@ -457,7 +518,7 @@ group_links AS (
   INNER JOIN second_level_browse_pages ON second_level_browse_pages.edition_id = browse_pages.id
   CROSS JOIN UNNEST(JSON_QUERY_ARRAY(details, "$.groups")) AS link_groups WITH OFFSET AS group_index
   CROSS JOIN UNNEST(JSON_VALUE_ARRAY(link_groups, "$.content_ids")) AS group_content_ids WITH OFFSET AS page_index
-  LEFT JOIN `public.publishing_api_editions_current` AS editions ON editions.content_id = group_content_ids
+  LEFT JOIN editions ON editions.content_id = group_content_ids
 ),
 all_pages AS (
   SELECT * FROM root
