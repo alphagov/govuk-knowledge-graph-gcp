@@ -35,6 +35,13 @@ resource "google_cloudfunctions2_function" "parse_html" {
     max_instance_count = 100
     # max_instance_request_concurrency = 1
   }
+
+  # https://github.com/hashicorp/terraform-provider-google/issues/1938#issuecomment-1229042663
+  lifecycle {
+    replace_triggered_by = [
+      google_storage_bucket_object.parse_html
+    ]
+  }
 }
 
 data "google_iam_policy" "cloud_function_parse_html" {
