@@ -175,7 +175,7 @@ variable "bigquery_test_data_viewer_members" {
 terraform {
   required_providers {
     google = {
-      version = "5.15.0"
+      version = "6.20.0"
     }
   }
 }
