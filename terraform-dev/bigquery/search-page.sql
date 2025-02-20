@@ -236,7 +236,7 @@ LEFT JOIN phone_numbers ON phone_numbers.edition_id = pages.edition_id
 LEFT JOIN taxons ON taxons.edition_id = pages.edition_id
 LEFT JOIN people ON people.edition_id = pages.edition_id -- includes the slug of parts
 -- one publisher_updated_at per multipart document
-LEFT JOIN publisher_updated_at ON STARTS_WITH(pages.url, publisher_updated_at.url)
+LEFT JOIN publisher_updated_at ON STARTS_WITH(pages.url || "/", publisher_updated_at.url || "/")
 LEFT JOIN public.content -- one row per document or part
   ON content.base_path = pages.base_path -- includes the slug of parts
 LEFT JOIN interpage_links
