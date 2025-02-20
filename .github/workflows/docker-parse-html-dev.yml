@@ -1,4 +1,4 @@
-name: Docker-html-to-text-dev
+name: Docker-parse-html-dev
 
 on:
   workflow_dispatch:
@@ -6,17 +6,17 @@ on:
     branches:
       - dev
     paths:
-      - 'docker/html-to-text/*'
-      - '.github/workflows/docker-html-to-text-dev.yml'
+      - 'docker/parse-html/*'
+      - '.github/workflows/docker-parse-html-dev.yml'
 
 defaults:
   run:
-    working-directory: docker/html-to-text
+    working-directory: docker/parse-html
 
 env:
   GITHUB_SHA: ${{ github.sha }}
   GITHUB_REF: ${{ github.ref }}
-  IMAGE: 'html-to-text'
+  IMAGE: 'parse-html'
   REGISTRY_HOSTNAME: 'europe-west2-docker.pkg.dev/govuk-knowledge-graph-dev/docker'
 
 jobs:
@@ -76,6 +76,6 @@ jobs:
       id: 'deploy'
       uses: 'google-github-actions/deploy-cloudrun@v2'
       with:
-        service: 'html-to-text'
+        service: 'parse-html'
         region: 'europe-west2'
-        image: 'europe-west2-docker.pkg.dev/govuk-knowledge-graph-dev/docker/html-to-text:latest'
+        image: 'europe-west2-docker.pkg.dev/govuk-knowledge-graph-dev/docker/parse-html:latest'
