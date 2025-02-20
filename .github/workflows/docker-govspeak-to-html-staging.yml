@@ -1,4 +1,4 @@
-name: Docker-html-to-text-staging
+name: Docker-govspeak-to-html-staging
 
 on:
   workflow_dispatch:
@@ -6,18 +6,18 @@ on:
     branches:
       - staging
     paths:
-      - 'docker/html-to-text/Dockerfile'
-      - 'docker/html-to-text/entrypoint.sh'
-      - '.github/workflows/docker-html-to-text-staging.yml'
+      - 'docker/govspeak-to-html/Dockerfile'
+      - 'docker/govspeak-to-html/entrypoint.sh'
+      - '.github/workflows/docker-govspeak-to-html-staging.yml'
 
 defaults:
   run:
-    working-directory: docker/html-to-text
+    working-directory: docker/govspeak-to-html
 
 env:
   GITHUB_SHA: ${{ github.sha }}
   GITHUB_REF: ${{ github.ref }}
-  IMAGE: 'html-to-text'
+  IMAGE: 'govspeak-to-html'
   REGISTRY_HOSTNAME: 'europe-west2-docker.pkg.dev/govuk-knowledge-graph-staging/docker'
 
 jobs:
@@ -77,6 +77,6 @@ jobs:
       id: 'deploy'
       uses: 'google-github-actions/deploy-cloudrun@v2'
       with:
-        service: 'html-to-text'
+        service: 'govspeak-to-html'
         region: 'europe-west2'
-        image: 'europe-west2-docker.pkg.dev/govuk-knowledge-graph-staging/docker/html-to-text:latest'
+        image: 'europe-west2-docker.pkg.dev/govuk-knowledge-graph-staging/docker/govspeak-to-html:latest'
