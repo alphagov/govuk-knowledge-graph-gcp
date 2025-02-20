@@ -1,8 +1,8 @@
 source "https://rubygems.org"
 
-gem "functions_framework"
-gem "json"
-gem "pandoc-ruby"
+gem "functions_framework", "1.6.0"
+gem "json", "2.10.1"
+gem "pandoc-ruby", "2.1.10"
 
 group :development, :test do
   gem "byebug", require: true
