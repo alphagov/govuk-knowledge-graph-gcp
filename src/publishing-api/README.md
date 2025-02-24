@@ -6,8 +6,8 @@ A virtual machine fetches the scripts in this directory from the copy of the HEA
 
 1. Fetch the Publishing API database backup file.  It knows where to find it from environment variables that are set when the [workflow][workflow-terraform] starts the virtual machine ([more details][docker]).
 2. Use `pg_restore` to extract each table's data as plain text.  There is no need to actually restore the data to a running PostgreSQL instance.
-3. `TRUNCATE` (empty) each table in BigQuery.
-4. Append the new data to each table in BigQuery.  By truncating/appending, BigQuery retains the schema of each table.
+2. Use `pg_restore` to extract each table's data as plain text.  There is no need to actually restore the data to a running PostgreSQL instance.
+4. Upload the data into BigQuery.
 
 In March 2024 this took about 65 minutes.  A Makefile is used to parallelise the tasks.  The `editions` table takes longer than all the others put together, so there is no point using a machine with more than two cores.
 

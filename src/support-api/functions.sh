@@ -12,6 +12,8 @@ export_to_bigquery () {
 
   # Export data to the SSD, which is mapped to /data
   tsv_name="/data/table_${table_name}"
+
+  schema_name="schema_${table_name}"
   dataset_name="support_api"
 
   # We have to use uncompressed CSV for the largest table, so we might as well
@@ -52,9 +54,18 @@ export_to_bigquery () {
     | sed -e '/^\\\./Q' \
     > $tsv_name
 
-  # Empty the table
-  bq query --use_legacy_sql=false "TRUNCATE TABLE ${dataset_name}.${table_name}"
+  # Download the existing schema
+  bq show \
+    --schema=true \
+    --format=json \
+    "${dataset_name}.${table_name}" \
+    > $schema_name
 
+  # Load data into the the table, using the "write disposition", which is
+  # equivalent to WRITE_TRUNCATE in SQL. It empties the table and wipes its
+  # schema, before inserting new rows. This is done within a transaction. We
+  # preserve the schema by downloading it first with `bq show`, and then using
+  # it as an argument to `bq load`.
   bq load \
     --source_format="CSV" \
     --field_delimiter="\t" \
@@ -62,6 +73,7 @@ export_to_bigquery () {
     --quote="" \
     --skip_leading_rows=1 \
     --noreplace \
+    --schema="${schema_name}" \
     "${dataset_name}.${table_name}" \
     "${tsv_name}"
 }
