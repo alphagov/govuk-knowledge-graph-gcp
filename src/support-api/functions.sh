@@ -72,7 +72,7 @@ export_to_bigquery () {
     --null_marker="\\N" \
     --quote="" \
     --skip_leading_rows=1 \
-    --noreplace \
+    --replace=true \
     --schema="${schema_name}" \
     "${dataset_name}.${table_name}" \
     "${tsv_name}"
