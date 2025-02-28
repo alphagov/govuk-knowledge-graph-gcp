@@ -47,7 +47,7 @@ bigquery_private_data_viewer_members = [
 
 # BigQuery dataset: public
 bigquery_public_data_viewer_members = [
-  "group:govgraph-private-data-readers@digital.cabinet-office.gov.uk"
+  "group:govgraph-private-data-readers@digital.cabinet-office.gov.uk",
   "serviceAccount:service-942729121218@gcp-sa-dataform.iam.gserviceaccount.com",
 ]
 
