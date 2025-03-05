@@ -30,6 +30,8 @@ end
 def parse_html(html, url)
   hyperlinks = []
   abbreviations = []
+  images = []
+  tables = []
 
   begin
     Timeout.timeout(TIMEOUT_SECONDS) do
@@ -37,6 +39,9 @@ def parse_html(html, url)
       # Extract things from the rendered HTML
       hyperlinks = extract_hyperlinks(html_doc, url)
       abbreviations = extract_abbreviations(html_doc)
+      images = extract_image(html_doc)
+      tables = extract_table(html_doc)
+
 
       # TODO: extract other things from the HTML
     rescue Timeout::Error
@@ -49,6 +54,8 @@ def parse_html(html, url)
   {
     "hyperlinks" => hyperlinks,
     "abbreviations" => abbreviations,
+    "images" => images,
+    "tables" => tables,
     "error" => error_message,
   }
 end
@@ -123,4 +130,30 @@ def extract_abbreviations(html_doc)
   end
 
   abbreviations
+end
+
+def extract_image(html_doc)
+  images = []
+
+  html_doc.css("img").each do |images|
+    images.push({
+      "title" => images.attribute("title"), # Expansion
+      "text" => images.text, # Images
+    })
+  end
+
+  images
+end
+
+def extract_table(html_doc)
+  tables = []
+
+  html_doc.css("table").each do |tables|
+    tables.push({
+      "title" => tables.attribute("title"), # Expansion
+      "text" => tables.text, # Tables
+    })
+  end
+
+  tables
 end
