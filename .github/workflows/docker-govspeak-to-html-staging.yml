@@ -56,8 +56,9 @@ jobs:
     - name: Docker build
       id: build
       run: |
-        export TAG=`echo $GITHUB_REF | awk -F/ '{print $NF}'`
-        echo $TAG
+        TAG=$(echo "$GITHUB_REF" | awk -F/ '{print $NF}')
+        export TAG
+        echo "$TAG"
         docker build -t "$REGISTRY_HOSTNAME"/"$IMAGE":"$TAG" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" .
@@ -66,8 +67,9 @@ jobs:
     - name: Docker push
       id: push
       run: |
-        export TAG=`echo $GITHUB_REF | awk -F/ '{print $NF}'`
-        echo $TAG
+        TAG=$(echo "$GITHUB_REF" | awk -F/ '{print $NF}')
+        export TAG
+        echo "$TAG"
         docker push "$REGISTRY_HOSTNAME"/"$IMAGE":"$TAG"
         docker tag "$REGISTRY_HOSTNAME"/"$IMAGE":"$TAG" "$REGISTRY_HOSTNAME"/"$IMAGE":latest
         docker push "$REGISTRY_HOSTNAME"/"$IMAGE":latest
