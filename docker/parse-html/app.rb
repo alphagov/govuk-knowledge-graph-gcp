@@ -163,10 +163,9 @@ def extract_tables(html_doc)
 
   html_doc.css("table").each do |table|
     tables.push({
-      "html" => table.to_s # html string of the table tag
+      "html" => table.to_s, # html string of the table tag
     })
   end
 
   tables
 end
-
