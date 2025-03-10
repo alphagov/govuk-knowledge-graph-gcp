@@ -39,9 +39,8 @@ def parse_html(html, url)
       # Extract things from the rendered HTML
       hyperlinks = extract_hyperlinks(html_doc, url)
       abbreviations = extract_abbreviations(html_doc)
-      images = extract_image(html_doc)
-      tables = extract_table(html_doc)
-
+      tables = extract_tables(html_doc)
+      images = extract_images(html_doc)
 
       # TODO: extract other things from the HTML
     rescue Timeout::Error
@@ -54,8 +53,8 @@ def parse_html(html, url)
   {
     "hyperlinks" => hyperlinks,
     "abbreviations" => abbreviations,
-    "images" => images,
     "tables" => tables,
+    "images" => images,
     "error" => error_message,
   }
 end
@@ -132,28 +131,42 @@ def extract_abbreviations(html_doc)
   abbreviations
 end
 
-def extract_image(html_doc)
+# A function to extract <img> elements from a parsed HTML document.
+#
+# Returns an array of hashes, one per <img> element. Each hash contains a "src"
+# key, with a string value that is the URL of the image, and an
+# "alt" key, with a string value that is the alt-text of the image.
+#
+# @param html_doc A nokokiri HTML document
+# @param url [String] URL of the HTML document
+def extract_images(html_doc)
   images = []
 
-  html_doc.css("img").each do |images|
+  html_doc.css("img").each do |img|
     images.push({
-      "title" => images.attribute("title"), # Expansion
-      "text" => images.text, # Images
+      "src" => img.attribute("src").to_s,
+      "alt" => img.attribute("alt").to_s,
     })
   end
 
   images
 end
 
-def extract_table(html_doc)
+# A function to extract <table> elements from a parsed HTML document.
+#
+# Returns an array of hashes, one per <table> element. Each hash contains a
+# "table" key, with a string value that is the HTML of the table.
+#
+# @param html_doc A nokokiri HTML document
+def extract_tables(html_doc)
   tables = []
 
-  html_doc.css("table").each do |tables|
+  html_doc.css("table").each do |table|
     tables.push({
-      "title" => tables.attribute("title"), # Expansion
-      "text" => tables.text, # Tables
+      "html" => table.to_s # html string of the table tag
     })
   end
 
   tables
 end
+
