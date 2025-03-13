@@ -24,6 +24,7 @@ resource "google_workflows_workflow" "govuk_database_backups" {
       publishing_api_metadata_value = jsonencode(module.publishing-api-container.metadata_value)
       support_api_metadata_value    = jsonencode(module.support-api-container.metadata_value)
       publisher_metadata_value      = jsonencode(module.publisher-container.metadata_value)
+      whitehall_metadata_value      = jsonencode(module.whitehall-container.metadata_value)
     }
   )
 }

@@ -415,7 +415,8 @@ data "google_iam_policy" "project" {
     role = "roles/logging.logWriter"
     members = [
       google_service_account.workflow_govuk_database_backups.member,
-      google_service_account.workflow_redis_cli.member
+      google_service_account.workflow_redis_cli.member,
+      google_service_account.gce_whitehall.member
     ]
   }
 
