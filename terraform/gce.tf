@@ -158,35 +158,7 @@ module "publishing-api-container" {
         value = var.zone
       }
     ]
-    volumeMounts = [
-      {
-        mountPath = "/var/lib/postgresql/data"
-        name      = "local-ssd-postgresql-data"
-        readOnly  = false
-      },
-      {
-        mountPath = "/data"
-        name      = "local-ssd-data"
-        readOnly  = false
-      }
-    ]
   }
-
-  volumes = [
-    # https://github.com/terraform-google-modules/terraform-google-container-vm/issues/66
-    {
-      name = "local-ssd-postgresql-data"
-      hostPath = {
-        path = "/mnt/disks/local-ssd/postgresql-data"
-      }
-    },
-    {
-      name = "local-ssd-data"
-      hostPath = {
-        path = "/mnt/disks/local-ssd/data"
-      }
-    }
-  ]
 
   restart_policy = "Never"
 }
@@ -355,15 +327,7 @@ resource "google_compute_instance_template" "publishing_api" {
   disk {
     boot         = true
     source_image = module.publishing-api-container.source_image
-    disk_size_gb = 10
-  }
-
-  disk {
-    device_name  = "local-ssd"
-    interface    = "NVME"
-    disk_type    = "local-ssd"
-    disk_size_gb = "375" # Must be exactly 375GB for a local SSD disk
-    type         = "SCRATCH"
+    disk_size_gb = 1024
   }
 
   metadata = {
