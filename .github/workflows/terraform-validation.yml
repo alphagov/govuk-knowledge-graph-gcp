@@ -17,10 +17,12 @@ jobs:
         working-directory: ${{ matrix.directory }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install terraform
         uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "1.9.8"
 
       - name: Format terraform
         run: terraform fmt -recursive -check -diff
