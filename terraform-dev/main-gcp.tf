@@ -172,6 +172,10 @@ variable "bigquery_test_data_viewer_members" {
   type = list(string)
 }
 
+variable "bigquery_whitehall_data_viewer_members" {
+  type = list(string)
+}
+
 terraform {
   required_providers {
     google = {

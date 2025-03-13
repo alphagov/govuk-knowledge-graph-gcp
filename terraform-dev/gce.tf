@@ -41,6 +41,12 @@ resource "google_service_account" "gce_redis_cli" {
   description  = "Service Account for the Redis CLI instance on GCE"
 }
 
+resource "google_service_account" "gce_whitehall" {
+  account_id   = "gce-whitehall"
+  display_name = "Service Account for the whitehall instance"
+  description  = "Service account for the whitehall instance on GCE"
+}
+
 # Allow a workflow to attach the publishing-api service account to an instance.
 data "google_iam_policy" "service_account-gce_publishing_api" {
   binding {
