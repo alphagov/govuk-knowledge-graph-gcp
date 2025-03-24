@@ -304,7 +304,26 @@ SELECT
         )
       FROM UNNEST(JSON_EXTRACT_ARRAY(extracted_content, "$.abbreviations")) AS abbreviation
     )
-  ) AS abbreviations
+  ) AS abbreviations,
+  `${project_id}.functions.dedup`(
+    ARRAY(
+      SELECT
+        STRUCT(
+          JSON_EXTRACT_SCALAR(single_table, "$.html") AS html
+        )
+      FROM UNNEST(JSON_EXTRACT_ARRAY(extracted_content, "$.tables")) AS single_table
+    )
+  ) AS tables,
+  `${project_id}.functions.dedup`(
+    ARRAY(
+      SELECT
+        STRUCT(
+          JSON_EXTRACT_SCALAR(image, "$.src") AS src,
+          JSON_EXTRACT_SCALAR(image, "$.alt") AS alt
+        )
+      FROM UNNEST(JSON_EXTRACT_ARRAY(extracted_content, "$.images")) AS image
+    )
+  ) AS images
 FROM extracts
 ;
 
