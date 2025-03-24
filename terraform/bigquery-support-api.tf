@@ -1,4 +1,4 @@
-# A dataset of tables from the Publishing API postgres database
+# A dataset of tables from the Support API postgres database
 
 resource "google_bigquery_dataset" "support_api" {
   dataset_id            = "support_api"
@@ -28,7 +28,6 @@ data "google_iam_policy" "bigquery_dataset_support_api" {
     members = concat(
       [
         "projectReaders",
-        google_service_account.bigquery_scheduled_queries_search.member,
       ],
       var.bigquery_support_api_data_viewer_members,
     )

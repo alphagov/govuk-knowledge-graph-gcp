@@ -89,6 +89,9 @@ bigquery_publishing_api_data_viewer_members = [
 
 # BigQuery dataset: support-api
 bigquery_support_api_data_viewer_members = [
+  "serviceAccount:data-engineering@govuk-user-feedback-dev.iam.gserviceaccount.com",
+  "serviceAccount:data-engineering@govuk-user-feedback-staging.iam.gserviceaccount.com",
+  "serviceAccount:data-engineering@govuk-user-feedback.iam.gserviceaccount.com",
 ]
 
 # BigQuery dataset: search

@@ -120,6 +120,35 @@ main:
                           value: ${publisher_metadata_value}
           - return_started_publisher:
               return: $${"Started publisher instance"}
+        - condition: $${text.match_regex(object_name, "^whitehall-mysql/\\d{4}-\\d{2}-\\d{2}T\\d{6}Z-whitehall_production\\.gz$")}
+          steps:
+            - log_starting_whitehall_instance:
+                call: sys.log
+                args:
+                  text: "Starting whitehall instance"
+                  severity: INFO
+            - start_whitehall:
+                call: googleapis.compute.v1.instances.insert
+                args:
+                  project: ${project_id}
+                  zone: ${zone}
+                  sourceInstanceTemplate: https://www.googleapis.com/compute/v1/projects/${project_id}/global/instanceTemplates/whitehall
+                  body:
+                    name: whitehall
+                    metadata:
+                      items:
+                        - key: object_bucket
+                          value: $${object_bucket}
+                        - key: object_name
+                          value: $${object_name}
+                        - key: google-logging-enabled
+                          value: true
+                        - key: serial-port-logging-enable
+                          value: true
+                        - key: gce-container-declaration
+                          value: ${whitehall_metadata_value}
+            - return_started_whitehall:
+                return: $${"Started whitehall instance"}
   - log_not_starting_instance:
       call: sys.log
       args:
