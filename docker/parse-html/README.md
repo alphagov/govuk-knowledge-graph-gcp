@@ -7,6 +7,10 @@ extracted from the HTML, in the form that BigQuery expects (JSON).
   cleaned-up version of their URL, and the text that they display).
 * `abbreviations`: an array of objects that describe abbreviations (the
   abbreviation, and the thing that is abbreviated).
+* `tables`: an array of objects that describe tables. Currently it only
+  includes a string of HTML.
+* `images`: an array of objects that describe images. Currently it includes the
+  URL of the image, and its alt text.
 
 ## BigQuery Remote Functions
 
