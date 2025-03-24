@@ -119,5 +119,36 @@
         "description": "The abbreviated form"
       }
     ]
+  },
+  {
+    "mode": "REPEATED",
+    "name": "tables",
+    "type": "RECORD",
+    "description": "Array of tables from the body of the page, i.e. <table> tags",
+    "fields": [
+      {
+        "name": "html",
+        "type": "STRING",
+        "description": "HTML of the table"
+      }
+    ]
+  },
+  {
+    "mode": "REPEATED",
+    "name": "images",
+    "type": "RECORD",
+    "description": "Array of images from the body of the page, i.e. <img> tags",
+    "fields": [
+      {
+        "name": "src",
+        "type": "STRING",
+        "description": "The URL of the image"
+      },
+      {
+        "name": "alt",
+        "type": "STRING",
+        "description": "Alt text of the image (the <img alt=\"example\"> attribute)"
+      }
+    ]
   }
 ]
