@@ -30,6 +30,8 @@ end
 def parse_html(html, url)
   hyperlinks = []
   abbreviations = []
+  images = []
+  tables = []
 
   begin
     Timeout.timeout(TIMEOUT_SECONDS) do
@@ -37,6 +39,8 @@ def parse_html(html, url)
       # Extract things from the rendered HTML
       hyperlinks = extract_hyperlinks(html_doc, url)
       abbreviations = extract_abbreviations(html_doc)
+      tables = extract_tables(html_doc)
+      images = extract_images(html_doc)
 
       # TODO: extract other things from the HTML
     rescue Timeout::Error
@@ -49,6 +53,8 @@ def parse_html(html, url)
   {
     "hyperlinks" => hyperlinks,
     "abbreviations" => abbreviations,
+    "tables" => tables,
+    "images" => images,
     "error" => error_message,
   }
 end
@@ -123,4 +129,43 @@ def extract_abbreviations(html_doc)
   end
 
   abbreviations
+end
+
+# A function to extract <img> elements from a parsed HTML document.
+#
+# Returns an array of hashes, one per <img> element. Each hash contains a "src"
+# key, with a string value that is the URL of the image, and an
+# "alt" key, with a string value that is the alt-text of the image.
+#
+# @param html_doc A nokokiri HTML document
+# @param url [String] URL of the HTML document
+def extract_images(html_doc)
+  images = []
+
+  html_doc.css("img").each do |img|
+    images.push({
+      "src" => img.attribute("src").to_s,
+      "alt" => img.attribute("alt").to_s,
+    })
+  end
+
+  images
+end
+
+# A function to extract <table> elements from a parsed HTML document.
+#
+# Returns an array of hashes, one per <table> element. Each hash contains a
+# "table" key, with a string value that is the HTML of the table.
+#
+# @param html_doc A nokokiri HTML document
+def extract_tables(html_doc)
+  tables = []
+
+  html_doc.css("table").each do |table|
+    tables.push({
+      "html" => table.to_s, # html string of the table tag
+    })
+  end
+
+  tables
 end

@@ -146,4 +146,29 @@ describe "parse_html() function" do
       })
     end
   end
+
+  it "extracts tables" do
+    load_temporary "app.rb" do
+      response = request([[
+        "<table>",
+        "",
+      ]])
+      expect(response.body[0]["tables"][0]).to eq({
+        "html" => "<table></table>",
+      })
+    end
+  end
+
+  it "extracts images" do
+    load_temporary "app.rb" do
+      response = request([[
+        "<img src=\"example.png\" alt=\"Example\"/>",
+        "https://www.gov.uk",
+      ]])
+      expect(response.body[0]["images"][0]).to eq({
+        "src" => "example.png",
+        "alt" => "Example",
+      })
+    end
+  end
 end
