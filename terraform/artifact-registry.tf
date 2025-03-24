@@ -60,6 +60,7 @@ data "google_iam_policy" "artifact_registry_docker" {
       google_service_account.gce_support_api.member,
       google_service_account.gce_publisher.member,
       google_service_account.gce_redis_cli.member,
+      google_service_account.gce_whitehall.member,
     ]
   }
 
