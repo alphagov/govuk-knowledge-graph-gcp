@@ -29,7 +29,7 @@ Allow the job to be executed ad hoc to fetch responses from a given day, for the
 
 #### Running costs
 
-The running costs of the workflow will probably be a few pence per day. It is priced per step that is executed.
+The running costs of the workflow will probably be a few pence per day. It is [priced](https://cloud.google.com/workflows/pricing) per step that is executed.
 
 Each API would cost five steps, because of the way that Workflows implement for-loops and try-retry-except blocks.
 
