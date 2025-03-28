@@ -22,6 +22,16 @@ People are granted access by membership of Google Groups.  Other Google Cloud Pl
 * [govgraph-private-data-viewers](https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govsearch-data-viewers/about) has `roles/bigquery.dataViewer` in relation to each BigQuery dataset except 'test', and `roles/bigquery.jobUser` to be able to run queries that are billed to the billing account of the `govuk-knowledge-graph*` projects.
 * [govgraph-developers](https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govsearch-developers/members) has the `roles/owner` role in relation to each `govuk-knowledge-graph*` project.
 
+### IAM roles/Permissions required in other projects
+
+#### govuk-s3-mirror
+
+Search for `govuk-knowledge-graph` in https://github.com/alphagov/govuk-s3-mirror to see what permissions are granted there. That project also publishes to Pub/Sub topics in this project.
+
+#### gds-bq-reporting
+
+The service accounts that this project uses to publish logs to the `gds-bq-reporting` project must be given the `roles/logging.bucketWriter` role in that project.
+
 ## Tests
 
 There are hardly any tests.

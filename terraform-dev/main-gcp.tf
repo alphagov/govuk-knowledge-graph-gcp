@@ -420,6 +420,13 @@ data "google_iam_policy" "project" {
   }
 
   binding {
+    role = "roles/logging.bucketWriter"
+    members = [
+      google_service_account.log_writer.member,
+    ]
+  }
+
+  binding {
     role = "roles/networkmanagement.serviceAgent"
     members = [
       "serviceAccount:service-${var.project_number}@gcp-sa-networkmanagement.iam.gserviceaccount.com",
