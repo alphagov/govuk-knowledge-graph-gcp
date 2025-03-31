@@ -20,6 +20,10 @@ Open a recent, successful [workflow-run][workflow-runs]. Its state will be `retu
 
 If the most recent successful workflow run was a few days ago, then the Whitehall database backup file that it responded to might have been deleted. In this case, make a new copy of one of the Whitehall database backup files that do exist in the [bucket][bucket]. Doing so will create a new message in Pub/Sub, which will soon trigger the workflow to start the VM.
 
+## Local build
+
+To build the image locally, decrease the `innodb_buffer_pool_size`, by overriding the values in [my.cnf][./my.cnf].
+
 [govuk-s3-mirror]: https://github.com/alphagov/govuk-s3-mirror
 [bucket]: https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-database-backups/whitehall-mysql
 [workflow-terraform]: ../../terraform/workflows/govuk-database-backups.yaml
@@ -28,3 +32,4 @@ If the most recent successful workflow run was a few days ago, then the Whitehal
 [github-action]: ../../.github/workflows/docker-whitehall.yml
 [entrypoint.sh]: ./entrypoint.sh
 [Dockerfile]: ./Dockerfile
+[my.cnf]: ./my.cnf

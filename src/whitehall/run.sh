@@ -44,8 +44,11 @@ mariadbd --user=mysql &
 sleep 30
 
 # Restore the dump to mariadb and export it to csv and then bigquery (via Makefile)
-mysql -u root -e 'create database whitehall;'
+echo "Creating whitehall database..."
+mysql -u root -e 'create database whitehall; use whitehall; SET unique_checks=0; SET foreign_key_checks=0; SET autocommit=0;'
+echo "Restoring whitehall database..."
 gunzip < "$FILE_PATH" | mysql -u root whitehall
+echo "Uploading to BigQuery..."
 make
 
 # Delete this instance

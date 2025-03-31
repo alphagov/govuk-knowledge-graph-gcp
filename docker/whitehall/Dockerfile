@@ -35,6 +35,7 @@ RUN mkdir -p /var/lib/mysql && \
     chown mysql:mysql /run/mysqld/ && \
     mariadb-install-db --datadir=/var/lib/mysql
 
+COPY my.cnf /etc/mysql/conf.d/mysql.cnf
 
 # Reset the postgres entrypoint to the docker default, so that we can run our
 # own CMD
