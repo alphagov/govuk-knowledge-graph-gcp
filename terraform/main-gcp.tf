@@ -160,6 +160,10 @@ variable "bigquery_publishing_api_data_viewer_members" {
   type = list(string)
 }
 
+variable "bigquery_smart_survey_data_viewer_members" {
+  type = list(string)
+}
+
 variable "bigquery_support_api_data_viewer_members" {
   type = list(string)
 }
@@ -183,7 +187,7 @@ variable "bigquery_asset_manager_data_viewer_members" {
 terraform {
   required_providers {
     google = {
-      version = "6.20.0"
+      version = "6.27.0"
     }
   }
 }
@@ -306,6 +310,7 @@ data "google_iam_policy" "project" {
         google_service_account.gce_whitehall.member,
         google_service_account.gce_asset_manager.member,
         google_service_account.govgraphsearch.member,
+        google_service_account.workflow_smart_survey.member,
       ],
       var.bigquery_job_user_members
     )
@@ -510,6 +515,13 @@ data "google_iam_policy" "project" {
     role = "roles/workflows.serviceAgent"
     members = [
       "serviceAccount:service-${var.project_number}@gcp-sa-workflows.iam.gserviceaccount.com",
+    ]
+  }
+
+  binding {
+    role = "roles/workflows.invoker"
+    members = [
+      google_service_account.workflow_smart_survey.member,
     ]
   }
 
