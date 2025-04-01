@@ -160,6 +160,10 @@ variable "bigquery_publishing_api_data_viewer_members" {
   type = list(string)
 }
 
+variable "bigquery_smart_survey_data_viewer_members" {
+  type = list(string)
+}
+
 variable "bigquery_support_api_data_viewer_members" {
   type = list(string)
 }
@@ -175,7 +179,7 @@ variable "bigquery_test_data_viewer_members" {
 terraform {
   required_providers {
     google = {
-      version = "6.20.0"
+      version = "6.27.0"
     }
   }
 }
@@ -296,6 +300,7 @@ data "google_iam_policy" "project" {
         google_service_account.gce_support_api.member,
         google_service_account.gce_publisher.member,
         google_service_account.govgraphsearch.member,
+        google_service_account.workflow_smart_survey.member,
       ],
       var.bigquery_job_user_members
     )

@@ -73,3 +73,27 @@ resource "google_workflows_workflow" "redis_cli" {
     }
   )
 }
+
+# A service account for the smart-survey workflow
+resource "google_service_account" "workflow_smart_survey" {
+  account_id   = "workflow-smart-survey"
+  display_name = "Service account for the smart-survey workflow"
+}
+
+# A workflow to start a virtual machine to access the Memorystore Redis instance
+resource "google_workflows_workflow" "smart_survey" {
+  name            = "smart-survey"
+  region          = var.region
+  description     = "Fetch from the Smart Survey API into BigQuery"
+  service_account = google_service_account.workflow_smart_survey.id
+  execution_history_level = "EXECUTION_HISTORY_DETAILED"
+
+  source_contents = templatefile(
+    "workflows/smart-survey.yaml",
+    {
+      bucket_name = google_storage_bucket.smart_survey.name,
+      schema = indent(32,
+        yamlencode(jsondecode(file("schemas/smart-survey/responses.json"))))
+    }
+  )
+}
