@@ -38,5 +38,10 @@
     "mode": "NULLABLE",
     "name": "edition_id",
     "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "link_set_content_id",
+    "type": "STRING"
   }
 ]
