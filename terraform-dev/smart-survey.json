@@ -1,0 +1,17 @@
+{
+  "jsonOptions": {
+    "encoding": "UTF-8"
+  },
+  "schema": {
+    "fields": [
+      {
+        "name": "json",
+        "type": "JSON"
+      }
+    ]
+  },
+  "sourceFormat": "NEWLINE_DELIMITED_JSON",
+  "sourceUris": [
+    "govuk-knowledge-graph-staging-smart-survey/59548d8b-5d16-42c1-85e7-388930214d95/*"
+  ]
+}

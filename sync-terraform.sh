@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Directories to sync from and to
-SOURCE_DIR="terraform-dev"
-TARGET_DIRS=("terraform-staging" "terraform")
+SOURCE_DIR="terraform-staging"
+TARGET_DIRS=("terraform-dev" "terraform")
 
 # Exclude certain files
 EXCLUDE_FILE="diff-exclude"
