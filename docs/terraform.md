@@ -18,7 +18,7 @@ The GCP API isn't perfect, and nor is terraform, and the most noticeable nuisanc
 
 Pull requests that change files in any of the terraform directories will trigger GitHub actions.
 
-* [Diff][github-action-diff] will fail if [`diff-terraform.sh`][diff] detects any differences between the configuration in each terraform directory.  Files and subdirectories listed in [`diff-exclude`][diff-exclude] are ignored, which is how GovSearch can be deployed differently in each environment.
+* [Diff][github-action-diff] will fail if [`diff-terraform.sh`][diff] detects any differences between the configuration in each terraform directory.  Files and subdirectories listed in [`diff-exclude`][diff-exclude] are ignored, which is how GovSearch can be deployed differently in each environment. You can use the [`sync-terraform.sh`][sync-terraform] script to sync your changes from the dev terraform project to the staging and production projects.
 * [Validate][github-action-validate] will fail if `terraform validate` fails or if `terraform fmt` would change any files.
 
 Pull requests should not be merged until those checks pass.  That is no guarantee, however, that what is actually deployed is the same as what has been merged.
@@ -65,3 +65,4 @@ When creating something that is similar to something that already exists, look f
 [github-action-validate]: ../.github/workflows/diff-terraform.yml
 [diff]: ../diff-terraform.sh
 [diff-exclude]: ../diff-exclude
+[sync-terraform]: ../sync-terraform.sh
