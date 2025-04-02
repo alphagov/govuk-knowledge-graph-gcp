@@ -36,7 +36,7 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v2'
         with:
-          workload_identity_provider: 'projects/628722085506/locations/global/workloadIdentityPools/github-pool/providers/github-pool-provider'
+          workload_identity_provider: 'projects/19513753240/locations/global/workloadIdentityPools/github-pool/providers/github-pool-provider'
           service_account: 'artifact-registry-docker@govuk-knowledge-graph.iam.gserviceaccount.com'
 
       # Further steps are automatically authenticated
