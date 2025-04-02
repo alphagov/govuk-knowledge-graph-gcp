@@ -41,6 +41,12 @@ resource "google_service_account" "gce_redis_cli" {
   description  = "Service Account for the Redis CLI instance on GCE"
 }
 
+resource "google_service_account" "gce_whitehall" {
+  account_id   = "gce-whitehall"
+  display_name = "Service Account for the whitehall instance"
+  description  = "Service account for the whitehall instance on GCE"
+}
+
 # Allow a workflow to attach the publishing-api service account to an instance.
 data "google_iam_policy" "service_account-gce_publishing_api" {
   binding {
@@ -100,6 +106,21 @@ data "google_iam_policy" "service_account-gce_redis_cli" {
 resource "google_service_account_iam_policy" "gce_redis_cli" {
   service_account_id = google_service_account.gce_redis_cli.name
   policy_data        = data.google_iam_policy.service_account-gce_redis_cli.policy_data
+}
+
+# Allow a workflow to attach the whitehall service account to an instance.
+data "google_iam_policy" "service_account-gce_whitehall" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+    members = [
+      google_service_account.workflow_govuk_database_backups.member,
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "gce_whitehall" {
+  service_account_id = google_service_account.gce_whitehall.name
+  policy_data        = data.google_iam_policy.service_account-gce_whitehall.policy_data
 }
 
 # terraform import google_compute_network.default default
@@ -316,6 +337,32 @@ module "redis-cli-container" {
   restart_policy = "Never"
 }
 
+module "whitehall-container" {
+  source  = "terraform-google-modules/container-vm/google"
+  version = "~> 2.0"
+
+  container = {
+    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/whitehall:latest"
+    tty : true
+    stdin : true
+    securityContext = {
+      privileged : true
+    }
+    env = [
+      {
+        name  = "PROJECT_ID"
+        value = var.project_id
+      },
+      {
+        name  = "ZONE"
+        value = var.zone
+      }
+    ]
+  }
+
+  restart_policy = "Never"
+}
+
 resource "google_compute_instance_template" "publishing_api" {
   name = "publishing-api"
   # 2 CPUs are enough that, while the largest table is being restored, all the
@@ -452,6 +499,35 @@ resource "google_compute_instance_template" "redis_cli" {
 
   service_account {
     email  = google_service_account.gce_redis_cli.email
+    scopes = ["cloud-platform"]
+  }
+}
+
+resource "google_compute_instance_template" "whitehall" {
+  name         = "whitehall"
+  machine_type = "c2d-highmem-2"
+
+  disk {
+    boot         = true
+    source_image = module.whitehall-container.source_image
+    disk_size_gb = 64
+  }
+
+  metadata = {
+    google-logging-enabled     = true
+    serial-port-logging-enable = true
+    gce-container-declaration  = module.whitehall-container.metadata_value
+  }
+
+  network_interface {
+    network = "default"
+    access_config {
+      network_tier = "STANDARD"
+    }
+  }
+
+  service_account {
+    email  = google_service_account.gce_whitehall.email
     scopes = ["cloud-platform"]
   }
 }
