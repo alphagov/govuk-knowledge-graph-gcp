@@ -50,7 +50,7 @@ export_attachments_to_bigquery() {
   local table_name="attachments"
   local csv_name="/data/mysql/table_${table_name}"
 
-   mysql -u root ${dataset_name} -e "SELECT id,created_at,updated_at,title,attachment_data_id,attachable_id,attachable_type,type,slug,locale,content_id,deleted
+   mysql -u root ${dataset_name} -e "SELECT id,created_at,updated_at,REPLACE(REPLACE(title,'\n',' '),'\"','') as title,attachment_data_id,attachable_id,attachable_type,type,slug,locale,content_id,deleted
                                      INTO OUTFILE '${csv_name}'
                                      FIELDS TERMINATED BY ','
                                      ENCLOSED BY '\"'
