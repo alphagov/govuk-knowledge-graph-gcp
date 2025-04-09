@@ -10,7 +10,8 @@ export_editions_to_bigquery () {
 
   mysql -u root ${dataset_name} -e "SELECT id,created_at,updated_at,document_id,state,type,major_change_published_at,first_published_at,force_published,public_timestamp,scheduled_publication,access_limited,opening_at,closing_at,political,primary_locale,auth_bypass_id,government_id
                                     INTO OUTFILE '${csv_name}'
-                                    FIELDS TERMINATED BY ','
+                                    FIELDS ESCAPED BY ''
+                                    TERMINATED BY ','
                                     ENCLOSED BY '\"'
                                     LINES TERMINATED BY '\n'
                                     FROM editions;"
@@ -22,9 +23,10 @@ export_assets_to_bigquery () {
   local table_name="assets"
   local csv_name="/data/mysql/table_${table_name}"
 
-   mysql -u root ${dataset_name} -e "SELECT id,asset_manager_id,variant,created_at,updated_at,assetable_type,assetable_id,filename
+   mysql -u root ${dataset_name} -e "SELECT id,asset_manager_id,variant,created_at,updated_at,assetable_type,assetable_id,REPLACE(filename,'\"','\"\"') as filename
                                      INTO OUTFILE '${csv_name}'
-                                     FIELDS TERMINATED BY ','
+                                     FIELDS ESCAPED BY ''
+                                     TERMINATED BY ','
                                      ENCLOSED BY '\"'
                                      LINES TERMINATED BY '\n'
                                      FROM assets;"
@@ -36,9 +38,10 @@ export_attachment_data_to_bigquery () {
   local table_name="attachment_data"
   local csv_name="/data/mysql/table_${table_name}"
 
-   mysql -u root ${dataset_name} -e "SELECT id,carrierwave_file,content_type,file_size,number_of_pages,created_at,updated_at,replaced_by_id
+   mysql -u root ${dataset_name} -e "SELECT id,REPLACE(carrierwave_file,'\"','\"\"') as carrierwave_file,REPLACE(content_type,'\"','\"\"') as content_type,file_size,number_of_pages,created_at,updated_at,replaced_by_id
                                      INTO OUTFILE '${csv_name}'
-                                     FIELDS TERMINATED BY ','
+                                     FIELDS ESCAPED BY ''
+                                     TERMINATED BY ','
                                      ENCLOSED BY '\"'
                                      LINES TERMINATED BY '\n'
                                      FROM attachment_data;"
@@ -50,9 +53,10 @@ export_attachments_to_bigquery() {
   local table_name="attachments"
   local csv_name="/data/mysql/table_${table_name}"
 
-   mysql -u root ${dataset_name} -e "SELECT id,created_at,updated_at,REPLACE(REPLACE(title,'\n',' '),'\"','') as title,attachment_data_id,attachable_id,attachable_type,type,slug,locale,content_id,deleted
+   mysql -u root ${dataset_name} -e "SELECT id,created_at,updated_at,REPLACE(title,'\"','\"\"') as title,attachment_data_id,attachable_id,attachable_type,type,slug,locale,content_id,deleted
                                      INTO OUTFILE '${csv_name}'
-                                     FIELDS TERMINATED BY ','
+                                     FIELDS ESCAPED BY ''
+                                     TERMINATED BY ','
                                      ENCLOSED BY '\"'
                                      LINES TERMINATED BY '\n'
                                      FROM attachments;"
@@ -81,8 +85,8 @@ upload_to_bq () {
     bq load \
       --source_format="CSV" \
       --field_delimiter="," \
-      --null_marker="\\N" \
-      --quote="\"" \
+      --null_marker="NULL" \
+      --allow_quoted_newlines \
       --replace=true \
       --schema="${schema_name}" \
       "${dataset_name}.${table_name}" \
