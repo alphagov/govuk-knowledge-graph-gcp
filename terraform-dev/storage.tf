@@ -51,6 +51,7 @@ data "google_iam_policy" "bucket_repository" {
       google_service_account.gce_support_api.member,
       google_service_account.gce_publisher.member,
       google_service_account.gce_whitehall.member,
+      google_service_account.gce_asset_manager.member,
     ]
   }
 
