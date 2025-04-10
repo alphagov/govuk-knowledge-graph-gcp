@@ -176,6 +176,10 @@ variable "bigquery_whitehall_data_viewer_members" {
   type = list(string)
 }
 
+variable "bigquery_asset_manager_data_viewer_members" {
+  type = list(string)
+}
+
 terraform {
   required_providers {
     google = {
@@ -300,6 +304,7 @@ data "google_iam_policy" "project" {
         google_service_account.gce_support_api.member,
         google_service_account.gce_publisher.member,
         google_service_account.gce_whitehall.member,
+        google_service_account.gce_asset_manager.member,
         google_service_account.govgraphsearch.member,
       ],
       var.bigquery_job_user_members
@@ -370,6 +375,7 @@ data "google_iam_policy" "project" {
       google_service_account.gce_support_api.member,
       google_service_account.gce_publisher.member,
       google_service_account.gce_whitehall.member,
+      google_service_account.gce_asset_manager.member,
       google_service_account.workflow_govuk_database_backups.member,
       google_service_account.workflow_redis_cli.member
     ]
@@ -422,7 +428,8 @@ data "google_iam_policy" "project" {
     members = [
       google_service_account.workflow_govuk_database_backups.member,
       google_service_account.workflow_redis_cli.member,
-      google_service_account.gce_whitehall.member
+      google_service_account.gce_whitehall.member,
+      google_service_account.gce_asset_manager.member
     ]
   }
 
