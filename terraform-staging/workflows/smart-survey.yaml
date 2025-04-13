@@ -85,7 +85,7 @@ main:
     - calculate_page_range:
         assign:
         - pagination_total: $${int(first_api_response.headers["X-Ss-Pagination-Total"])}
-        - max_page: $${pagination_total // page_size + min(1, pagination_total % page_size)}
+        - max_page: $${pagination_total // page_size + math.min(1, pagination_total % page_size)}
 
     # Iteratively fetch each page of results and send to BigQuery
     - iterative_api_calls:
