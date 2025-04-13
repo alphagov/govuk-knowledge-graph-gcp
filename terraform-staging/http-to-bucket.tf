@@ -9,8 +9,8 @@ resource "google_cloud_run_v2_service" "http_to_bucket" {
       image = "europe-west2-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.docker.repository_id}/http-to-bucket:latest"
       resources {
         limits = {
-          cpu    = "1000m"  # If we put "1" or nothing, terraform reapplies it.
-          memory = "256Mi" # By experiment, necessary and sufficient.
+          cpu    = "1000m" # If we put "1" or nothing, terraform reapplies it.
+          memory = "512Mi" # By experiment, necessary and sufficient.
         }
       }
     }

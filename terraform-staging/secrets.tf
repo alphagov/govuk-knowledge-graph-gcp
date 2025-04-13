@@ -15,7 +15,7 @@ data "google_iam_policy" "secret_smart_survey_api_survey_id" {
 }
 
 resource "google_secret_manager_secret_iam_policy" "smart_survey_api_survey_id" {
-  secret_id = google_secret_manager_secret.smart_survey_api_survey_id.secret_id
+  secret_id   = google_secret_manager_secret.smart_survey_api_survey_id.secret_id
   policy_data = data.google_iam_policy.secret_smart_survey_api_survey_id.policy_data
 }
 
@@ -36,7 +36,7 @@ data "google_iam_policy" "secret_smart_survey_api_token" {
 }
 
 resource "google_secret_manager_secret_iam_policy" "smart_survey_api_token" {
-  secret_id = google_secret_manager_secret.smart_survey_api_token.secret_id
+  secret_id   = google_secret_manager_secret.smart_survey_api_token.secret_id
   policy_data = data.google_iam_policy.secret_smart_survey_api_token.policy_data
 }
 
@@ -57,6 +57,6 @@ data "google_iam_policy" "secret_smart_survey_api_secret" {
 }
 
 resource "google_secret_manager_secret_iam_policy" "smart_survey_api_secret" {
-  secret_id = google_secret_manager_secret.smart_survey_api_secret.secret_id
+  secret_id   = google_secret_manager_secret.smart_survey_api_secret.secret_id
   policy_data = data.google_iam_policy.secret_smart_survey_api_secret.policy_data
 }
