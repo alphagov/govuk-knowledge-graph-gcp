@@ -93,13 +93,13 @@ main:
             value: page_number
             range: $${[1, max_page]}
             steps:
-
               - call_api:
                   try:
                     call: http.get
                     args:
-                      url: $${endpoint_url}
+                      url: ${http_to_bucket_uri}
                       query:
+                        endpoint_url: $${endpoint_url}
                         since: $${since}
                         until: $${until}
                         filter_id: $${filter_id}
@@ -117,15 +117,6 @@ main:
                   # (excluding first try): 5 Initial backoff 1 second, maximum backoff 1
                   # minute, multiplier 1.25.
                   retry: $${http.default_retry}
-
-              # TODO: check that api_response.code == 200
-              - upload_to_bucket:
-                  call: googleapis.storage.v1.objects.insert
-                  args:
-                    bucket: $${bucket}
-                    uploadType: media  # uploads object data
-                    name: $${workflow_execution_id + "/" + page_number}
-                    body: $${iterative_api_response}
 
     # Load the data into a new table in BigQuery, named by the workflow_execution_id
     - load_into_bigquery:

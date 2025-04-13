@@ -92,6 +92,7 @@ resource "google_workflows_workflow" "smart_survey" {
   source_contents = templatefile(
     "workflows/smart-survey.yaml",
     {
+      http_to_bucket_uri = google_cloud_run_v2_service.http_to_bucket.uri,
       bucket_name = google_storage_bucket.smart_survey.name,
       schema = indent(32,
       yamlencode(jsondecode(file("schemas/smart-survey/responses.json"))))

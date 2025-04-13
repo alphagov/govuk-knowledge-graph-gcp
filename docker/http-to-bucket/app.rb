@@ -21,8 +21,8 @@ def validate_parameters(params)
 end
 
 # Forwards the incoming HTTP request to the target URL.
-def forward_request(request)
-  uri = URI(request.url)
+def forward_request(request, endpoint_url)
+  uri = URI(endpoint_url)
   http = Net::HTTP.new(uri.host, uri.port)
   http.use_ssl = uri.scheme == "https"
   new_request = Net::HTTP::Get.new(uri.request_uri)
@@ -52,6 +52,7 @@ end
 
 FunctionsFramework.http "http_to_bucket" do |request|
   # Extract parameters
+  endpoint_url = request.params["endpoint_url"]
   project_id = request.params["project_id"]
   bucket_name = request.params["bucket_name"]
   object_name = request.params["object_name"]
@@ -61,13 +62,14 @@ FunctionsFramework.http "http_to_bucket" do |request|
   return validation_error if validation_error
 
   # Remove parameters from the request URL
+  request.delete_param("endpoint_url")
   request.delete_param("project_id")
   request.delete_param("bucket_name")
   request.delete_param("object_name")
 
   begin
     # Forward the request
-    http_response = forward_request(request)
+    http_response = forward_request(request, endpoint_url)
 
     if http_response.is_a?(Net::HTTPSuccess)
       # Upload the successful response
