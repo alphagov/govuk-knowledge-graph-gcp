@@ -100,7 +100,7 @@ main:
                       url: ${http_to_bucket_uri}
                       query:
                         endpoint_url: $${endpoint_url}
-                        headers: $${"Authorization: " + auth_str_base64}
+                        headers: "$${\"Authorization: \" + auth_str_base64}"
                         since: $${since}
                         until: $${until}
                         filter_id: $${filter_id}
@@ -109,6 +109,8 @@ main:
                         page_size: $${page_size}
                         sort_by: $${sort_by}
                         include_labels: $${include_labels}
+                      auth:
+                          type: OIDC
                     result: iterative_api_response
                   # Retry on 429 (Too Many Requests), 502 (Bad Gateway), 503 (Service
                   # unavailable), and 504 (Gateway Timeout), as well as on any
