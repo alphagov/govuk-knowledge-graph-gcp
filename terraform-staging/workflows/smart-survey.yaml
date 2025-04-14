@@ -23,7 +23,7 @@ main:
 
           # Name the output bucket object by the Workflow Execution ID so that
           # it can be debugged in the logs.
-          - bucket: ${bucket_name}
+          - bucket_name: ${bucket_name}
           - workflow_execution_id: $${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
           - project_id: $${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}
           - dataset_id: smart_survey
@@ -101,6 +101,9 @@ main:
                       query:
                         endpoint_url: $${endpoint_url}
                         headers: "$${\"Authorization: \" + auth_str_base64}"
+                        project_id: $${project_id}
+                        bucket_name: $${bucket_name}
+                        object_name: $${workflow_execution_id + "/" + page_number}
                         since: $${since}
                         until: $${until}
                         filter_id: $${filter_id}
@@ -141,7 +144,7 @@ main:
                             fields:
                                 ${schema}
                         sourceFormat: NEWLINE_DELIMITED_JSON
-                        sourceUris: $${"gs://" + bucket + "/" + workflow_execution_id + "/*"}
+                        sourceUris: $${"gs://" + bucket_name + "/" + workflow_execution_id + "/*"}
                         writeDisposition: WRITE_TRUNCATE
         result: load_into_bigquery_result
 

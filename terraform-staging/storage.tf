@@ -306,7 +306,14 @@ resource "google_storage_bucket_iam_policy" "smart_survey" {
 
 data "google_iam_policy" "bucket_smart_survey" {
   binding {
-    role = "roles/storage.objectUser"
+    role = "roles/storage.admin"
+    members = [
+      google_service_account.http_to_bucket.member,
+    ]
+  }
+
+  binding {
+    role = "roles/storage.objectViewer"
     members = [
       google_service_account.workflow_smart_survey.member,
     ]

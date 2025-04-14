@@ -5,7 +5,9 @@ resource "google_cloud_run_v2_service" "http_to_bucket" {
   ingress  = "INGRESS_TRAFFIC_INTERNAL_ONLY"
 
   template {
+    service_account = google_service_account.http_to_bucket.email
     containers {
+      name = "http-to-bucket"
       image = "europe-west2-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.docker.repository_id}/http-to-bucket:latest"
       resources {
         limits = {
@@ -15,6 +17,11 @@ resource "google_cloud_run_v2_service" "http_to_bucket" {
       }
     }
   }
+}
+
+resource "google_service_account" "http_to_bucket" {
+  account_id   = "http-to-bucket"
+  display_name = "Service account for Cloud Run service http-to-bucket"
 }
 
 data "google_iam_policy" "cloud_run_http_to_bucket" {
