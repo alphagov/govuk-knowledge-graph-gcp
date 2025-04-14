@@ -27,7 +27,7 @@ def forward_request(request, endpoint_url, headers)
   http.use_ssl = uri.scheme == "https"
   new_request = Net::HTTP::Get.new(uri.request_uri)
 
-  headers.each do |header|
+  headers.split("\r\n").each do |header|
     name, value = header.split(": ")
     new_request[name] = value
   end
@@ -51,7 +51,7 @@ end
 FunctionsFramework.http "http_to_bucket" do |request|
   # Extract parameters
   endpoint_url = request.params["endpoint_url"]
-  headers = request.params["headers"].split("\r\n")
+  headers = request.params["headers"]
   project_id = request.params["project_id"]
   bucket_name = request.params["bucket_name"]
   object_name = request.params["object_name"]
