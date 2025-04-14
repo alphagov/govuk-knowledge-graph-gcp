@@ -6,8 +6,7 @@ on:
     branches:
       - main
     paths:
-      - 'docker/http-to-bucket/Dockerfile'
-      - 'docker/http-to-bucket/entrypoint.sh'
+      - 'docker/http-to-bucket/*'
       - '.github/workflows/docker-http-to-bucket.yml'
 
 defaults:
