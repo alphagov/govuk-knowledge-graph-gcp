@@ -49,12 +49,17 @@ def handle_error(error)
 end
 
 FunctionsFramework.http "http_to_bucket" do |request|
+  request.logger.info "I received #{request}"
+
   # Extract parameters
   endpoint_url = request.params["endpoint_url"]
   headers = request.params["headers"]
   project_id = request.params["project_id"]
   bucket_name = request.params["bucket_name"]
   object_name = request.params["object_name"]
+
+  request.logger.info "endpoint_url: #{endpoint_url}"
+  request.logger.info "headers: #{headers}"
 
   # Validate parameters
   validation_error = validate_parameters(request.params)
@@ -69,12 +74,17 @@ FunctionsFramework.http "http_to_bucket" do |request|
 
   begin
     # Forward the request
+    request.logger.info "Forwarding the request."
     http_response = forward_request(request, endpoint_url, headers)
+    request.logger.info "Received a response."
 
     if http_response.is_a?(Net::HTTPSuccess)
+      request.logger.info "Response successful. Uploading."
       # Upload the successful response
       upload_response(project_id, bucket_name, object_name, http_response)
+      request.logger.info "Upload complete."
     else
+      request.logger.info "Response unsuccessful."
       # Return the unsuccessful response as is
       [http_response.code, http_response.each_header.to_h, http_response.body]
     end
