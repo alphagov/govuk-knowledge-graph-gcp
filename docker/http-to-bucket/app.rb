@@ -49,7 +49,7 @@ def handle_error(error)
 end
 
 FunctionsFramework.http "http_to_bucket" do |request|
-  request.logger.info "I received #{request}"
+  request.logger.info "I received #{request.to_s}"
 
   # Extract parameters
   endpoint_url = request.params["endpoint_url"]
@@ -57,9 +57,6 @@ FunctionsFramework.http "http_to_bucket" do |request|
   project_id = request.params["project_id"]
   bucket_name = request.params["bucket_name"]
   object_name = request.params["object_name"]
-
-  request.logger.info "endpoint_url: #{endpoint_url}"
-  request.logger.info "headers: #{headers}"
 
   # Validate parameters
   validation_error = validate_parameters(request.params)
