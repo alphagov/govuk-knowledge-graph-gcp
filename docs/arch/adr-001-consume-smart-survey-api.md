@@ -2,36 +2,72 @@
 
 ## Context
 
-Page on GOV.UK link to a feedback survey that is hosted by Smart Survey. Responses to the survey are only available via the Smart Survey API, not by direct access to a database. There is a need for the survey responses to be available in BigQuery. Batch updates would suffice; streaming updates are not required.
+Pages on GOV.UK link to a feedback survey that is hosted by Smart Survey. Responses to the survey are only available via the Smart Survey API, not by direct access to a database. There is a need for the survey responses to be available in BigQuery. Batch updates would suffice; streaming updates are not required.
 
 Please refer to the API documentation:
 
 * [Overview](https://docs.smartsurvey.io/docs/getting-started)
 * [Endpoint: `get-responses`](https://docs.smartsurvey.io/v1/reference/get-responses)
 
-### 1. Workflow to BigQuery via a bucket (chosen)
+## Workflow to BigQuery via a bucket
 
-Schedule a nightly Workflow to:
+Use the following services.
 
-1. Fetch survey responses from the previous day
-2. Write them to a bucket object with a random name.
-3. Run a BigQuery job (a query), to fetch the responses directly from the bucket, via a "temporary external table", transform them, and append them to a permanent table.
-4. Configure bucket objects to be automatically deleted after 24 hours.
+* **Secret Manager** to store the survey ID, the API token and the API secret.
+* **Workflow** to orchestrate API calls and BigQuery jobs.
+* **Cloud Run** to call the API and upload successful responses to **Storage**.
+* **Storage** to receive the response of each successful API call.
+* **BigQuery** to receive the new data, and to append it to the existing data.
 
-Allow the job to be executed ad hoc to fetch responses from a given day, for the sake of backfilling.
+Concurrent invocations of the workflow shouldn't interfere with each other. This is achieved by using the workflow's execution ID to name files and tables.
+
+The workflow should be idempotent. This is achieved by a BigQuery `MERGE` statement that deletes any duplicates of survey responses.
+
+The pipeline should be debuggable, but not proliferate copies of data. This is achieved by setting storage objects and BigQuery tables to expire after a few days.
+
+The diagram below shows a simplification of the process.
+
+```mermaid
+sequenceDiagram
+    participant Workflow
+    participant CloudRun
+    participant API
+    participant Bucket
+    participant BigQuery
+    Workflow-->>+API: How many survey responses were there yesterday?
+    API-->>-Workflow: There were X survey responses yesterday.
+
+    rect rgb(25, 25, 25)
+    loop Until all survey responses have been obtained
+        #create participant CloudRun
+        Workflow-->>+CloudRun: Fetch a page of survey responses.
+        CloudRun-->>+API: Send me a page of survey responses.
+        API-->>-CloudRun: Here is a page of survey responses.
+        #destroy CloudRun
+        CloudRun-->>-Bucket: Store these survey responses in a bucket object.
+    end
+    end
+
+    Workflow-->>BigQuery: Append the bucket objects to a table.
+```
+
+Why not call the API directly from the workflow? Workflows have very limited memory, which would often be overwhelmed by an API response. Whereas a Cloud Run service can have plenty of memory.
+
+Why not orchestrate everything in the Cloud Run service? Cloud Run instances are short-lived, and might expire before all the API requests had been handled. Whereas workflows can run for a year, and can invoke a Cloud Run service many times to execute a single, quick API call.
 
 ## Consequences
 
 ### Positive consequences
 
-* Cheap to run (see "Running costs" below)
-* Easy to maintain (no programming language or its dependencies)
+* Cheap to run (see "Running costs" below).
+* Easy to maintain (much less code than the status quo, with minimal dependencies).
+* The Cloud Run service is generalisable to other APIs.
 
 #### Running costs
 
 The running costs of the workflow will probably be a few pence per day. It is [priced](https://cloud.google.com/workflows/pricing) per step that is executed.
 
-Each API would cost five steps, because of the way that Workflows implement for-loops and try-retry-except blocks.
+Each API call costs five steps, because of the way that Workflows implement for-loops and try-retry-except blocks.
 
 1. Begin a for-loop iteration
 2. Enter a "try-retry-except" block
@@ -58,118 +94,12 @@ Some unsatisfactory workarounds:
 1. Accumulate data into the table daily, and always check the entire table for new records to be processed. This would get increasingly expensive and slow.
 1. Only delete records from the table that have been processed into downstream tables. Deletions fail when records remain in the buffer, so this workaround only moves the problem elsewhere.
 
-### 2. Workflow to BigQuery via a bucket and a `bq load` job
+### 2. Temporary external tables
 
-This was previously done with data from other sources, and was reliable and easily maintained. The `bq load` step is redundant, however, given that data can be queried directly from the bucket. There is no need for these records to be in a permanent table in their raw form.
+These would be cleaner, because they would automatically disappear after use, and wouldn't require an explicit load of data into BigQuery. Unfortunately they don't work with Smart Survey API data, because they don't allow hyphens in JSON field names, even though _internal_ tables do.
 
-### 3. Cloud Run/Function
+The temporariness can be achieved a different way, by setting the normal tables to expire.
 
-Feedback-as-a-Service currently uses a Cloud Run Function to fetch data the Smart Survey API. It seems wasteful to develop and maintain everything that that requires (infra, script, dependencies, dependabot), when a workflow could do the same job.
+### 3. Call the API from the workflow
 
-## Workflow-in-progress
-
-This is a partial implementation of the proposed Workflow.
-
-```yaml
-- init:
-    assign:
-      - project_id: ${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}
-      - token_secret_id: "SMART_SURVEY_API_TOKEN"
-      - key_secret_id: "SMART_SURVEY_API_SECRET"
-      - api_endpoint: "secret?"
-      - completed: 1 # 0=Partial, 1=Completed, 2=Both
-      - page_size: 1 # Defaults to 10, max is 100. The number of records is not guaranteed to be the number specified as visibility rules may filter out items.
-      - sort_by: "date_started"
-      - filter_id: 0
-      - include_labels: true
-        # TODO: default "since" and "until" to yesterday
-      - since: 1742947200
-      - until: 1743033599
-
-- fetch_token:
-    call: googleapis.secretmanager.v1.projects.secrets.versions.accessString
-    args:
-      secret_id: ${token_secret_id}
-      project_id: ${project_id}
-    result: str_token
-
-- fetch_key:
-    call: googleapis.secretmanager.v1.projects.secrets.versions.accessString
-    args:
-      secret_id: ${key_secret_id}
-    result: str_key
-
-- build_headers:
-    assign:
-      - auth_str: ${str_token + ":" + str_key}
-      - auth_str_base64: ${"Basic " + base64.encode(text.encode(auth_str, "UTF-8"))}
-
-# Call the API solely for the header that says how many results there will be.
-- first_call:
-    try:
-      call: http.get
-      args:
-        url: ${api_endpoint}
-        query:
-          since: ${since}
-          until: ${until}
-          filter_id: ${filter_id}
-          completed: ${completed}
-          page: 1
-          page_size: 0
-          sort_by: ${sort_by}
-          include_labels: ${include_labels}
-        headers:
-          "Authorization": ${auth_str_base64}
-      result: api_response
-    # Retry on 429 (Too Many Requests), 502 (Bad Gateway), 503 (Service
-    # unavailable), and 504 (Gateway Timeout), as well as on any
-    # ConnectionError, ConnectionFailedError and TimeoutError. Maximum retries
-    # (excluding first try): 5 Initial backoff 1 second, maximum backoff 1
-    # minute, multiplier 1.25.
-    retry: ${http.default_retry}
-
-# Calculate how many pages of page_size would fetch all the results.
-- calculate_page_range:
-    assign:
-    - pagination_total: ${int(api_response.headers["X-Ss-Pagination-Total"])}
-    - max_page: ${pagination_total // page_size + 1}
-
-# Iteratively fetch each page of results and send to BigQuery
-- iterative_calls:
-    for:
-        value: page
-        range: ${[1, max_page]}
-        steps:
-
-          - iterative_call:
-              try:
-                call: http.get
-                args:
-                  url: ${api_endpoint}
-                  query:
-                    since: ${since}
-                    until: ${until}
-                    filter_id: ${filter_id}
-                    completed: ${completed}
-                    page: ${page}
-                    page_size: ${page_size}
-                    sort_by: ${sort_by}
-                    include_labels: ${include_labels}
-                  headers:
-                    "Authorization": ${auth_str_base64}
-                result: api_response
-              # Retry on 429 (Too Many Requests), 502 (Bad Gateway), 503 (Service
-              # unavailable), and 504 (Gateway Timeout), as well as on any
-              # ConnectionError, ConnectionFailedError and TimeoutError. Maximum retries
-              # (excluding first try): 5 Initial backoff 1 second, maximum backoff 1
-              # minute, multiplier 1.25.
-              retry: ${http.default_retry}
-        # TODO: Append the API response to a bucket object
-
-# TODO: Query the bucket object from BigQuery, reshape it, and append it to a table.
-
-# Finish
-- return_something:
-    return: "Finished"
-```
+This would avoid the need of a Ruby script and its dependencies running on Cloud Run. It might be possible to mitigate the limited memory of the workflow by requesting few survey responses in each page, or even by dynamically adjusted the number of responses per page according to their size. But it wasn't obvious how to avoid a large API response causing a hard crash. Even if it were possible, it doesn't seem worth the complexity, and the cost of making up to 100x more API calls.
