@@ -84,3 +84,7 @@ bigquery_test_data_viewer_members = [
 # BigQuery dataset: whitehall
 bigquery_whitehall_data_viewer_members = [
 ]
+
+# BigQuery dataset: asset-manager
+bigquery_asset_manager_data_viewer_members = [
+]

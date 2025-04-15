@@ -149,6 +149,35 @@ main:
                           value: ${whitehall_metadata_value}
             - return_started_whitehall:
                 return: $${"Started whitehall instance"}
+        - condition: $${text.match_regex(object_name, "^shared-documentdb/\\d{4}-\\d{2}-\\d{2}T\\d{6}Z-govuk_assets_production\\.gz$")}
+          steps:
+            - log_starting_asset_manager_instance:
+                call: sys.log
+                args:
+                  text: "Starting asset-manager instance"
+                  severity: INFO
+            - start_asset_manager:
+                call: googleapis.compute.v1.instances.insert
+                args:
+                  project: ${project_id}
+                  zone: ${zone}
+                  sourceInstanceTemplate: https://www.googleapis.com/compute/v1/projects/${project_id}/global/instanceTemplates/asset-manager
+                  body:
+                    name: asset-manager
+                    metadata:
+                      items:
+                        - key: object_bucket
+                          value: $${object_bucket}
+                        - key: object_name
+                          value: $${object_name}
+                        - key: google-logging-enabled
+                          value: true
+                        - key: serial-port-logging-enable
+                          value: true
+                        - key: gce-container-declaration
+                          value: ${asset_manager_metadata_value}
+            - return_started_asset_manager:
+                return: $${"Started asset-manager instance"}
   - log_not_starting_instance:
       call: sys.log
       args:
