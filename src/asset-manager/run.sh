@@ -45,13 +45,12 @@ mongosh ${DATABASE} ${QUERY}
 
 # 1. Export that dataset
 # 2. Upload it to a cloud bucket
-# TODO add filename_history access_limited access_limited_organisation_ids
 mongoexport \
   --quiet \
   --db=govuk_assets_production \
   --type=csv \
   --collection="${OUTPUT_COLLECTION}" \
-  --fields=_id,created_at,updated_at,replacement_id,state,uuid,draft,redirect_url,last_modified,size,content_type,parent_document_url,deleted_at,file,_type,legacy_url_path \
+  --fields=_id,created_at,updated_at,replacement_id,state,filename_history,uuid,draft,redirect_url,last_modified,size,content_type,access_limited,access_limited_organisation_ids,parent_document_url,deleted_at,file,_type,legacy_url_path \
   | gcloud storage cp - "${OBJECT}" --quiet --gzip-in-flight-all
 
 # Upload the dataset from the cloud bucket to a BigQuery table

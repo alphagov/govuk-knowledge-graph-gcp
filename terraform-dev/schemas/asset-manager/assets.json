@@ -30,6 +30,12 @@
     "type": "STRING"
   },
   {
+    "description": "A constructed string, comprising the asset's filename history (from array of filenames)",
+    "mode": "NULLABLE",
+    "name": "filename_history",
+    "type": "STRING"
+  },
+  {
     "description": "The asset UUID",
     "mode": "NULLABLE",
     "name": "uuid",
@@ -63,6 +69,18 @@
     "description": "The MIME type of the asset",
     "mode": "NULLABLE",
     "name": "content_type",
+    "type": "STRING"
+  },
+  {
+    "description": "A constructed string, comprising access limited content IDs (from array)",
+    "mode": "NULLABLE",
+    "name": "access_limited",
+    "type": "STRING"
+  },
+  {
+    "description": "A constructed string, comprising access limited organisation content IDs (from array)",
+    "mode": "NULLABLE",
+    "name": "access_limited_organisation_ids",
     "type": "STRING"
   },
   {
