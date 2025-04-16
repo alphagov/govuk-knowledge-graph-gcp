@@ -30,6 +30,12 @@
     "type": "STRING"
   },
   {
+    "description": "An array comprising the asset's history of filenames",
+    "mode": "REPEATED",
+    "name": "filename_history",
+    "type": "STRING"
+  },
+  {
     "description": "The asset UUID",
     "mode": "NULLABLE",
     "name": "uuid",
@@ -42,7 +48,7 @@
     "type": "BOOLEAN"
   },
   {
-    "description": "The URL the asset should redirect to, typically when the parent edition is unpublished",
+    "description": "The URL the asset should redirect to",
     "mode": "NULLABLE",
     "name": "redirect_url",
     "type": "STRING"
@@ -63,6 +69,18 @@
     "description": "The MIME type of the asset",
     "mode": "NULLABLE",
     "name": "content_type",
+    "type": "STRING"
+  },
+  {
+    "description": "An array comprising access limited user content IDs (deprecated)",
+    "mode": "REPEATED",
+    "name": "access_limited",
+    "type": "STRING"
+  },
+  {
+    "description": "An array comprising access limited organisation content IDs",
+    "mode": "REPEATED",
+    "name": "access_limited_organisation_ids",
     "type": "STRING"
   },
   {

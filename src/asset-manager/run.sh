@@ -36,7 +36,7 @@ DATABASE=govuk_assets_production
 QUERY=query.js
 OUTPUT_COLLECTION=output
 FILE=assets
-OBJECT="gs://${PROJECT_ID}-data-processed/asset-manager/${FILE}.csv.gz"
+OBJECT="gs://${PROJECT_ID}-data-processed/asset-manager/${FILE}.json.gz"
 DATASET=asset_manager
 TABLE="${DATASET}.${FILE}"
 SCHEMA_NAME="schema_${FILE}"
@@ -49,9 +49,9 @@ mongosh ${DATABASE} ${QUERY}
 mongoexport \
   --quiet \
   --db=govuk_assets_production \
-  --type=csv \
+  --type=json \
   --collection="${OUTPUT_COLLECTION}" \
-  --fields=_id,created_at,updated_at,replacement_id,state,uuid,draft,redirect_url,last_modified,size,content_type,parent_document_url,deleted_at,file,_type,legacy_url_path \
+  --fields=created_at,updated_at,replacement_id,state,filename_history,uuid,draft,redirect_url,last_modified,size,content_type,access_limited,access_limited_organisation_ids,parent_document_url,deleted_at,file,_type,legacy_url_path \
   | gcloud storage cp - "${OBJECT}" --quiet --gzip-in-flight-all
 
 bq show \
@@ -64,9 +64,7 @@ bq show \
 bq load \
   --quiet=true \
   --replace \
-  --source_format="CSV" \
-  --allow_quoted_newlines \
-  --skip_leading_rows=1 \
+  --source_format="NEWLINE_DELIMITED_JSON" \
   --schema="${SCHEMA_NAME}" \
   "${TABLE}" \
   "${OBJECT}"
