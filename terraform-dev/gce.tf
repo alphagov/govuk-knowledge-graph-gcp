@@ -47,6 +47,12 @@ resource "google_service_account" "gce_whitehall" {
   description  = "Service account for the whitehall instance on GCE"
 }
 
+resource "google_service_account" "gce_asset_manager" {
+  account_id   = "gce-asset-manager"
+  display_name = "Service Account for the asset-manager instance"
+  description  = "Service account for the asset-manager instance on GCE"
+}
+
 # Allow a workflow to attach the publishing-api service account to an instance.
 data "google_iam_policy" "service_account-gce_publishing_api" {
   binding {
@@ -121,6 +127,21 @@ data "google_iam_policy" "service_account-gce_whitehall" {
 resource "google_service_account_iam_policy" "gce_whitehall" {
   service_account_id = google_service_account.gce_whitehall.name
   policy_data        = data.google_iam_policy.service_account-gce_whitehall.policy_data
+}
+
+# Allow a workflow to attach the asset-manager service account to an instance.
+data "google_iam_policy" "service_account-gce_asset_manager" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+    members = [
+      google_service_account.workflow_govuk_database_backups.member,
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "gce_asset_manager" {
+  service_account_id = google_service_account.gce_asset_manager.name
+  policy_data        = data.google_iam_policy.service_account-gce_asset_manager.policy_data
 }
 
 # terraform import google_compute_network.default default
@@ -363,6 +384,32 @@ module "whitehall-container" {
   restart_policy = "Never"
 }
 
+module "asset-manager-container" {
+  source  = "terraform-google-modules/container-vm/google"
+  version = "~> 2.0"
+
+  container = {
+    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/asset-manager:latest"
+    tty : true
+    stdin : true
+    securityContext = {
+      privileged : true
+    }
+    env = [
+      {
+        name  = "PROJECT_ID"
+        value = var.project_id
+      },
+      {
+        name  = "ZONE"
+        value = var.zone
+      }
+    ]
+  }
+
+  restart_policy = "Never"
+}
+
 resource "google_compute_instance_template" "publishing_api" {
   name = "publishing-api"
   # 2 CPUs are enough that, while the largest table is being restored, all the
@@ -528,6 +575,35 @@ resource "google_compute_instance_template" "whitehall" {
 
   service_account {
     email  = google_service_account.gce_whitehall.email
+    scopes = ["cloud-platform"]
+  }
+}
+
+resource "google_compute_instance_template" "asset_manager" {
+  name         = "asset-manager"
+  machine_type = "c2d-highmem-2"
+
+  disk {
+    boot         = true
+    source_image = module.asset-manager-container.source_image
+    disk_size_gb = 64
+  }
+
+  metadata = {
+    google-logging-enabled     = true
+    serial-port-logging-enable = true
+    gce-container-declaration  = module.asset-manager-container.metadata_value
+  }
+
+  network_interface {
+    network = "default"
+    access_config {
+      network_tier = "STANDARD"
+    }
+  }
+
+  service_account {
+    email  = google_service_account.gce_asset_manager.email
     scopes = ["cloud-platform"]
   }
 }
