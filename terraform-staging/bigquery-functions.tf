@@ -103,6 +103,25 @@ resource "google_bigquery_routine" "dedup" {
   }
 }
 
+resource "google_bigquery_routine" "mask_pii" {
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "mask_pii"
+  routine_type = "SCALAR_FUNCTION"
+  language     = "SQL"
+  definition_body = templatefile(
+    "bigquery/mask-pii.sql",
+    { project_id = var.project_id }
+  )
+  arguments {
+    data_type = jsonencode(
+      {
+        typeKind = "STRING"
+      }
+    )
+    name = "text"
+  }
+}
+
 resource "google_bigquery_routine" "publishing_api_editions_current" {
   dataset_id      = google_bigquery_dataset.functions.dataset_id
   routine_id      = "publishing_api_editions_current"

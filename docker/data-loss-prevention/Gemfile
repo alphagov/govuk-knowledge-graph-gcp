@@ -1,0 +1,4 @@
+source "https://rubygems.org"
+gem "functions_framework", "1.6.0"
+gem "google-cloud-dlp-v2", "1.9.0"
+gem "google-cloud-storage", "1.56.0"
