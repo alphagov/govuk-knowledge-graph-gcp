@@ -184,6 +184,10 @@ variable "bigquery_asset_manager_data_viewer_members" {
   type = list(string)
 }
 
+variable "bigquery_publishing_replication_analysis_data_viewer_members" {
+  type = list(string)
+}
+
 terraform {
   required_providers {
     google = {
