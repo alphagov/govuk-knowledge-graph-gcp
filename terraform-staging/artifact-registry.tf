@@ -62,7 +62,7 @@ data "google_iam_policy" "artifact_registry_docker" {
       google_service_account.gce_redis_cli.member,
       google_service_account.gce_whitehall.member,
       google_service_account.gce_asset_manager.member,
-
+      "serviceAccount:service-${var.project_number}@serverless-robot-prod.iam.gserviceaccount.com",
     ]
   }
 

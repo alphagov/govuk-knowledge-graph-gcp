@@ -1,0 +1,265 @@
+[
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "label",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "name",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "id",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "variables",
+    "type": "RECORD"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "translation_id",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "tracking_link_id",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "contact_name",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "total_score",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "status",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "edit_url",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "saved_continue_url",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "saved",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "referer_url",
+    "type": "STRING"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "mode": "NULLABLE",
+            "name": "type",
+            "type": "STRING"
+          },
+          {
+            "fields": [
+              {
+                "mode": "NULLABLE",
+                "name": "row_id",
+                "type": "INTEGER"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "row_title",
+                "type": "STRING"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "column_title",
+                "type": "STRING"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "column_id",
+                "type": "INTEGER"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "choice_id",
+                "type": "INTEGER"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "type",
+                "type": "STRING"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "id",
+                "type": "INTEGER"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "choice_title",
+                "type": "STRING"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "value",
+                "type": "STRING"
+              }
+            ],
+            "mode": "REPEATED",
+            "name": "answers",
+            "type": "RECORD"
+          },
+          {
+            "mode": "NULLABLE",
+            "name": "sub_type",
+            "type": "STRING"
+          },
+          {
+            "mode": "NULLABLE",
+            "name": "position",
+            "type": "INTEGER"
+          },
+          {
+            "mode": "NULLABLE",
+            "name": "title",
+            "type": "STRING"
+          },
+          {
+            "mode": "NULLABLE",
+            "name": "number",
+            "type": "INTEGER"
+          },
+          {
+            "mode": "NULLABLE",
+            "name": "id",
+            "type": "INTEGER"
+          }
+        ],
+        "mode": "REPEATED",
+        "name": "questions",
+        "type": "RECORD"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "title",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "position",
+        "type": "INTEGER"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "id",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "pages",
+    "type": "RECORD"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "saved_name",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "ip_address",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "href",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "manual_entry",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "entry_url",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "date_started",
+    "type": "TIMESTAMP"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "date_modified",
+    "type": "TIMESTAMP"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "saved_email",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "contact_invitation_id",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "date_ended",
+    "type": "TIMESTAMP"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "contact_email",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "current_page_id",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "user_agent",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "country",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "survey_id",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "id",
+    "type": "INTEGER"
+  }
+]
