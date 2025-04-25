@@ -87,6 +87,13 @@ bigquery_publishing_api_data_viewer_members = [
   "serviceAccount:service-942729121218@gcp-sa-dataform.iam.gserviceaccount.com",
 ]
 
+# BigQuery dataset: smart_survey
+bigquery_smart_survey_data_viewer_members = [
+  "serviceAccount:data-engineering@govuk-user-feedback-dev.iam.gserviceaccount.com",
+  "serviceAccount:data-engineering@govuk-user-feedback-staging.iam.gserviceaccount.com",
+  "serviceAccount:data-engineering@govuk-user-feedback.iam.gserviceaccount.com",
+]
+
 # BigQuery dataset: support-api
 bigquery_support_api_data_viewer_members = [
   "serviceAccount:data-engineering@govuk-user-feedback-dev.iam.gserviceaccount.com",
