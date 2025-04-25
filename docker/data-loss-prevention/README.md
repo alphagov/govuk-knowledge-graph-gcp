@@ -107,3 +107,45 @@ def remove_profanity(
     return strip_whitespace.apply(profanity.censor)
 
 ```
+
+### A Ruby DLP request, including the deidentify_config
+
+```ruby
+{parent: "projects/govuk-knowledge-graph-dev/locations/europe-west2",
+ deidentify_config: {info_type_transformations: {transformations: [{info_types: [{name: "PHONE_NUMBER"}], primitive_transformation: {replace_with_info_type_config: {}}}]}},
+ inspect_config: {info_types: [{name: "PHONE_NUMBER"}], include_quote: true},
+ item: {value: "my number is 01234567890"}}
+```
+
+```json
+{
+  "parent": "projects/govuk-knowledge-graph-dev/locations/europe-west2",
+  "deidentify_config": {
+    "info_type_transformations": {
+      "transformations": [
+        {
+          "info_types": [
+            {
+              "name": "PHONE_NUMBER"
+            }
+          ],
+          "primitive_transformation": {
+            "replace_with_info_type_config": {}
+          }
+        }
+      ]
+    }
+  },
+  "inspect_config": {
+    "info_types": [
+      {
+        "name": "PHONE_NUMBER"
+      }
+    ],
+    "include_quote": true
+  },
+  "item": {
+    "value": "my number is 01234567890"
+  }
+}
+```
