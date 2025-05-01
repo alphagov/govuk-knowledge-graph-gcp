@@ -1,0 +1,26 @@
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL of a document. Not broken down into chapters of guide or travel_advice documents."
+  },
+  {
+    "name": "version_number",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Sometimes in a different sequence from updated_at, e.g. /1619-bursary-fund"
+  },
+  {
+    "name": "action_created_at",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "When the action occurred"
+  },
+  {
+    "name": "action_request_type",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "E.g. 'send_fact_check', 'request_amendments', 'note'."
+  }
+]

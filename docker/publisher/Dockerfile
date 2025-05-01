@@ -8,6 +8,7 @@ RUN apt-get install -y \
   apt-transport-https \
   ca-certificates \
   gnupg \
+  make \
   curl
 RUN \
   echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" \

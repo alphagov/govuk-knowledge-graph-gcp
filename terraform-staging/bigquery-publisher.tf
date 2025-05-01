@@ -46,3 +46,11 @@ resource "google_bigquery_table" "publisher_editions" {
   description   = "Editions table derived from the GOV.UK Publisher app Mongo database"
   schema        = file("schemas/publisher/editions.json")
 }
+
+resource "google_bigquery_table" "publisher_actions" {
+  dataset_id    = google_bigquery_dataset.publisher.dataset_id
+  table_id      = "actions"
+  friendly_name = "Actions"
+  description   = "Actions table derived from the GOV.UK Publisher app Mongo database. Many actions occur per edition, leading to publication."
+  schema        = file("schemas/publisher/actions.json")
+}

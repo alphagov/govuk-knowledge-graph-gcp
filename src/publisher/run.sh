@@ -32,37 +32,7 @@ gcloud storage cp -r gs://$PROJECT_ID-repository/\* .
 # Prepare to export some data to BigQuery
 cd src/publisher
 
-DATABASE=govuk_content_production
-QUERY=query.js
-OUTPUT_COLLECTION=output
-FILE=editions
-OBJECT="gs://${PROJECT_ID}-data-processed/publisher/${FILE}.csv.gz"
-DATASET=publisher
-TABLE="${DATASET}.${FILE}"
-
-# Create a dataset in mongodb of relevant metadata about relevant editions of
-# documents.
-mongosh ${DATABASE} ${QUERY}
-
-# 1. Export that dataset
-# 2. Upload it to a cloud bucket
-mongoexport \
-  --quiet \
-  --db=govuk_content_production \
-  --type=csv \
-  --collection="${OUTPUT_COLLECTION}" \
-  --fields=url,updated_at,version_number,state,major_change \
-  | gcloud storage cp - "${OBJECT}" --quiet --gzip-in-flight-all
-
-# Upload the dataset from the cloud bucket to a BigQuery table
-bq load \
-  --quiet=true \
-  --replace \
-  --source_format="CSV" \
-  --allow_quoted_newlines \
-  --skip_leading_rows=1 \
-  "${TABLE}" \
-  "${OBJECT}"
+make
 
 # Stop this instance
 # https://stackoverflow.com/a/41232669
