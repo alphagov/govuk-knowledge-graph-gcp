@@ -38,3 +38,18 @@ resource "google_cloud_run_v2_service_iam_policy" "http_to_bucket" {
   name        = google_cloud_run_v2_service.http_to_bucket.name
   policy_data = data.google_iam_policy.cloud_run_http_to_bucket.policy_data
 }
+
+data "google_iam_policy" "service_account_http_to_bucket" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+
+    members = [
+      google_service_account.artifact_registry_docker.member,
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "service_account_http_to_bucket" {
+  service_account_id = google_service_account.http_to_bucket.name
+  policy_data        = data.google_iam_policy.service_account_http_to_bucket.policy_data
+}
