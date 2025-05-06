@@ -32,8 +32,18 @@ FunctionsFramework.http "data_loss_prevention" do |request|
       # TODO: default the inspect_config, deidentify_config and profanities_uri
       text, inspect_config, deidentify_config, profanities_project_name, profanities_bucket_name, profanities_object_name = row
 
-      if text.nil? || inspect_config.nil? || deidentify_config.nil?
-        next {}
+      if text.nil?
+        next {
+          "item" => {"value" => nil},
+          "overview" => {}
+        }
+      end
+
+      if text == "" || inspect_config.nil? || deidentify_config.nil?
+        next {
+          "item" => {"value" => text},
+          "overview" => {}
+        }
       end
 
       initialise_profanities(profanities_project_name, profanities_bucket_name, profanities_object_name)
@@ -47,20 +57,17 @@ FunctionsFramework.http "data_loss_prevention" do |request|
         }
       }
 
-      error_message = ""
       begin
         response = $dlp.deidentify_content config.to_h
       rescue Google::Cloud::InvalidArgumentError => e
-        error_message = e
+        next { "error" => e }
       end
 
-      response["error"] = error_message
       response
     end }
 
   rescue => e
-    # return [500, { 'Content-Type' => 'application/text' }, [ e.message ]]
-    return [500, { 'Content-Type' => 'application/text' }, [ [{error: e}] ]]
+    return [500, { 'Content-Type' => 'application/text' }, [ e.message ]]
   end
 end
 

@@ -11,6 +11,7 @@ inspect_config = {
   ],
   "include_quote": true
 }
+
 deidentify_config = {
   "info_type_transformations": {
     "transformations": [
@@ -27,20 +28,6 @@ deidentify_config = {
     ]
   }
 }
-# require "google/cloud/dlp/v2"
-# dlp = ::Google::Cloud::Dlp::V2::DlpService::Client.new
-# # text = "No profanity"
-# text = "My phone number is 07757532536"
-# config = {
-#   "parent": "projects/govuk-knowledge-graph-dev/locations/europe-west2",
-#   "inspect_config": inspect_config,
-#   "deidentify_config": deidentify_config,
-#   "item": {
-#     "value": text
-#   }
-# }
-# response = dlp.deidentify_content config
-# response
 
 def json_or_string(json_or_string)
   return JSON.parse(json_or_string)
@@ -61,77 +48,127 @@ def request(calls)
   body = body.to_json.to_s
   request = make_post_request url, body, headers
   response = call_http "data_loss_prevention", request
-  # response.body = json_or_string(response.body[0])["replies"]
+  response.body = json_or_string(response.body[0])["replies"]
   response
 end
 
 describe "data_loss_prevention() function" do
   include FunctionsFramework::Testing
 
-#   it "returns 200 and empty object with nil input" do
-#     load_temporary "app.rb" do
-#       response = request([[nil]])
-#       expect(response.status).to eq(200)
-#       expect(response.body[0]).to eq({})
-#     end
-#   end
+  it "returns 200 and empty object, given nil input" do
+    load_temporary "app.rb" do
+      response = request([[nil]])
+      expect(response.status).to eq(200)
+      expect(response.body[0]).to eq({"item" => {"value" => nil}, "overview" => {}})
+    end
+  end
 
-#   it "returns 200 and non-empty object with nil input text" do
-#     load_temporary "app.rb" do
-#       response = request([[
-#         nil,
-#         inspect_config,
-#         deidentify_config
-#       ]])
-#       expect(response.status).to eq(200)
-#       expect(response.body[0]).to eq({})
-#     end
-#   end
+  it "returns 200 and nil as item.value, given nil input text" do
+    load_temporary "app.rb" do
+      response = request([[
+        nil,
+        inspect_config,
+        deidentify_config
+      ]])
+      expect(response.status).to eq(200)
+      expect(response.body[0]).to eq({"item" => {"value" => nil}, "overview" => {}})
+    end
+  end
 
-#   it "returns 200 and non-empty object with nil inspect_config" do
-#     load_temporary "app.rb" do
-#       response = request([[
-#         "foo",
-#         nil,
-#         deidentify_config
-#       ]])
-#       expect(response.status).to eq(200)
-#       expect(response.body[0]).to eq({})
-#     end
-#   end
+  it "returns 200 and input text as item.value, given nil inspect_config" do
+    load_temporary "app.rb" do
+      response = request([[
+        "foo",
+        nil,
+        deidentify_config
+      ]])
+      expect(response.status).to eq(200)
+      expect(response.body[0]).to eq({"item" => {"value" => "foo"}, "overview" => {}})
+    end
+  end
 
-#   it "returns 200 and non-empty object with nil deidentify_config" do
-#     load_temporary "app.rb" do
-#       response = request([[
-#         "foo",
-#         inspect_config,
-#         nil
-#       ]])
-#       expect(response.status).to eq(200)
-#       expect(response.body[0]).to eq({})
-#     end
-#   end
+  it "returns 200 and input text as item.value, given nil deidentify_config" do
+    load_temporary "app.rb" do
+      response = request([[
+        "foo",
+        inspect_config,
+        nil
+      ]])
+      expect(response.status).to eq(200)
+      expect(response.body[0]).to eq({"item" => {"value" => "foo"}, "overview" => {}})
+    end
+  end
 
-
-  it "returns 200 and non-empty object with empty input text" do
+  it "returns 200 and input text as item.value, given empty input text" do
     load_temporary "app.rb" do
       response = request([[
         "",
         inspect_config,
         deidentify_config
       ]])
-      expect(response.status).to eq(500)
-      expect(response.body).to eq("foo")
+      expect(response.status).to eq(200)
+      expect(response.body[0]).to eq({"item" => {"value" => ""}, "overview" => {}})
     end
   end
 
-  # it "returns 200 and non-empty object with non-empty non-whitespace input" do
-  #   load_temporary "app.rb" do
-  #     response = request([["foo"]])
-  #     expect(response.status).to eq(200)
-  #     expect(response.body[0]).to eq({})
-  #   end
-  # end
+  it "returns 200 and input text as item.value, given whitespace input text" do
+    load_temporary "app.rb" do
+      response = request([[
+        " ",
+        inspect_config,
+        deidentify_config
+      ]])
+      # expect(response.status).to eq(200)
+      expect(response.body[0]).to eq({"item" => {"value" => " "}, "overview" => {}})
+    end
+  end
+
+  it "returns 200 and input text as item.value, given non-whitespace non-pii input text" do
+    load_temporary "app.rb" do
+      response = request([[
+        "No personally identifiable information",
+        inspect_config,
+        deidentify_config
+      ]])
+      # expect(response.status).to eq(200)
+      expect(response.body[0]).to eq({"item" => {"value" => "No personally identifiable information"}, "overview" => {}})
+    end
+  end
+
+  it "returns 200 and masked phone number as item.value, given a phone number in input text" do
+    load_temporary "app.rb" do
+      response = request([[
+        "My phone number is 01234 567890.",
+        inspect_config,
+        deidentify_config
+      ]])
+      # expect(response.status).to eq(200)
+      expect(response.body[0]).to eq(
+        {
+          "item" => {"value" => "My phone number is [PHONE_NUMBER]."},
+          "overview" => {
+            "transformationSummaries" => [
+              {
+                "infoType" => {
+                  "name" => "PHONE_NUMBER",
+                  "sensitivityScore" => {"score" => "SENSITIVITY_MODERATE"}
+                },
+                "results" => [
+                  {
+                    "code" => "SUCCESS",
+                    "count" => "1"
+                  }
+                ],
+                "transformation" => {"replaceWithInfoTypeConfig" => {}},
+                "transformedBytes" => "12"
+              }
+            ],
+            "transformedBytes" => "12"
+          }
+        }
+      )
+    end
+  end
 
   # it "Initialises profanities" do
   #   load_temporary "app.rb" do
