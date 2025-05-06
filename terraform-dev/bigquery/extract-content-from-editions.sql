@@ -334,6 +334,10 @@ MERGE INTO
 public.content AS target
 USING private.publishing_api_editions_new_current AS source
 ON source.document_id = target.document_id
+-- Sometimes an edition_id is reused, e.g. if it has been used initially by a
+-- test in a non-production environment (which is where GovGraph gets its data,
+-- as of 2025-05), and then used again for real in production.
+OR source.id = target.edition_id
 WHEN matched THEN DELETE
 ;
 
