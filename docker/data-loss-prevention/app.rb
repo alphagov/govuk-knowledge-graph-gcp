@@ -18,9 +18,7 @@ FunctionsFramework.on_startup do
   $profanities = [] # array of string
 
 
-  dlp = ::Google::Cloud::Dlp::V2::DlpService::Client.new
-  dlp_request = ::Google::Cloud::Dlp::V2::InspectContentRequest.new # (request fields as keyword arguments...)
-  response = dlp.inspect_content dlp_request
+  $dlp = ::Google::Cloud::Dlp::V2::DlpService::Client.new
 end
 
 # https://cloud.google.com/functions/docs/create-deploy-http-ruby
@@ -34,6 +32,10 @@ FunctionsFramework.http "data_loss_prevention" do |request|
       # TODO: default the inspect_config, deidentify_config and profanities_uri
       text, inspect_config, deidentify_config, profanities_project_name, profanities_bucket_name, profanities_object_name = row
 
+      if text.nil? || inspect_config.nil? || deidentify_config.nil?
+        next {}
+      end
+
       initialise_profanities(profanities_project_name, profanities_bucket_name, profanities_object_name)
 
       config = {
@@ -45,13 +47,20 @@ FunctionsFramework.http "data_loss_prevention" do |request|
         }
       }
 
-      # submit_to_dlp(text, deidentify_config)
+      error_message = ""
+      begin
+        response = $dlp.deidentify_content config.to_h
+      rescue Google::Cloud::InvalidArgumentError => e
+        error_message = e
+      end
 
-      # $profanities
+      response["error"] = error_message
+      response
     end }
 
   rescue => e
-    return [500, { 'Content-Type' => 'application/text' }, [ e.message ]]
+    # return [500, { 'Content-Type' => 'application/text' }, [ e.message ]]
+    return [500, { 'Content-Type' => 'application/text' }, [ [{error: e}] ]]
   end
 end
 
