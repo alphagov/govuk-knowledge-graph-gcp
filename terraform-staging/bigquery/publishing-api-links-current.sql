@@ -30,13 +30,9 @@ link_set_links AS (
     targets.base_path AS target_base_path,
     links.link_type AS type,
     links.position
-  FROM publishing_api.link_sets
-    -- The link_sets table has the content_id of the source document.
-    -- The links table has the content_id of the target document.
-  INNER JOIN publishing_api.links
-    ON (links.link_set_id = link_sets.id)
+  FROM publishing_api.links
   INNER JOIN public.publishing_api_editions_current AS sources
-    ON (sources.content_id = link_sets.content_id)
+    ON (sources.content_id = links.link_set_content_id)
   INNER JOIN public.publishing_api_editions_current AS targets
   ON (targets.content_id = links.target_content_id)
 ),
