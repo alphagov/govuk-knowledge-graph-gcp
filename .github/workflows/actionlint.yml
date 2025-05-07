@@ -1,4 +1,6 @@
 name: Lint GitHub Actions
+permissions: {}
+
 on:
   push:
     paths: ['.github/**']

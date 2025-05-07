@@ -2,6 +2,7 @@
 # except for certain unavoidable differences allowed by the file `diff-exclude`.
 
 name: diff-terraform
+permissions: {}
 
 on:
   workflow_dispatch:

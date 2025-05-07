@@ -1,4 +1,5 @@
 name: Format and validate terraform
+permissions: {}
 
 on:
   workflow_dispatch:
