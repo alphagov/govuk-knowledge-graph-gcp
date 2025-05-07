@@ -1,4 +1,5 @@
 name: Html-to-text lint and test
+permissions: {}
 
 on:
   workflow_dispatch:

@@ -1,4 +1,5 @@
 name: Parse-html lint and test
+permissions: {}
 
 on:
   workflow_dispatch:
