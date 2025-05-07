@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 gem "functions_framework", "1.6.0"
-gem "json", "2.10.1"
+gem "json", "2.10.2"
 gem "pandoc-ruby", "2.1.10"
 
 group :development, :test do
