@@ -18,7 +18,7 @@ EXPORT = editions actions
 all: $(EXPORT)
 
 editions:
-	source functions.sh; export_query_to_bigquery "${MONGO_DATABASE}" "${PROJECT_ID}" "${BQ_DATASET}" "editions" "url,updated_at,version_number,state,major_change"
+	source functions.sh; export_query_to_bigquery "${MONGO_DATABASE}" "${PROJECT_ID}" "${BQ_DATASET}" "editions" "url,updated_at,version_number,state,major_change,type"
 
 actions:
 	source functions.sh; export_query_to_bigquery "${MONGO_DATABASE}" "${PROJECT_ID}" "${BQ_DATASET}" "actions" "url,version_number,action_created_at,action_request_type"
