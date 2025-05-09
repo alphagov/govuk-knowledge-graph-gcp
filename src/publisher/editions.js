@@ -27,6 +27,7 @@ db.editions.aggregate([
     version_number: true, // sequence, sometimes in a different order from updated_at e.g. /1619-bursary-fund
     state: true, // 'published', or 'archived' if superseded
     major_change: true, // not often true
+    type: "$_type", // 'GuideEdition', 'SmartAnswerEdition', etc.
   } },
   { $out: "editions_output"},
 ])

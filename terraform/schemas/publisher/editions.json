@@ -28,5 +28,11 @@
     "type": "BOOLEAN",
     "mode": "REQUIRED",
     "description": "Whether the edition was a major change to the previous edition. Rarely 'true'"
+  },
+  {
+    "name": "type",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "The schema of a document, e.g. 'GuideEdition'"
   }
 ]
