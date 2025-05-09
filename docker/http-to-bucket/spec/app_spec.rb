@@ -169,6 +169,19 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
         expect(response.body.join).to eq("Success")
       end
 
+      context "when the 'jmespath' parameter is provided" do
+        # Make the test resemble the Zendesk API, which is our initial use-case.
+        let(:api_response_body_json) { '{ "links": { "next": "abc" }, "meta": { "has_more": true } }' }
+        it "returns the result of a JMESPath query of the API response" do
+          request = make_get_request build_request_url("/", all_incoming_params.merge({ "jmespath" => "{has_more: meta.has_more, links: links.next}" }))
+          response = call_http "http_to_bucket", request
+
+          expect(response.status).to eq(200)
+          expect(response.headers["Content-Type"]).to eq("application/json; charset=utf-8")
+          expect(response.body).to eq(["{\"has_more\":true,\"links\":\"abc\"}"])
+        end
+      end
+
       context "when the 'headers' parameter is not provided" do
          it "does not attempt to set any headers on the forwarded request" do
            expect(mock_get_request).not_to receive(:[]=)

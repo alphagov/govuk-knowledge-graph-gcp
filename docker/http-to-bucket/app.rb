@@ -11,6 +11,7 @@ FunctionsFramework.on_startup do
   require "net/http"
   require "google/cloud/storage"
   require 'json'
+  require 'jmespath'
 end
 
 # Validates the presence of required parameters.
@@ -59,6 +60,7 @@ FunctionsFramework.http "http_to_bucket" do |request|
     project_id = request.params["project_id"]
     bucket_name = request.params["bucket_name"]
     object_name = request.params["object_name"]
+    jmespath = request.params["jmespath"]
 
     request.logger.info "Wrapper parameters extracted"
 
@@ -74,6 +76,7 @@ FunctionsFramework.http "http_to_bucket" do |request|
     request.delete_param("project_id")
     request.delete_param("bucket_name")
     request.delete_param("object_name")
+    request.delete_param("jmespath")
 
     request.logger.info "Wrapper parameters removed"
 
@@ -88,16 +91,31 @@ FunctionsFramework.http "http_to_bucket" do |request|
     else
       # Return the unsuccessful response as is
       request.logger.info "Response unsuccessful"
+
+      # Return a string, a Rack::Response object, a Rack response array, or a hash
+      # which will be JSON-encoded into a response.
       return [http_response.code, http_response.each_header.to_h, [http_response.body]]
     end
   rescue Exception => error
     # Handle any errors
     message = "Error in the Cloud Run function: #{error.message.to_s}"
     request.logger.info message
+
+    # Return a string, a Rack::Response object, a Rack response array, or a hash
+    # which will be JSON-encoded into a response.
     return [500, {}, [message]]
   end
 
   # Success
   request.logger.info "Success"
-  return [200, { "Content-Type" => "application/text" }, ["Success"]]
+
+  if jmespath.nil?
+    # Return a string, a Rack::Response object, a Rack response array, or a hash
+    # which will be JSON-encoded into a response.
+    return "Success"
+  end
+
+  # Return a string, a Rack::Response object, a Rack response array, or a hash
+  # which will be JSON-encoded into a response.
+  return JMESPath.search(jmespath, JSON.parse(http_response.body))
 end
