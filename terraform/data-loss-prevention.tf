@@ -85,3 +85,18 @@ resource "google_bigquery_job" "deploy_data_loss_prevention" {
     write_disposition  = "" # must be set to "" for scripts
   }
 }
+
+data "google_iam_policy" "service_account_data_loss_prevention" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+
+    members = [
+      google_service_account.artifact_registry_docker.member,
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "service_account_data_loss_prevention" {
+  service_account_id = google_service_account.data_loss_prevention.name
+  policy_data        = data.google_iam_policy.service_account_data_loss_prevention.policy_data
+}
