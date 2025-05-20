@@ -3,7 +3,7 @@
 
 -- CREATE FUNCTION
 --   functions.mask_pii2(text STRING)
---   RETURNS JSON AS (
+--   RETURNS STRING AS (
   (
     SELECT `${project_id}.functions.data_loss_prevention`(
       -- TRUNCATE the input text to a certain number of bytes. The number is
