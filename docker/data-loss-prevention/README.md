@@ -85,3 +85,11 @@ deidentify_config = {
   }
 }
 ```
+## Testing
+
+```sh
+# An ennvironment variable is required, to be whichever project the tests are being run in.
+export PROJECT_ID=govuk-knowledge-graph-dev
+cd docker/data-loss-prevention
+rspec
+```

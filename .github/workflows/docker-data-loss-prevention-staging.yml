@@ -81,3 +81,5 @@ jobs:
         service: 'data-loss-prevention'
         region: 'europe-west2'
         image: 'europe-west2-docker.pkg.dev/govuk-knowledge-graph-staging/docker/data-loss-prevention:latest'
+        env_vars: |-
+          PROJECT_ID=govuk-knowledge-graph-staging
