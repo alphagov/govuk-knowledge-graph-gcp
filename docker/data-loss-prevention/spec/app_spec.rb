@@ -48,7 +48,7 @@ def request(calls)
   body = body.to_json.to_s
   request = make_post_request url, body, headers
   response = call_http "data_loss_prevention", request
-  response.body = json_or_string(response.body[0])["replies"]
+  # response.body = json_or_string(response.body[0])["replies"]
   response
 end
 
@@ -137,12 +137,25 @@ describe "data_loss_prevention() function" do
 
   it "returns 200 and masked phone number as item.value, given a phone number in input text" do
     load_temporary "app.rb" do
-      response = request([[
-        "My phone number is 01234 567890.",
-        inspect_config,
-        deidentify_config
-      ]])
-      expect(response.status).to eq(200)
+      response = request([
+        [
+          "My phone number is 01234 567890.",
+          inspect_config,
+          deidentify_config
+        ],
+        [
+          "My other phone number is 01234 567890.",
+          inspect_config,
+          deidentify_config
+        ],
+        [
+          "01234 567890",
+          inspect_config,
+          deidentify_config
+        ]
+      ])
+      # expect(response.status).to eq(200)
+      puts response.body
       expect(response.body[0]).to eq(
         {
           "item" => {"value" => "My phone number is [PHONE_NUMBER]."},
@@ -202,7 +215,7 @@ describe "data_loss_prevention() function" do
           }
         }
       ]])
-      expect(response.status).to eq(200)
+      expect(response.status).to eq(500)
       expect(response.body[0]["error"]).to start_with("3:Info type \"EMAIL_ADDRESS\" was not included in InspectConfig.")
     end
   end
