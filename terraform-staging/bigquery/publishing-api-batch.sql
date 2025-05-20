@@ -18,6 +18,9 @@ CALL functions.extract_content_from_editions();
 -- Google Analytics ID.
 CALL functions.department_analytics_profile();
 
+-- Update the public table of assets
+CALL functions.assets();
+
 -- Depends on results of functions.extract_content_from_editions();
 CALL functions.base_path_lookup();
 

@@ -157,6 +157,17 @@ resource "google_bigquery_routine" "extract_content_from_editions" {
   )
 }
 
+resource "google_bigquery_routine" "assets" {
+  dataset_id   = google_bigquery_dataset.functions.dataset_id
+  routine_id   = "assets"
+  routine_type = "PROCEDURE"
+  language     = "SQL"
+  definition_body = templatefile(
+    "bigquery/assets.sql",
+    { project_id = var.project_id, }
+  )
+}
+
 # Must only be executed after
 # google_bigquery_routine.extract_content_from_editions, which refreshes a table
 # that this depends on.
