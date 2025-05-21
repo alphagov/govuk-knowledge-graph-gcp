@@ -228,14 +228,16 @@ resource "google_storage_bucket_iam_policy" "lib" {
 data "google_iam_policy" "bucket_lib" {
   binding {
     role = "roles/storage.objectViewer"
-    members = [
-      # It isn't documented whether anyone needs any role for a BigQuery UDF to
-      # be able to fetch a Javascript library from this bucket, but my guess is
-      # that any user of the function, or any service account that runs a
-      # scheduled query that uses the function, must have
-      # roles/storage.objectViewer.
+    # It isn't documented whether anyone needs any role for a BigQuery UDF to
+    # be able to fetch a Javascript library from this bucket, but my guess is
+    # that any user of the function, or any service account that runs a
+    # scheduled query that uses the function, must have
+    # roles/storage.objectViewer.
+    members = concat([
       google_service_account.bigquery_scheduled_queries.member,
-    ]
+      ],
+      var.bigquery_private_data_viewer_members,
+    )
   }
 
   binding {
