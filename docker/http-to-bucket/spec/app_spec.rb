@@ -165,7 +165,7 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
         response = call_http "http_to_bucket", request
 
         expect(response.status).to eq(200)
-        expect(response.headers["Content-Type"]).to eq("application/text")
+        expect(response.headers["Content-Type"]).to eq("text/plain; charset=utf-8")
         expect(response.body.join).to eq("Success")
       end
 
