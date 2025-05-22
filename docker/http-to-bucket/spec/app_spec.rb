@@ -47,6 +47,9 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
   let(:expected_upload_body) { "{\"id\":1,\"name\":\"Item 1\"}\n{\"id\":2,\"name\":\"Item 2\"}" }
   let(:api_response_body_json) { [{ id: 1, name: "Item 1" }, { id: 2, name: "Item 2" }].to_json }
 
+  let(:expected_upload_body_singleton) { "{\"id\":1,\"name\":\"Item 1\"}" }
+  let(:api_response_body_json_singleton) { { id: 1, name: "Item 1" }.to_json }
+
   # --- Mocks ---
   let(:mock_http) { instance_double(Net::HTTP, "Mock HTTP Client") }
   let(:mock_get_request) { instance_double(Net::HTTP::Get, "Mock HTTP GET Request") }
@@ -92,6 +95,18 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
     let(:mock_http_success_response) do
       instance_double(Net::HTTPSuccess, "Mock HTTP Success Response").tap do |resp|
         allow(resp).to receive(:body).and_return(api_response_body_json)
+        allow(resp).to receive(:code).and_return("200")
+        allow(resp).to receive(:message).and_return("OK")
+        allow(resp).to receive(:is_a?) do |klass|
+           klass == Net::HTTPSuccess
+        end
+        allow(resp).to receive(:each_header).and_return({"content-type" => "application/json"})
+      end
+    end
+
+    let(:mock_http_success_response_singleton) do
+      instance_double(Net::HTTPSuccess, "Mock HTTP Success Response").tap do |resp|
+        allow(resp).to receive(:body).and_return(api_response_body_json_singleton)
         allow(resp).to receive(:code).and_return("200")
         allow(resp).to receive(:message).and_return("OK")
         allow(resp).to receive(:is_a?) do |klass|
@@ -152,6 +167,20 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
         expect(mock_bucket).to receive(:create_file) do |io_arg, obj_name_arg|
           expect(io_arg).to be_a(StringIO)
           expect(io_arg.read).to eq(expected_upload_body)
+          expect(obj_name_arg).to eq(object_name)
+          mock_file
+        end
+
+        request = make_get_request request_url_with_all_params
+        call_http "http_to_bucket", request
+      end
+
+      it "uploads the processed JSONL singleton response body to Google Cloud Storage" do
+        allow(mock_http).to receive(:request).with(mock_get_request).and_return(mock_http_success_response_singleton)
+
+        expect(mock_bucket).to receive(:create_file) do |io_arg, obj_name_arg|
+          expect(io_arg).to be_a(StringIO)
+          expect(io_arg.read).to eq(expected_upload_body_singleton)
           expect(obj_name_arg).to eq(object_name)
           mock_file
         end
