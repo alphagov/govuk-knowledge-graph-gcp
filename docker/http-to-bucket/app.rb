@@ -12,6 +12,7 @@ FunctionsFramework.on_startup do
   require "google/cloud/storage"
   require 'json'
   require 'jmespath'
+  require 'rack'
 end
 
 # Validates the presence of required parameters.
@@ -25,7 +26,7 @@ end
 # Forwards the incoming HTTP request to the target URL.
 def forward_request(request, endpoint_url, headers)
   uri = URI(endpoint_url)
-  uri.query = URI.encode_www_form(request.params)
+  uri.query = Rack::Utils.build_nested_query(request.params)
 
   new_request = Net::HTTP::Get.new(uri.request_uri)
 
