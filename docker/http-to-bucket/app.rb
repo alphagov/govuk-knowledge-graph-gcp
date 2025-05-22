@@ -46,8 +46,19 @@ end
 def upload_response(project_id, bucket_name, object_name, http_response)
   storage = Google::Cloud::Storage.new project: project_id
   bucket = storage.bucket bucket_name
-  body = JSON.parse(http_response.body).map { |response| response.to_json }.join("\n")
-  object = StringIO.new(body)
+
+  body_json = JSON.parse(http_response.body)
+  if body_json.kind_of?(Array)
+    # If an array of JSON objects is returned (e.g. Smart Survey API), then
+    # format each one into a string on a single line.
+    body_ndjson = body_json.map { |response| response.to_json }.join("\n")
+  else
+    # If a single JSON object is returned (e.g. Zendesk API), then format it to
+    # a string on a single line.
+    body_ndjson = body_json.to_json
+  end
+
+  object = StringIO.new(body_ndjson)
   bucket.create_file object, object_name
 end
 
