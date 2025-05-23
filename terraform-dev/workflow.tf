@@ -101,3 +101,30 @@ resource "google_workflows_workflow" "smart_survey" {
     }
   )
 }
+
+# A service account for the zendesk workflow
+resource "google_service_account" "workflow_zendesk" {
+  account_id   = "workflow-zendesk"
+  display_name = "Service account for the Zendeesk workflow"
+}
+
+# A workflow to fetch tickets from the zendesk api
+resource "google_workflows_workflow" "zendesk" {
+  name                    = "zendesk"
+  region                  = var.region
+  description             = "Fetch from the Zendesk API into BigQuery"
+  service_account         = google_service_account.workflow_zendesk.id
+  execution_history_level = "EXECUTION_HISTORY_DETAILED"
+
+  source_contents = templatefile(
+    "workflows/zendesk.yaml",
+    {
+      http_to_bucket_uri = google_cloud_run_v2_service.http_to_bucket.uri,
+      bucket_name        = google_storage_bucket.zendesk.name,
+      schema             = indent(32,
+      yamlencode(jsondecode(file("schemas/zendesk/tickets-incremental.json")))),
+      query              = jsonencode(file("bigquery/zendesk-tickets.sql"))
+    }
+  )
+}
+
