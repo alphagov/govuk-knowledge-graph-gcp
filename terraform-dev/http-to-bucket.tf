@@ -29,6 +29,7 @@ data "google_iam_policy" "cloud_run_http_to_bucket" {
     role = "roles/run.invoker"
     members = [
       google_service_account.workflow_smart_survey.member,
+      google_service_account.workflow_zendesk.member,
     ]
   }
 }
