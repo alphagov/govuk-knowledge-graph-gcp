@@ -357,7 +357,7 @@ data "google_iam_policy" "bucket_smart_survey" {
 # Bucket for Zendesk API data, until BigQuery has loaded it.
 resource "google_storage_bucket" "zendesk" {
   name                        = "${var.project_id}-zendesk" # Must be globally unique
-  force_destroy               = false                            # terraform won't delete the bucket unless it is empty
+  force_destroy               = false                       # terraform won't delete the bucket unless it is empty
   location                    = var.location
   storage_class               = "STANDARD" # https://cloud.google.com/storage/docs/storage-classes
   uniform_bucket_level_access = true

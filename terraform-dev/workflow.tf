@@ -121,9 +121,9 @@ resource "google_workflows_workflow" "zendesk" {
     {
       http_to_bucket_uri = google_cloud_run_v2_service.http_to_bucket.uri,
       bucket_name        = google_storage_bucket.zendesk.name,
-      schema             = indent(32,
+      schema = indent(32,
       yamlencode(jsondecode(file("schemas/zendesk/tickets-incremental.json")))),
-      query              = jsonencode(file("bigquery/zendesk-tickets.sql"))
+      query = jsonencode(file("bigquery/zendesk-tickets.sql"))
     }
   )
 }
