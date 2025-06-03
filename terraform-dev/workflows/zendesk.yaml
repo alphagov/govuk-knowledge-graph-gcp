@@ -11,7 +11,7 @@ main:
           # Default page size
           - page_size: $${default(map.get(args, "page_size"), 1000)}
 
-          - objects_suffix: "first_page" 
+          - objects_suffix: "first_page"
           - after_cursor: ""
 
 
@@ -75,28 +75,24 @@ main:
             auth:
                 type: OIDC
           result: iterative_api_response
-    #               # Retry on 429 (Too Many Requests), 502 (Bad Gateway), 503 (Service
-    #               # unavailable), and 504 (Gateway Timeout), as well as on any
-    #               # ConnectionError, ConnectionFailedError and TimeoutError. Maximum retries
-    #               # (excluding first try): 5 Initial backoff 1 second, maximum backoff 1
-    #               # minute, multiplier 1.25.
+        # Retry on 429 (Too Many Requests), 502 (Bad Gateway), 503 (Service
+        # unavailable), and 504 (Gateway Timeout), as well as on any
+        # ConnectionError, ConnectionFailedError and TimeoutError. Maximum retries
+        # (excluding first try): 5 Initial backoff 1 second, maximum backoff 1
+        # minute, multiplier 1.25.
         retry: $${http.default_retry}
 
     - has_more:
         switch:
           - condition: $${iterative_api_response.body.has_more}
             steps:
-             - update_vars: 
+             - update_vars:
             # If there are more pages, set the next page URL and call the API again
                 assign:
                   - objects_suffix: $${iterative_api_response.body.after_cursor}
                   - after_cursor: $${iterative_api_response.body.after_cursor}
                   # endpoint_url: $${iterative_api_response.body.next}
             next: iterative_api_calls
-
-    # Load the data into a new table in BigQuery, named by the workflow_execution_id
-  
-
 
     # Load the data into a new table in BigQuery, named by the workflow_execution_id
     - load_into_bigquery:
@@ -150,8 +146,10 @@ main:
         result: merge_result
 
 
-        # Finish
+    # Finish
     - return:
         return:
           created_at: $${created_at}
-          response_subset: $${iterative_api_response}
+          load_into_bigquery_result: $${load_into_bigquery_result}
+          set_bigquery_table_expiry_result: $${set_bigquery_table_expiry_result}
+          merge_result: $${merge_result}

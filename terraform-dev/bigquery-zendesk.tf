@@ -37,18 +37,17 @@ resource "google_bigquery_dataset_iam_policy" "zendesk" {
   dataset_id  = google_bigquery_dataset.zendesk.dataset_id
   policy_data = data.google_iam_policy.bigquery_dataset_zendesk.policy_data
 }
-/*
-resource "google_bigquery_table" "zendesk_responses" {
+
+resource "google_bigquery_table" "zendesk_tickets" {
   dataset_id               = google_bigquery_dataset.zendesk.dataset_id
-  table_id                 = "responses"
-  friendly_name            = "Zendesk responses"
-  description              = "Zendesk responses from the Zendesk API, fetched by the zendesk workflow. One row per zendesk response."
-  schema                   = file("schemas/zendesk/responses.json")
+  table_id                 = "tickets"
+  friendly_name            = "Zendesk tickets"
+  description              = "Zendesk tickets from the Zendesk API, fetched by the zendesk workflow. One row per zendesk ticket."
+  schema                   = file("schemas/zendesk/tickets.json")
   require_partition_filter = true
   time_partitioning {
     expiration_ms = 1000 * 60 * 60 * 24 * 365
-    field         = "date_started"
+    field         = "created_at"
     type          = "DAY"
   }
 }
-*/

@@ -3,12 +3,6 @@
 
 BEGIN
 
--- Set some variables that are required to filter by the partition
-DECLARE min_date_started TIMESTAMP;
-DECLARE max_date_started TIMESTAMP;
-SET min_date_started = (SELECT MIN(date_started) from `smart_survey.SOURCE_TABLE_NAME`);
-SET max_date_started = (SELECT MAX(date_started) from `smart_survey.SOURCE_TABLE_NAME`);
-
 -- Delete any responses that have newer versions in the source table.
 MERGE smart_survey.responses AS T
 USING `smart_survey.SOURCE_TABLE_NAME` AS S
