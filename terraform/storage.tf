@@ -353,3 +353,78 @@ data "google_iam_policy" "bucket_smart_survey" {
     ]
   }
 }
+
+# Bucket for Zendesk API data, until BigQuery has loaded it.
+resource "google_storage_bucket" "zendesk" {
+  name                        = "${var.project_id}-zendesk" # Must be globally unique
+  force_destroy               = false                       # terraform won't delete the bucket unless it is empty
+  location                    = var.location
+  storage_class               = "STANDARD" # https://cloud.google.com/storage/docs/storage-classes
+  uniform_bucket_level_access = true
+  versioning {
+    enabled = false
+  }
+  # A nightly batch is uploaded to an object with a random name. BigQuery will
+  # try to load the data out of that particular object. The next night, a new
+  # object will be created. Each object will be kept for 7 days, for debugging
+  # in case of trouble.
+  lifecycle_rule {
+    condition {
+      age = 7
+    }
+    action {
+      type = "Delete"
+    }
+  }
+}
+
+resource "google_storage_bucket_iam_policy" "zendesk" {
+  bucket      = google_storage_bucket.zendesk.name
+  policy_data = data.google_iam_policy.bucket_zendesk.policy_data
+}
+
+data "google_iam_policy" "bucket_zendesk" {
+  binding {
+    role = "roles/storage.admin" # The lowest predefined role that includes storage.buckets.get
+    members = [
+      google_service_account.http_to_bucket.member,
+    ]
+  }
+
+  binding {
+    role = "roles/storage.objectViewer"
+    members = [
+      google_service_account.workflow_zendesk.member,
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketOwner"
+    members = [
+      "projectEditor:${var.project_id}",
+      "projectOwner:${var.project_id}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyBucketReader"
+    members = [
+      "projectViewer:${var.project_id}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectOwner"
+    members = [
+      "projectEditor:${var.project_id}",
+      "projectOwner:${var.project_id}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.legacyObjectReader"
+    members = [
+      "projectViewer:${var.project_id}",
+    ]
+  }
+}
