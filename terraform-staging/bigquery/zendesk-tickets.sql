@@ -10,7 +10,7 @@ INT64(JSON_QUERY(result, "$.id")) AS id,
 PARSE_TIMESTAMP("%Y-%m-%dT%H:%M:%SZ", JSON_VALUE(result, "$.created_at")) AS created_at,
 PARSE_TIMESTAMP("%Y-%m-%dT%H:%M:%SZ", JSON_VALUE(result, "$.updated_at")) AS updated_at,
 result AS ticket
-FROM `govuk-knowledge-graph-dev.zendesk.SOURCE_TABLE_NAME`
+FROM `zendesk.SOURCE_TABLE_NAME`
 CROSS JOIN UNNEST(results) AS result;
 
 -- Delete any tickets that have newer versions in the source table.
