@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - staging
+      - main
     paths:
       - 'docker/data-loss-prevention/*'
       - '.github/workflows/docker-data-loss-prevention.yml'

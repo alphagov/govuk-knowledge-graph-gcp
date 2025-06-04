@@ -81,6 +81,7 @@ FunctionsFramework.http "data_loss_prevention" do |request|
   rescue => e
     # TODO: choose an appropriate error code to prevent BigQuery from
     # resubmitting the request.
-    return [500, { 'Content-Type' => 'application/json' }, [{ "replies" => [{"error" => e.message }]}]]
+    # return [200, { 'Content-Type' => 'application/json' }, [{ "replies" => [{"error" => e.message }]}]]
+    return [200, { 'Content-Type' => 'application/json' }, [{ "replies" => [{"error" => "some error" }]}]]
   end
 end
