@@ -4,7 +4,7 @@ resource "google_bigquery_dataset" "functions" {
   dataset_id            = "functions"
   friendly_name         = "functions"
   description           = "User-defined functions and remote functions"
-  location              = "europe-west2"
+  location              = var.region
   max_time_travel_hours = "48"
 }
 

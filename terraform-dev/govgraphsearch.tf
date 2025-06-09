@@ -268,7 +268,7 @@ resource "google_cloud_run_service" "govgraphsearch" {
     spec {
       service_account_name = google_service_account.govgraphsearch.email
       containers {
-        image = "europe-west2-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.cloud_run_source_deploy.repository_id}/govuk-knowledge-graph-search:latest"
+        image = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.cloud_run_source_deploy.repository_id}/govuk-knowledge-graph-search:latest"
         env {
           name  = "GTM_ID"
           value = var.gtm_id

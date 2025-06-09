@@ -9,7 +9,7 @@ resource "google_bigquery_dataset" "test" {
   dataset_id            = "test"
   friendly_name         = "test"
   description           = "Test queries"
-  location              = "europe-west2"
+  location              = var.region
   max_time_travel_hours = "48"
 }
 

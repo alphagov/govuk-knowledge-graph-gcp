@@ -4,7 +4,7 @@ resource "google_bigquery_dataset" "asset_manager" {
   dataset_id            = "asset_manager"
   friendly_name         = "Asset Manager"
   description           = "Data from the GOV.UK Asset Manager database"
-  location              = "europe-west2"
+  location              = var.region
   max_time_travel_hours = "48"
 }
 

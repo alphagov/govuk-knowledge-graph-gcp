@@ -21,7 +21,7 @@ resource "google_service_account_iam_policy" "log_writer" {
 
 resource "google_logging_project_sink" "log_sink" {
   name        = "log-sink"
-  destination = "logging.googleapis.com/projects/gds-bq-reporting/locations/europe-west2/buckets/multi_project"
+  destination = "logging.googleapis.com/projects/gds-bq-reporting/locations/${var.region}/buckets/multi_project"
   exclusions {
     name        = "standard-exclusions"
     description = "Standard exclusions https://docs.data-community.publishing.service.gov.uk/data-sources/gcp-logs/#set-up"
