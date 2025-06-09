@@ -4,7 +4,7 @@ resource "google_bigquery_dataset" "content" {
   dataset_id            = "content"
   friendly_name         = "content"
   description           = "Deprecated: GOV.UK content data. Please use the 'private' and 'public' datsets instead. Tables in this dataset are now derived from those."
-  location              = "europe-west2"
+  location              = var.region
   max_time_travel_hours = "48"
 }
 

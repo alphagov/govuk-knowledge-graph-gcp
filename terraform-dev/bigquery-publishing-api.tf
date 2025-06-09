@@ -4,7 +4,7 @@ resource "google_bigquery_dataset" "publishing_api" {
   dataset_id            = "publishing_api"
   friendly_name         = "Publishing API"
   description           = "Data from the GOV.UK Publishing API database"
-  location              = "europe-west2"
+  location              = var.region
   max_time_travel_hours = "48"
 }
 

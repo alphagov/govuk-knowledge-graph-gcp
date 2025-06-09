@@ -4,7 +4,7 @@ resource "google_bigquery_dataset" "smart_survey" {
   dataset_id            = "smart_survey"
   friendly_name         = "Smart Survey"
   description           = "Data from the Smart Survey API"
-  location              = "europe-west2"
+  location              = var.region
   max_time_travel_hours = "48"
 }
 

@@ -170,7 +170,7 @@ resource "google_compute_subnetwork" "cloudrun" {
   private_ipv6_google_access = "DISABLE_GOOGLE_ACCESS"
   project                    = var.project_id
   purpose                    = "PRIVATE"
-  region                     = "europe-west2"
+  region                     = var.region
   stack_type                 = "IPV4_ONLY"
 }
 
@@ -180,7 +180,7 @@ module "publishing-api-container" {
   version = "~> 2.0"
 
   container = {
-    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/publishing-api:latest"
+    image = "${var.region}-docker.pkg.dev/${var.project_id}/docker/publishing-api:latest"
     tty : true
     stdin : true
     securityContext = {
@@ -211,7 +211,7 @@ module "support-api-container" {
   version = "~> 2.0"
 
   container = {
-    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/support-api:latest"
+    image = "${var.region}-docker.pkg.dev/${var.project_id}/docker/support-api:latest"
     tty : true
     stdin : true
     securityContext = {
@@ -270,7 +270,7 @@ module "publisher-container" {
   version = "~> 2.0"
 
   container = {
-    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/publisher:latest"
+    image = "${var.region}-docker.pkg.dev/${var.project_id}/docker/publisher:latest"
     tty : true
     stdin : true
     volumeMounts = [
@@ -327,7 +327,7 @@ module "redis-cli-container" {
   count = var.enable_redis_session_store_instance ? 1 : 0
 
   container = {
-    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/redis-cli:latest"
+    image = "${var.region}-docker.pkg.dev/${var.project_id}/docker/redis-cli:latest"
     tty : true
     stdin : true
     env = [
@@ -363,7 +363,7 @@ module "whitehall-container" {
   version = "~> 2.0"
 
   container = {
-    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/whitehall:latest"
+    image = "${var.region}-docker.pkg.dev/${var.project_id}/docker/whitehall:latest"
     tty : true
     stdin : true
     securityContext = {
@@ -389,7 +389,7 @@ module "asset-manager-container" {
   version = "~> 2.0"
 
   container = {
-    image = "europe-west2-docker.pkg.dev/${var.project_id}/docker/asset-manager:latest"
+    image = "${var.region}-docker.pkg.dev/${var.project_id}/docker/asset-manager:latest"
     tty : true
     stdin : true
     securityContext = {

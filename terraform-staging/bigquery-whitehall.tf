@@ -4,7 +4,7 @@ resource "google_bigquery_dataset" "whitehall" {
   dataset_id            = "whitehall"
   friendly_name         = "Whitehall"
   description           = "Data from the GOV.UK Whitehall database"
-  location              = "europe-west2"
+  location              = var.region
   max_time_travel_hours = "48"
 }
 

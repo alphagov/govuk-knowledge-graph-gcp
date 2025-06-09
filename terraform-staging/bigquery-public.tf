@@ -5,7 +5,7 @@ resource "google_bigquery_dataset" "public" {
   dataset_id            = "public"
   friendly_name         = "Public"
   description           = "Data that must not be accessible from outside of GOV.UK"
-  location              = "europe-west2"
+  location              = var.region
   max_time_travel_hours = "48" # The minimum is 48
 }
 
