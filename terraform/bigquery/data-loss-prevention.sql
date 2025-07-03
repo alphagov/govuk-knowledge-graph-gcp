@@ -3,5 +3,5 @@ RETURNS STRING
 REMOTE WITH CONNECTION `${project_id}.${region}.data-loss-prevention`
 OPTIONS (
   endpoint = "${uri}",
-  max_batching_rows=1
+  max_batching_rows=50000
 )
