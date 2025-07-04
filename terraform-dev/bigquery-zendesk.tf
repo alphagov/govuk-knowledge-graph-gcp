@@ -53,16 +53,16 @@ resource "google_bigquery_table" "zendesk_tickets" {
 }
 
 resource "google_bigquery_table" "zendesk_tickets_flattened" {
-  dataset_id               = google_bigquery_dataset.private.dataset_id
-  table_id                 = "zendesk_tickets_flattened"
-  friendly_name            = "Zendesk tickets (flattened)"
-  description              = "Zendesk tickets from the Zendesk API, fetched by the zendesk workflow. One row per zendesk ticket."
-  schema                   = file("schemas/private/zendesk-tickets-flattened.json")
+  dataset_id    = google_bigquery_dataset.private.dataset_id
+  table_id      = "zendesk_tickets_flattened"
+  friendly_name = "Zendesk tickets (flattened)"
+  description   = "Zendesk tickets from the Zendesk API, fetched by the zendesk workflow. One row per zendesk ticket."
+  schema        = file("schemas/private/zendesk-tickets-flattened.json")
 
   # We can't use a materialized view, because they don't allow a schema, so we
   # couldn't terraform any field descriptions.
-  view  {
-    query = file("bigquery/zendesk-tickets-flattened.sql")
+  view {
+    query          = file("bigquery/zendesk-tickets-flattened.sql")
     use_legacy_sql = false
   }
 }
