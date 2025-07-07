@@ -47,7 +47,7 @@ docker logs -tf klt--gdxf
 docker logs -tf klt--gdxf
 
 # Otherwise, SSH directly from your device into the docker container
-gcloud compute ssh --zone "europe-west2-b" "asset-manager" --project "govuk-knowledge-graph" -- container "klt--gdxf"
+gcloud compute ssh --zone "europe-west2-b" "asset-manager" --project "govuk-knowledge-graph" --tunnel-through-iap --container "klt--gdxf"
 ```
 
 [govuk-s3-mirror]: https://github.com/alphagov/govuk-s3-mirror
