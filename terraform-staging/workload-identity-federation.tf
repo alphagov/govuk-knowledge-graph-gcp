@@ -14,6 +14,10 @@ resource "google_iam_workload_identity_pool_provider" "main" {
     "attribute.aud"        = "assertion.aud"
     "attribute.repository" = "assertion.repository"
   }
+
+  # This is the numeric immutable ID of the 'alphagov' GitHub org.
+  attribute_condition = "assertion.repository_owner_id == '596977'"
+
   oidc {
     allowed_audiences = []
     issuer_uri        = "https://token.actions.githubusercontent.com"
