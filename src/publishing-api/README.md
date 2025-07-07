@@ -34,7 +34,8 @@ terminal.
 gcloud compute ssh \
   --zone "europe-west2-b" \
   "publishing-api" \
-  --project "govuk-knowledge-graph"
+  --project "govuk-knowledge-graph" \
+  --tunnel-through-iap
 
 # Wait a while for the docker image to start (about 30 seconds to a minute)
 
@@ -48,7 +49,7 @@ docker logs -tf klt--ulug
 docker logs -tf klt--ulug
 
 # Otherwise, SSH directly from your device into the docker image
-gcloud compute ssh --zone "europe-west2-b" "publishing-api" --project "govuk-knowledge-graph" -- container "klt--ulug"
+gcloud compute ssh --zone "europe-west2-b" "publishing-api" --project "govuk-knowledge-graph" --tunnel-through-iap --container "klt--ulug"
 ```
 
 [bucket]: https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-repository
