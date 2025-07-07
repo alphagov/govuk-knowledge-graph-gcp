@@ -203,6 +203,7 @@ provider "google" {
 
   # Ref: https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#user_project_override
   user_project_override = true
+  billing_project       = var.project_id
 }
 
 # Create the project
