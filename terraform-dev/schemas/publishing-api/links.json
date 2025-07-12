@@ -6,11 +6,6 @@
   },
   {
     "mode": "NULLABLE",
-    "name": "link_set_id",
-    "type": "INTEGER"
-  },
-  {
-    "mode": "NULLABLE",
     "name": "target_content_id",
     "type": "STRING"
   },

@@ -131,14 +131,6 @@ resource "google_bigquery_table" "publishing_api_links" {
   friendly_name = "Links"
   description   = "Links table from the GOV.UK Publishing API PostgreSQL database"
   schema        = file("schemas/publishing-api/links.json")
-  range_partitioning {
-    field = "link_set_id"
-    range {
-      start    = 0
-      end      = 10000000 # 10 times the maximum at the end of 2023, which was about 1000000
-      interval = 2500     # 4k partitions, which is the limit
-    }
-  }
 }
 
 resource "google_bigquery_table" "publishing_api_path_reservations" {
