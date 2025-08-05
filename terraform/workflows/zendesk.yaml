@@ -6,7 +6,7 @@ main:
           # Default to fetching yesterday's survey responses. Otherwise use
           # the arguments provided in the call to this workflow (UNIX epoch integers)
           - yesterday: $${text.substring(time.format(sys.now() - 60 * 60 * 24), 0, 10)}
-          - created_at: $${default(map.get(args, "created_at"), yesterday)}
+          - updated_at: $${default(map.get(args, "updated_at"), yesterday)}
 
           # Default page size
           - page_size: $${default(map.get(args, "page_size"), 1000)}
@@ -70,7 +70,7 @@ main:
               include: "tickets(metric_sets)"
               page[size]: $${page_size}
               filter[type]: "ticket"
-              query: $${"created_at:" + created_at}
+              query: $${"updated_at:" + updated_at}
               page[after]: $${after_cursor}
             auth:
                 type: OIDC
@@ -149,7 +149,7 @@ main:
     # Finish
     - return:
         return:
-          created_at: $${created_at}
+          updated_at: $${updated_at}
           load_into_bigquery_result: $${load_into_bigquery_result}
           set_bigquery_table_expiry_result: $${set_bigquery_table_expiry_result}
           merge_result: $${merge_result}

@@ -47,7 +47,7 @@ resource "google_bigquery_table" "zendesk_tickets" {
   require_partition_filter = false
   time_partitioning {
     expiration_ms = 1000 * 60 * 60 * 24 * 365
-    field         = "created_at"
+    field         = "updated_at"
     type          = "DAY"
   }
 }
