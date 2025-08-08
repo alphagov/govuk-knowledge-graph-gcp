@@ -41,10 +41,11 @@ WITH
   organisations AS (
     SELECT
       links.source_edition_id AS edition_id,
-      ARRAY_AGG(DISTINCT editions.title) AS titles
+      ARRAY_AGG(editions.title ORDER BY links.position) AS titles
     FROM links
     INNER JOIN editions ON editions.id = links.target_edition_id
     WHERE links.type = 'organisations'
+    AND editions.locale = "en"
     GROUP BY links.source_edition_id
   ),
   organisations_ancestry AS (
