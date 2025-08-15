@@ -316,4 +316,90 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
     end # context "and an unexpected error occurs"
 
   end # context "when all required parameters are provided"
+
+  describe "#remove_empty_hashes" do
+    context "when it's given a single layer hash" do
+      it "correctly removes empty hash elements" do
+        object = {foo: {}, bar: "baz"}
+        expectation = {bar: "baz"}
+
+        expect(remove_empty_hashes(object)).to eq(expectation)
+      end
+    end
+
+    context "when it's given an array of hashes" do
+      it "correctly removes empty hash elements" do
+        object = [{foo: {}, bar: "baz"}, {foo: "bar", baz: {}}]
+        expectation = [{bar: "baz"}, {foo: "bar"}]
+
+        expect(remove_empty_hashes(object)).to eq(expectation)
+      end
+    end
+
+    context "when it's given a multi layered hash" do
+      it "correctly removes empty hash elements" do
+        object = {
+          a: {foo: {}, bar: "baz"},
+          b: {foo: "bar", baz: {}},
+          c: {foo: {bar: "baz", foo: {}}}
+        }
+        expectation = {
+          a: {bar: "baz"},
+          b: {foo: "bar"},
+          c: {foo: {bar: "baz"}}
+        }
+
+        expect(remove_empty_hashes(object)).to eq(expectation)
+      end
+    end
+
+    context "when it's given an array of many multi layered hash" do
+      it "correctly removes empty hash elements" do
+        object = [
+          {
+            a: {foo: {}, bar: "baz"},
+            b: {foo: "bar", baz: {}},
+            c: {foo: {bar: "baz", foo: {}}}
+          },
+          {
+            a: {foo: {}, bar: "baz"},
+            b: {foo: "bar", baz: {}},
+            c: {foo: {bar: "baz", foo: {}}}
+          },
+        ]
+        expectation = [
+          {
+          a: {bar: "baz"},
+          b: {foo: "bar"},
+          c: {foo: {bar: "baz"}}
+          },
+          {
+          a: {bar: "baz"},
+          b: {foo: "bar"},
+          c: {foo: {bar: "baz"}}
+          },
+        ]
+
+        expect(remove_empty_hashes(object)).to eq(expectation)
+      end
+    end
+
+    context "when it's given empty, non hash objects" do
+      it "doesn't remove them" do
+        object = {foo: "", bar: []}
+        expectation = {foo: "", bar: []}
+
+        expect(remove_empty_hashes(object)).to eq(expectation)
+      end
+    end
+
+    context "when it's given many layers of nothing" do
+      it "removes them all the way up the tree" do
+        object = {foo: {bar: {}}}
+        expectation = {}
+
+        expect(remove_empty_hashes(object)).to eq(expectation)
+      end
+    end
+  end
 end # RSpec.describe

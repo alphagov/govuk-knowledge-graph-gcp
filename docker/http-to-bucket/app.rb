@@ -47,7 +47,8 @@ def upload_response(project_id, bucket_name, object_name, http_response)
   storage = Google::Cloud::Storage.new project: project_id
   bucket = storage.bucket bucket_name
 
-  body_json = JSON.parse(http_response.body)
+  body_json = remove_empty_hashes(JSON.parse(http_response.body))
+
   if body_json.kind_of?(Array)
     # If an array of JSON objects is returned (e.g. Smart Survey API), then
     # format each one into a string on a single line.
@@ -60,6 +61,19 @@ def upload_response(project_id, bucket_name, object_name, http_response)
 
   object = StringIO.new(body_ndjson)
   bucket.create_file object, object_name
+end
+
+def remove_empty_hashes(obj)
+  if obj.is_a?(Hash)
+    obj.each do |k, v|
+      obj[k] = remove_empty_hashes(v)
+    end
+    obj.reject {|k, v| v == {}}
+  elsif obj.is_a?(Array)
+    obj.map {|o| remove_empty_hashes(o)}
+  else
+    obj
+  end
 end
 
 FunctionsFramework.http "http_to_bucket" do |request|
