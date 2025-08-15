@@ -82,6 +82,8 @@ FunctionsFramework.http "http_to_bucket" do |request|
 
     request.logger.info "Parameters are valid"
 
+    clean(request)
+
     # Remove parameters from the request URL
     request.delete_param("endpoint_url")
     request.delete_param("headers")
@@ -130,4 +132,17 @@ FunctionsFramework.http "http_to_bucket" do |request|
   # Return a string, a Rack::Response object, a Rack response array, or a hash
   # which will be JSON-encoded into a response.
   return JMESPath.search(jmespath, JSON.parse(http_response.body))
+end
+
+def clean(obj)
+  if obj.is_a?(Hash)
+    obj.reject! {|k, v| v == {}}
+    obj.each do |k, v|
+      obj[k] = clean(v)
+    end
+  elsif obj.is_a?(Array)
+    obj.map {|o| clean(o)}
+  else
+    obj
+  end
 end
