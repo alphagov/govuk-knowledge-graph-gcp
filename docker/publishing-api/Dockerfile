@@ -1,4 +1,4 @@
-FROM postgres:16.0-alpine3.18
+FROM postgres:17.6-alpine3.22
 
 # Install the gcloud CLI, a specific version from a long-term archive
 # Adapted from https://github.com/GoogleCloudPlatform/cloud-sdk-docker/blob/master/alpine/Dockerfile
