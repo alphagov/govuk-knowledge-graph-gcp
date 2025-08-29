@@ -4,12 +4,9 @@ SHELL := /bin/bash
 NPROCS = $(shell grep -c 'processor' /proc/cpuinfo)
 MAKEFLAGS += -j$(NPROCS)
 
-MONGO_DATABASE=govuk_content_production
-BQ_DATASET=publisher
-
-# Names of tables in the Mongo database to export to Cloud Storage
+# Names of tables in the postgres database to export to Cloud Storage
 # and BigQuery
-EXPORT = editions actions
+EXPORT = actions editions
 
 # A step to create all the targets described in the CSV.GZ and BIGQUERY
 # variables, which means that all the .sh and .sql scripts in the SH and
@@ -17,8 +14,8 @@ EXPORT = editions actions
 .PHONY: all
 all: $(EXPORT)
 
-editions:
-	source functions.sh; export_query_to_bigquery "${MONGO_DATABASE}" "${PROJECT_ID}" "${BQ_DATASET}" "editions" "url,updated_at,version_number,state,major_change,type"
-
 actions:
-	source functions.sh; export_query_to_bigquery "${MONGO_DATABASE}" "${PROJECT_ID}" "${BQ_DATASET}" "actions" "url,version_number,action_created_at,action_request_type"
+	source functions.sh; export_to_bigquery backup_name=${FILE_PATH} table_name=$@
+
+editions:
+	source functions.sh; export_to_bigquery backup_name=${FILE_PATH} table_name=$@
