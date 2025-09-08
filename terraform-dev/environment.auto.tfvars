@@ -71,6 +71,10 @@ bigquery_publishing_api_data_viewer_members = [
 bigquery_smart_survey_data_viewer_members = [
 ]
 
+# # BigQuery dataset: smart_survey_v2
+# bigquery_smart_survey_v2_data_viewer_members = [
+# ]
+
 # BigQuery dataset: support-api
 bigquery_support_api_data_viewer_members = [
 ]

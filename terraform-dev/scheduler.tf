@@ -19,6 +19,27 @@ resource "google_cloud_scheduler_job" "smart_survey" {
   }
 }
 
+resource "google_cloud_scheduler_job" "smart_survey_v2" {
+  name        = "smart-survey-v2"
+  description = "Smart Survey v2 workflow schedule"
+  schedule    = "0 7 * * *"
+  time_zone   = "UTC"
+
+  retry_config {
+    retry_count = 0
+  }
+
+  http_target {
+    http_method = "POST"
+    uri         = "https://workflowexecutions.googleapis.com/v1/${google_workflows_workflow.smart_survey_v2.id}/executions"
+    body        = base64encode("{}")
+    headers     = { "Content-Type" = "application/json" }
+    oauth_token {
+      service_account_email = google_service_account.workflow_smart_survey_v2.email
+    }
+  }
+}
+
 resource "google_cloud_scheduler_job" "zendesk" {
   name        = "zendesk"
   description = "zendesk workflow schedule"

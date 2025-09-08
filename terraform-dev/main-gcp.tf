@@ -164,6 +164,10 @@ variable "bigquery_smart_survey_data_viewer_members" {
   type = list(string)
 }
 
+# variable "bigquery_smart_survey_v2_data_viewer_members" {
+#   type = list(string)
+# }
+
 variable "bigquery_support_api_data_viewer_members" {
   type = list(string)
 }
@@ -316,6 +320,7 @@ data "google_iam_policy" "project" {
         google_service_account.gce_asset_manager.member,
         google_service_account.govgraphsearch.member,
         google_service_account.workflow_smart_survey.member,
+        # google_service_account.workflow_smart_survey_v2.member,
         google_service_account.workflow_zendesk.member,
       ],
       var.bigquery_job_user_members
@@ -535,6 +540,7 @@ data "google_iam_policy" "project" {
     role = "roles/workflows.invoker"
     members = [
       google_service_account.workflow_smart_survey.member,
+      google_service_account.workflow_smart_survey_v2.member,
       google_service_account.workflow_zendesk.member,
     ]
   }
