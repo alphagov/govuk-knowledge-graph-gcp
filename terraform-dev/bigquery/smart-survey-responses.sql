@@ -5,7 +5,13 @@ BEGIN
 
 -- Delete any responses that have newer versions in the source table.
 MERGE smart_survey.responses AS T
-USING `smart_survey.SOURCE_TABLE_NAME` AS S
+USING (
+  SELECT
+    record.*
+  FROM
+    `smart_survey.SOURCE_TABLE_NAME`,
+    UNNEST(records) AS record
+) AS S
 ON T.id = S.id
 
 -- The table requires filtering by the partition, but we don't want to filter in
@@ -18,6 +24,12 @@ WHEN MATCHED THEN DELETE;
 
 -- Insert new responses.
 INSERT INTO smart_survey.responses
-SELECT * FROM `smart_survey.SOURCE_TABLE_NAME`;
+SELECT * FROM (
+  SELECT
+    record.*
+  FROM
+    `smart_survey.SOURCE_TABLE_NAME`,
+    UNNEST(records) AS record
+);
 
 END

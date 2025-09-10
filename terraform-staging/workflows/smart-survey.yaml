@@ -7,7 +7,7 @@ main:
           # the arguments provided in the call to this workflow (UNIX epoch integers)
           - yesterday: $${text.substring(time.format(sys.now() - 60 * 60 * 24), 0, 10)}
           - since: $${int(default(map.get(args, "since"), time.parse(yesterday + "T00:00:00.000000Z")))}
-          - until: $${int(default(map.get(args, "since"), time.parse(yesterday + "T23:59:59.999999Z")))}
+          - until: $${int(default(map.get(args, "until"), time.parse(yesterday + "T23:59:59.999999Z")))}
 
           # Default page size
           # The API itself defaults to 10, with a maximum of 100. The number of
@@ -52,14 +52,15 @@ main:
 
     - build_endpoint_url:
         assign:
-          - endpoint_url: $${"https://api.smartsurvey.io/v1/surveys/" + str_survey_id + "/responses"}
+          - endpoint_url: $${"https://api.smartsurvey.io/v2/surveys/" + str_survey_id + "/responses"}
 
     - build_headers:
         assign:
           - auth_str: $${str_token + ":" + str_secret}
           - auth_str_base64: $${"Basic " + base64.encode(text.encode(auth_str, "UTF-8"))}
 
-    # Call the API solely for the header that says how many results there will be.
+
+    # Retrieve the value of the total field. This says how many results there will be in this time-window for pagination.
     - first_api_call:
         try:
           call: http.get
@@ -71,7 +72,7 @@ main:
               filter_id: $${filter_id}
               completed: $${completed}
               page: 1
-              page_size: 0
+              page_size: 1
               sort_by: $${sort_by}
               include_labels: $${include_labels}
             headers:
@@ -88,10 +89,10 @@ main:
     # Calculate how many pages of page_size would fetch all the results.
     - calculate_page_range:
         assign:
-        - pagination_total: $${int(first_api_response.headers["X-Ss-Pagination-Total"])}
+        - pagination_total: $${int(first_api_response.body.total)}
         - max_page: $${pagination_total // page_size + math.min(1, pagination_total % page_size)}
 
-    # Iteratively fetch each page of results and send to BigQuery
+    # Iteratively fetch each page of results
     - iterative_api_calls:
         for:
             value: page_number
