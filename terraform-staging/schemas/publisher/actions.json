@@ -1,26 +1,80 @@
 [
   {
-    "name": "url",
-    "type": "STRING",
-    "mode": "REQUIRED",
-    "description": "URL of a document. Not broken down into chapters of guide or travel_advice documents."
-  },
-  {
-    "name": "version_number",
+    "name": "id",
     "type": "INTEGER",
     "mode": "REQUIRED",
-    "description": "Sometimes in a different sequence from updated_at, e.g. /1619-bursary-fund"
+    "description": "ID of action"
   },
   {
-    "name": "action_created_at",
+    "name": "approver_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "ID of user who approved edit if this is an approval action"
+  },
+  {
+    "name": "approved_timestamp",
     "type": "TIMESTAMP",
-    "mode": "REQUIRED",
-    "description": "When the action occurred"
+    "mode": "NULLABLE",
+    "description": "Time of approval if this is an approval action"
   },
   {
-    "name": "action_request_type",
+    "name": "comment_character",
     "type": "STRING",
-    "mode": "REQUIRED",
-    "description": "E.g. 'send_fact_check', 'request_amendments', 'note'."
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "comment_sanitized",
+    "type": "BOOL",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "request_type",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "request_details",
+    "type": "JSON",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "email_address",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "customised_message",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "mongo_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "create_at",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "updated_at",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "edition_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "requester_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "recipient_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
   }
 ]

@@ -91,14 +91,14 @@ main:
                           value: ${support_api_metadata_value}
           - return_started_support_api:
               return: $${"Started support-api instance"}
-        - condition: $${text.match_regex(object_name, "^shared-documentdb/\\d{4}-\\d{2}-\\d{2}T\\d{6}Z-govuk_content_production\\.gz$")}
+        - condition: $${text.match_regex(object_name, "^publisher-postgres/\\d{4}-\\d{2}-\\d{2}T\\d{6}Z-publisher_production\\.gz$")}
           steps:
           - log_starting_publisher_instance:
               call: sys.log
               args:
                   text: "Starting publisher instance"
                   severity: INFO
-          - start_mongodb:
+          - start_publisher:
               call: googleapis.compute.v1.instances.insert
               args:
                   project: ${project_id}
