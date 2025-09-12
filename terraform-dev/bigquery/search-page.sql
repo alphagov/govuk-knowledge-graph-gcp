@@ -66,7 +66,7 @@ WITH
   -- editors don't tend to use 'public_updated_at', and 'updated_at' is polluted
   -- by creation of new editions for techy reasons rather than editing reasons.
   SELECT
-    url,
+    CONCAT("https://www.gov.uk", slug) AS url,
     MAX(updated_at) AS publisher_updated_at,
   FROM publisher.editions
   WHERE state='published'
