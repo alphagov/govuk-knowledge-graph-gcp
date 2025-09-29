@@ -95,6 +95,18 @@ You are welcome to:
 - open an issue
 - submit a pull request
 
+## Deployment
+This is not yet an exhaustive set of instructions as the deployment process is likely to change very soon at the time of writing. For now its main purpose to is to capture some of the "gotchas" you may experience during deployments which I have not found documented elsewhere.
+
+### Terraform Gotchas
+
+#### google_compute_instance_template
+Various GCE templates are defined for the VMs (`resource google_compute_instance_template`).
+Google periodically updates the base images upstream and so sometimes a `terraform plan/apply` may throw up a number of replacement changes to these resources. This is normal and the plan may be applied. However, it is worth monitoring this in dev just to be sure that no low-level binaries in the image cause breaking changes to the ingestion.
+
+#### google_cloud_run_service.govgraphsearch
+The current deployment process configures most of the Cloud Run services in terraform. However, the deployment of new GovSearch revisions uses the `gcloud` cli in the CI. This can cause drift in some of the `run.googleapis.com/client-*` annotations and an apparent update to the image. The image will not be updated, just the tag used to pull it. These updates can be safely applied. This will create a new revision but you can verify that the image hash has not changed between revisions by checking the `spec.containers.image` property in the revision via the Cloud Run UI.
+
 ## Licence
 
 Unless stated otherwise, the codebase is released under [the MIT License][mit]. This covers both the codebase and any sample code in the documentation.

@@ -8,3 +8,4 @@ terraform-staging/.terraform*
 !terraform-staging/.terraform-version
 terraform-staging/terraform.tfstate*
 .idea/
+.vscode/
