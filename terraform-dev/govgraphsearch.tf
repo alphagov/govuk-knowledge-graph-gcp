@@ -187,18 +187,6 @@ data "google_secret_manager_secret_version" "iap_oauth_client_secret" {
   secret = "iap-oauth-client-secret"
 }
 
-data "google_secret_manager_secret_version" "sso_oauth_client_id" {
-  secret = "OAUTH_ID"
-}
-
-data "google_secret_manager_secret_version" "sso_oauth_client_secret" {
-  secret = "OAUTH_SECRET"
-}
-
-data "google_secret_manager_secret_version" "cookie-session-signature" {
-  secret = "cookie-session-signature"
-}
-
 # Boilerplate
 resource "google_compute_region_network_endpoint_group" "govgraphsearch_eg" {
   name   = "govgraphsearch-eg"

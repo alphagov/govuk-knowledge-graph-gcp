@@ -52,10 +52,6 @@ variable "location" {
   type = string
 }
 
-variable "govgraph_domain" {
-  type = string
-}
-
 variable "govgraphsearch_domain" {
   type = string
 }
@@ -144,10 +140,6 @@ variable "bigquery_functions_data_viewer_members" {
   type = list(string)
 }
 
-variable "bigquery_graph_data_viewer_members" {
-  type = list(string)
-}
-
 variable "bigquery_private_data_viewer_members" {
   type = list(string)
 }
@@ -191,6 +183,7 @@ variable "bigquery_zendesk_data_viewer_members" {
 terraform {
   required_providers {
     google = {
+      source  = "hashicorp/google"
       version = "6.27.0"
     }
   }

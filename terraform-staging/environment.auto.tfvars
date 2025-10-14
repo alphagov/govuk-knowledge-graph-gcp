@@ -1,7 +1,6 @@
 environment                         = "staging"
 project_id                          = "govuk-knowledge-graph-staging"
 project_number                      = "957740527277"
-govgraph_domain                     = "govgraphstaging.dev"
 govgraphsearch_domain               = "govgraphsearchstaging.dev"
 govsearch_domain                    = "gov-search.staging.service.gov.uk"
 application_title                   = "GovGraph Search (staging)"
@@ -57,10 +56,6 @@ bigquery_publisher_data_viewer_members = [
 
 # BigQuery dataset: functions
 bigquery_functions_data_viewer_members = [
-]
-
-# BigQuery dataset: graph
-bigquery_graph_data_viewer_members = [
 ]
 
 # BigQuery dataset: publishing-api

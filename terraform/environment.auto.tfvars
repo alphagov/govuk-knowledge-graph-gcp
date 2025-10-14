@@ -1,7 +1,6 @@
 environment                         = "production"
 project_id                          = "govuk-knowledge-graph"
 project_number                      = "19513753240"
-govgraph_domain                     = "govgraph.dev"
 govgraphsearch_domain               = "govgraphsearch.dev"
 govsearch_domain                    = "gov-search.service.gov.uk"
 application_title                   = "GovGraph Search"
@@ -68,16 +67,6 @@ bigquery_publisher_data_viewer_members = [
 # BigQuery dataset: functions
 bigquery_functions_data_viewer_members = [
   "group:govgraph-private-data-readers@digital.cabinet-office.gov.uk"
-]
-
-# BigQuery dataset: graph
-bigquery_graph_data_viewer_members = [
-  "group:govgraph-private-data-readers@digital.cabinet-office.gov.uk",
-  "serviceAccount:ner-bulk-inference@cpto-content-metadata.iam.gserviceaccount.com",
-  "serviceAccount:wif-govgraph-bigquery-access@govuk-llm-question-answering.iam.gserviceaccount.com",
-  "serviceAccount:wif-ner-new-content-inference@cpto-content-metadata.iam.gserviceaccount.com",
-  "serviceAccount:wif-vectorstore@govuk-llm-question-answering.iam.gserviceaccount.com",
-  "serviceAccount:govuk-looker-poc@govuk-looker-poc.iam.gserviceaccount.com",
 ]
 
 # BigQuery dataset: publishing-api

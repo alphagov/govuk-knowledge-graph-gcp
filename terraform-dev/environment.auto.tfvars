@@ -2,7 +2,6 @@ environment                         = "development"
 project_id                          = "govuk-knowledge-graph-dev"
 project_number                      = "628722085506"
 govgraph_domain                     = "govgraphdev.dev"
-govgraphsearch_domain               = "govgraphsearchdev.dev"
 govsearch_domain                    = "gov-search.integration.service.gov.uk"
 application_title                   = "GovGraph Search (development)"
 enable_auth                         = "true"
@@ -57,10 +56,6 @@ bigquery_publisher_data_viewer_members = [
 
 # BigQuery dataset: functions
 bigquery_functions_data_viewer_members = [
-]
-
-# BigQuery dataset: graph
-bigquery_graph_data_viewer_members = [
 ]
 
 # BigQuery dataset: publishing-api
