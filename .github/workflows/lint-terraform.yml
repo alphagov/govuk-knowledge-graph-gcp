@@ -10,11 +10,29 @@ on:
       - 'terraform*/**'
 
 jobs:
-  diff-terraform:
+  tflint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Run TFLint
-        run: |
-          tflint --init
-          tflint --chdir terraform-dev
+    - uses: terraform-linters/setup-tflint@v1
+      name: Set up TFLint
+      with:
+        tflint_version: v0.59.1
+
+    - uses: actions/checkout@v4
+    - name: Run TFLint
+      run: |
+        STEP_EXIT_STATUS=0
+        terraform init
+        tflint --init
+        echo "1"
+        tflint --config=.tflint.hcl -f compact --call-module-type=all --chdir terraform-dev
+        echo "2"
+        if [[ $? -eq 1 ]]; then STEP_EXIT_STATUS=1; fi  # Don't fail on warnings (status 2).
+        echo "3"
+        set -e
+        echo "4"
+        cd "$OLDPWD"
+        echo "5"
+        echo -e '\n-------------------------\n'
+        exit $STEP_EXIT_STATUS
+
