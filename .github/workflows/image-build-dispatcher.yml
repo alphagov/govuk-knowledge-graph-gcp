@@ -1,0 +1,101 @@
+name: Dispatch Image Builds
+
+on:
+  workflow_dispatch:
+  push:
+  #   branches:
+  #     - main
+
+permissions: {}
+
+jobs:
+  detect-docker-changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      images-to-build: ${{ steps.derive-image-names.outputs.images }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get list of changed directories under docker/
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          list-files: 'json'
+          filters: |
+            # A simple filter that returns 'true' if any relevant file has changed
+            docker_changes:
+              - 'docker/**'
+
+      - name: Create a list of image names from the docker/ directory names
+        id: derive-image-names
+        env:
+          CHANGED_FILES: ${{ steps.filter.outputs.docker_changes_files }}
+        run: |
+          if [[ "${{ steps.filter.outputs.docker_changes }}" == "true" ]]; then
+            IMAGES=$(echo "$CHANGED_FILES" | jq -c '[.[] | split("/")[1]] | unique')
+            echo "Image directories with changes: $IMAGES"
+            echo "images=$IMAGES" >> "$GITHUB_OUTPUT"
+          else
+            echo "No image directories with changes."
+            echo "images=[]" >> "$GITHUB_OUTPUT"
+          fi
+
+  build-push-deploy-nonprod:
+    name: Build ${{ matrix.image }} for ${{ matrix.environment }}
+    needs: detect-docker-changes
+    # This condition ensures the job doesn't run if no paths matched
+    if: needs.detect-docker-changes.outputs.images-to-build != '[]'
+
+    permissions:
+      contents: read
+      id-token: write
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        # environment: [development, staging]
+        environment: [development]
+        image: ${{ fromJson(needs.detect-docker-changes.outputs.images-to-build) }}
+
+    uses: ./.github/workflows/build-push-deploy.yml
+    with:
+      environment_name: ${{ matrix.environment }}
+      image_name: ${{ matrix.image }}
+      working_directory: 'docker/${{ matrix.image }}'
+      github_sha: ${{ github.sha }}
+      github_ref: ${{ github.ref }}
+    secrets: inherit
+
+  staging-smoke-test:
+    runs-on: ubuntu-latest
+    needs: build-push-deploy-nonprod
+    permissions: {}
+    steps:
+      - name: Placeholder for smoke tests
+        run: echo 'placeholder for staging smoke tests'
+
+  build-push-deploy-prod:
+    name: Build ${{ matrix.image }} for production
+    needs: [detect-docker-changes, staging-smoke-test]
+    # This condition ensures the job doesn't run if no paths matched
+    if: needs.detect-docker-changes.outputs.images-to-build != '[]'
+
+    permissions:
+      contents: read
+      id-token: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ${{ fromJson(needs.detect-docker-changes.outputs.images-to-build) }}
+
+    uses: ./.github/workflows/build-push-deploy.yml
+    with:
+      environment_name: development
+      image_name: ${{ matrix.image }}
+      working_directory: 'docker/${{ matrix.image }}'
+      github_sha: ${{ github.sha }}
+      github_ref: ${{ github.ref }}
+    secrets: inherit

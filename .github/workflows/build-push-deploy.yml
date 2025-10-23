@@ -1,0 +1,122 @@
+name: Build, Push (and Optionally Deploy) Image
+
+on:
+  workflow_call:
+    inputs:
+      environment_name:
+        required: true
+        type: string
+        description: 'The name of the GitHub environment where the necessary secrets and variables are stored'
+      image_name:
+        required: true
+        type: string
+        description: 'The image name (not including repository)'
+      working_directory:
+        required: true
+        type: string
+        description: 'The directory where the Docker build command should be run'
+      github_sha:
+        required: true
+        type: string
+        description: "The commit hash. This is used internally by the image builds (see Dockerfiles)."
+      github_ref:
+        required: true
+        type: string
+        description: "The name of the branch or tag which will be used to tag the image in the artifact registry. See GITHUB_REF in https://docs.github.com/en/actions/reference/workflows-and-actions/variables#default-environment-variables."
+
+    secrets:
+      # --- Secrets expected from the caller (or inherited via environment) ---
+      WORKLOAD_IDENTITY_PROVIDER:
+        required: true
+        description: 'WIF Provider path for the target environment'
+      ARTIFACT_REGISTRY_DOCKER_SERVICE_ACCOUNT:
+        required: true
+        description: 'Target Service Account email for the Artifact Registry in that target environment'
+      STORAGE_SERVICE_ACCOUNT:
+        required: true
+        description: 'Target Service Account email for GCS in that target environment'
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+
+    environment: ${{ inputs.environment_name }}
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    env:
+      GITHUB_SHA: ${{ inputs.github_sha }}
+      GITHUB_REF: ${{ inputs.github_ref }}
+      IMAGE_NAME: ${{ inputs.image_name }}
+      REGISTRY_HOSTNAME: ${{ vars.REGISTRY_HOSTNAME }}
+      REPOSITORY_SYNC_BUCKET: ${{ vars.REPOSITORY_SYNC_BUCKET }}
+
+    steps:
+      # actions/checkout MUST come before auth
+      - uses: 'actions/checkout@v4'
+
+      - name: Authenticate to Google Cloud for code sync to GCS
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.STORAGE_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK for code sync to GCS
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      # Sync everything except for the .git folder, which could get large.
+      - name: Sync code to GCS
+        run: |
+          gsutil -m rsync -J -r -d -C -x "\.git[$/].*" -x "gha-creds-.*" . "$REPOSITORY_SYNC_BUCKET"
+
+      # Reauth for Artifact Registry operations
+      - name: Authenticate to Google Cloud for Artifact Registry operations
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.ARTIFACT_REGISTRY_DOCKER_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK for Artifact Registry operations
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      # Configure docker to use the gcloud command-line tool as a credential helper
+      - name: Docker authentication
+        run: |
+          # Set up docker to authenticate
+          # via gcloud command-line tool.
+          gcloud auth configure-docker europe-west2-docker.pkg.dev
+
+      # Build the Docker image
+      - name: Docker build
+        run: |
+          TAG=$(echo "$GITHUB_REF" | awk -F/ '{print $NF}')
+          export TAG
+          echo "$TAG"
+          docker build -t "$REGISTRY_HOSTNAME"/"$IMAGE_NAME":"$TAG" \
+            --build-arg GITHUB_SHA="$GITHUB_SHA" \
+            --build-arg GITHUB_REF="$GITHUB_REF" .
+
+      # Push the Docker image to Google Container Registry
+      - name: Docker push
+        run: |
+          TAG=$(echo "$GITHUB_REF" | awk -F/ '{print $NF}')
+          export TAG
+          echo "$TAG"
+          docker push "$REGISTRY_HOSTNAME"/"$IMAGE_NAME":"$TAG"
+          docker tag "$REGISTRY_HOSTNAME"/"$IMAGE_NAME":"$TAG" "$REGISTRY_HOSTNAME"/"$IMAGE_NAME":latest
+          docker push "$REGISTRY_HOSTNAME"/"$IMAGE_NAME":latest
+
+      - name: Cloud Run deploy
+        # Do not run this step if image is a known VM workload - they do not require deployment to Cloud Run
+        if: ${{ !contains(fromJSON('["asset-manager", "publisher", "publishing-api", "support-api", "whitehall"]'), inputs.image_name) }}
+        uses: 'google-github-actions/deploy-cloudrun@v2'
+        with:
+          service: ${{ inputs.image_name }}
+          region: 'europe-west2'
+          image: ${{ env.REGISTRY_HOSTNAME }}/${{ inputs.image_name }}:latest
