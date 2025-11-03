@@ -98,7 +98,22 @@ You are welcome to:
 ## Deployment
 This is not yet an exhaustive set of instructions as the deployment process is likely to change very soon at the time of writing. For now its main purpose to is to capture some of the "gotchas" you may experience during deployments which I have not found documented elsewhere.
 
-### Terraform Gotchas
+### GitHub Actions Environments
+There are three [GitHub Actions Environments](https://github.com/alphagov/govuk-knowledge-graph-gcp/settings/environments) which correspond to, and contain configuration for, three separate GCP projects:
+development -> govuk-knowledge-graph-dev
+staging -> govuk-knowledge-graph-staging
+production -> govuk-knowledge-graph
+
+Any workflow targeting to production environment requires approval.
+
+### Docker
+Any changes to code in directories under the `docker` folder are deployed by GitHub Actions CI. A few key things to be aware of:
+
+- Each folder corresponds to an image
+- The name of the folder will be the name of the image
+- The deployment pipeline assumes the image is to be deployed as a Cloud Run function. If that is not the case (e.g. the image is pulled at runtime by a VM) then you will have to exclude the image in the 'Cloud Run deploy' step explicitly in the build-push-deploy.yml workflow.
+
+### Terraform
 
 #### google_compute_instance_template
 Various GCE templates are defined for the VMs (`resource google_compute_instance_template`).

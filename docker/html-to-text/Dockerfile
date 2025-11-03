@@ -1,6 +1,6 @@
 FROM ruby:3.4.2-alpine3.21
 
-# build-base is needed for bundle to install ruby gems
+# build-base is needed for bundle to install ruby gems 
 RUN apk --no-cache add \
     build-base \
     pandoc-cli
