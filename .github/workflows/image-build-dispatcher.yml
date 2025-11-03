@@ -3,8 +3,8 @@ name: Dispatch Image Builds
 on:
   workflow_dispatch:
   push:
-  #   branches:
-  #     - main
+    branches:
+      - main
 
 permissions: {}
 
@@ -55,8 +55,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # environment: [development, staging]
-        environment: [development]
+        environment: [development, staging]
         image: ${{ fromJson(needs.detect-docker-changes.outputs.images-to-build) }}
 
     uses: ./.github/workflows/build-push-deploy.yml
@@ -93,7 +92,7 @@ jobs:
 
     uses: ./.github/workflows/build-push-deploy.yml
     with:
-      environment_name: development
+      environment_name: production
       image_name: ${{ matrix.image }}
       working_directory: 'docker/${{ matrix.image }}'
       github_sha: ${{ github.sha }}
