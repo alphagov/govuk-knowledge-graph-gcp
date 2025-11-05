@@ -32,9 +32,6 @@ on:
       ARTIFACT_REGISTRY_DOCKER_SERVICE_ACCOUNT:
         required: true
         description: 'Target Service Account email for the Artifact Registry in that target environment'
-      STORAGE_SERVICE_ACCOUNT:
-        required: true
-        description: 'Target Service Account email for GCS in that target environment'
 
 jobs:
   build-push-deploy:
@@ -60,20 +57,6 @@ jobs:
     steps:
       # actions/checkout MUST come before auth
       - uses: 'actions/checkout@v4'
-
-      - name: Authenticate to Google Cloud for code sync to GCS
-        uses: 'google-github-actions/auth@v2'
-        with:
-          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.STORAGE_SERVICE_ACCOUNT }}
-
-      - name: Set up Cloud SDK for code sync to GCS
-        uses: 'google-github-actions/setup-gcloud@v2'
-
-      # Sync everything except for the .git folder, which could get large.
-      - name: Sync code to GCS
-        run: |
-          gsutil -m rsync -J -r -d -C -x "\.git[$/].*" -x "gha-creds-.*" . "$REPOSITORY_SYNC_BUCKET"
 
       # Reauth for Artifact Registry operations
       - name: Authenticate to Google Cloud for Artifact Registry operations
