@@ -1,0 +1,47 @@
+name: Sync to Google Cloud Storage
+
+# This workflow is triggered by other workflows
+on:
+  workflow_call:
+      inputs:
+        environment_name:
+          required: true
+          type: string
+          description: 'The name of the GitHub environment where the necessary secrets and variables are stored'
+      secrets:
+        # --- Secrets expected from the caller (or inherited via environment) ---
+        WORKLOAD_IDENTITY_PROVIDER:
+          required: true
+          description: 'WIF Provider path for the target environment'
+        STORAGE_SERVICE_ACCOUNT:
+          required: true
+          description: 'Target Service Account email for GCS in that target environment'
+
+jobs:
+  sync_to_gcs:
+    name: 'Sync HEAD to ${{ vars.REPOSITORY_SYNC_BUCKET }}'
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment_name }}
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    # actions/checkout MUST come before auth
+    - uses: 'actions/checkout@v4'
+
+    - name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v0'
+      with:
+        # Use the inputs provided by the caller
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        service_account: ${{ secrets.STORAGE_SERVICE_ACCOUNT }}
+
+    # Install gcloud
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+
+    # Sync to the parameterized bucket
+    - name: Sync
+      run: |
+        gsutil -m rsync -J -r -d -C -x "\.git[$/].*" . ${{ vars.REPOSITORY_SYNC_BUCKET }}

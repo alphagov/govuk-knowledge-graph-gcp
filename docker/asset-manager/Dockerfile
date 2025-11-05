@@ -1,7 +1,7 @@
 FROM mongo:8.0.4
 
 # Install gcloud
-# https://cloud.google.com/sdk/docs/install#deb 
+# https://cloud.google.com/sdk/docs/install#deb
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y
 RUN apt-get install -y \
