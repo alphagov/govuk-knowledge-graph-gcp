@@ -1,6 +1,6 @@
 -- Refresh a table of assets, derived from the Publishing API editions table.
-TRUNCATE TABLE public.assets;
-INSERT INTO public.assets
+TRUNCATE TABLE public.attachments;
+INSERT INTO public.attachments
 SELECT
   id AS edition_id,
   attachment_index,
@@ -13,13 +13,27 @@ SELECT
   JSON_VALUE(attachment, "$.title") AS title,
   JSON_VALUE(attachment, "$.url") AS url,
   JSON_VALUE(attachment, "$.filename") AS attachment_filename,
-  asset_index,
-  JSON_VALUE(asset, "$.filename") AS asset_filename,
-  JSON_VALUE(asset, "$.asset_manager_id") AS asset_manager_id
+  ARRAY_AGG(STRUCT(
+    asset_index,
+    JSON_VALUE(asset, "$.filename") AS asset_filename,
+    JSON_VALUE(asset, "$.asset_manager_id") AS asset_manager_id
+  )) AS assets
 FROM   public.publishing_api_editions_current
 CROSS JOIN
   UNNEST (JSON_QUERY_ARRAY(details, "$.attachments")) AS attachment WITH OFFSET AS attachment_index
 CROSS JOIN UNNEST (JSON_QUERY_ARRAY(attachment, "$.assets")) AS asset WITH OFFSET AS asset_index
 WHERE JSON_QUERY_ARRAY(details, "$.attachments") IS NOT NULL
+GROUP BY
+  edition_id,
+  attachment_index,
+  accessible,
+  alternative_format_contact_email,
+  attachment_type,
+  content_type,
+  file_size,
+  locale,
+  title,
+  url,
+  attachment_filename
 ORDER BY id, attachment_index
 ;
