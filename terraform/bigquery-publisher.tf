@@ -28,6 +28,7 @@ data "google_iam_policy" "bigquery_dataset_publisher" {
       [
         "projectReaders",
         google_service_account.bigquery_scheduled_queries_search.member,
+        google_service_account.bigquery_scheduled_queries.member,
       ],
       var.bigquery_publisher_data_viewer_members,
     )
