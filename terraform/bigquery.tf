@@ -98,8 +98,12 @@ resource "google_monitoring_alert_policy" "tables_metadata" {
     }
   }
 
+  severity = "ERROR"
+
   notification_channels = [google_monitoring_notification_channel.govgraph_developers.name]
   alert_strategy {
+    // 7 days
+    auto_close = "604800s"
     notification_rate_limit {
       // One day
       period = "86400s"
