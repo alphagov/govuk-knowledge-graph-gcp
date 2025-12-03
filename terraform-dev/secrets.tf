@@ -1,3 +1,7 @@
+locals {
+  slack_alert_channel_email_address_secret_id = "slack-alert-channel-email-address"
+}
+
 resource "google_secret_manager_secret" "smart_survey_api_survey_id" {
   secret_id = "smart-survey-api-survey-id"
   replication {
@@ -128,7 +132,7 @@ resource "google_secret_manager_secret_iam_policy" "zendesk_api_token" {
 # GovGraph Alerts Slack notification channel resources
 # ---
 resource "google_secret_manager_secret" "slack_alert_channel_email_address" {
-  secret_id = "slack-alert-channel-email-address"
+  secret_id = local.slack_alert_channel_email_address_secret_id
   replication {
     auto {}
   }
@@ -137,14 +141,18 @@ resource "google_secret_manager_secret" "slack_alert_channel_email_address" {
 # As and when terraform is automated, the service account running terraform will need to be added here in order to pull the secret value on plan/apply.
 data "google_iam_policy" "secret_slack_alert_channel_email_address" {
   binding {
-    role = "roles/secretmanager.secretAccessor"
-    members = [
-      "group:govgraph-developers@digital.cabinet-office.gov.uk",
-    ]
+    role    = "roles/secretmanager.secretAccessor"
+    members = var.project_owner_members
   }
 }
 
 resource "google_secret_manager_secret_iam_policy" "slack_alert_channel_email_address" {
   secret_id   = google_secret_manager_secret.slack_alert_channel_email_address.secret_id
   policy_data = data.google_iam_policy.secret_slack_alert_channel_email_address.policy_data
+}
+
+data "google_secret_manager_secret_version" "slack_alert_channel_email_address_secret_value" {
+  secret = local.slack_alert_channel_email_address_secret_id
+
+  depends_on = [google_secret_manager_secret_iam_policy.slack_alert_channel_email_address]
 }
