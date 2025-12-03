@@ -123,3 +123,28 @@ resource "google_secret_manager_secret_iam_policy" "zendesk_api_token" {
   secret_id   = google_secret_manager_secret.zendesk_api_token.secret_id
   policy_data = data.google_iam_policy.secret_zendesk_api_token.policy_data
 }
+
+# ---
+# GovGraph Alerts Slack notification channel resources
+# ---
+resource "google_secret_manager_secret" "slack_alert_channel_email_address" {
+  secret_id = "slack-alert-channel-email-address"
+  replication {
+    auto {}
+  }
+}
+# The GovGraph Developers Google Group is used as the terraform is currently ran manually on local machines by developers who are members of that group.
+# As and when terraform is automated, the service account running terraform will need to be added here in order to pull the secret value on plan/apply.
+data "google_iam_policy" "secret_slack_alert_channel_email_address" {
+  binding {
+    role = "roles/secretmanager.secretAccessor"
+    members = [
+      "group:govgraph-developers@digital.cabinet-office.gov.uk",
+    ]
+  }
+}
+
+resource "google_secret_manager_secret_iam_policy" "slack_alert_channel_email_address" {
+  secret_id   = google_secret_manager_secret.slack_alert_channel_email_address.secret_id
+  policy_data = data.google_iam_policy.secret_slack_alert_channel_email_address.policy_data
+}
