@@ -80,37 +80,6 @@ resource "google_bigquery_data_transfer_config" "check_tables_metadata" {
   service_account_name = google_service_account.bigquery_scheduled_queries.email
 }
 
-resource "google_monitoring_notification_channel" "govgraph_developers" {
-  display_name = "GovGraph Developers"
-  type         = "email"
-  labels = {
-    email_address = "govgraph-developers@digital.cabinet-office.gov.uk"
-  }
-}
-
-resource "google_monitoring_alert_policy" "tables_metadata" {
-  display_name = "Tables metadata"
-  combiner     = "OR"
-  conditions {
-    display_name = "Error condition"
-    condition_matched_log {
-      filter = "resource.type=\"bigquery_resource\" severity=\"ERROR\" protoPayload.methodName=\"jobservice.jobcompleted\" SEARCH(protoPayload.status.message, \"${var.alerts_error_message_old_data}\") OR SEARCH(protoPayload.status.message, \"${var.alerts_error_message_no_data}\")"
-    }
-  }
-
-  severity = "ERROR"
-
-  notification_channels = [google_monitoring_notification_channel.govgraph_developers.name]
-  alert_strategy {
-    // 7 days
-    auto_close = "604800s"
-    notification_rate_limit {
-      // One day
-      period = "86400s"
-    }
-  }
-}
-
 # Because these queries are scheduled, without any way to manage their
 # dependencies on source tables, they musn't use each other as a source.
 
