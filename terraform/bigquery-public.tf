@@ -43,10 +43,10 @@ resource "google_bigquery_dataset_iam_policy" "public" {
 
 resource "google_bigquery_table" "public_attachments" {
   dataset_id    = google_bigquery_dataset.public.dataset_id
-  table_id      = "assets"
-  friendly_name = "Assets of attachments of editions"
-  description   = "Asset metadata extracted from the `details` column of editions. An edition can have many attachments, which can each have many assets (usually two: a document and its thumbnail)."
-  schema        = file("schemas/public/assets.json")
+  table_id      = "attachments"
+  friendly_name = "Attachments of editions"
+  description   = "Metadata extracted from the `details` column of editions. An edition can have attachments, which can each have assets (usually two: a document and its thumbnail)."
+  schema        = file("schemas/public/attachments.json")
 }
 
 resource "google_bigquery_table" "base_path_lookup" {
