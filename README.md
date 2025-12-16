@@ -50,7 +50,7 @@ Two of the BigQuery Remote Functions are implemented in Ruby and have unit tests
 
 ## Maintainers
 
-This project is maintained by the GOV.UK team, which is part of the Government Digital Service.
+This project is maintained by the GOV.UK Insights and Analytics team, which is part of the Government Digital Service. They can be reached on Slack - [#govuk-insights-and-analytics-team](https://gds.slack.com/archives/C06E0JUDMUZ).
 
 ## Common tasks
 
@@ -91,9 +91,8 @@ See [Technical debt][technical-debt].
 
 You are welcome to:
 
-- ask a question by opening an issue or by contacting the [maintainers](#maintainers).
-- open an issue
-- submit a pull request
+- ask a question or suggest a change by contacting the [maintainers](#maintainers).
+- submit a pull request.
 
 ## Deployment
 This is not yet an exhaustive set of instructions as the deployment process is likely to change very soon at the time of writing. For now its main purpose to is to capture some of the "gotchas" you may experience during deployments which I have not found documented elsewhere.
