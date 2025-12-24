@@ -27,4 +27,14 @@ resource "google_monitoring_alert_policy" "tables_metadata" {
       period = "86400s"
     }
   }
+
+  documentation {
+    content = "This alert triggers when GovGraph data is late or something has gone wrong with processing. Please refer to the runbook below."
+    mime_type = "text/markdown"
+    subject = "Late or missing data in GovGraph BigQuery tables"
+    links {
+      display_name = "GovGraph Runbook"
+      url = "https://gov-uk.atlassian.net/wiki/x/AgBcKQE"
+    }
+  }
 }
