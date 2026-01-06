@@ -20,11 +20,21 @@ resource "google_monitoring_alert_policy" "tables_metadata" {
 
   notification_channels = [google_monitoring_notification_channel.slack_alerts_channel.name]
   alert_strategy {
-    // 7 days
-    auto_close = "604800s"
+    // 2 hours
+    auto_close = "7200s"
     notification_rate_limit {
       // One day
       period = "86400s"
+    }
+  }
+
+  documentation {
+    content   = "This alert triggers when GovGraph data is late or something has gone wrong with processing. Please refer to the [runbook](https://gov-uk.atlassian.net/wiki/x/AgBcKQE) to resolve."
+    mime_type = "text/markdown"
+    subject   = "Late or missing data in GovGraph BigQuery tables"
+    links {
+      display_name = "GovGraph Runbook"
+      url          = "https://gov-uk.atlassian.net/wiki/x/AgBcKQE"
     }
   }
 }
