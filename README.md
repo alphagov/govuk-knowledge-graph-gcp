@@ -19,7 +19,7 @@ People are granted access by membership of Google Groups.  Other Google Cloud Pl
 
 ### Google Groups
 
-* [govgraph-private-data-viewers](https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govsearch-data-viewers/about) has `roles/bigquery.dataViewer` in relation to each BigQuery dataset except 'test', and `roles/bigquery.jobUser` to be able to run queries that are billed to the billing account of the `govuk-knowledge-graph*` projects.
+* [govgraph-private-data-readers](https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govgraph-private-data-readers/about) has `roles/bigquery.dataViewer` in relation to each BigQuery dataset except 'test', and `roles/bigquery.jobUser` to be able to run queries that are billed to the billing account of the `govuk-knowledge-graph*` projects.
 * [govgraph-developers](https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govsearch-developers/members) has the `roles/owner` role in relation to each `govuk-knowledge-graph*` project.
 
 ### IAM roles/Permissions required in other projects
@@ -138,7 +138,7 @@ The documentation is [© Crown copyright][copyright] and available under the ter
 [technical-debt]: docs/technical-debt.md
 [scheduled-query]: https://console.cloud.google.com/bigquery/scheduled-queries/locations/europe-west2/configs/646d78e5-0000-2cd4-94b2-94eb2c1b665a/runs?project=govuk-knowledge-graph
 [alert]: https://console.cloud.google.com/monitoring/alerting?project=govuk-knowledge-graph
-[govsearch-data-viewers]: https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govsearch-data-viewers/about
+[govgraph-private-data-readers]: https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govgraph-private-data-readers/about
 [govsearch-developers]: https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govsearch-developers/members
 [data-community-docs]: https://gds-data-docs-bkbishsofa-nw.a.run.app/engineering/knowledge-graph-pipeline-v2/#advantages-of-the-new-pipeline
 [govuk-s3-mirror]: https://github.com/alphagov/govuk-s3-mirror
