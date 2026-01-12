@@ -244,3 +244,18 @@ resource "google_bigquery_routine" "start_button_links" {
   language        = "SQL"
   definition_body = file("bigquery/start-button-links.sql")
 }
+
+resource "google_bigquery_routine" "calc_oldest_allowable_freshness" {
+  dataset_id      = google_bigquery_dataset.functions.dataset_id
+  routine_id      = "calc_oldest_allowable_freshness"
+  routine_type    = "SCALAR_FUNCTION"
+  language        = "SQL"
+  definition_body = file("bigquery/calc-oldest-allowable-freshness.sql")
+
+  arguments {
+    name      = "timestamp"
+    data_type = "{\"typeKind\": \"TIMESTAMP\"}"
+  }
+
+  return_type = "{\"typeKind\": \"TIMESTAMP\"}"
+}
