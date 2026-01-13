@@ -1,4 +1,4 @@
-FROM debian:12.10
+FROM debian:13.3
 
 # Install the gcloud CLI, a specific version from a long-term archive
 # Adapted from https://github.com/GoogleCloudPlatform/cloud-sdk-docker/blob/master/alpine/Dockerfile
