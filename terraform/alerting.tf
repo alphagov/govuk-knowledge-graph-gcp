@@ -20,8 +20,8 @@ resource "google_monitoring_alert_policy" "tables_metadata" {
 
   notification_channels = [google_monitoring_notification_channel.slack_alerts_channel.name]
   alert_strategy {
-    // 2 hours
-    auto_close = "7200s"
+    // One day
+    auto_close = "86400s"
     notification_rate_limit {
       // One day
       period = "86400s"

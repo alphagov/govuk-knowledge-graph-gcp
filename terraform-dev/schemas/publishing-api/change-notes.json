@@ -28,5 +28,15 @@
     "mode": "NULLABLE",
     "name": "updated_at",
     "type": "TIMESTAMP"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "document_id",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "user_facing_version",
+    "type": "INTEGER"
   }
 ]
