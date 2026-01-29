@@ -1,7 +1,7 @@
 # GOV.UK Knowledge Graph
 
 * GOV.UK content data in BigQuery, for analytical workloads.
-* Cloud infrastructure for the [GovSearch][govsearch] app.
+* Cloud infrastructure for the [GovSearch][govsearch] app. 
 
 ## Documentation
 
