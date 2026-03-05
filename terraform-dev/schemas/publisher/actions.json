@@ -38,6 +38,11 @@
     "mode": "REQUIRED"
   },
   {
+    "name": "requester_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
     "name": "email_address",
     "type": "STRING",
     "mode": "NULLABLE"
