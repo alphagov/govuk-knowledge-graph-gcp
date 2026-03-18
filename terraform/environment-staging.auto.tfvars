@@ -1,18 +1,18 @@
-environment                         = "development"
-project_id                          = "govuk-knowledge-graph-dev"
-project_number                      = "628722085506"
-govgraph_domain                     = "govgraphdev.dev"
-govgraphsearch_domain               = "govgraphsearchdev.dev"
-govsearch_domain                    = "gov-search.integration.service.gov.uk"
-application_title                   = "GovGraph Search (development)"
+environment                         = "staging"
+project_id                          = "govuk-knowledge-graph-staging"
+project_number                      = "957740527277"
+govgraph_domain                     = "govgraphstaging.dev"
+govgraphsearch_domain               = "govgraphsearchstaging.dev"
+govsearch_domain                    = "gov-search.staging.service.gov.uk"
+application_title                   = "GovGraph Search (staging)"
 enable_auth                         = "true"
-signon_url                          = "https://signon.integration.publishing.service.gov.uk"
-oauth_auth_url                      = "https://signon.integration.publishing.service.gov.uk/oauth/authorize"
-oauth_token_url                     = "https://signon.integration.publishing.service.gov.uk/oauth/access_token"
-oauth_callback_url                  = "https://govgraphsearchdev.dev/auth/gds/callback"
+signon_url                          = "https://signon.staging.publishing.service.gov.uk"
+oauth_auth_url                      = "https://signon.staging.publishing.service.gov.uk/oauth/authorize"
+oauth_token_url                     = "https://signon.staging.publishing.service.gov.uk/oauth/access_token"
+oauth_callback_url                  = "https://govgraphsearchstaging.dev/auth/gds/callback"
+enable_redis_session_store_instance = true
 gtm_auth                            = "PLACEHOLDER"
 gtm_id                              = "PLACEHOLDER"
-enable_redis_session_store_instance = true
 
 # Google Groups and external service accounts that are to have roles given to
 # them.
@@ -26,7 +26,6 @@ enable_redis_session_store_instance = true
 
 project_owner_members = [
   "group:govgraph-developers@digital.cabinet-office.gov.uk",
-  "serviceAccount:terraform-cloud-integration@govuk-integration.iam.gserviceaccount.com",
 ]
 
 iap_govgraphsearch_members = [
