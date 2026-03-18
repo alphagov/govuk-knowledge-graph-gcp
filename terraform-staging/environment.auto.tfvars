@@ -26,6 +26,7 @@ gtm_id                              = "PLACEHOLDER"
 
 project_owner_members = [
   "group:govgraph-developers@digital.cabinet-office.gov.uk",
+  "serviceAccount:terraform-cloud-staging@govuk-staging.iam.gserviceaccount.com",
 ]
 
 iap_govgraphsearch_members = [
