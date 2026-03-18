@@ -26,6 +26,7 @@ enable_redis_session_store_instance = true
 
 project_owner_members = [
   "group:govgraph-developers@digital.cabinet-office.gov.uk",
+  "serviceAccount:terraform-cloud-integration@govuk-integration.iam.gserviceaccount.com",
 ]
 
 iap_govgraphsearch_members = [
