@@ -1,5 +1,5 @@
-modules/terraform/.terraform*
-modules/!terraform/.terraform-version
-modules/terraform/terraform.tfstate*
+terraform/.terraform*
+!terraform/.terraform-version
+terraform/terraform.tfstate*
 .idea/
 .vscode/
