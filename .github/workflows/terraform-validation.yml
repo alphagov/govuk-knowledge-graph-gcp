@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        directory: ["terraform", "terraform-staging", "terraform-dev"]
+        directory: ["terraform"]
     defaults:
       run:
         working-directory: ${{ matrix.directory }}
