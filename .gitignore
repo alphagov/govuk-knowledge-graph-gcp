@@ -1,5 +1,2 @@
-terraform/.terraform*
-!terraform/.terraform-version
-terraform/terraform.tfstate*
 .idea/
 .vscode/
