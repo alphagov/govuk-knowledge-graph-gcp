@@ -13,9 +13,6 @@ Most documentation is in `README.md` files and [`docs`][docs] directory in this 
 2. The virtual machine fetches the database backup file, extracts its data, and uploads that into BigQuery.
 3. Some SQL queries are scheduled to run daily, which call other SQL routines to refresh various tables from the newly uploaded data.
 
-## Access and permissions
-
-People are granted access by membership of Google Groups.  Other Google Cloud Platform projects are granted access via service accounts.  Access is granted by editing each environment's tfvars file, such as `terraform-dev/environment.auto.tfvars`.
 
 ### Google Groups
 
@@ -111,15 +108,6 @@ Any changes to code in directories under the `docker` folder are deployed by Git
 - Each folder corresponds to an image
 - The name of the folder will be the name of the image
 - The deployment pipeline assumes the image is to be deployed as a Cloud Run function. If that is not the case (e.g. the image is pulled at runtime by a VM) then you will have to exclude the image in the 'Cloud Run deploy' step explicitly in the build-push-deploy.yml workflow.
-
-### Terraform
-
-#### google_compute_instance_template
-Various GCE templates are defined for the VMs (`resource google_compute_instance_template`).
-Google periodically updates the base images upstream and so sometimes a `terraform plan/apply` may throw up a number of replacement changes to these resources. This is normal and the plan may be applied. However, it is worth monitoring this in dev just to be sure that no low-level binaries in the image cause breaking changes to the ingestion.
-
-#### google_cloud_run_service.govgraphsearch
-The current deployment process configures most of the Cloud Run services in terraform. However, the deployment of new GovSearch revisions uses the `gcloud` cli in the CI. This can cause drift in some of the `run.googleapis.com/client-*` annotations and an apparent update to the image. The image will not be updated, just the tag used to pull it. These updates can be safely applied. This will create a new revision but you can verify that the image hash has not changed between revisions by checking the `spec.containers.image` property in the revision via the Cloud Run UI.
 
 ## Licence
 

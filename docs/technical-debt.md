@@ -14,14 +14,6 @@ The name of this repository is `govuk-knowledge-graph-gcp` instead of
 reimplementation of https://github.com/alphagov/govuk-knowledge-graph, using GCP
 (Google Cloud Platform) instead of AWS.
 
-## GovSearch infrastructure
-
-GovSearch terraform configuration is in this repository instead of
-https://github.com/govuk-knowledge-graph-search because when GovSearch was
-initially developed it was easier to host its in the same GCP project as the
-data (which was in a VM running Neo4j) than to work out how to make the data
-available to other projects.
-
 ## Legacy datasets
 
 The datasets `content` and `graph` in BigQuery have been deprecated, and remain
