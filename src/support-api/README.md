@@ -55,4 +55,4 @@ gcloud compute ssh --zone "europe-west2-b" "support-api" --project "govuk-knowle
 [docker]: ../../docker/support-api
 [docker-readme]: ../../docker/support-api/README.md
 [run.sh]: ./run.sh
-[workflow-terraform]: ../../terraform/workflows/govuk-database-backups.yaml
+[workflow-terraform]: https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/workflows/govuk-database-backups.yaml

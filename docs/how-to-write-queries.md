@@ -4,10 +4,10 @@ Read this guide if [GovSearch](https://gov-search.service.gov.uk) app and its co
 
 If you already know which tables you might need, read on, but also read the documentation of the queries that create those tables.
 
-* [`govuk-knowledge-graph.public.publishing_api_editions_current`](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/README-publishing-api-links-current.md).
-* [`govuk-knowledge-graph.public.publishing_api_links_current`](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/README-publishing-api-links-current.md).
-* [`govuk-knowledge-graph.public.publishing_api_unpublishings_current`](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/README-publishing-api-unpublishings-current.md).
-* [`govuk-knowledge-graph.public.taxonomy`](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/README-taxonomy.md).
+* [`govuk-knowledge-graph.public.publishing_api_editions_current`](https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/bigquery/README-publishing-api-links-current.md).
+* [`govuk-knowledge-graph.public.publishing_api_links_current`](https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/bigquery/README-publishing-api-links-current.md).
+* [`govuk-knowledge-graph.public.publishing_api_unpublishings_current`](https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/bigquery/README-publishing-api-unpublishings-current.md).
+* [`govuk-knowledge-graph.public.taxonomy`](https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/bigquery/README-taxonomy.md).
 
 If you haven't used the data before, it might be worth reading through the section [Useful context to know](#useful-context-to-know).
 
@@ -19,7 +19,7 @@ If you need data about how GOV.UK content has changed over time, or a snapshot o
 
 ### What a 'page' is
 
-There is no agreed definition of what a 'page' is.  A hand-wavey definition might be "What a browser displays at a given URL."  The [GovSearch](https://gov-search.service.gov.uk) app refines this definition as follows (see also the [query](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/search-page.sql), which creates the BigQuery table `govuk-knowledge-graph.search.page`).
+There is no agreed definition of what a 'page' is.  A hand-wavey definition might be "What a browser displays at a given URL."  The [GovSearch](https://gov-search.service.gov.uk) app refines this definition as follows (see also the [query](https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/bigquery/search-page.sql), which creates the BigQuery table `govuk-knowledge-graph.search.page`).
 
 * Chapters of multi-part documents (ones whose `document_type` is `guide` or `travel_advice`) are each a page in their own right.
 * Pages in a locale other than `en` are each a page in their own right, even if there exists a corresponding page in the `en` locale that contains the same content in the English language.
@@ -33,7 +33,7 @@ If that definition doesn't suit you, then you probably need to use the `govuk-kn
 
 ### The Publishing API Data Model
 
-The data in the Knowledge Graph is mostly from the GOV.UK Publishing API, which doesn't have a concept of a page, rather it has concepts of [content items, documents and editions](#content-items-documents-and-editions).  See the [GOV.UK Publishing API documentation](https://docs.publishing.service.gov.uk/repos/publishing-api/model.html), and the [documentation of the `publishing_api_editions_current` table](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/README-publishing-api-editions-current.md).
+The data in the Knowledge Graph is mostly from the GOV.UK Publishing API, which doesn't have a concept of a page, rather it has concepts of [content items, documents and editions](#content-items-documents-and-editions).  See the [GOV.UK Publishing API documentation](https://docs.publishing.service.gov.uk/repos/publishing-api/model.html), and the [documentation of the `publishing_api_editions_current` table](https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/bigquery/README-publishing-api-editions-current.md).
 
 The different ways that content is removed from the website are described by the concept of [unpublishings](#unpublishings).
 
@@ -124,7 +124,7 @@ WHERE
 
 #### Not the GovSearch table
 
-The advantage of using the tables that the GovSearch table `govuk-knowledge-graph.search.page` is derived from, rather than the GovSearch table itself, is that it becomes possible to omit rows that represent sections of multi-part pages, such as `guide` and `travel_advice`. The following query is based on [search-page.sql](../terraform/bigquery/search-page.sql), which is the query that creates the GovSearch table.
+The advantage of using the tables that the GovSearch table `govuk-knowledge-graph.search.page` is derived from, rather than the GovSearch table itself, is that it becomes possible to omit rows that represent sections of multi-part pages, such as `guide` and `travel_advice`. The following query is based on [search-page.sql](https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/bigquery/search-page.sql), which is the query that creates the GovSearch table.
 
 ```sql
 WITH
@@ -232,7 +232,7 @@ ON
 >
 > I wanted the URL or page path of all pages with a start button.
 
-Start buttons are links, like any other hyperlink in a page. They are available in the table `govuk-knowledge-graph.public.start_button_links`, which is created by a [query](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/start-button-links.sql). If you can't use that table, then you can find the same data in the table `public.publishing_api_editions_current`, in the `details` column, in the fields `transaction_start_link` and `start_button_text`, in editions with `schema_name = "transaction"`.
+Start buttons are links, like any other hyperlink in a page. They are available in the table `govuk-knowledge-graph.public.start_button_links`, which is created by a [query](https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/bigquery/start-button-links.sql). If you can't use that table, then you can find the same data in the table `public.publishing_api_editions_current`, in the `details` column, in the fields `transaction_start_link` and `start_button_text`, in editions with `schema_name = "transaction"`.
 
 To get the URL of the page that has a given start button, join onto the `public.publishing_api_editions_current` table using the ID of the edition, as follows.
 
@@ -851,10 +851,10 @@ CALL apoc.import.json("file:///govuk.json") // Takes a few minutes
 [govuk-router]: https://github.com/alphagov/router
 [govuk-unpublishing]: https://docs.publishing.service.gov.uk/repos/publishing-api/model.html#unpublishing
 [history-mode-issue]: https://github.com/alphagov/govuk-knowledge-graph-gcp/issues/554
-[publishing-api-editions-query-docs]: https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/README-publishing-api-editions-current.md
-[search-page-query]: https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/search-page.sql
-[start-button-links-query]: https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/start-button-links.sql
+[publishing-api-editions-query-docs]: https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/bigquery/README-publishing-api-editions-current.md
+[search-page-query]: https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/bigquery/search-page.sql
+[start-button-links-query]: https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/bigquery/start-button-links.sql
 
-[publishing-api-links-query-docs]: https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/README-publishing-api-links-current.md
-[publishing-api-unpublishings-query-docs]: https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/README-publishing-api-unpublishings-current.md
-[taxonomy-query-docs]: https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/README-taxonomy.md
+[publishing-api-links-query-docs]: https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/bigquery/README-publishing-api-links-current.md
+[publishing-api-unpublishings-query-docs]: https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/bigquery/README-publishing-api-unpublishings-current.md
+[taxonomy-query-docs]: https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/bigquery/README-taxonomy.md

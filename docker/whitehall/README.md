@@ -26,7 +26,7 @@ To build the image locally, decrease the `innodb_buffer_pool_size`, by overridin
 
 [govuk-s3-mirror]: https://github.com/alphagov/govuk-s3-mirror
 [bucket]: https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-database-backups/whitehall-mysql
-[workflow-terraform]: ../../terraform/workflows/govuk-database-backups.yaml
+[workflow-terraform]: https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/workflows/govuk-database-backups.yaml
 [workflow-runs]: https://console.cloud.google.com/workflows/workflow/europe-west2/govuk-database-backups/executions?project=govuk-knowledge-graph&pli=1
 [src]: ../../src/whitehall
 [github-action]: ../../.github/workflows/docker-whitehall.yml

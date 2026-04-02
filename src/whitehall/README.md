@@ -54,5 +54,5 @@ gcloud compute ssh --zone "europe-west2-b" "whitehall" --project "govuk-knowledg
 [docker]: ../../docker/whitehall
 [docker-readme]: ../../docker/whitehall/README.md
 [run.sh]: ./run.sh
-[workflow-terraform]: ../../terraform/workflows/govuk-database-backups.yaml
+[workflow-terraform]: https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/workflows/govuk-database-backups.yaml
 [govuk-s3-mirror]: https://github.com/alphagov/govuk-s3-mirror
