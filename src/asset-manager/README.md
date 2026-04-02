@@ -55,4 +55,4 @@ gcloud compute ssh --zone "europe-west2-b" "asset-manager" --project "govuk-know
 [docker]: ../../docker/asset-manager
 [docker-readme]: ../../docker/asset-manager/README.md
 [run.sh]: ./run.sh
-[workflow-terraform]: ../../terraform/workflows/govuk-database-backups.yaml
+[workflow-terraform]: https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/workflows/govuk-database-backups.yaml

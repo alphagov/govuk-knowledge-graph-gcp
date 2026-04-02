@@ -22,7 +22,7 @@ If the most recent successful workflow run was a few days ago, then the Publishi
 
 [govuk-s3-mirror]: https://github.com/alphagov/govuk-s3-mirror
 [bucket]: https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-database-backups/publishing-api-postgres
-[workflow-terraform]: ../../terraform/workflows/govuk-database-backups.yaml
+[workflow-terraform]: https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph/workflows/govuk-database-backups.yaml
 [workflow-runs]: https://console.cloud.google.com/workflows/workflow/europe-west2/govuk-database-backups/executions?project=govuk-knowledge-graph&pli=1
 [src]: ../../src/publishing-api
 [github-action]: ../../.github/workflows/docker-publishing-api.yml
