@@ -6,7 +6,7 @@ MAKEFLAGS += -j$(NPROCS)
 
 # Names of tables in the MySQL database to export to Cloud Storage
 # and BigQuery
-EXPORT = editions assets attachments attachment_data
+EXPORT = editions assets attachments attachment_data documents
 
 # A step to create all the targets described in the CSV.GZ and BIGQUERY
 # variables, which means that all the .sh and .sql scripts in the SH and
@@ -25,3 +25,6 @@ attachments:
 
 attachment_data:
 	source functions.sh; export_attachment_data_to_bigquery
+
+documents:
+	source functions.sh; export_documents_to_bigquery
