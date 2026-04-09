@@ -7,6 +7,8 @@
 
 Most documentation is in `README.md` files and [`docs`][docs] directory in this repository.  There is also [GOV.UK Data Community Technical Documentation][data-community-docs].
 
+Documentation specific to the terraform code lives with the terraform code over in [govuk-infrastructure][govukinfra]
+
 ## Data pipeline overview
 
 1. A workflow subscribes to notifications from the GOV.UK S3 Mirror that a new database backup of the Publishing API is available.  The workflow creates an instance of a virtual machine.
@@ -92,15 +94,6 @@ You are welcome to:
 - submit a pull request.
 
 ## Deployment
-This is not yet an exhaustive set of instructions as the deployment process is likely to change very soon at the time of writing. For now its main purpose to is to capture some of the "gotchas" you may experience during deployments which I have not found documented elsewhere.
-
-### GitHub Actions Environments
-There are three [GitHub Actions Environments](https://github.com/alphagov/govuk-knowledge-graph-gcp/settings/environments) which correspond to, and contain configuration for, three separate GCP projects:
-development -> govuk-knowledge-graph-dev
-staging -> govuk-knowledge-graph-staging
-production -> govuk-knowledge-graph
-
-Any workflow targeting to production environment requires approval.
 
 ### Docker
 Any changes to code in directories under the `docker` folder are deployed by GitHub Actions CI. A few key things to be aware of:
@@ -130,3 +123,4 @@ The documentation is [© Crown copyright][copyright] and available under the ter
 [govsearch-developers]: https://groups.google.com/a/digital.cabinet-office.gov.uk/g/govsearch-developers/members
 [data-community-docs]: https://gds-data-docs-bkbishsofa-nw.a.run.app/engineering/knowledge-graph-pipeline-v2/#advantages-of-the-new-pipeline
 [govuk-s3-mirror]: https://github.com/alphagov/govuk-s3-mirror
+[govukinfra]: https://github.com/alphagov/govuk-infrastructure/tree/main/terraform/deployments/gcp-gov-graph
