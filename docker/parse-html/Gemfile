@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "functions_framework", "1.6.0"
 gem "json", "2.10.2"
-gem "nokogiri", "1.18.9"
+gem "nokogiri", "1.19.1"
 
 group :development, :test do
   gem "byebug", require: true
