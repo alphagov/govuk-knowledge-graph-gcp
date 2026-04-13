@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get list of changed directories under docker/
+      - name: Get list of changed directories under docker/ or src/
         id: filter
         uses: dorny/paths-filter@v3
         with:
@@ -27,8 +27,9 @@ jobs:
             # A simple filter that returns 'true' if any relevant file has changed
             docker_changes:
               - 'docker/**'
+              - 'src/**'
 
-      - name: Create a list of image names from the docker/ directory names
+      - name: Create a list of image names from the directory names
         id: derive-image-names
         env:
           CHANGED_FILES: ${{ steps.filter.outputs.docker_changes_files }}
