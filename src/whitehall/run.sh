@@ -51,6 +51,5 @@ gunzip < "$FILE_PATH" | mysql -u root whitehall
 echo "Uploading to BigQuery..."
 make
 
-
 # Delete this instance
 gcloud compute instances delete whitehall --quiet --zone=$ZONE
