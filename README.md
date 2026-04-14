@@ -96,11 +96,21 @@ You are welcome to:
 ## Deployment
 
 ### Docker
-Any changes to code in directories under the `docker` folder are deployed by GitHub Actions CI. A few key things to be aware of:
+Any changes to code in directories under the `docker` and `src` folders are deployed to all environments by GitHub Actions CI on merging to `main`. A few key things to be aware of:
 
 - Each folder corresponds to an image
 - The name of the folder will be the name of the image
 - The deployment pipeline assumes the image is to be deployed as a Cloud Run function. If that is not the case (e.g. the image is pulled at runtime by a VM) then you will have to exclude the image in the 'Cloud Run deploy' step explicitly in the build-push-deploy.yml workflow.
+
+### Testing changes in dev environment
+
+You can deploy your code changes into the `govuk-knowledge-graph-dev` GCP project. To test changes to source code or docker images in the development environment:
+
+1. Create a feature branch, make your changes and push to github
+2. Go to Actions and find the "Manual Dev-Only Build" workflow (`manual-dev-build.yml`)
+3. Select "Run workflow" and choose your branch from the dropdown. Click "Run workflow"
+
+Once the workflow has completed, a new image will be available in the Artfiact Registry tagged with the name of your branch.
 
 ## Licence
 
