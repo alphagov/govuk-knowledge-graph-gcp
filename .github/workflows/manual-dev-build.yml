@@ -1,0 +1,78 @@
+name: Manual Dev-Only Build
+
+on:
+  workflow_dispatch: # Only manual triggers
+
+permissions: {}
+
+jobs:
+  detect-docker-changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      images-to-build: ${{ steps.derive-image-names.outputs.images }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get list of changed directories under docker/ and src/
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          list-files: 'json'
+          filters: |
+            docker_changes:
+              - 'docker/**'
+              - 'src/**'
+
+      - name: Create a list of image names from the directory names
+        id: derive-image-names
+        env:
+          CHANGED_FILES: ${{ steps.filter.outputs.docker_changes_files }}
+        run: |
+          if [[ "${{ steps.filter.outputs.docker_changes }}" == "true" ]]; then
+            # Note: This logic assumes your folders are docker/image-name/
+            IMAGES=$(echo "$CHANGED_FILES" | jq -c '[.[] | split("/")[1]] | unique')
+            echo "images=$IMAGES" >> "$GITHUB_OUTPUT"
+          else
+            echo "images=[]" >> "$GITHUB_OUTPUT"
+          fi
+
+  build-push-deploy-dev:
+    name: Build ${{ matrix.image }} for development
+    needs: detect-docker-changes
+    if: needs.detect-docker-changes.outputs.images-to-build != '[]'
+    permissions:
+      contents: read
+      id-token: write
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ${{ fromJson(needs.detect-docker-changes.outputs.images-to-build) }}
+
+    uses: ./.github/workflows/build-push-deploy.yml
+    with:
+      environment_name: development
+      image_name: ${{ matrix.image }}
+      working_directory: 'docker/${{ matrix.image }}'
+      github_sha: ${{ github.sha }}
+      github_ref: ${{ github.ref }}
+    secrets: inherit
+
+  sync-repo-gcs-dev:
+    name: Sync repo to GCS for development
+    needs: detect-docker-changes
+    if: needs.detect-docker-changes.outputs.images-to-build != '[]'
+    permissions:
+      contents: "read"
+      id-token: "write"
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ${{ fromJson(needs.detect-docker-changes.outputs.images-to-build) }}
+
+    uses: ./.github/workflows/rsync.yml
+    with:
+      environment_name: development
+    secrets: inherit
