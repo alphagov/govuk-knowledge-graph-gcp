@@ -8,7 +8,7 @@ export_editions_to_bigquery () {
   local table_name="editions"
   local csv_name="/data/mysql/table_${table_name}"
 
-  mysql -u root ${dataset_name} -e "SELECT id,created_at,updated_at,document_id,state,type,major_change_published_at,first_published_at,force_published,public_timestamp,scheduled_publication,access_limited,opening_at,closing_at,political,primary_locale,auth_bypass_id,government_id
+  mysql -u root ${dataset_name} -e "SELECT id,created_at,updated_at,document_id,state,type,major_change_published_at,first_published_at,force_published,public_timestamp,scheduled_publication,access_limited,opening_at,closing_at,political,primary_locale,auth_bypass_id,government_id,slug
                                     INTO OUTFILE '${csv_name}'
                                     FIELDS ESCAPED BY ''
                                     TERMINATED BY ','
@@ -64,6 +64,20 @@ export_attachments_to_bigquery() {
   upload_to_bq $table_name $csv_name
 }
 
+export_documents_to_bigquery () {
+  local table_name="documents"
+  local csv_name="/data/mysql/table_${table_name}"
+
+  mysql -u root ${dataset_name} -e "SELECT id,content_id,created_at,updated_at,document_type,latest_edition_id,live_edition_id
+                                    INTO OUTFILE '${csv_name}'
+                                    FIELDS ESCAPED BY ''
+                                    TERMINATED BY ','
+                                    ENCLOSED BY '\"'
+                                    LINES TERMINATED BY '\n'
+                                    FROM documents;"
+
+  upload_to_bq $table_name $csv_name
+}
 
 upload_to_bq () {
   local table_name=$1
