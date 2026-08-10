@@ -1,0 +1,15 @@
+{
+  "project_id": "govuk-knowledge-graph-dev",
+  "bucket_name": "govuk-knowledge-graph-dev-test",
+  "dataset_id": "govuk_docdb_asset_manager_raw_s",
+  "collection_name": "assets",
+  "table_name": "assets",
+  "dataset_location": "europe-west2",
+  "audit_table": "file_ingestion_audit",
+  "audit_dataset": "monitoring",
+  
+  "backup": {
+    "prefix": "shared-documentdb/",
+    "match_regex": ".*govuk_assets_production.*\\.gz$"
+  }
+}

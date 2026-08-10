@@ -1,0 +1,18 @@
+# Ignore local python virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# Ignore python caches
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# Ignore local system/IDE junk
+.DS_Store
+.git/
+.gitignore
+.vscode/
+.idea/

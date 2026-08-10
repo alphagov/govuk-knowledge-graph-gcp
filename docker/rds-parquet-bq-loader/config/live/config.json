@@ -1,0 +1,225 @@
+{
+  "project_id": "govuk-knowledge-graph",
+  "source_bucket_name": "govuk-s3-mirror_govuk-database-backups",
+  "target_bucket_name": "govuk-knowledge-graph-data-processed",
+  "source_root": "parquet/landing/",
+  "archive_root": "parquet/archive/",
+  "error_root": "parquet/errors/",
+  "cleaning_root": "fixed_parquet_data/temp/",
+  "audit_table": "file_ingestion_audit",
+  "audit_dataset": "monitoring",
+  
+  
+
+  "tables": [
+    {
+      "raw_dataset": "govuk_postgres_publisher_raw_s",
+      "dw_dataset": "publisher",
+      "raw_table": "actions",
+      "dw_table": "actions",
+      "db_instance": "publisher-staging-postgres/",
+      "path_contains": "publisher_production/public.actions/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/publisher/actions.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_postgres_publisher_raw_s",
+      "dw_dataset": "publisher",
+      "raw_table": "editions",
+      "dw_table": "editions",
+      "db_instance": "publisher-staging-postgres/",
+      "path_contains": "publisher_production/public.editions/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/publisher/editions.sql"
+    },
+    
+    {
+      "raw_dataset": "govuk_postgres_publishing_api_raw_s",
+      "dw_dataset": "publishing_api",
+      "raw_table": "actions",
+      "dw_table": "actions",
+      "db_instance": "publishing-api-staging-postgres/",
+      "path_contains": "publishing_api_production/public.actions/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/publishing_api/actions.sql"
+    },
+    
+    {
+      "raw_dataset": "govuk_postgres_publishing_api_raw_s",
+      "dw_dataset": "publishing_api",
+      "raw_table": "change_notes",
+      "dw_table": "change_notes",
+      "db_instance": "publishing-api-staging-postgres/",
+      "path_contains": "publishing_api_production/public.change_notes/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/publishing_api/change_notes.sql"
+    },
+    
+    {
+      "raw_dataset": "govuk_postgres_publishing_api_raw_s",
+      "dw_dataset": "publishing_api",
+      "raw_table": "documents",
+      "dw_table": "documents",
+      "db_instance": "publishing-api-staging-postgres/",
+      "path_contains": "publishing_api_production/public.documents/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/publishing_api/documents.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_postgres_publishing_api_raw_s",
+      "dw_dataset": "publishing_api",
+      "raw_table": "editions",
+      "dw_table": "editions",
+      "db_instance": "publishing-api-staging-postgres/",
+      "path_contains": "publishing_api_production/public.editions/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/publishing_api/editions.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_postgres_publishing_api_raw_s",
+      "dw_dataset": "publishing_api",
+      "raw_table": "events",
+      "dw_table": "events",
+      "db_instance": "publishing-api-staging-postgres/",
+      "path_contains": "publishing_api_production/public.events/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/publishing_api/events.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_postgres_publishing_api_raw_s",
+      "dw_dataset": "publishing_api",
+      "raw_table": "expanded_links",
+      "dw_table": "expanded_links",
+      "db_instance": "publishing-api-staging-postgres/",
+      "path_contains": "publishing_api_production/public.expanded_links/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/publishing_api/expanded_links.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_postgres_publishing_api_raw_s",
+      "dw_dataset": "publishing_api",
+      "raw_table": "link_changes",
+      "dw_table": "link_changes",
+      "db_instance": "publishing-api-staging-postgres/",
+      "path_contains": "publishing_api_production/public.link_changes/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/publishing_api/link_changes.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_postgres_publishing_api_raw_s",
+      "dw_dataset": "publishing_api",
+      "raw_table": "link_sets",
+      "dw_table": "link_sets",
+      "db_instance": "publishing-api-staging-postgres/",
+      "path_contains": "publishing_api_production/public.link_sets/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/publishing_api/link_sets.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_postgres_publishing_api_raw_s",
+      "dw_dataset": "publishing_api",
+      "raw_table": "links",
+      "dw_table": "links",
+      "db_instance": "publishing-api-staging-postgres/",
+      "path_contains": "publishing_api_production/public.links/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/publishing_api/links.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_postgres_publishing_api_raw_s",
+      "dw_dataset": "publishing_api",
+      "raw_table": "path_reservations",
+      "dw_table": "path_reservations",
+      "db_instance": "publishing-api-staging-postgres/",
+      "path_contains": "publishing_api_production/public.path_reservations/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/publishing_api/path_reservations.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_postgres_publishing_api_raw_s",
+      "dw_dataset": "publishing_api",
+      "raw_table": "unpublishings",
+      "dw_table": "unpublishings",
+      "db_instance": "publishing-api-staging-postgres/",
+      "path_contains": "publishing_api_production/public.unpublishings/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/publishing_api/unpublishings.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_postgres_support_api_raw_s",
+      "dw_dataset": "support_api",
+      "raw_table": "anonymous_contacts",
+      "dw_table": "anonymous_contacts",
+      "db_instance": "support-api-staging-postgres/",
+      "path_contains": "support_contacts_production/public.anonymous_contacts/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/support_api/anonymous_contacts.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_postgres_support_api_raw_s",
+      "dw_dataset": "support_api",
+      "raw_table": "archived_service_feedbacks",
+      "dw_table": "archived_service_feedbacks",
+      "db_instance": "support-api-staging-postgres/",
+      "path_contains": "support_contacts_production/public.archived_service_feedbacks/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/support_api/archived_service_feedbacks.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_mysql_whitehall_raw_s",
+      "dw_dataset": "whitehall",
+      "raw_table": "assets",
+      "dw_table": "assets",
+      "db_instance": "whitehall-staging-mysql/",
+      "path_contains": "whitehall_production/whitehall_production.assets/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/whitehall/assets.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_mysql_whitehall_raw_s",
+      "dw_dataset": "whitehall",
+      "raw_table": "attachment_data",
+      "dw_table": "attachment_data",
+      "db_instance": "whitehall-staging-mysql/",
+      "path_contains": "whitehall_production/whitehall_production.attachment_data/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/whitehall/attachment_data.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_mysql_whitehall_raw_s",
+      "dw_dataset": "whitehall",
+      "raw_table": "attachments",
+      "dw_table": "attachments",
+      "db_instance": "whitehall-staging-mysql/",
+      "path_contains": "whitehall_production/whitehall_production.attachments/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/whitehall/attachments.sql"
+    },
+
+    {
+      "raw_dataset": "govuk_mysql_whitehall_raw_s",
+      "dw_dataset": "whitehall",
+      "raw_table": "documents",
+      "dw_table": "documents",
+      "db_instance": "whitehall-staging-mysql/",
+      "path_contains": "whitehall_production/whitehall_production.documents/1/",
+      "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/whitehall/documents.sql"
+    },
+      
+
+    {
+      "raw_dataset": "govuk_mysql_whitehall_raw_s",
+      "dw_dataset": "whitehall",
+        "raw_table": "editions",
+        "dw_table": "editions",
+        "db_instance": "whitehall-staging-mysql/",
+        "path_contains": "whitehall_production/whitehall_production.editions/1/",
+        "raw_to_target_bqload_sql": "sql/raw_to_target_bqload/whitehall/editions.sql",
+        "clean_parquet": "Y",
+        "cleaning_rules": {
+          "cast_to_string": ["first_published_at", "public_timestamp"],
+          "cast_to_double": ["political"],
+          "replace_null_strings": {
+            "columns": ["first_published_at", "public_timestamp"],
+            "values": ["None", "nan", "-62135769525000000", "NaT", "nan-nan-nan"]
+          }
+        }
+      }
+  ]
+}
