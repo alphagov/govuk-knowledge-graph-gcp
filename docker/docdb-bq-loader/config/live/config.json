@@ -1,0 +1,15 @@
+{
+  "project_id": "govuk-knowledge-graph",
+  "bucket_name": "govuk-s3-mirror_govuk-database-backups",
+  "dataset_id": "asset_manager",
+  "collection_name": "assets",
+  "table_name": "assets",
+  "dataset_location": "europe-west2",
+  "audit_table": "file_ingestion_audit",
+  "audit_dataset": "monitoring",
+  
+  "backup": {
+    "prefix": "shared-documentdb/",
+    "match_regex": ".*govuk_assets_production.*\\.gz$"
+  }
+}
