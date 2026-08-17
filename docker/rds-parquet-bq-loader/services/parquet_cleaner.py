@@ -79,7 +79,8 @@ def clean_parquet_files(
     os.makedirs(temp_dir, exist_ok=True)
 
     bucket = storage_client.bucket(bucket_name)
-    fs = gcsfs.GCSFileSystem()
+    # Ensure a unique instance so closing the session at the end doesn't break other tasks
+    fs = gcsfs.GCSFileSystem(skip_instance_cache=True)
 
     cleaned_paths = []
 
@@ -132,7 +133,9 @@ def clean_parquet_files(
             # ------------------------------------------------
             # 4.3 READ PARQUET FILE
             # ------------------------------------------------
-            table = pq.read_table(gcs_path, filesystem=fs)
+            with fs.open(gcs_path, "rb") as f:
+                table = pq.read_table(f)
+            #table = pq.read_table(gcs_path, filesystem=fs)
 
             new_columns = []
 
@@ -218,5 +221,13 @@ def clean_parquet_files(
         len(parquet_blobs),
         len(cleaned_paths)
     )
+
+    # Defensively close the underlying TCP connection pool
+    try:
+        if fs and hasattr(fs, "session") and fs.session:
+            gcsfs.GCSFileSystem.close_session(fs.loop, fs.session)
+            logger.info("Successfully closed GCSFileSystem session.")
+    except Exception as e:
+        logger.warning("Failed to close GCSFileSystem session cleanly: %s", e)
 
     return cleaned_paths
