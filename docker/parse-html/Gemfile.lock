@@ -30,7 +30,7 @@ GEM
       rack (>= 2.1, < 4.a)
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
-    json (2.10.2)
+    json (2.19.9)
     language_server-protocol (3.17.0.4)
     logger (1.7.0)
     minitest (5.27.0)
@@ -126,7 +126,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   functions_framework (= 1.6.0)
-  json (= 2.10.2)
+  json (= 2.19.9)
   nokogiri (= 1.19.4)
   rspec
   rubocop
