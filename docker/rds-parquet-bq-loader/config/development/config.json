@@ -14,7 +14,7 @@
   "tables": [
     {
       "raw_dataset": "govuk_postgres_publisher_raw_s",
-      "dw_dataset": "govuk_postgres_publisher_dw_s",
+      "dw_dataset": "publisher",
       "raw_table": "actions",
       "dw_table": "actions",
       "db_instance": "publisher-integration-postgres/",
@@ -24,7 +24,7 @@
 
     {
       "raw_dataset": "govuk_postgres_publisher_raw_s",
-      "dw_dataset": "govuk_postgres_publisher_dw_s",
+      "dw_dataset": "publisher",
       "raw_table": "editions",
       "dw_table": "editions",
       "db_instance": "publisher-integration-postgres/",
@@ -34,7 +34,7 @@
     
     {
       "raw_dataset": "govuk_postgres_publishing_api_raw_s",
-      "dw_dataset": "govuk_postgres_publishing_api_dw_s",
+      "dw_dataset": "publishing_api",
       "raw_table": "actions",
       "dw_table": "actions",
       "db_instance": "publishing-api-integration-postgres/",
@@ -44,7 +44,7 @@
     
     {
       "raw_dataset": "govuk_postgres_publishing_api_raw_s",
-      "dw_dataset": "govuk_postgres_publishing_api_dw_s",
+      "dw_dataset": "publishing_api",
       "raw_table": "change_notes",
       "dw_table": "change_notes",
       "db_instance": "publishing-api-integration-postgres/",
@@ -54,7 +54,7 @@
     
     {
       "raw_dataset": "govuk_postgres_publishing_api_raw_s",
-      "dw_dataset": "govuk_postgres_publishing_api_dw_s",
+      "dw_dataset": "publishing_api",
       "raw_table": "documents",
       "dw_table": "documents",
       "db_instance": "publishing-api-integration-postgres/",
@@ -64,7 +64,7 @@
 
     {
       "raw_dataset": "govuk_postgres_publishing_api_raw_s",
-      "dw_dataset": "govuk_postgres_publishing_api_dw_s",
+      "dw_dataset": "publishing_api",
       "raw_table": "editions",
       "dw_table": "editions",
       "db_instance": "publishing-api-integration-postgres/",
@@ -74,7 +74,7 @@
 
     {
       "raw_dataset": "govuk_postgres_publishing_api_raw_s",
-      "dw_dataset": "govuk_postgres_publishing_api_dw_s",
+      "dw_dataset": "publishing_api",
       "raw_table": "events",
       "dw_table": "events",
       "db_instance": "publishing-api-integration-postgres/",
@@ -84,7 +84,7 @@
 
     {
       "raw_dataset": "govuk_postgres_publishing_api_raw_s",
-      "dw_dataset": "govuk_postgres_publishing_api_dw_s",
+      "dw_dataset": "publishing_api",
       "raw_table": "expanded_links",
       "dw_table": "expanded_links",
       "db_instance": "publishing-api-integration-postgres/",
@@ -94,7 +94,7 @@
 
     {
       "raw_dataset": "govuk_postgres_publishing_api_raw_s",
-      "dw_dataset": "govuk_postgres_publishing_api_dw_s",
+      "dw_dataset": "publishing_api",
       "raw_table": "link_changes",
       "dw_table": "link_changes",
       "db_instance": "publishing-api-integration-postgres/",
@@ -104,7 +104,7 @@
 
     {
       "raw_dataset": "govuk_postgres_publishing_api_raw_s",
-      "dw_dataset": "govuk_postgres_publishing_api_dw_s",
+      "dw_dataset": "publishing_api",
       "raw_table": "link_sets",
       "dw_table": "link_sets",
       "db_instance": "publishing-api-integration-postgres/",
@@ -114,7 +114,7 @@
 
     {
       "raw_dataset": "govuk_postgres_publishing_api_raw_s",
-      "dw_dataset": "govuk_postgres_publishing_api_dw_s",
+      "dw_dataset": "publishing_api",
       "raw_table": "links",
       "dw_table": "links",
       "db_instance": "publishing-api-integration-postgres/",
@@ -124,7 +124,7 @@
 
     {
       "raw_dataset": "govuk_postgres_publishing_api_raw_s",
-      "dw_dataset": "govuk_postgres_publishing_api_dw_s",
+      "dw_dataset": "publishing_api",
       "raw_table": "path_reservations",
       "dw_table": "path_reservations",
       "db_instance": "publishing-api-integration-postgres/",
@@ -134,7 +134,7 @@
 
     {
       "raw_dataset": "govuk_postgres_publishing_api_raw_s",
-      "dw_dataset": "govuk_postgres_publishing_api_dw_s",
+      "dw_dataset": "publishing_api",
       "raw_table": "unpublishings",
       "dw_table": "unpublishings",
       "db_instance": "publishing-api-integration-postgres/",
@@ -144,7 +144,7 @@
 
     {
       "raw_dataset": "govuk_postgres_support_api_raw_s",
-      "dw_dataset": "govuk_postgres_support_api_dw_s",
+      "dw_dataset": "support_api",
       "raw_table": "anonymous_contacts",
       "dw_table": "anonymous_contacts",
       "db_instance": "support-api-integration-postgres/",
@@ -154,7 +154,7 @@
 
     {
       "raw_dataset": "govuk_postgres_support_api_raw_s",
-      "dw_dataset": "govuk_postgres_support_api_dw_s",
+      "dw_dataset": "support_api",
       "raw_table": "archived_service_feedbacks",
       "dw_table": "archived_service_feedbacks",
       "db_instance": "support-api-integration-postgres/",
@@ -164,7 +164,7 @@
 
     {
       "raw_dataset": "govuk_mysql_whitehall_raw_s",
-      "dw_dataset": "govuk_mysql_whitehall_dw_s",
+      "dw_dataset": "whitehall",
       "raw_table": "assets",
       "dw_table": "assets",
       "db_instance": "whitehall-integration-mysql/",
@@ -174,7 +174,7 @@
 
     {
       "raw_dataset": "govuk_mysql_whitehall_raw_s",
-      "dw_dataset": "govuk_mysql_whitehall_dw_s",
+      "dw_dataset": "whitehall",
       "raw_table": "attachment_data",
       "dw_table": "attachment_data",
       "db_instance": "whitehall-integration-mysql/",
@@ -184,7 +184,7 @@
 
     {
       "raw_dataset": "govuk_mysql_whitehall_raw_s",
-      "dw_dataset": "govuk_mysql_whitehall_dw_s",
+      "dw_dataset": "whitehall",
       "raw_table": "attachments",
       "dw_table": "attachments",
       "db_instance": "whitehall-integration-mysql/",
@@ -194,7 +194,7 @@
 
     {
       "raw_dataset": "govuk_mysql_whitehall_raw_s",
-      "dw_dataset": "govuk_mysql_whitehall_dw_s",
+      "dw_dataset": "whitehall",
       "raw_table": "documents",
       "dw_table": "documents",
       "db_instance": "whitehall-integration-mysql/",
@@ -205,7 +205,7 @@
 
     {
       "raw_dataset": "govuk_mysql_whitehall_raw_s",
-      "dw_dataset": "govuk_mysql_whitehall_dw_s",
+      "dw_dataset": "whitehall",
         "raw_table": "editions",
         "dw_table": "editions",
         "db_instance": "whitehall-integration-mysql/",

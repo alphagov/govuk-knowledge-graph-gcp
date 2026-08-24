@@ -20,7 +20,7 @@ from models.config import AppConfig, BackupConfig
 # =========================================================
 
 def load_config():
-    CONFIG_FILE = os.getenv("CONFIG_PATH", "config/non-live/config.json")
+    CONFIG_FILE = os.getenv("CONFIG_PATH", "config/development/config.json")
 
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
         raw = json.load(f)
