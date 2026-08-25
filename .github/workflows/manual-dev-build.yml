@@ -59,20 +59,3 @@ jobs:
       github_sha: ${{ github.sha }}
       github_ref: ${{ github.ref }}
     secrets: inherit
-
-  sync-repo-gcs-dev:
-    name: Sync repo to GCS for development
-    needs: detect-docker-changes
-    if: needs.detect-docker-changes.outputs.images-to-build != '[]'
-    permissions:
-      contents: "read"
-      id-token: "write"
-    strategy:
-      fail-fast: false
-      matrix:
-        image: ${{ fromJson(needs.detect-docker-changes.outputs.images-to-build) }}
-
-    uses: ./.github/workflows/rsync.yml
-    with:
-      environment_name: development
-    secrets: inherit
