@@ -96,8 +96,8 @@ jobs:
           docker push "$REGISTRY_HOSTNAME"/"$IMAGE_NAME":latest
 
       - name: Cloud Run deploy
-        # Do not run this step if image is a known VM workload - they do not require deployment to Cloud Run
-        if: ${{ !contains(fromJSON('["asset-manager", "publisher", "publishing-api", "support-api", "whitehall","docdb-bq-loader","rds-parquet-bq-loader"]'), inputs.image_name) }}
+        # Do not run this step if image is a known Cloud Run Job - they do not require deployment as a Cloud Run Service 
+        if: ${{ !contains(fromJSON('["docdb-bq-loader","rds-parquet-bq-loader"]'), inputs.image_name) }}
         uses: 'google-github-actions/deploy-cloudrun@v2'
         with:
           service: ${{ inputs.image_name }}
