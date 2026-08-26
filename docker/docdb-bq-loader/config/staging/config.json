@@ -1,5 +1,5 @@
 {
-  "project_id": "govuk-knowledge-graph-dev",
+  "project_id": "govuk-knowledge-graph-staging",
   "bucket_name": "govuk-s3-mirror_govuk-database-backups",
   "dataset_id": "asset_manager",
   "collection_name": "assets",
