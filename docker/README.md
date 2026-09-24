@@ -22,13 +22,6 @@ backup of the Publshing API database, and imports it into BigQuery.
 For a virtual machine in GCE (Google Compute Engine).  It extracts data from a
 backup of the support API database, and imports it into BigQuery.
 
-# [`redis-cli`][redis-cli]
-
-For a virtual machine in GCE (Google Compute Engine) that is used occasionally
-for debugging. It has the Redis CLI available and is configured to easily access
-the Redis instance that the GovSearch app uses to manage GOV.UK Signon user
-state.
-
 # [`whitehall`][whitehall]
 
 For a virtual machine in GCE (Google Compute Engine). It extracts data from a
@@ -43,6 +36,5 @@ backup of the Asset Manager app database, and imports it into BigQuery.
 [publisher]: ./publisher
 [publishing-api]: ./publisher-api
 [support-api]: ./support-api
-[redis-cli]: ./redis-cli
 [whitehall]: ./whitehall
 [asset-manager]: ./asset-manager
