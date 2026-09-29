@@ -12,6 +12,7 @@ Functions:
 """
 
 import json
+
 from services.bq_normalizer import normalize_for_bq
 from utils.logging import get_logger
 from utils.sanitizers import sanitize_document

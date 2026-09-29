@@ -13,6 +13,7 @@ Functions:
 
 from services.exceptions import JobFailure
 
+
 def resolve_backup(config, gcs):
     if config.object_name:
         return config.object_name
