@@ -1,0 +1,39 @@
+name: govspeak-to-html lint and test
+permissions: {}
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'docker/govspeak-to-html/**'
+
+defaults:
+  run:
+    working-directory: docker/govspeak-to-html
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: nikeee/setup-pandoc@v1
+
+    # Set up Ruby
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.2.2' # or the version you need
+
+    # Install dependencies
+    - name: Install dependencies
+      run: |
+        bundle install --jobs 4 --retry 3
+
+    # Run RuboCop
+    - name: Run RuboCop
+      run: bundle exec rubocop
+
+    # Run RSpec
+    - name: Run RSpec tests
+      run: bundle exec rspec
