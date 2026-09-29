@@ -1,3 +1,9 @@
-source "https://rubygems.org"
-gem "functions_framework", "1.6.0"
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+gem 'functions_framework', '1.6.0'
 gem 'govspeak', '10.0.1'
+
+gem 'rspec', '~> 3.13', groups: %i[development test]
+
+gem 'rubocop', '~> 1.91', groups: %i[development test]
