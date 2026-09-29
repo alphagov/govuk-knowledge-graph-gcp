@@ -45,7 +45,8 @@ BigQuery remote functions.
 
 ```sh
 cd docker/parse-html
-rspec
+brew install pandoc
+bundle exec rspec
 ```
 
 ## Concurrency
