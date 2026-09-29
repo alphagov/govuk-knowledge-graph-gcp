@@ -10,9 +10,9 @@ FunctionsFramework.on_startup do
   # Perform initialization here.
   require "net/http"
   require "google/cloud/storage"
-  require 'json'
-  require 'jmespath'
-  require 'rack'
+  require "json"
+  require "jmespath"
+  require "rack"
 end
 
 # Validates the presence of required parameters.
@@ -20,6 +20,7 @@ def validate_parameters(params)
   required_params = %w[project_id bucket_name object_name endpoint_url]
   missing = required_params.reject { |param| params.key?(param) }
   return if missing.empty?
+
   [400, { "content-type" => "application/text" }, ["Missing required parameters: #{missing.join(', ')}"]]
 end
 
@@ -49,15 +50,15 @@ def upload_response(project_id, bucket_name, object_name, http_response)
 
   body_json = remove_empty_hashes(JSON.parse(http_response.body))
 
-  if body_json.kind_of?(Array)
-    # If an array of JSON objects is returned (e.g. Smart Survey API), then
-    # format each one into a string on a single line.
-    body_ndjson = body_json.map { |response| response.to_json }.join("\n")
-  else
-    # If a single JSON object is returned (e.g. Zendesk API), then format it to
-    # a string on a single line.
-    body_ndjson = body_json.to_json
-  end
+  body_ndjson = if body_json.is_a?(Array)
+                  # If an array of JSON objects is returned (e.g. Smart Survey API), then
+                  # format each one into a string on a single line.
+                  body_json.map(&:to_json).join("\n")
+                else
+                  # If a single JSON object is returned (e.g. Zendesk API), then format it to
+                  # a string on a single line.
+                  body_json.to_json
+                end
 
   object = StringIO.new(body_ndjson)
   bucket.create_file object, object_name
@@ -68,9 +69,9 @@ def remove_empty_hashes(obj)
     obj.each do |k, v|
       obj[k] = remove_empty_hashes(v)
     end
-    obj.reject {|k, v| v == {}}
+    obj.reject { |_k, v| v == {} }
   elsif obj.is_a?(Array)
-    obj.map {|o| remove_empty_hashes(o)}
+    obj.map { |o| remove_empty_hashes(o) }
   else
     obj
   end
@@ -122,9 +123,9 @@ FunctionsFramework.http "http_to_bucket" do |request|
       # which will be JSON-encoded into a response.
       return [http_response.code, http_response.each_header.to_h, [http_response.body]]
     end
-  rescue Exception => error
+  rescue Exception => e # rubocop: disable Lint/RescueException
     # Handle any errors
-    message = "Error in the Cloud Run function: #{error.message.to_s}"
+    message = "Error in the Cloud Run function: #{e.message}"
     request.logger.info message
 
     # Return a string, a Rack::Response object, a Rack response array, or a hash

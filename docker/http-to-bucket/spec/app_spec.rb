@@ -23,7 +23,7 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
       "project_id" => project_id,
       "bucket_name" => bucket_name,
       "object_name" => object_name,
-      "endpoint_url" => target_endpoint_url
+      "endpoint_url" => target_endpoint_url,
     }
   end
   let(:forwarded_api_query_params) { { "param1" => "value1", "param2" => "value2" } }
@@ -76,7 +76,7 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
   context "when required parameters are missing" do
     let(:incomplete_params) { { "project_id" => project_id } }
     let(:request_url) { build_request_url("/", incomplete_params) }
-    let(:function_required_keys) { ["bucket_name", "object_name", "endpoint_url"] }
+    let(:function_required_keys) { %w[bucket_name object_name endpoint_url] }
 
     it "returns a 400 Bad Request response" do
       request = make_get_request request_url # Pass URL with query string
@@ -88,7 +88,7 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
         function_required_keys.all? { |key| body.include?(key) } && body.include?("Missing required parameters")
       end
     end
-  end # context "when required parameters are missing"
+  end
 
   context "when all required parameters are provided" do
     # --- Mocks for HTTP Responses (remain the same) ---
@@ -98,9 +98,9 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
         allow(resp).to receive(:code).and_return("200")
         allow(resp).to receive(:message).and_return("OK")
         allow(resp).to receive(:is_a?) do |klass|
-           klass == Net::HTTPSuccess
+          klass == Net::HTTPSuccess
         end
-        allow(resp).to receive(:each_header).and_return({"content-type" => "application/json"})
+        allow(resp).to receive(:each_header).and_return({ "content-type" => "application/json" })
       end
     end
 
@@ -110,9 +110,9 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
         allow(resp).to receive(:code).and_return("200")
         allow(resp).to receive(:message).and_return("OK")
         allow(resp).to receive(:is_a?) do |klass|
-           klass == Net::HTTPSuccess
+          klass == Net::HTTPSuccess
         end
-        allow(resp).to receive(:each_header).and_return({"content-type" => "application/json"})
+        allow(resp).to receive(:each_header).and_return({ "content-type" => "application/json" })
       end
     end
 
@@ -122,9 +122,9 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
         allow(resp).to receive(:code).and_return("404")
         allow(resp).to receive(:message).and_return("Not Found")
         allow(resp).to receive(:is_a?) do |klass|
-           klass == Net::HTTPNotFound
+          klass == Net::HTTPNotFound
         end
-        allow(resp).to receive(:each_header).and_return({"content-type" => "application/json", "x-request-id" => "abc-123"})
+        allow(resp).to receive(:each_header).and_return({ "content-type" => "application/json", "x-request-id" => "abc-123" })
       end
     end
 
@@ -135,7 +135,6 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
     let(:request_url_no_headers_param) { build_request_url("/", required_function_params.merge(forwarded_api_query_params)) }
     # Define the request URL with only required params
     let(:request_url_required_only) { build_request_url("/", required_function_params) }
-
 
     context "and the forwarded HTTP request is successful" do
       before do
@@ -212,23 +211,23 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
       end
 
       context "when the 'headers' parameter is not provided" do
-         it "does not attempt to set any headers on the forwarded request" do
-           expect(mock_get_request).not_to receive(:[]=)
+        it "does not attempt to set any headers on the forwarded request" do
+          expect(mock_get_request).not_to receive(:[]=)
 
-           request = make_get_request request_url_no_headers_param # Use URL without 'headers' param
-           call_http "http_to_bucket", request
-         end
+          request = make_get_request request_url_no_headers_param # Use URL without 'headers' param
+          call_http "http_to_bucket", request
+        end
 
-         it "still succeeds and uploads the data" do
-            expect(mock_bucket).to receive(:create_file).with(instance_of(StringIO), object_name).and_return(mock_file)
+        it "still succeeds and uploads the data" do
+          expect(mock_bucket).to receive(:create_file).with(instance_of(StringIO), object_name).and_return(mock_file)
 
-            request = make_get_request request_url_no_headers_param
-            response = call_http "http_to_bucket", request
+          request = make_get_request request_url_no_headers_param
+          response = call_http "http_to_bucket", request
 
-            expect(response.status).to eq(200)
-            expect(response.body.join).to eq("Success")
-         end
-      end # context "when the 'headers' parameter is not provided"
+          expect(response.status).to eq(200)
+          expect(response.body.join).to eq("Success")
+        end
+      end
 
       context "when the API response body is not valid JSON" do
         let(:invalid_api_response_body) { "This is not JSON" }
@@ -238,7 +237,7 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
             allow(resp).to receive(:code).and_return("200")
             allow(resp).to receive(:message).and_return("OK")
             allow(resp).to receive(:is_a?) do |klass|
-               klass == Net::HTTPSuccess
+              klass == Net::HTTPSuccess
             end
             allow(resp).to receive(:each_header)
           end
@@ -264,9 +263,8 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
           request = make_get_request request_url_with_all_params
           call_http "http_to_bucket", request # Call should trigger the error handling
         end
-      end # context "when the API response body is not valid JSON"
-
-    end # context "and the forwarded HTTP request is successful"
+      end
+    end
 
     context "and the forwarded HTTP request fails (e.g., 404 Not Found)" do
       before do
@@ -292,7 +290,7 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
         expect(response.headers).to include("content-type" => "application/json", "x-request-id" => "abc-123")
         expect(response.body.join).to eq("{\"error\":\"Resource not found\"}")
       end
-    end # context "and the forwarded HTTP request fails"
+    end
 
     context "and an unexpected error occurs during processing (e.g., GCS error)" do
       let(:error_message) { "GCS bucket access denied!" }
@@ -313,15 +311,14 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
         expect(response.body.join).to include("Error in the Cloud Run function: ")
         expect(response.body.join).to include(error_message)
       end
-    end # context "and an unexpected error occurs"
-
-  end # context "when all required parameters are provided"
+    end
+  end
 
   describe "#remove_empty_hashes" do
     context "when it's given a single layer hash" do
       it "correctly removes empty hash elements" do
-        object = {foo: {}, bar: "baz"}
-        expectation = {bar: "baz"}
+        object = { foo: {}, bar: "baz" }
+        expectation = { bar: "baz" }
 
         expect(remove_empty_hashes(object)).to eq(expectation)
       end
@@ -329,8 +326,8 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
 
     context "when it's given an array of hashes" do
       it "correctly removes empty hash elements" do
-        object = [{foo: {}, bar: "baz"}, {foo: "bar", baz: {}}]
-        expectation = [{bar: "baz"}, {foo: "bar"}]
+        object = [{ foo: {}, bar: "baz" }, { foo: "bar", baz: {} }]
+        expectation = [{ bar: "baz" }, { foo: "bar" }]
 
         expect(remove_empty_hashes(object)).to eq(expectation)
       end
@@ -339,14 +336,14 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
     context "when it's given a multi layered hash" do
       it "correctly removes empty hash elements" do
         object = {
-          a: {foo: {}, bar: "baz"},
-          b: {foo: "bar", baz: {}},
-          c: {foo: {bar: "baz", foo: {}}}
+          a: { foo: {}, bar: "baz" },
+          b: { foo: "bar", baz: {} },
+          c: { foo: { bar: "baz", foo: {} } },
         }
         expectation = {
-          a: {bar: "baz"},
-          b: {foo: "bar"},
-          c: {foo: {bar: "baz"}}
+          a: { bar: "baz" },
+          b: { foo: "bar" },
+          c: { foo: { bar: "baz" } },
         }
 
         expect(remove_empty_hashes(object)).to eq(expectation)
@@ -357,26 +354,26 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
       it "correctly removes empty hash elements" do
         object = [
           {
-            a: {foo: {}, bar: "baz"},
-            b: {foo: "bar", baz: {}},
-            c: {foo: {bar: "baz", foo: {}}}
+            a: { foo: {}, bar: "baz" },
+            b: { foo: "bar", baz: {} },
+            c: { foo: { bar: "baz", foo: {} } },
           },
           {
-            a: {foo: {}, bar: "baz"},
-            b: {foo: "bar", baz: {}},
-            c: {foo: {bar: "baz", foo: {}}}
+            a: { foo: {}, bar: "baz" },
+            b: { foo: "bar", baz: {} },
+            c: { foo: { bar: "baz", foo: {} } },
           },
         ]
         expectation = [
           {
-          a: {bar: "baz"},
-          b: {foo: "bar"},
-          c: {foo: {bar: "baz"}}
+            a: { bar: "baz" },
+            b: { foo: "bar" },
+            c: { foo: { bar: "baz" } },
           },
           {
-          a: {bar: "baz"},
-          b: {foo: "bar"},
-          c: {foo: {bar: "baz"}}
+            a: { bar: "baz" },
+            b: { foo: "bar" },
+            c: { foo: { bar: "baz" } },
           },
         ]
 
@@ -386,8 +383,8 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
 
     context "when it's given empty, non hash objects" do
       it "doesn't remove them" do
-        object = {foo: "", bar: []}
-        expectation = {foo: "", bar: []}
+        object = { foo: "", bar: [] }
+        expectation = { foo: "", bar: [] }
 
         expect(remove_empty_hashes(object)).to eq(expectation)
       end
@@ -395,11 +392,11 @@ RSpec.describe "Google Cloud Function: http_to_bucket" do
 
     context "when it's given many layers of nothing" do
       it "removes them all the way up the tree" do
-        object = {foo: {bar: {}}}
+        object = { foo: { bar: {} } }
         expectation = {}
 
         expect(remove_empty_hashes(object)).to eq(expectation)
       end
     end
   end
-end # RSpec.describe
+end
