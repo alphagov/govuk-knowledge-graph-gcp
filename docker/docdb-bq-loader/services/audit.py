@@ -15,7 +15,7 @@ Functions:
 
 import logging
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from google.cloud import bigquery
 
@@ -41,7 +41,7 @@ def insert_audit_record(
     """
 
     audit_id = str(uuid.uuid4())
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     query = f"""
     INSERT INTO `{audit_table_id}`
@@ -113,7 +113,7 @@ def update_audit_record(
     Updates audit record safely.
     """
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     # normalize values
     inserted_rows = inserted_rows if inserted_rows is not None else 0

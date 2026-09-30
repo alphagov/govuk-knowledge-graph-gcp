@@ -140,7 +140,7 @@ def recover_files(
                 blob.name,
             )
 
-            raise Exception(
+            raise Exception( # noqa: TRY002
                 f"Recovery failed for {blob.name}: {e}"
             )
 

@@ -10,10 +10,10 @@ Execution Flow:
 2. Execute transformation SQL script.
 """
 
-from google.cloud import bigquery
-import sys
-import os
 import logging
+import os
+
+from google.cloud import bigquery
 
 logger = logging.getLogger(__name__)
 
