@@ -15,7 +15,8 @@ Functions:
    always a list) and then cleans up the rest of the document.
 """
 
-from typing import Any, Dict, List
+from typing import Any
+
 from .bson_utils import bson_to_json
 
 # Normalizes legacy fields into arrays to prevent BigQuery schema type-mismatch crashes
@@ -48,7 +49,7 @@ def serialize_and_strip_nulls(obj: Any) -> Any:
     return bson_to_json(obj)
 
 
-def sanitize_document(doc: Dict[str, Any]) -> Dict[str, Any]:
+def sanitize_document(doc: dict[str, Any]) -> dict[str, Any]:
     """
     Applies schema normalization rules and outputs a cleaned, 
     JSON-serializable dictionary with None values stripped.

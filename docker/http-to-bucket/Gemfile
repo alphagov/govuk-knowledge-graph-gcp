@@ -1,13 +1,13 @@
 source "https://rubygems.org"
 
 gem "functions_framework", "~> 1.6"
-gem 'google-cloud-storage', '~> 1.55'
+gem "google-cloud-storage", "~> 1.55"
 gem "jmespath", "~> 1.6"
 
 group :development, :test do
   gem "byebug", require: true
+  gem "google-cloud-secret_manager", "~> 2.0"
   gem "rspec"
   gem "rubocop"
   gem "rubocop-govuk", require: false
-  gem "google-cloud-secret_manager", "~> 2.0"
 end

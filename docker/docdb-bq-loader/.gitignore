@@ -1,0 +1,55 @@
+# =========================================================
+# Python Bytecode & Cache
+# =========================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# =========================================================
+# Virtual Environments
+# =========================================================
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# =========================================================
+# Testing, Coverage & Type Checking
+# =========================================================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+
+# =========================================================
+# Environment Variables & Local Secrets
+# =========================================================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# =========================================================
+# IDEs & Code Editors
+# =========================================================
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# General editor temps
+*.swp
+*.swo
+*~
+.DS_Store

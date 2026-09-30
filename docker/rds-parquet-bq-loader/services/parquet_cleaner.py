@@ -19,14 +19,15 @@ Execution Flow:
 9. Return the list of cleaned file paths.
 """
 
+import logging
 import os
 import shutil
 import uuid
-import pyarrow as pa
-import pyarrow.parquet as pq
-import pyarrow.compute as pc
+
 import gcsfs
-import logging
+import pyarrow as pa
+import pyarrow.compute as pc
+import pyarrow.parquet as pq
 
 logger = logging.getLogger(__name__)
 
@@ -227,7 +228,7 @@ def clean_parquet_files(
         if fs and hasattr(fs, "session") and fs.session:
             gcsfs.GCSFileSystem.close_session(fs.loop, fs.session)
             logger.info("Successfully closed GCSFileSystem session.")
-    except Exception as e:
+    except Exception as e: # noqa: BLE001
         logger.warning("Failed to close GCSFileSystem session cleanly: %s", e)
 
     return cleaned_paths

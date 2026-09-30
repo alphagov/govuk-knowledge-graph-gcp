@@ -74,8 +74,8 @@ def copy_blobs_to_bucket(
             # copy_blob performs an efficient server-side GCS copy and returns the new target Blob reference
             target_blob = source_bucket.copy_blob(b, target_bucket, b.name)
             target_blobs.append(target_blob)
-        except Exception as e:
+        except Exception as e: # noqa: BLE001
             logger.error("Failed to copy blob %s: %s", b.name, e)
-            raise Exception(f"Copy to target bucket failed for {b.name}: {e}")
+            raise Exception(f"Copy to target bucket failed for {b.name}: {e}") # noqa: TRY002
 
     return target_blobs

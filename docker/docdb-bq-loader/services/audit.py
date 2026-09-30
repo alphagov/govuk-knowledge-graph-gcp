@@ -13,10 +13,11 @@ Functions:
 
 """
 
-import uuid
 import logging
+import uuid
+from datetime import datetime, timezone
+
 from google.cloud import bigquery
-from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -30,19 +31,19 @@ def insert_audit_record(
     audit_stage: str,
     bq_dataset: str,
     bq_table: str,
-    file_type: str = None,
-    file_path: str = None,
+    file_type: str | None = None,
+    file_path: str | None = None,
     status: str = "processing",
-    file_count: int = None
+    file_count: int | None = None
 ):
     """
     Inserts a new audit record and returns audit_id.
     """
 
     audit_id = str(uuid.uuid4())
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
 
-    query = """
+    query = f"""
     INSERT INTO `{audit_table_id}`
     (
         audit_id,
@@ -73,7 +74,7 @@ def insert_audit_record(
         @start_time,
         NULL
     )
-    """.format(audit_table_id=audit_table_id)
+    """
 
     job_config = bigquery.QueryJobConfig(
         query_parameters=[
@@ -105,20 +106,20 @@ def update_audit_record(
     audit_table_id: str,
     audit_id: str,
     status: str,
-    inserted_rows: int = None,
-    error_message: str = None
+    inserted_rows: int | None = None,
+    error_message: str | None = None
 ):
     """
     Updates audit record safely.
     """
 
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
 
     # normalize values
     inserted_rows = inserted_rows if inserted_rows is not None else 0
     error_message = error_message if error_message else None
 
-    query = """
+    query = f"""
     UPDATE `{audit_table_id}`
     SET
         status = @status,
@@ -126,7 +127,7 @@ def update_audit_record(
         error_message = @error_message,
         end_time = @end_time
     WHERE audit_id = @audit_id
-    """.format(audit_table_id=audit_table_id)
+    """
 
     job_config = bigquery.QueryJobConfig(
         query_parameters=[
