@@ -22,13 +22,14 @@ Execution Flow:
 """
 
 import logging
-from datetime import date
-from utils.gcs_utils import list_blobs, derive_move_path, copy_blobs_to_bucket
+from datetime import datetime, timezone
+
 from services.audit import insert_audit_record, update_audit_record
 from services.bq_loader import load_parquet_to_bq, run_transform_sql
-from services.parquet_cleaner import clean_parquet_files
 from services.file_archiver import archive_files, move_to_error
+from services.parquet_cleaner import clean_parquet_files
 from services.recovery import recover_files
+from utils.gcs_utils import copy_blobs_to_bucket, derive_move_path, list_blobs
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +50,7 @@ def process_table(storage_client, bq_client, config, table_cfg, recovery_mode=Fa
     dw_table = table_cfg["dw_table"]
     db_instance = table_cfg["db_instance"]
 
-    run_date = date.today().isoformat()
+    run_date = datetime.now(timezone.utc).date().isoformat()
     gcs_prefix = f"{source_root}{run_date}/{db_instance}"
 
     path_contains = table_cfg["path_contains"]
@@ -248,7 +249,7 @@ def process_table(storage_client, bq_client, config, table_cfg, recovery_mode=Fa
         logger.info("RAW load completed: %s rows", inserted_rows)
 
         if not inserted_rows:
-            raise Exception("RAW load inserted 0 rows")
+            raise Exception("RAW load inserted 0 rows") # noqa: TRY002
 
         raw_status = "success"
 
@@ -372,5 +373,5 @@ def process_table(storage_client, bq_client, config, table_cfg, recovery_mode=Fa
                 try:
                     bucket.blob(blob_name).delete()
                     logger.info("Deleted temporary cleaned file %s", blob_name)
-                except Exception as e:
+                except Exception as e: # noqa: BLE001
                     logger.warning("Failed deleting temporary file %s: %s",blob_name,e)

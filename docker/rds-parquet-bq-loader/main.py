@@ -16,13 +16,14 @@ Execution Flow:
 7. Log any failed tables.
 """
 
-import sys
-import os
 import logging
+import os
+import sys
+
 from google.cloud import bigquery, storage
+
 from models.config import load_config
 from services.ingestion import process_table
-
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -49,8 +50,8 @@ if __name__ == "__main__":
     # multiple Cloud Run task instances.
     # =====================================================
 
-    task_index = int(os.environ.get("CLOUD_RUN_TASK_INDEX", 0))
-    task_count = int(os.environ.get("CLOUD_RUN_TASK_COUNT", 1))
+    task_index = int(os.environ.get("CLOUD_RUN_TASK_INDEX", "0"))
+    task_count = int(os.environ.get("CLOUD_RUN_TASK_COUNT", "1"))
 
     # =====================================================
     # 3. DETERMINE IF RECOVERY MODE IS ENABLED
