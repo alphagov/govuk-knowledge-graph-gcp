@@ -1,4 +1,4 @@
-google-cloud-bigquery
-google-cloud-storage
-pyarrow
-gcsfs
+google-cloud-bigquery>=3.45.0
+google-cloud-storage>=3.15.0
+pyarrow>=25.0.0
+gcsfs>=2026.8.1

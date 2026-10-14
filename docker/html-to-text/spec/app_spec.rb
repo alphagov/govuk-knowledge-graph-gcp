@@ -1,6 +1,14 @@
 require "rspec"
 require "functions_framework/testing"
 
+RSpec.describe "app.rb entrypoint", :unit do
+  include FunctionsFramework::Testing
+
+  it "loads without raising an error" do
+    expect { load_temporary("app.rb") {} }.not_to raise_error
+  end
+end
+
 # Submit an http request, return an http response, with the body parsed into an
 # array of JSON objects.
 #
@@ -18,7 +26,7 @@ def request(calls)
   response
 end
 
-describe "html_to_text() function" do
+describe "html_to_text() function", :unit do
   include FunctionsFramework::Testing
 
   it "returns 200 with nil input" do

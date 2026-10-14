@@ -13,8 +13,8 @@ Execution Flow:
        Cloud Run marks the execution as failed.
 """
 
-from services.ingest import ingest
 from services.exceptions import JobFailure
+from services.ingest import ingest
 from utils.logging import get_logger
 
 logger = get_logger(__name__)

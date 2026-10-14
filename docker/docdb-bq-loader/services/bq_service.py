@@ -16,6 +16,7 @@ Functions:
 
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
+
 from utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -36,7 +37,7 @@ class BigQueryService:
 
         try:
             self.client.get_dataset(dataset_ref)
-        except Exception:
+        except Exception: # noqa: BLE001
             dataset = bigquery.Dataset(dataset_ref)
             dataset.location = location
             self.client.create_dataset(dataset)

@@ -17,7 +17,9 @@ import shutil
 import subprocess
 import time
 from pathlib import Path
+
 from pymongo import MongoClient
+
 from services.exceptions import JobFailure
 from utils.logging import get_logger
 
@@ -49,7 +51,7 @@ class MongoRestoreService:
         self.db_path.mkdir(parents=True, exist_ok=True)
 
         # Open log file for mongod stdout/stderr redirect
-        self.log_file = open(self.log_path, "w", encoding="utf-8")
+        self.log_file = open(self.log_path, "w", encoding="utf-8") # noqa: SIM115
 
         logger.info("Starting local mongod on port %d...", self.port)
         self.process = subprocess.Popen(
@@ -76,7 +78,7 @@ class MongoRestoreService:
                 self.client.admin.command("ping")
                 logger.info("Local mongod started successfully on port %d", self.port)
                 return
-            except Exception:
+            except Exception: # noqa: BLE001
                 time.sleep(1)
 
         raise JobFailure(f"Mongo failed to start on port {self.port} within 15 seconds")
@@ -98,7 +100,7 @@ class MongoRestoreService:
             f"127.0.0.1:{self.port}"
         ]
 
-        result = subprocess.run(cmd, capture_output=True, text=True)
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
 
         if result.returncode != 0:
             logger.error("mongorestore execution failed. Output:\n%s", result.stderr)
@@ -140,7 +142,7 @@ class MongoRestoreService:
             try:
                 shutil.rmtree(self.db_path)
                 logger.info("Cleaned up temporary database directory: %s", self.db_path)
-            except Exception as e:
+            except Exception as e: # noqa: BLE001
                 logger.warning("Failed to clean up temporary database directory %s: %s", self.db_path, e)
 
     # =======================================================================

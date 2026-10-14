@@ -14,7 +14,6 @@ Classes:
 """
 
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
@@ -29,7 +28,7 @@ class AppConfig:
     bucket_name: str
     dataset_id: str
     collection_name: str
-    table_name: Optional[str] = None
+    table_name: str | None = None
     dataset_location: str = "europe-west2"
-    object_name: Optional[str] = None
-    backup: Optional[BackupConfig] = None
+    object_name: str | None = None
+    backup: BackupConfig | None = None

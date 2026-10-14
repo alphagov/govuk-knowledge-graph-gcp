@@ -14,9 +14,11 @@ Functions:
 """
 
 import re
+
 from google.cloud import storage
-from utils.logging import get_logger
+
 from services.exceptions import JobFailure
+from utils.logging import get_logger
 
 logger = get_logger(__name__)
 

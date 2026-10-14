@@ -24,15 +24,16 @@ This script is the main entry point for the data ingestion pipeline.
 
 import os
 import uuid
-from services.loader import load_config
-from services.backup import resolve_backup
-from services.gcs_writer import write_to_gcs
-from services.schema_discovery import discover_shapes
+
 from services.audit import insert_audit_record, update_audit_record
+from services.backup import resolve_backup
 from services.bq_service import BigQueryService
-from services.gcs_service import GCSService
-from services.mongo_restore import MongoRestoreService
 from services.exceptions import JobFailure
+from services.gcs_service import GCSService
+from services.gcs_writer import write_to_gcs
+from services.loader import load_config
+from services.mongo_restore import MongoRestoreService
+from services.schema_discovery import discover_shapes
 from utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -233,11 +234,11 @@ def ingest():
         for blob_name in uploaded_blobs:
             try:
                 bucket.blob(blob_name).delete()
-            except Exception as e:
+            except Exception as e: # noqa: BLE001
                 logger.warning("Failed to delete %s: %s", blob_name, e)
 
         try:
             if os.path.exists(local_file):
                 os.remove(local_file)
-        except Exception as e:
+        except Exception as e: # noqa: BLE001
             logger.warning("Failed to delete local file: %s", e)
