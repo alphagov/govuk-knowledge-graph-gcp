@@ -1,0 +1,44 @@
+name: dlp-deidentify-service lint and test
+
+on:
+  pull_request:
+    paths:
+      - "docker/dlp-deidentify-service/**"
+      - ".github/workflows/dlp-deidentify-service-lint-and-test.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    # Set default execution directory for all `run` steps
+    defaults:
+      run:
+        working-directory: docker/dlp-deidentify-service
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          # Specify the lockfile path explicitly when outside the root directory
+          cache-dependency-path: "docker/dlp-deidentify-service/requirements.txt"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -r requirements-dev.txt
+
+      - name: Lint code with Ruff
+        run: |
+          ruff check .
+
+      - name: Run tests with Pytest
+        run: |
+          python -m pytest
