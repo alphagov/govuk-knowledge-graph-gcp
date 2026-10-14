@@ -24,9 +24,9 @@ GEM
     connection_pool (3.0.2)
     diff-lcs (1.6.2)
     drb (2.2.3)
-    functions_framework (1.6.0)
+    functions_framework (1.7.0)
       cloud_events (>= 0.7.0, < 2.a)
-      puma (>= 4.3.0, < 7.a)
+      puma (>= 4.3.0, < 9.a)
       rack (>= 2.1, < 4.a)
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
@@ -45,7 +45,7 @@ GEM
       ast (~> 2.4.1)
       racc
     prism (1.9.0)
-    puma (6.6.1)
+    puma (8.0.2)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.7)
@@ -117,7 +117,7 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
-  functions_framework (= 1.6.0)
+  functions_framework (= 1.7.0)
   json (= 2.10.2)
   pandoc-ruby (= 2.1.10)
   rspec
