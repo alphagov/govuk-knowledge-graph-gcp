@@ -23,7 +23,7 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.2.2' # or the version you need
+        ruby-version: '3.4.2'
 
     # Install dependencies
     - name: Install dependencies
