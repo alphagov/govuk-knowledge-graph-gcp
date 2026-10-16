@@ -16,11 +16,11 @@ jobs:
     outputs:
       images-to-build: ${{ steps.derive-image-names.outputs.images }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Get list of changed directories under docker/
         id: filter
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v4
         with:
           list-files: 'json'
           filters: |
