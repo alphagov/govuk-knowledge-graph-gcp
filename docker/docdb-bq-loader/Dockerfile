@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 # Tell apt-get to run automatically, buffer stdout, and silence pip root warnings globally
 ENV DEBIAN_FRONTEND=noninteractive \

@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 # Disable stdout/stderr buffering and silence root warning globally
 ENV PYTHONUNBUFFERED=TRUE
