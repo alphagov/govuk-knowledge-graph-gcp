@@ -56,17 +56,17 @@ jobs:
 
     steps:
       # actions/checkout MUST come before auth
-      - uses: 'actions/checkout@v4'
+      - uses: 'actions/checkout@v7'
 
       # Reauth for Artifact Registry operations
       - name: Authenticate to Google Cloud for Artifact Registry operations
-        uses: 'google-github-actions/auth@v2'
+        uses: 'google-github-actions/auth@v3'
         with:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.ARTIFACT_REGISTRY_DOCKER_SERVICE_ACCOUNT }}
 
       - name: Set up Cloud SDK for Artifact Registry operations
-        uses: 'google-github-actions/setup-gcloud@v2'
+        uses: 'google-github-actions/setup-gcloud@v3'
 
       # Configure docker to use the gcloud command-line tool as a credential helper
       - name: Docker authentication
@@ -98,7 +98,7 @@ jobs:
       - name: Cloud Run deploy
         # Do not run this step if image is a known Cloud Run Job - they do not require deployment as a Cloud Run Service 
         if: ${{ !contains(fromJSON('["docdb-bq-loader","rds-parquet-bq-loader"]'), inputs.image_name) }}
-        uses: 'google-github-actions/deploy-cloudrun@v2'
+        uses: 'google-github-actions/deploy-cloudrun@v3'
         with:
           service: ${{ inputs.image_name }}
           region: 'europe-west2'
