@@ -3,17 +3,20 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     groups:
       actions:
         patterns:
           - "*"
+    cooldown:
+      default-days: 3
+    open-pull-requests-limit: 10
 
   - package-ecosystem: "docker"
     directories:
       - "/docker/**"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     groups:
       docker:
         patterns:
@@ -21,12 +24,15 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    cooldown:
+      default-days: 10
+    open-pull-requests-limit: 10
 
   - package-ecosystem: "pip"
     directories:
       - "/docker/**"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     groups:
       python:
         patterns:
@@ -34,12 +40,17 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    cooldown:
+      default-days: 3
+    allow:
+      - dependency-type: direct
+    open-pull-requests-limit: 10
 
   - package-ecosystem: "bundler"
     directories:
       - "/docker/**"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     groups:
       ruby:
         patterns:
@@ -47,3 +58,8 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    cooldown:
+      default-days: 3
+    allow:
+      - dependency-type: direct
+    open-pull-requests-limit: 10
