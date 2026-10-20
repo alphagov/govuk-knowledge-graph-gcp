@@ -1,4 +1,4 @@
-FROM ruby:3.4.7-alpine3.21
+FROM ruby:4.0.7-alpine
 
 # build-base is needed for bundle to install ruby gems
 RUN apk --no-cache add \

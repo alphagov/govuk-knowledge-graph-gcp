@@ -1,4 +1,4 @@
-FROM ruby:3.4.2-bookworm
+FROM ruby:4.0.7-bookworm
 
 WORKDIR /usr/src/app
 COPY Gemfile* .
