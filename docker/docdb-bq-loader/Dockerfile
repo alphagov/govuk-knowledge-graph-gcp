@@ -15,6 +15,9 @@ RUN apt-get update && apt-get install -y gnupg wget curl gpgv && \
 
 WORKDIR /app
 
+# Update package lists and pull the latest secure ca-certificates
+RUN apk update && apk add --no-cache ca-certificates
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

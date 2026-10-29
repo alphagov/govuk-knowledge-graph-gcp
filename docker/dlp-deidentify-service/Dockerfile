@@ -4,6 +4,9 @@ FROM python:3.12-slim
 # Set the working directory
 WORKDIR /app
 
+# Update package lists and pull the latest secure ca-certificates
+RUN apk update && apk add --no-cache ca-certificates
+
 # Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

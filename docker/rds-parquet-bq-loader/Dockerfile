@@ -7,6 +7,9 @@ ENV PIP_ROOT_USER_ACTION=ignore
 # Set working directory
 WORKDIR /app
 
+# Update package lists and pull the latest secure ca-certificates
+RUN apk update && apk add --no-cache ca-certificates
+
 # Upgrade pip first to silence the "new release" warning
 RUN pip install --no-cache-dir --upgrade pip
 
