@@ -4,6 +4,11 @@ FROM python:3.12-slim
 # Set the working directory
 WORKDIR /app
 
+# Update package lists, install/upgrade ca-certificates, and clean up temporary files
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

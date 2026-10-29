@@ -7,6 +7,11 @@ ENV PIP_ROOT_USER_ACTION=ignore
 # Set working directory
 WORKDIR /app
 
+# Update package lists and pull the latest secure ca-certificates using apt-get (for Debian)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
 # Upgrade pip first to silence the "new release" warning
 RUN pip install --no-cache-dir --upgrade pip
 
