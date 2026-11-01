@@ -24,7 +24,7 @@ GEM
     connection_pool (3.0.2)
     diff-lcs (1.6.2)
     drb (2.2.3)
-    functions_framework (1.7.0)
+    functions_framework (1.7.1)
       cloud_events (>= 0.7.0, < 2.a)
       puma (>= 4.3.0, < 9.a)
       rack (>= 2.1, < 4.a)
@@ -63,7 +63,7 @@ GEM
     puma (8.0.2)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.2.7)
+    rack (3.2.8)
     rainbow (3.1.1)
     regexp_parser (2.13.1)
     reline (0.7.0)
@@ -138,7 +138,7 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
-  functions_framework (~> 1.6)
+  functions_framework (~> 1.7)
   json (~> 2.19)
   nokogiri (~> 1.19)
   rspec
@@ -156,7 +156,7 @@ CHECKSUMS
   connection_pool (3.0.2) sha256=33fff5ba71a12d2aa26cb72b1db8bba2a1a01823559fb01d29eb74c286e62e0a
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
   drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
-  functions_framework (1.7.0) sha256=e92e9f02209eb5e8d50c1ee65c1c965b152a82a8a08a9697dd1ac5f1d019bbac
+  functions_framework (1.7.1) sha256=d45c58f8c4cf19e5a2164d6f92b31e59c970d454948115e5234fbb0c9d98b70b
   i18n (1.15.2) sha256=00f9eb62412fe593b2a65a97daa75300d37abb8f7202ec748e94b6d46a9dd1b5
   io-console (0.9.4) sha256=a403304f32928ee85e56d457b4612ca43f2703b561a3258844992bd24085fbb1
   json (2.21.2) sha256=1f1d3b7cf2b3ba1a69beca0bb6db13d5438b80bff3cd54cdaaa620b9b07c1c6a
@@ -178,7 +178,7 @@ CHECKSUMS
   prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85
   puma (8.0.2) sha256=c8ed871dfbbe66448ea9ffd46692342d9804d4071522b52b5331b7b6e7b686fb
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
-  rack (3.2.7) sha256=93e13e1c24f93556671d85d2d79fa228c3485815c50d7e2f265b5330c6528fb7
+  rack (3.2.8) sha256=1fecc85e463ebc7a2a945fff829ffcd549babeb1556384796fad946c28dc4ec7
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   regexp_parser (2.13.1) sha256=5aedb6b7c35688f51e86eef17a15374dfd287c83f4ca644b2c5f3ec50a33b44b
   reline (0.7.0) sha256=5b012d8e55dbf9d450f12bde2cf7d15ff546ae80b3f8f3b30e570d431815583d
