@@ -38,7 +38,7 @@ INFO_TYPES = [
 
 INSPECT_CONFIG = {
     "info_types": INFO_TYPES,
-    "min_likelihood": dlp_v2.Likelihood.LIKELY,
+    "min_likelihood": dlp_v2.Likelihood.POSSIBLE,
 }
 
 DEIDENTIFY_CONFIG = {
